@@ -12,30 +12,16 @@ var
 function create()
 {
   var userSchema = new Schema( {
-    firstName:                { type: String, required: true },
-    lastName:                 { type: String, required: true },
-    email:                    { type: String, unique: true, required: true },
-    created:                  { type: Date }
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    email: { type: String, unique: true, required: true },
+    vetoAvailable: { type: Date },
+    created: { type: Date }
   } );
 
   userSchema.plugin( Modified );
 
-  _.extend( userSchema.methods, {
-
-    /**
-     * Transform the properties when converting to JSON
-     * @returns {user}
-     */
-    toJSON: function()
-            {
-              var obj = this.toObject();
-              delete obj.password;
-              delete obj.__v;
-              return obj;
-            }
-
-
-  } );
+  _.extend( userSchema.methods, {} );
 
   _.extend( userSchema.statics, {} );
 

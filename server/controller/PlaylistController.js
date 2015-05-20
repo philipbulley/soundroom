@@ -1,11 +1,10 @@
-var _             = require( 'lodash' ),
-    Q             = require( 'q' ),
-    FunctionUtil  = require( './../util/FunctionUtil' ),
-    log           = require( './../util/LogUtil' ),
-    User          = require( './../model/db/User' ),
-    UserErrorEnum = require( './../model/enum/UserErrorEnum' ),
+var _            = require( 'lodash' ),
+    Q            = require( 'q' ),
+    FunctionUtil = require( './../util/FunctionUtil' ),
+    log          = require( './../util/LogUtil' ),
+    Playlist     = require( './../model/db/Playlist' ),
     //PermissionErrorEnum = require( './../model/enum/PermissionErrorEnum' ),
-    Config        = require( './../model/Config' );
+    Config       = require( './../model/Config' );
 
 function PlaylistController()
 {
@@ -14,9 +13,6 @@ function PlaylistController()
 
 _.extend( PlaylistController, {} );
 
-PlaylistController.prototype = {
-
-
-};
+PlaylistController.prototype = {};
 
 module.exports = PlaylistController;
