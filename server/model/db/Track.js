@@ -5,15 +5,32 @@ var
     log          = require( './../../util/LogUtil' ),
     MongooseUtil = require( './../../util/MongooseUtil' ),
     Modified     = require( './plugin/Modified' ),
+    ProviderEnum = require( './../enum/ProviderEnum' ),
     Schema       = mongoose.Schema;
 
 
 function create()
 {
+  var artistSchema = new Schema( {
+    name: { type: String, required: true },
+    provider: { type: String, enum: _.values( ProviderEnum ), index: true },
+    foreignId: { type: String, required: true, index: true }
+  } );
+
+  var albumSchema = new Schema( {
+    name: { type: String, required: true },
+    provider: { type: String, enum: _.values( ProviderEnum ), index: true },
+    foreignId: { type: String, required: true, index: true }
+  } );
+
   var trackSchema = new Schema( {
-    title: { type: String, required: true },
-    description: { type: String },
-    tracks: [ { type: Schema.Types.ObjectId, ref: 'Track' } ],
+    name: { type: String, required: true },
+    artist: { type: String, required: true },
+    duration: { type: Number, required: true },
+    provider: { type: String, enum: _.values( ProviderEnum ), index: true },
+    foreignId: { type: String, required: true, unique: true },
+    album: albumSchema,
+    artists: [ artistSchema ],
     createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
     created: { type: Date }
   } );
@@ -22,7 +39,48 @@ function create()
 
   _.extend( trackSchema.methods, {} );
 
-  _.extend( trackSchema.statics, {} );
+  _.extend( trackSchema.statics, {
+
+    /**
+     * These fields need to be populated by a document from another database model. String of fields names, separated by spaces.
+     */
+    POPULATE_FIELDS:       'createdBy',
+
+    /**
+     * Use this find method instead of `Playlist.findById()` if you need the returned playlist to be populated
+     * with external documents.
+     *
+     * @param id
+     * @param fields
+     * @param options
+     * @returns {Q.Promise}     Promised resolved with a single Episode or null
+     */
+    findByIdPopulateQ: function( id, fields, options )
+    {
+      return this.findById( id, fields, options )
+          .populate( this.POPULATE_FIELDS )
+          .execQ();
+    },
+
+    /**
+     * Use this find method instead of `Playlist.find()` if you need the returned episode to be populated
+     * with external documents.
+     *
+     * @param id
+     * @param fields
+     * @param options
+     * @returns {Q.Promise}     Promised resolved with an array of Episodes or an empty array if no matches.
+     */
+    findPopulateQ: function( conditions, fields, options )
+    {
+      log.debug( 'Episode.findPopulateQ:', conditions, fields, options );
+
+      return this.find( conditions, fields, options )
+          .populate( this.POPULATE_FIELDS )
+          .execQ();
+    }
+
+  } );
 
   return trackSchema;
 }

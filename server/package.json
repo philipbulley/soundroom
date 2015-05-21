@@ -12,7 +12,10 @@
     "cors": "~2.6.0",
     "mongoose": "~3.8.19",
     "mongoose-q": "0.0.13",
-    "signals": "~1.0.0"
+    "signals": "~1.0.0",
+    "passport-google": "~0.3.0",
+    "passport": "~0.2.1",
+    "http-status": "~0.1.8"
   },
   "devDependencies": {},
   "scripts": {

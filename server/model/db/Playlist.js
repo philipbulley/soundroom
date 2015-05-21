@@ -12,11 +12,12 @@ function create()
 {
   var playlistTrackSchema = new Schema( {
     track: { type: Schema.Types.ObjectId, ref: 'Track' },
+    createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
     upVotes: [ { type: Schema.Types.ObjectId, ref: 'User' } ]
   } );
 
   var playlistSchema = new Schema( {
-    title: { type: String, required: true },
+    name: { type: String, required: true },
     description: { type: String },
     tracks: [ playlistTrackSchema ],
     createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
@@ -27,7 +28,48 @@ function create()
 
   _.extend( playlistSchema.methods, {} );
 
-  _.extend( playlistSchema.statics, {} );
+  _.extend( playlistSchema.statics, {
+
+    /**
+     * These fields need to be populated by a document from another database model. String of fields names, separated by spaces.
+     */
+    POPULATE_FIELDS:       'createdBy',
+
+    /**
+     * Use this find method instead of `Playlist.findById()` if you need the returned playlist to be populated
+     * with external documents.
+     *
+     * @param id
+     * @param fields
+     * @param options
+     * @returns {Q.Promise}     Promised resolved with a single Episode or null
+     */
+    findByIdPopulateQ: function( id, fields, options )
+    {
+      return this.findById( id, fields, options )
+          .populate( this.POPULATE_FIELDS )
+          .execQ();
+    },
+
+    /**
+     * Use this find method instead of `Playlist.find()` if you need the returned episode to be populated
+     * with external documents.
+     *
+     * @param id
+     * @param fields
+     * @param options
+     * @returns {Q.Promise}     Promised resolved with an array of Episodes or an empty array if no matches.
+     */
+    findPopulateQ: function( conditions, fields, options )
+    {
+      log.debug( 'Episode.findPopulateQ:', conditions, fields, options );
+
+      return this.find( conditions, fields, options )
+          .populate( this.POPULATE_FIELDS )
+          .execQ();
+    }
+
+  } );
 
   return playlistSchema;
 }

@@ -18,38 +18,31 @@ UserController.prototype = {
 
   /**
    *
-   * @param email
-   * @param password
+   * @param userParams
    * @returns {Q.Promise}
    */
   create: function( userParams )
+  {
+    // Only accept allowable fields to create a new user with
+    userParams = _.pick( userParams, [ 'email', 'password', 'firstName', 'lastName' ] );
+
+    log.info( 'UserController.create: userParams:', userParams );
+
+    var user = new User( userParams );
+    return user.saveQ()
+        .catch( function( err )
+        {
+          if( err.name === 'MongoError' && err.code === 11000 )
           {
-            // Only accept allowable fields to create a new user with
-            userParams = _.pick( userParams, [ 'email', 'password', 'firstName', 'lastName' ] );
+            // Duplicate key, user with email already exists
+            var err = new Error( UserErrorEnum.ALREADY_EXISTS );
+            err.email = userParams.email;
+            throw err;
+          }
 
-            log.info( 'UserController.create: userParams:', userParams );
-
-            var user = new User( userParams );
-            user.generateVerifyEmailToken();
-
-            return user.saveQ()
-                .then( function( user )
-                {
-                  return this.sendVerifyEmail( user.email );
-                }.bind( this ) )
-                .catch( function( err )
-                {
-                  if( err.name === 'MongoError' && err.code === 11000 )
-                  {
-                    // Duplicate key, user with email already exists
-                    var err = new Error( UserErrorEnum.ALREADY_EXISTS );
-                    err.email = userParams.email;
-                    throw err;
-                  }
-
-                  log.formatError( err, 'UserController.create: save' );
-                }.bind( this ) );
-          },
+          log.formatError( err, 'UserController.create: save' );
+        }.bind( this ) );
+  },
 
   /**
    *
@@ -58,29 +51,29 @@ UserController.prototype = {
    * @returns {Q.Promise}
    */
   find: function( query, executingUser )
+  {
+    log.info( 'UserController.find()', query, executingUser );
+
+    // Only accept allowable fields to query by
+    query = executingUser
+        ? _.pick( query, [ '_id', 'email', 'accessToken', 'nda' ] )
+        : _.pick( query, [ '_id', 'email' ] );
+
+    var select = executingUser
+        ? null  // No restrictions on selected fields, as we have an executing user
+        : 'email';
+
+    // Anon access requires a query as we don't want to dump out all users
+    if( !executingUser && !_.keys( query ).length )
+      return Q.reject( new Error( PermissionErrorEnum.UNAUTHORIZED ) );
+
+    return User.findQ( query, select )
+        .then( function( users )
         {
-          log.info( 'UserController.find()', query, executingUser );
-
-          // Only accept allowable fields to query by
-          query = executingUser
-              ? _.pick( query, [ '_id', 'email', 'accessToken', 'nda' ] )
-              : _.pick( query, [ '_id', 'email' ] );
-
-          var select = executingUser
-              ? null  // No restrictions on selected fields, as we have an executing user
-              : 'email';
-
-          // Anon access requires a query as we don't want to dump out all users
-          if( !executingUser && !_.keys( query ).length )
-            return Q.reject( new Error( PermissionErrorEnum.UNAUTHORIZED ) );
-
-          return User.findQ( query, select )
-              .then( function( users )
-              {
-                log.info( 'UserController.find: then:', users );
-                return users;
-              }.bind( this ) )
-        }
+          log.info( 'UserController.find: then:', users );
+          return users;
+        }.bind( this ) )
+  }
 
 
 };
