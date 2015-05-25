@@ -1,6 +1,6 @@
 var ProviderEnum = {
 
-  SPOTIFY: 'SPOTIFY'
+  SPOTIFY: 'spotify'
 
 };
 

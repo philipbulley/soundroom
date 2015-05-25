@@ -1,9 +1,9 @@
-var express            = require( 'express' ),
-    router             = express.Router(),
-    PlaylistController = require( '../PlaylistController' ),
+var express                   = require( 'express' ),
+    router                    = express.Router(),
+    PlaylistRequestController = require( './../request/PlaylistRequestController' ),
     //AuthController = require( './../AuthController' ),
     //PermissionEnum = require( './../../model/enum/PermissionEnum' ),
-    log                = require( './../../util/LogUtil' );
+    log                       = require( './../../util/LogUtil' );
 
 router.route( '/' )
     .get( /*AuthController.verify(),*/
@@ -11,7 +11,7 @@ router.route( '/' )
     {
       console.log( 'GET /playlists/' );
 
-      new PlaylistController()
+      new PlaylistRequestController()
           .getAll( req, res )
           .done();
     } )
@@ -19,7 +19,7 @@ router.route( '/' )
     .post( /*AuthController.verify(),*/
     function( req, res )
     {
-      new PlaylistController()
+      new PlaylistRequestController()
           .create( req, res )
           .done();
     } );
@@ -30,33 +30,42 @@ router.route( '/:playlist_id' )
     {
       console.log( 'GET /playlists/' + req.params.playlist_id );
 
-      new PlaylistController()
+      new PlaylistRequestController()
           .getByIdParam( req, res )
           .done();
     } );
 
+// TODO: PATCH /:playlist_id
+// TODO: PUT /:playlist_id
+// TODO: DELETE /:playlist_id
 
-router.route( '/:playlist_id/track' )
+router.route( '/:playlist_id/tracks' )
     .post( /*AuthController.verify(),*/
     function( req, res )
     {
-      console.log( 'POST /playlists/' + req.params.playlist_id + '/track/' );
+      console.log( 'POST /playlists/' + req.params.playlist_id + '/tracks/' );
 
-      new PlaylistController()
-          .addTrack( req, res )
+      new PlaylistRequestController()
+          .addTrackByForeignId( req, res )
           .done();
     } );
 
-// TODO: Create upvote route
-router.route( '/:playlist_id/track/:track_id/upvote' )
+router.route( '/:playlist_id/tracks/:track_id' );
+
+// TODO: GET /:playlist_id/tracks/:track_id
+// TODO: DELETE /:playlist_id/tracks/:track_id
+
+router.route( '/:playlist_id/tracks/:track_id/upvote' )
     .post( /*AuthController.verify(),*/
     function( req, res )
     {
-      console.log( 'POST /playlists/' + req.params.playlist_id + '/track/' + req.params.track_id + '/upvote');
+      console.log( 'POST /playlists/' + req.params.playlist_id + '/tracks/' + req.params.track_id + '/upvote' );
 
-      new PlaylistController()
+      new PlaylistRequestController()
           .upVoteTrack( req, res )
           .done();
     } );
+
+// TODO: DELETE /:playlist_id/tracks/:track_id/upvote
 
 module.exports = router;

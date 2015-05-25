@@ -1,106 +1,100 @@
-var _            = require( 'lodash' ),
-    Q            = require( 'q' ),
-    FunctionUtil = require( './../util/FunctionUtil' ),
-    log          = require( './../util/LogUtil' ),
-    Track        = require( './../model/db/Track' ),
-    //PermissionErrorEnum = require( './../model/enum/PermissionErrorEnum' ),
-    HttpUtil     = require( './../util/HttpUtil' ),
-    Config       = require( './../model/Config' );
+var _                  = require( 'lodash' ),
+    Q                  = require( 'q' ),
+    FunctionUtil       = require( './../util/FunctionUtil' ),
+    log                = require( './../util/LogUtil' ),
+    Track              = require( './../model/db/Track' ),
+    ProviderEnum       = require( './../model/enum/ProviderEnum' ),
+    SpotifyDataService = require( './../service/SpotifyDataService' ),
+    HttpUtil           = require( './../util/HttpUtil' ),
+    Config             = require( './../model/Config' );
 
 function TrackController()
 {
   FunctionUtil.bindAllMethods( this );
 }
 
-_.extend( TrackController, {
+_.extend( TrackController, {} );
 
-  getAll: function( req, res )
+TrackController.prototype = {
+  getAll: function()
   {
     console.log( 'TrackController.getAll()' );
 
-    return Track.findPopulateQ()
-        .then( function( tracks )
-        {
-          // If no tracks, return empty array, not a 404
-          res.json( tracks );
-        } )
-        .catch( function( err )
-        {
-          if( err.message.toLowerCase().indexOf( 'break' ) === 0 )
-          {
-            // Simply aborting the promise chain, not an error
-          }
-          else
-          {
-            HttpUtil.sendJsonError( res, HttpUtil.status.INTERNAL_SERVER_ERROR );
-            log.formatError( err, 'TrackController.get' );
-          }
-        }.bind( this ) );
+    return Track.findPopulateQ();
   },
 
-  getByIdParam: function( req, res )
+  getById: function( id )
   {
-    console.log( 'TrackController.getByIdParam()', req.params.track_id );
+    console.log( 'TrackController.getById()', id );
 
-    return Track.findByIdPopulateQ( req.params.track_id )
+    return Track.findByIdPopulateQ( id )
         .then( function( track )
         {
           if( !track )
-          {
-            HttpUtil.sendJsonError( res, HttpUtil.status.NOT_FOUND );
-            return
-          }
+            throw new Error( TrackErrorEnum.NOT_FOUND );
 
           res.json( track );
-        } )
-        .catch( function( err )
-        {
-          if( err.message.toLowerCase().indexOf( 'break' ) === 0 )
-          {
-            // Simply aborting the promise chain, not an error
-          }
-          else
-          {
-            HttpUtil.sendJsonError( res, HttpUtil.status.INTERNAL_SERVER_ERROR );
-            log.formatError( err, 'TrackController.get' );
-          }
-        }.bind( this ) );
-  },
-
-  findByForeignId: function( provider, foreignId )
-  {
-    return Track.findPopulateQ( { provider: provider, foreignId: foreignId } );
-  },
-
-  create: function( req, res )
-  {
-    var track = new Track();
-    track.title = req.body.name;
-    track.description = req.body.description;
-    track.createdBy = req.user;
-
-    return track.saveQ()
-        .then( function( track )
-        {
-          res.json( track );
-        }.bind( this ) )
-        .catch( function( err )
-        {
-          log.formatError( err, 'TrackController.create: save' );
-        }.bind( this ) );
-  },
-
-  upVoteTrack: function( req, res )
-  {
-    return Track.findByIdPopulateQ( req.params.track_id )
-        .then( function( track )
-        {
-          // TODO: Search for TrackTrack, add vote, send change via socket
         } );
+  },
+
+  getByForeignId: function( foreignId )
+  {
+    return Track.findPopulateQ( { foreignId: foreignId } )
+        .then( function( track )
+        {
+          if( !track )
+            throw new Error( TrackErrorEnum.NOT_FOUND );
+
+          res.json( track );
+        } );
+  },
+
+  /**
+   * Creates a track based on the foreignId then saves it to the database.
+   *
+   * @param provider
+   * @param foreignId
+   * @returns {Q.Promise<Track>}
+   */
+  createByForeignId: function( provider, foreignId )
+  {
+    provider = provider.toLowerCase();
+
+    var track;
+
+    switch( provider )
+    {
+      case ProviderEnum.SPOTIFY:
+        track = SpotifyDataService.getTrack( foreignId );
+        break
+    }
+
+    // Now we have a track, ensure the individual Models are saved to the DB
+    var promise = Album.findOneAndUpdateQ( { foreignId: track.album.foreignId }, track.album, { upsert: true } )
+        .then( function( album )
+        {
+          track.album = album._id;
+        } );
+
+    track.artists.forEach( function( artist, i, arr )
+    {
+      promise = promise.then( function()
+      {
+        return Artist.findOneAndUpdateQ( { foreignId: artist.foreignId }, artist, { upsert: true } );
+      } )
+          .then( function( _artist )
+          {
+            arr.artists[ i ] = _artist._id;
+          } );
+    } );
+
+    promise = promise.then( function()
+    {
+      return track.saveQ();
+    } );
+
+    return promise;
   }
-
-} );
-
-TrackController.prototype = {};
+};
 
 module.exports = TrackController;

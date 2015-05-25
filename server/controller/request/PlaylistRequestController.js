@@ -1,0 +1,106 @@
+var _                  = require( 'lodash' ),
+    Q                  = require( 'q' ),
+    FunctionUtil       = require( './../../util/FunctionUtil' ),
+    log                = require( './../../util/LogUtil' ),
+    Playlist           = require( './../../model/db/Playlist' ),
+    PlaylistController = require( './../PlaylistController' ),
+    TrackController    = require( './../TrackController' ),
+    HttpUtil           = require( './../../util/HttpUtil' ),
+    PlaylistErrorEnum  = require( './../../model/enum/PlaylistErrorEnum' ),
+    Config             = require( './../../model/Config' );
+
+function PlaylistRequestController()
+{
+  FunctionUtil.bindAllMethods( this );
+}
+
+_.extend( PlaylistRequestController, {} );
+
+PlaylistRequestController.prototype = {
+
+  playlistController: new PlaylistController(),
+
+  getAll: function( req, res )
+  {
+    console.log( 'PlaylistRequestController.getAll()' );
+
+    return this.playlistController.getAll()
+        .then( function( playlists )
+        {
+          // If no playlists, return empty array, not a 404
+          res.json( playlists );
+        }.bind( this ) )
+        .catch( function( err )
+        {
+          HttpUtil.sendJsonError( res, HttpUtil.status.INTERNAL_SERVER_ERROR );
+          log.formatError( err, 'PlaylistRequestController.get' );
+        }.bind( this ) );
+  },
+
+  getByIdParam: function( req, res )
+  {
+    console.log( 'PlaylistRequestController.getByIdParam()', req.params.playlist_id );
+
+    return this.playlistController.getById( req.params.playlist_id )
+        .then( function( playlist )
+        {
+          res.json( playlist );
+        }.bind( this ) )
+        .catch( function( err )
+        {
+          if( err.message === PlaylistErrorEnum.NOT_FOUND )
+            HttpUtil.sendJsonError( res, HttpUtil.status.NOT_FOUND );
+          else
+            HttpUtil.sendJsonError( res, HttpUtil.status.INTERNAL_SERVER_ERROR );
+
+          log.formatError( err, 'PlaylistRequestController.get' );
+        }.bind( this ) );
+  },
+
+  create: function( req, res )
+  {
+    log.debug( 'PlaylistRequestController.create: req.body', req.body );
+
+    return this.playlistController.create( req.body.name, req.body.description, req.body.user )
+        .then( function( playlist )
+        {
+          res.json( playlist );
+        }.bind( this ) )
+        .catch( function( err )
+        {
+          HttpUtil.sendJsonError( res, HttpUtil.status.INTERNAL_SERVER_ERROR );
+          log.formatError( err, 'PlaylistRequestController.create: save' );
+        }.bind( this ) );
+  },
+
+  addTrackByForeignId: function( req, res )
+  {
+    this.playlistController.addTrackByForeignId( req.params.track_id )
+        .then( function( track )
+        {
+          res.json( track );
+        }.bind( this ) )
+        .catch( function( err )
+        {
+          HttpUtil.sendJsonError( res, HttpUtil.status.INTERNAL_SERVER_ERROR );
+          log.formatError( err, 'PlaylistRequestController.addTrackByForeignId: save' );
+        }.bind( this ) );
+  },
+
+  upVoteTrack: function( req, res )
+  {
+    return this.playlistController.upVoteTrack( req.params.playlist_id )
+        .then( function( playlist )
+        {
+          res.json( playlist );
+        }.bind( this ) )
+        .catch( function( err )
+        {
+          HttpUtil.sendJsonError( res, HttpUtil.status.INTERNAL_SERVER_ERROR );
+          log.formatError( err, 'PlaylistRequestController.addTrackByForeignId: save' );
+        }.bind( this ) );
+  }
+
+};
+
+module.exports = PlaylistRequestController;

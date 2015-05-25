@@ -1,11 +1,15 @@
-var SpotifyService  = require( './service/SpotifyService' ),
-    express         = require( 'express' ),
+var express         = require( 'express' ),
     app             = express(),
     bodyParser      = require( 'body-parser' ),
     cors            = require( 'cors' ),
     log             = require( './util/LogUtil' ),
-    MongooseService = require( './service/MongooseService' );
+    MongooseService = require( './service/MongooseService' ),
+    signals         = require( 'signals' );
 
+var index = {
+  app: app,
+  onInitComplete: new signals.Signal()
+};
 
 log.level = log.LEVEL_DEBUG;
 log.info( '__________________________________________________' );
@@ -44,6 +48,8 @@ MongooseService.connectToAppInstance( 'mongodb://pacino:jdur7sajcmskd8310dk@ds03
       // Start the server!
       app.listen( process.env.PORT );
       log.info( 'Initialization complete! Hit me up on localhost:' + process.env.PORT + '!' );
+
+      index.onInitComplete.dispatch();
     } )
     .catch( function( err )
     {
@@ -51,3 +57,5 @@ MongooseService.connectToAppInstance( 'mongodb://pacino:jdur7sajcmskd8310dk@ds03
       process.exit( 1 );    // Fatal. Exit!
     } )
     .done();
+
+module.exports = index;

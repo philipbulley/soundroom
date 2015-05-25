@@ -20,7 +20,7 @@ function create()
     name: { type: String, required: true },
     description: { type: String },
     tracks: [ playlistTrackSchema ],
-    createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
+    createdBy: { type: Schema.Types.ObjectId, ref: 'User' },    // TODO: required: true when implemented users
     created: { type: Date }
   } );
 

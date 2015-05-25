@@ -1,101 +1,75 @@
-var _               = require( 'lodash' ),
-    Q               = require( 'q' ),
-    FunctionUtil    = require( './../util/FunctionUtil' ),
-    log             = require( './../util/LogUtil' ),
-    Playlist        = require( './../model/db/Playlist' ),
-    TrackController = require( './TrackController' ),
-    //PermissionErrorEnum = require( './../model/enum/PermissionErrorEnum' ),
-    HttpUtil        = require( './../util/HttpUtil' ),
-    Config          = require( './../model/Config' );
+var _                 = require( 'lodash' ),
+    Q                 = require( 'q' ),
+    FunctionUtil      = require( './../util/FunctionUtil' ),
+    log               = require( './../util/LogUtil' ),
+    Playlist          = require( './../model/db/Playlist' ),
+    TrackController   = require( './TrackController' ),
+    PlaylistErrorEnum = require( './../model/enum/PlaylistErrorEnum' ),
+    Config            = require( './../model/Config' );
 
 function PlaylistController()
 {
   FunctionUtil.bindAllMethods( this );
+
+  this.trackController = new TrackController();
 }
 
-_.extend( PlaylistController, {
+_.extend( PlaylistController, {} );
 
-  trackController: new TrackController(),
+PlaylistController.prototype = {
+  trackController: null,
 
-  getAll: function( req, res )
+  getAll: function()
   {
     console.log( 'PlaylistController.getAll()' );
 
-    return Playlist.findPopulateQ()
-        .then( function( playlists )
-        {
-          // If no playlists, return empty array, not a 404
-          res.json( playlists );
-        } )
-        .catch( function( err )
-        {
-          if( err.message.toLowerCase().indexOf( 'break' ) === 0 )
-          {
-            // Simply aborting the promise chain, not an error
-          }
-          else
-          {
-            HttpUtil.sendJsonError( res, HttpUtil.status.INTERNAL_SERVER_ERROR );
-            log.formatError( err, 'PlaylistController.get' );
-          }
-        }.bind( this ) );
+    return Playlist.findPopulateQ();
   },
 
-  getByIdParam: function( req, res )
+  getById: function( id )
   {
-    console.log( 'PlaylistController.getByIdParam()', req.params.playlist_id );
+    console.log( 'PlaylistController.getById()', id );
 
-    return Playlist.findByIdPopulateQ( req.params.playlist_id )
+    return Playlist.findByIdPopulateQ( id )
         .then( function( playlist )
         {
           if( !playlist )
           {
-            HttpUtil.sendJsonError( res, HttpUtil.status.NOT_FOUND );
+            throw new Error( PlaylistErrorEnum.NOT_FOUND );
             return
           }
 
           res.json( playlist );
-        } )
-        .catch( function( err )
-        {
-          if( err.message.toLowerCase().indexOf( 'break' ) === 0 )
-          {
-            // Simply aborting the promise chain, not an error
-          }
-          else
-          {
-            HttpUtil.sendJsonError( res, HttpUtil.status.INTERNAL_SERVER_ERROR );
-            log.formatError( err, 'PlaylistController.get' );
-          }
-        }.bind( this ) );
+        } );
   },
 
-  create: function( req, res )
+  create: function( name, description, user )
   {
     var playlist = new Playlist();
-    playlist.title = req.body.name;
-    playlist.description = req.body.description;
-    playlist.createdBy = req.user;
+    playlist.name = name;
+    playlist.description = description;
+    playlist.createdBy = user;
 
-    return playlist.saveQ()
-        .then( function( playlist )
-        {
-          res.json( playlist );
-        }.bind( this ) )
-        .catch( function( err )
-        {
-          log.formatError( err, 'PlaylistController.create: save' );
-        }.bind( this ) );
+    return playlist.saveQ();
   },
 
-  addTrack: function( req, res )
+  addTrackByForeignId: function( provider, foreignId )
   {
     // Check if track exists as a Track model
-    this.trackController.findByForeignId( req.params.track_id )
-        .then(function(track){
-          // TODO: if track exists, if not create track
+    this.trackController.getByForeignId( foreignId )
+        .then( function( track )
+        {
+          if( !track )
+            return this.trackController.createByForeignId( provider, foreignId );
+
+          return track;
+        } )
+        .then( function( track )
+        {
+          console.log( 'PlaylistController.addTrackByForeignId()', track );
+          return track;
           // TODO: ensure track doesn't exist in Playlist.tracks, if not in, create PlaylistTrack & add upvote
-        })
+        } );
   },
 
   upVoteTrack: function( req, res )
@@ -106,9 +80,6 @@ _.extend( PlaylistController, {
           // TODO: Search for PlaylistTrack, add vote, send change via socket
         } );
   }
-
-} );
-
-PlaylistController.prototype = {};
+};
 
 module.exports = PlaylistController;

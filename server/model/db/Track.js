@@ -11,26 +11,13 @@ var
 
 function create()
 {
-  var artistSchema = new Schema( {
-    name: { type: String, required: true },
-    provider: { type: String, enum: _.values( ProviderEnum ), index: true },
-    foreignId: { type: String, required: true, index: true }
-  } );
-
-  var albumSchema = new Schema( {
-    name: { type: String, required: true },
-    provider: { type: String, enum: _.values( ProviderEnum ), index: true },
-    foreignId: { type: String, required: true, index: true }
-  } );
-
   var trackSchema = new Schema( {
     name: { type: String, required: true },
-    artist: { type: String, required: true },
     duration: { type: Number, required: true },
-    provider: { type: String, enum: _.values( ProviderEnum ), index: true },
+    provider: { type: String, enum: _.values( ProviderEnum ), index: true, required: true },
     foreignId: { type: String, required: true, unique: true },
-    album: albumSchema,
-    artists: [ artistSchema ],
+    album: { type: Schema.Types.ObjectId, ref: 'Album' },
+    artists: [ { type: Schema.Types.ObjectId, ref: 'Artist' } ],
     createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
     created: { type: Date }
   } );
@@ -44,7 +31,7 @@ function create()
     /**
      * These fields need to be populated by a document from another database model. String of fields names, separated by spaces.
      */
-    POPULATE_FIELDS:       'createdBy',
+    POPULATE_FIELDS: 'createdBy album artists',
 
     /**
      * Use this find method instead of `Playlist.findById()` if you need the returned playlist to be populated
@@ -78,6 +65,29 @@ function create()
       return this.find( conditions, fields, options )
           .populate( this.POPULATE_FIELDS )
           .execQ();
+    },
+
+    setAlbum: function( name, provider, foreignId )
+    {
+      var album = new albumSchema();
+      album.name = name;
+      album.provider = provider;
+      album.foreignId = foreignId;
+
+      return album;
+    },
+
+    addArtist: function( name, provider, foreignId )
+    {
+      var artist = new artistSchema();
+      artist.name = name;
+      artist.provider = provider;
+      artist.foreignId = foreignId;
+
+      this.artist = this.artist || [];
+      this.artist.push( artist );
+
+      return artist;
     }
 
   } );
