@@ -131,6 +131,7 @@ The app requires that you've setup certain environment variables. One way to do 
 * `PORT` is used by the express http server
 * `SPOTIFY_APP_KEY` Points to your Spotify binary key. This links libspotify with a Spotify developer account.
 * `SPOTIFY_USERNAME` and `SPOTIFY_PASSWORD` specify the user account that libspotify will login using. This must be a paid for Spotify Premium account.
+* `MONGO_CONNECT` is the connection string pointing to your mongo instance, ie. `mongodb://username:password@hostname.foo.bar:27017/spotidrop-xxxx`
 
 Start the app like so
 

@@ -15,8 +15,11 @@ log.level = log.LEVEL_DEBUG;
 log.info( '__________________________________________________' );
 log.info( 'Hello! Starting Spotidrop initialization. Please wait...' );
 
+if( !process.env.MONGO_CONNECT )
+  throw new Error( 'Please specify the MONGO_CONNECT env var. ie. MONGO_CONNECT=mongodb://username:password@hostname.foo.bar:27017/spotidrop-xxxx' );
+
 // Promise chain ensures DB is set up first, then app
-MongooseService.connectToAppInstance( 'mongodb://pacino:jdur7sajcmskd8310dk@ds031922.mongolab.com:31922/spotidrop-dev' )
+MongooseService.connectToAppInstance( process.env.MONGO_CONNECT )
   // DB Setup complete. Safe to execute anything that creates Mongoose Models
     .then( function()
     {

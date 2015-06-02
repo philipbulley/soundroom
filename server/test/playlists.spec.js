@@ -1,3 +1,7 @@
+// Define the environment variables required by the app
+process.env.MONGO_CONNECT = 'mongodb://localhost:27017/spotidrop-dev-local';
+process.env.APP_ENV = 'dev-local';
+
 var chai    = require( 'chai' ),
     expect  = chai.expect,
     request = require( 'supertest' ),
@@ -5,11 +9,14 @@ var chai    = require( 'chai' ),
 
 describe( '/api/playlists', function()
 {
-  var dummyData1, dummyData2;
+  var dummyData1, dummyData2, cachedValue;
 
   before( function( done )
   {
+    // Extend timeout to allow for real DB connection to be made
     this.timeout( 10 * 1000 );
+
+    // Listen out for app init completion (including DB connection success)
     index.onInitComplete.addOnce( done );
   } );
 
@@ -64,7 +71,7 @@ describe( '/api/playlists', function()
         } );
   } );
 
-  it( 'should `GET /` returning 1 playlist', function( done )
+  it( 'should `GET /` returning at least 1 playlist', function( done )
   {
     request( index.app )
         .get( '/api/playlists' )
@@ -77,7 +84,8 @@ describe( '/api/playlists', function()
           expect( res.status, 'with 200' ).to.equal( 200 );
 
           // Sequence critical: We're relying on presence of data from previous `POST /` test
-          expect( res.body.length, 'with items' ).to.equal( 1 );
+          expect( res.body.length, 'with items' ).to.be.greaterThan( 1 );
+          cachedValue = res.body.length;
 
           // Verify item's data
           expect( res.body[ 0 ]._id, 'with _id' ).to.exist;
@@ -94,7 +102,7 @@ describe( '/api/playlists', function()
   {
     request( index.app )
         .post( '/api/playlists' )
-        .send( dummyData1 )
+        .send( dummyData2 )
         .end( function( err, res )
         {
           if( err ) throw err;
@@ -112,7 +120,7 @@ describe( '/api/playlists', function()
         } );
   } );
 
-  it( 'should `GET /` returning 2 playlists', function( done )
+  it( 'should `GET /` returning additional playlist', function( done )
   {
     request( index.app )
         .get( '/api/playlists' )
@@ -125,30 +133,35 @@ describe( '/api/playlists', function()
           expect( res.status, 'with 200' ).to.equal( 200 );
 
           // Sequence critical: We're relying on presence of data from previous `POST /` test
-          expect( res.body.length, 'with items' ).to.equal( 2 );
+          expect( res.body.length, 'with items' ).to.equal( cachedValue + 1 );
 
-          // Verify 1st item's data
-          expect( res.body[ 0 ]._id, 'with _id' ).to.exist;
-          expect( res.body[ 0 ].modified, 'with modified' ).to.exist;
-          expect( res.body[ 0 ].tracks, 'with tracks array' ).to.be.an.instanceof( Array );
-          expect( res.body[ 0 ].name, 'with correct name' ).to.equal( dummyData1.name );
-          expect( res.body[ 0 ].description, 'with correct description' ).to.equal( dummyData1.description );
+          // Verify second most recently added item's data
+          expect( res.body[ res.body.length - 2 ]._id, 'first with _id' ).to.exist;
+          expect( res.body[ res.body.length - 2 ].modified, 'first with modified' ).to.exist;
+          expect( res.body[ res.body.length - 2 ].tracks, 'first with tracks array' ).to.be.an.instanceof( Array );
+          expect( res.body[ res.body.length - 2 ].name, 'first with correct name' ).to.equal( dummyData1.name );
+          expect( res.body[ res.body.length - 2 ].description, 'first with correct description' ).to.equal( dummyData1.description );
 
-          // Verify 2nd item's data
-          expect( res.body[ 1 ]._id, 'with _id' ).to.exist;
-          expect( res.body[ 1 ].modified, 'with modified' ).to.exist;
-          expect( res.body[ 1 ].tracks, 'with tracks array' ).to.be.an.instanceof( Array );
-          expect( res.body[ 1 ].name, 'with correct name' ).to.equal( dummyData2.name );
-          expect( res.body[ 1 ].description, 'with correct description' ).to.equal( dummyData2.description );
+          // Verify most recently added item's data
+          expect( res.body[ res.body.length - 1 ]._id, 'second with _id' ).to.exist;
+          expect( res.body[ res.body.length - 1 ].modified, 'second with modified' ).to.exist;
+          expect( res.body[ res.body.length - 1 ].tracks, 'second with tracks array' ).to.be.an.instanceof( Array );
+          expect( res.body[ res.body.length - 1 ].name, 'second with correct name' ).to.equal( dummyData2.name );
+          expect( res.body[ res.body.length - 1 ].description, 'second with correct description' ).to.equal( dummyData2.description );
 
           done();
         } );
   } );
 
-  // TODO: GET /:playlist_id
-  // TODO: PATCH /:playlist_id
-  // TODO: PUT /:playlist_id
-  // TODO: DELETE /:playlist_id
+
+  describe( '/:playlist_id', function()
+  {
+    // TODO: GET /:playlist_id
+    // TODO: PATCH /:playlist_id
+    // TODO: PUT /:playlist_id
+    // TODO: DELETE /:playlist_id
+  } );
+
 
   // TODO: POST /:playlist_id/tracks
 
