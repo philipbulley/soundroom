@@ -14,7 +14,14 @@ function PlaylistRequestController()
   FunctionUtil.bindAllMethods( this );
 }
 
-_.extend( PlaylistRequestController, {} );
+_.extend( PlaylistRequestController, {
+
+  /**
+   * These are Playlist fields that may be updated via HTTP PUT and PATCH requests
+   */
+  ALLOW_UPDATE_FIELDS: [ 'name', 'description' ]
+
+} );
 
 PlaylistRequestController.prototype = {
 
@@ -99,6 +106,34 @@ PlaylistRequestController.prototype = {
           HttpUtil.sendJsonError( res, HttpUtil.status.INTERNAL_SERVER_ERROR );
           log.formatError( err, 'PlaylistRequestController.addTrackByForeignId: save' );
         }.bind( this ) );
+  },
+
+  /**
+   * Update segments / fields. Can be used with PUT or PATCH.
+   * Add fields names to `EpisodeController.ALLOW_UPDATE_FIELDS` to enable
+   * update via this method.
+   *
+   * @returns {Q.Promise}
+   */
+  updateByIdParam: function( req, res )
+  {
+    console.log( 'PlaylistRequestController.updateByIdParam()', req.params.playlist_id, req.body );
+
+    var updateObject = _.pick( req.body, PlaylistRequestController.ALLOW_UPDATE_FIELDS );
+
+    return this.playlistController.updateById( req.params.playlist_id, updateObject )
+        .then( function( playlist )
+        {
+          if( !playlist )
+            return HttpUtil.sendJsonError( res, HttpUtil.status.NOT_FOUND );
+
+          res.json( playlist );
+        }.bind( this ) )
+        .catch( function( err )
+        {
+          HttpUtil.sendJsonError( res, HttpUtil.status.INTERNAL_SERVER_ERROR );
+          log.formatError( err, 'PlaylistRequestController.updateByIdParam' );
+        }.bind( this ) )
   }
 
 };

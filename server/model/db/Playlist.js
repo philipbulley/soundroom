@@ -26,14 +26,29 @@ function create()
 
   playlistSchema.plugin( Modified );
 
-  _.extend( playlistSchema.methods, {} );
+  _.extend( playlistSchema.methods, {
+
+    /**
+     * Use this save method instead of `episode.saveQ()` if you need the returned episode to be populated
+     * @returns {Q.Promise}
+     */
+    savePopulateQ: function()
+    {
+      return this.saveQ()
+          .then( function( playlist )
+          {
+            return playlist.populateQ( playlistSchema.statics.POPULATE_FIELDS )
+          } );
+    }
+
+  } );
 
   _.extend( playlistSchema.statics, {
 
     /**
      * These fields need to be populated by a document from another database model. String of fields names, separated by spaces.
      */
-    POPULATE_FIELDS:       'createdBy',
+    POPULATE_FIELDS: 'createdBy',
 
     /**
      * Use this find method instead of `Playlist.findById()` if you need the returned playlist to be populated

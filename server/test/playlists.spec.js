@@ -36,7 +36,7 @@ describe( '/api/playlists', function()
     }
   } );
 
-  it( 'should `GET /` returning an empty playlist', function( done )
+  it( 'should `GET /` returning any existing playlists', function( done )
   {
     request( index.app )
         .get( '/api/playlists' )
@@ -88,7 +88,7 @@ describe( '/api/playlists', function()
           expect( res.body, 'with array' ).to.be.an( 'array' );
 
           // Sequence critical: We're relying on presence of data from previous `POST /` test
-          expect( res.body.length, 'with items' ).to.be.greaterThan( 1 );
+          expect( res.body.length, 'with items' ).to.be.at.least( 1 );
 
           // For use in a later test
           responseLength = res.body.length;
@@ -166,6 +166,11 @@ describe( '/api/playlists', function()
 
   describe( '/:playlist_id', function()
   {
+    var myPlaylist,
+        updatedName         = 'This is my updated title',
+        updatedDescription1 = 'This is my updated description',
+        updatedDescription2 = 'This description has been updated again!';
+
     it( 'should `GET /:playlist_id` correct playlist', function( done )
     {
       request( index.app )
@@ -185,13 +190,75 @@ describe( '/api/playlists', function()
             expect( res.body.name, 'with correct name' ).to.equal( dummyData1.name );
             expect( res.body.description, 'with correct description' ).to.equal( dummyData1.description );
 
+            // For use in a later test
+            myPlaylist = res.body;
+
             done();
           } );
     } );
 
+    it( 'should `PUT /:playlist_id` and return updated playlist', function( done )
+    {
+      // Change a playlist values, prep for PUT
+      myPlaylist.name = updatedName;
+      myPlaylist.description = updatedDescription1;
 
-    // TODO: PATCH /:playlist_id
-    // TODO: PUT /:playlist_id
+      request( index.app )
+          .put( '/api/playlists/' + playlistId )
+          .send( myPlaylist )
+          .end( function( err, res )
+          {
+            if( err ) throw err;
+
+            expect( res.headers[ 'content-type' ], 'with json' ).to.contain( 'json' );
+            expect( res.status, 'with 200' ).to.equal( 200 );
+            expect( res.body, 'with object' ).to.be.an( 'object' );
+
+            expect( res.body._id, 'with _id' ).to.exist;
+            expect( res.body._id, 'with correct _id' ).to.equal( playlistId );
+            expect( res.body._id, 'with correct _id' ).to.equal( myPlaylist._id );
+            expect( res.body.modified, 'with modified' ).to.exist;
+            expect( res.body.modified, 'with updated modified' ).to.be.greaterThan( myPlaylist.modified );
+            expect( res.body.tracks, 'with tracks array' ).to.be.an.instanceof( Array );
+            expect( res.body.name, 'with correct name' ).to.equal( updatedName );
+            expect( res.body.description, 'with correct description' ).to.equal( updatedDescription1 );
+
+            // For use in a later test
+            myPlaylist = res.body;
+
+            done();
+          } );
+    } );
+
+    it( 'should `PATCH /:playlist_id` and return updated playlist', function( done )
+    {
+      // Specify a single playlist value for PATCH
+      var myPlaylistPatch = { description: updatedDescription2 };
+
+      request( index.app )
+          .put( '/api/playlists/' + playlistId )
+          .send( myPlaylistPatch )
+          .end( function( err, res )
+          {
+            if( err ) throw err;
+
+            expect( res.headers[ 'content-type' ], 'with json' ).to.contain( 'json' );
+            expect( res.status, 'with 200' ).to.equal( 200 );
+            expect( res.body, 'with object' ).to.be.an( 'object' );
+
+            expect( res.body._id, 'with _id' ).to.exist;
+            expect( res.body._id, 'with correct _id' ).to.equal( playlistId );
+            expect( res.body._id, 'with correct _id' ).to.equal( myPlaylist._id );
+            expect( res.body.modified, 'with modified' ).to.exist;
+            expect( res.body.modified, 'with updated modified' ).to.be.greaterThan( myPlaylist.modified );
+            expect( res.body.tracks, 'with tracks array' ).to.be.an.instanceof( Array );
+            expect( res.body.name, 'with correct name' ).to.equal( updatedName );
+            expect( res.body.description, 'with correct description' ).to.equal( updatedDescription2 );
+
+            done();
+          } );
+    } );
+
     // TODO: DELETE /:playlist_id
   } );
 

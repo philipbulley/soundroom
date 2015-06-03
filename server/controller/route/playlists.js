@@ -28,15 +28,33 @@ router.route( '/:playlist_id' )
     .get( /*AuthController.verify(),*/
     function( req, res )
     {
-      console.log( 'GET /playlists/' + req.params.playlist_id );
+      console.log( 'GET /playlists/:playlist_id' + req.params.playlist_id );
 
       new PlaylistRequestController()
           .getByIdParam( req, res )
           .done();
-    } );
+    } )
 
-// TODO: PATCH /:playlist_id
-// TODO: PUT /:playlist_id
+    .put( /*AuthController.verify(),*/
+    function( req, res )
+    {
+      console.log( 'PUT /playlists/:playlist_id', req.params.playlist_id );
+
+      new PlaylistRequestController()
+          .updateByIdParam( req, res )
+          .done();
+    } )
+
+    .patch( /*AuthController.verify(),*/
+    function( req, res )
+    {
+      console.log( 'PATCH /playlists/:playlist_id', req.params.playlist_id );
+
+      new PlaylistRequestController()
+          .updateByIdParam( req, res )
+          .done();
+    } )
+
 // TODO: DELETE /:playlist_id
 
 router.route( '/:playlist_id/tracks' )

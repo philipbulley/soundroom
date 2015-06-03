@@ -79,6 +79,30 @@ PlaylistController.prototype = {
         {
           // TODO: Search for PlaylistTrack, add vote, send change via socket
         } );
+  },
+
+  /**
+   * Updates the playlist with id with the key/values in the updateObj
+   *
+   * @param id            The id of the playlist
+   * @param updateObj     These should be pre-sanitized before passing
+   */
+  updateById: function( id, updateObj )
+  {
+    return Playlist.findByIdPopulateQ( id )
+        .then( function( playlist )
+        {
+          // Not sanitizing update keys, this should be done before
+          for( var key in updateObj )
+            playlist[ key ] = updateObj[ key ];
+
+          return playlist.savePopulateQ();
+        } )
+        .catch( function( err )
+        {
+          log.formatError( err, 'PlaylistController.updateByIdParam' );
+          throw err;
+        }.bind( this ) );
   }
 };
 
