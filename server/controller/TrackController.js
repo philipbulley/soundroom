@@ -4,6 +4,7 @@ var _                  = require( 'lodash' ),
     log                = require( './../util/LogUtil' ),
     Track              = require( './../model/db/Track' ),
     ProviderEnum       = require( './../model/enum/ProviderEnum' ),
+    TrackErrorEnum     = require( './../model/enum/TrackErrorEnum' ),
     SpotifyDataService = require( './../service/SpotifyDataService' ),
     HttpUtil           = require( './../util/HttpUtil' ),
     Config             = require( './../model/Config' );
@@ -39,6 +40,10 @@ TrackController.prototype = {
 
   getByForeignId: function( foreignId )
   {
+    // TODO: Implement and test invalid id
+    //if( !Playlist.isValidId( id ) )
+    //  return Q.reject( new Error( PlaylistErrorEnum.INVALID_ID ) );
+
     return Track.findPopulateQ( { foreignId: foreignId } )
         .then( function( track )
         {

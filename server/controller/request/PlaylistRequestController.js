@@ -134,6 +134,34 @@ PlaylistRequestController.prototype = {
           HttpUtil.sendJsonError( res, HttpUtil.status.INTERNAL_SERVER_ERROR );
           log.formatError( err, 'PlaylistRequestController.updateByIdParam' );
         }.bind( this ) )
+  },
+
+  deleteByIdParam: function( req, res )
+  {
+    console.log( 'PlaylistRequestController.deleteByIdParam()', req.params.playlist_id, req.body );
+
+    return this.playlistController.deleteById( req.params.playlist_id )
+        .then( function( playlist )
+        {
+          res.sendStatus( HttpUtil.status.NO_CONTENT );
+        }.bind( this ) )
+        .catch( function( err )
+        {
+          switch( err.message )
+          {
+            case PlaylistErrorEnum.INVALID_ID:
+              HttpUtil.sendJsonError( res, HttpUtil.status.BAD_REQUEST );
+              break;
+
+            case PlaylistErrorEnum.NOT_FOUND:
+              HttpUtil.sendJsonError( res, HttpUtil.status.NOT_FOUND );
+              break;
+
+            default:
+              HttpUtil.sendJsonError( res, HttpUtil.status.INTERNAL_SERVER_ERROR );
+              log.formatError( err, 'PlaylistRequestController.deleteByIdParam' );
+          }
+        }.bind( this ) )
   }
 
 };

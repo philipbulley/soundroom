@@ -55,6 +55,16 @@ router.route( '/:playlist_id' )
           .done();
     } )
 
+    .delete( /*AuthController.verify(),*/
+    function( req, res )
+    {
+      console.log( 'DELETE /playlists/:playlist_id', req.params.playlist_id );
+
+      new PlaylistRequestController()
+          .deleteByIdParam( req, res )
+          .done();
+    } );
+
 // TODO: DELETE /:playlist_id
 
 router.route( '/:playlist_id/tracks' )

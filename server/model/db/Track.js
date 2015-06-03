@@ -34,6 +34,16 @@ function create()
     POPULATE_FIELDS: 'createdBy album artists',
 
     /**
+     * Checks if the format of the ID is valid
+     *
+     * @param id
+     */
+    isValidId: function( id )
+    {
+      return mongoose.Types.ObjectId.isValid( id );
+    },
+
+    /**
      * Use this find method instead of `Playlist.findById()` if you need the returned playlist to be populated
      * with external documents.
      *
@@ -44,6 +54,10 @@ function create()
      */
     findByIdPopulateQ: function( id, fields, options )
     {
+      // TODO: Implement and test invalid id
+      //if( !Track.isValidId( id ) )
+      //  return Q.reject( new Error( TrackErrorEnum.INVALID_ID ) );
+
       return this.findById( id, fields, options )
           .populate( this.POPULATE_FIELDS )
           .execQ();

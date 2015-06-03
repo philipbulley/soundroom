@@ -1,3 +1,4 @@
+// TODO: Create and extend DocumentErrorEnum
 var UserErrorEnum = {
 
   ALREADY_EXISTS: 'ALREADY_EXISTS',

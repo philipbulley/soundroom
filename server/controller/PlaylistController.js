@@ -55,6 +55,11 @@ PlaylistController.prototype = {
 
   addTrackByForeignId: function( provider, foreignId )
   {
+    // TODO: Implement and test invalid id
+    //if( !Playlist.isValidId( id ) )
+    //  return Q.reject( new Error( PlaylistErrorEnum.INVALID_ID ) );
+
+
     // Check if track exists as a Track model
     this.trackController.getByForeignId( foreignId )
         .then( function( track )
@@ -100,7 +105,35 @@ PlaylistController.prototype = {
         } )
         .catch( function( err )
         {
-          log.formatError( err, 'PlaylistController.updateByIdParam' );
+          if( err.message !== PlaylistErrorEnum.NOT_FOUND )
+            log.formatError( err, 'PlaylistController.updateByIdParam' );
+
+          // Rethrow
+          throw err;
+        }.bind( this ) );
+  },
+
+  deleteById: function( id )
+  {
+    log.debug( 'PlaylistController.deleteByIdParam', id );
+
+    if( !Playlist.isValidId( id ) )
+      return Q.reject( new Error( PlaylistErrorEnum.INVALID_ID ) );
+
+    return Playlist.findByIdAndRemoveQ( id )
+        .then( function( playlist )
+        {
+          if( !playlist )
+            throw new Error( PlaylistErrorEnum.NOT_FOUND );
+          else
+            return playlist;
+        } )
+        .catch( function( err )
+        {
+          if( err.message !== PlaylistErrorEnum.NOT_FOUND )
+            log.formatError( err, 'PlaylistController.deleteByIdParam' );
+
+          // Rethrow
           throw err;
         }.bind( this ) );
   }

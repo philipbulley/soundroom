@@ -261,7 +261,50 @@ describe( '/api/playlists', function()
           } );
     } );
 
-    // TODO: DELETE /:playlist_id
+    it( 'should `DELETE /:playlist_id` and return empty response', function( done )
+    {
+      console.log( 'Attempt to delete /api/playlists/' + playlistId );
+      request( index.app )
+          .delete( '/api/playlists/' + playlistId )
+          .end( function( err, res )
+          {
+            if( err ) throw err;
+
+            expect( res.headers[ 'content-type' ], 'with no content-type' ).to.be.undefined;
+            expect( res.status, 'with 204' ).to.equal( 204 );
+            expect( res.body, 'with empty body' ).to.be.empty;
+
+            done();
+          } );
+    } );
+
+    it( 'should `DELETE /:playlist_id` with invalid format id and return Bad Request status', function( done )
+    {
+      request( index.app )
+          .delete( '/api/playlists/foo-bar' )
+          .end( function( err, res )
+          {
+            // Note: Erroneous response is passed as first err arg
+            expect( err.status, 'with 400' ).to.equal( 400 );
+            expect( err.body, 'with empty body' ).to.be.empty;
+
+            done();
+          } );
+    } );
+
+    it( 'should `DELETE /:playlist_id` with non-existent id and return Not Found status', function( done )
+    {
+      request( index.app )
+          .delete( '/api/playlists/556f81878e00000000000000' )
+          .end( function( err, res )
+          {
+            // Note: Erroneous response is passed as first err arg
+            expect( err.status, 'with 400' ).to.equal( 404 );
+            expect( err.body, 'with empty body' ).to.be.empty;
+
+            done();
+          } );
+    } );
   } );
 
 

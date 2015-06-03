@@ -1,5 +1,5 @@
 // TODO: Create and extend DocumentErrorEnum
-var PlaylistErrorEnum = {
+var TrackErrorEnum = {
 
   ALREADY_EXISTS: 'ALREADY_EXISTS',
 
@@ -9,4 +9,4 @@ var PlaylistErrorEnum = {
 
 };
 
-module.exports = PlaylistErrorEnum;
+module.exports = TrackErrorEnum;
