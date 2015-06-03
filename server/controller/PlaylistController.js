@@ -39,7 +39,7 @@ PlaylistController.prototype = {
             return
           }
 
-          res.json( playlist );
+          return playlist;
         } );
   },
 
