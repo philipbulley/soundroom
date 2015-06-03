@@ -94,11 +94,13 @@ describe( '/api/playlists', function()
           responseLength = res.body.length;
 
           // Verify item's data
-          expect( res.body[ 0 ]._id, 'with _id' ).to.exist;
-          expect( res.body[ 0 ].modified, 'with modified' ).to.exist;
-          expect( res.body[ 0 ].tracks, 'with tracks array' ).to.be.an.instanceof( Array );
-          expect( res.body[ 0 ].name, 'with correct name' ).to.equal( dummyData1.name );
-          expect( res.body[ 0 ].description, 'with correct description' ).to.equal( dummyData1.description );
+          expect( res.body[ res.body.length - 1 ]._id, 'with _id' ).to.exist;
+          expect( res.body[ res.body.length - 1 ].modified, 'with modified' ).to.exist;
+          expect( res.body[ res.body.length - 1 ].tracks, 'with tracks array' ).to.be.an.instanceof( Array );
+          expect( res.body[ res.body.length - 1 ].name, 'with correct name' ).to.equal( dummyData1.name );
+          expect( res.body[ res.body.length - 1 ].description, 'with correct description' ).to.equal( dummyData1.description );
+
+          console.log( res.body );
 
           done();
         } );
