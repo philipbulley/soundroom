@@ -55,12 +55,20 @@ PlaylistRequestController.prototype = {
         }.bind( this ) )
         .catch( function( err )
         {
-          if( err.message === PlaylistErrorEnum.NOT_FOUND )
-            HttpUtil.sendJsonError( res, HttpUtil.status.NOT_FOUND );
-          else
-            HttpUtil.sendJsonError( res, HttpUtil.status.INTERNAL_SERVER_ERROR );
+          switch( err.message )
+          {
+            case PlaylistErrorEnum.INVALID_ID:
+              HttpUtil.sendJsonError( res, HttpUtil.status.BAD_REQUEST );
+              break;
 
-          log.formatError( err, 'PlaylistRequestController.get' );
+            case PlaylistErrorEnum.NOT_FOUND:
+              HttpUtil.sendJsonError( res, HttpUtil.status.NOT_FOUND );
+              break;
+
+            default:
+              HttpUtil.sendJsonError( res, HttpUtil.status.INTERNAL_SERVER_ERROR );
+              log.formatError( err, 'PlaylistRequestController.getByIdParam' );
+          }
         }.bind( this ) );
   },
 
@@ -131,8 +139,20 @@ PlaylistRequestController.prototype = {
         }.bind( this ) )
         .catch( function( err )
         {
-          HttpUtil.sendJsonError( res, HttpUtil.status.INTERNAL_SERVER_ERROR );
-          log.formatError( err, 'PlaylistRequestController.updateByIdParam' );
+          switch( err.message )
+          {
+            case PlaylistErrorEnum.INVALID_ID:
+              HttpUtil.sendJsonError( res, HttpUtil.status.BAD_REQUEST );
+              break;
+
+            case PlaylistErrorEnum.NOT_FOUND:
+              HttpUtil.sendJsonError( res, HttpUtil.status.NOT_FOUND );
+              break;
+
+            default:
+              HttpUtil.sendJsonError( res, HttpUtil.status.INTERNAL_SERVER_ERROR );
+              log.formatError( err, 'PlaylistRequestController.updateByIdParam' );
+          }
         }.bind( this ) )
   },
 

@@ -1,11 +1,12 @@
 var
-    _            = require( 'lodash' ),
-    mongoose     = require( 'mongoose-q' )(),
-    Q            = require( 'q' ),
-    log          = require( './../../util/LogUtil' ),
-    MongooseUtil = require( './../../util/MongooseUtil' ),
-    Modified     = require( './plugin/Modified' ),
-    Schema       = mongoose.Schema;
+    _                 = require( 'lodash' ),
+    mongoose          = require( 'mongoose-q' )(),
+    Q                 = require( 'q' ),
+    log               = require( './../../util/LogUtil' ),
+    MongooseUtil      = require( './../../util/MongooseUtil' ),
+    Modified          = require( './plugin/Modified' ),
+    Schema            = mongoose.Schema,
+    PlaylistErrorEnum = require( './../enum/PlaylistErrorEnum' );
 
 
 function create()
@@ -71,9 +72,8 @@ function create()
      */
     findByIdPopulateQ: function( id, fields, options )
     {
-      // TODO: Implement and test invalid id
-      //if( !Playlist.isValidId( id ) )
-      //  return Q.reject( new Error( PlaylistErrorEnum.INVALID_ID ) );
+      if( !this.isValidId( id ) )
+        return Q.reject( new Error( PlaylistErrorEnum.INVALID_ID ) );
 
       return this.findById( id, fields, options )
           .populate( this.POPULATE_FIELDS )
@@ -91,7 +91,7 @@ function create()
      */
     findPopulateQ: function( conditions, fields, options )
     {
-      log.debug( 'Episode.findPopulateQ:', conditions, fields, options );
+      //log.debug( 'Playlist.findPopulateQ:', conditions, fields, options );
 
       return this.find( conditions, fields, options )
           .populate( this.POPULATE_FIELDS )

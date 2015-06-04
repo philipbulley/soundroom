@@ -34,13 +34,18 @@ PlaylistController.prototype = {
         .then( function( playlist )
         {
           if( !playlist )
-          {
             throw new Error( PlaylistErrorEnum.NOT_FOUND );
-            return
-          }
 
           return playlist;
-        } );
+        } )
+        .catch( function( err )
+        {
+          if( err.message !== PlaylistErrorEnum.INVALID_ID && err.message !== PlaylistErrorEnum.NOT_FOUND )
+            log.formatError( err, 'PlaylistController.getById' );
+
+          // Rethrow
+          throw err;
+        }.bind( this ) );
   },
 
   create: function( name, description, user )
@@ -97,6 +102,9 @@ PlaylistController.prototype = {
     return Playlist.findByIdPopulateQ( id )
         .then( function( playlist )
         {
+          if( !playlist )
+            throw new Error( PlaylistErrorEnum.NOT_FOUND );
+
           // Not sanitizing update keys, this should be done before
           for( var key in updateObj )
             playlist[ key ] = updateObj[ key ];
@@ -105,8 +113,8 @@ PlaylistController.prototype = {
         } )
         .catch( function( err )
         {
-          if( err.message !== PlaylistErrorEnum.NOT_FOUND )
-            log.formatError( err, 'PlaylistController.updateByIdParam' );
+          if( err.message !== PlaylistErrorEnum.INVALID_ID && err.message !== PlaylistErrorEnum.NOT_FOUND )
+            log.formatError( err, 'PlaylistController.updateById' );
 
           // Rethrow
           throw err;
@@ -131,7 +139,7 @@ PlaylistController.prototype = {
         .catch( function( err )
         {
           if( err.message !== PlaylistErrorEnum.NOT_FOUND )
-            log.formatError( err, 'PlaylistController.deleteByIdParam' );
+            log.formatError( err, 'PlaylistController.updateById' );
 
           // Rethrow
           throw err;

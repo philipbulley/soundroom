@@ -100,8 +100,6 @@ describe( '/api/playlists', function()
           expect( res.body[ res.body.length - 1 ].name, 'with correct name' ).to.equal( dummyData1.name );
           expect( res.body[ res.body.length - 1 ].description, 'with correct description' ).to.equal( dummyData1.description );
 
-          console.log( res.body );
-
           done();
         } );
   } );
@@ -169,141 +167,249 @@ describe( '/api/playlists', function()
   describe( '/:playlist_id', function()
   {
     var myPlaylist,
-        updatedName         = 'This is my updated title',
-        updatedDescription1 = 'This is my updated description',
-        updatedDescription2 = 'This description has been updated again!';
+        updatedName             = 'This is my updated title',
+        updatedDescription1     = 'This is my updated description',
+        updatedDescription2     = 'This description has been updated again!',
+        playlistIdNonExist      = '556f81878e00000000000000',
+        playlistIdInvalidFormat = 'foo-bar';
 
-    it( 'should `GET /:playlist_id` correct playlist', function( done )
+    describe( 'GET', function()
     {
-      request( index.app )
-          .get( '/api/playlists/' + playlistId )
-          .end( function( err, res )
-          {
-            if( err ) throw err;
+      it( 'should return correct playlist', function( done )
+      {
+        request( index.app )
+            .get( '/api/playlists/' + playlistId )
+            .end( function( err, res )
+            {
+              if( err ) throw err;
 
-            expect( res.headers[ 'content-type' ], 'with json' ).to.contain( 'json' );
-            expect( res.status, 'with 200' ).to.equal( 200 );
-            expect( res.body, 'with object' ).to.be.an( 'object' );
+              expect( res.headers[ 'content-type' ], 'with json' ).to.contain( 'json' );
+              expect( res.status, 'with 200' ).to.equal( 200 );
+              expect( res.body, 'with object' ).to.be.an( 'object' );
 
-            expect( res.body._id, 'with _id' ).to.exist;
-            expect( res.body._id, 'with correct _id' ).to.equal( playlistId );
-            expect( res.body.modified, 'with modified' ).to.exist;
-            expect( res.body.tracks, 'with tracks array' ).to.be.an.instanceof( Array );
-            expect( res.body.name, 'with correct name' ).to.equal( dummyData1.name );
-            expect( res.body.description, 'with correct description' ).to.equal( dummyData1.description );
+              expect( res.body._id, 'with _id' ).to.exist;
+              expect( res.body._id, 'with correct _id' ).to.equal( playlistId );
+              expect( res.body.modified, 'with modified' ).to.exist;
+              expect( res.body.tracks, 'with tracks array' ).to.be.an.instanceof( Array );
+              expect( res.body.name, 'with correct name' ).to.equal( dummyData1.name );
+              expect( res.body.description, 'with correct description' ).to.equal( dummyData1.description );
 
-            // For use in a later test
-            myPlaylist = res.body;
+              // For use in a later test
+              myPlaylist = res.body;
 
-            done();
-          } );
+              done();
+            } );
+      } );
+
+      it( 'should receive invalid format id and return Bad Request status', function( done )
+      {
+        request( index.app )
+            .get( '/api/playlists/' + playlistIdInvalidFormat )
+            .end( function( err, res )
+            {
+              // Note: Erroneous response is passed as first err arg
+              expect( err.status, 'with 400' ).to.equal( 400 );
+              expect( err.body, 'with empty body' ).to.be.empty;
+
+              done();
+            } );
+      } );
+
+      it( 'should receive non-existent id and return Not Found status', function( done )
+      {
+        request( index.app )
+            .get( '/api/playlists/' + playlistIdNonExist )
+            .end( function( err, res )
+            {
+              // Note: Erroneous response is passed as first err arg
+              expect( err.status, 'with 400' ).to.equal( 404 );
+              expect( err.body, 'with empty body' ).to.be.empty;
+
+              done();
+            } );
+      } );
     } );
 
-    it( 'should `PUT /:playlist_id` and return updated playlist', function( done )
+    describe( 'PUT', function()
     {
-      // Change a playlist values, prep for PUT
-      myPlaylist.name = updatedName;
-      myPlaylist.description = updatedDescription1;
+      it( 'should receive Playlist entity and return updated playlist', function( done )
+      {
+        // Change a playlist values, prep for PUT
+        myPlaylist.name = updatedName;
+        myPlaylist.description = updatedDescription1;
 
-      request( index.app )
-          .put( '/api/playlists/' + playlistId )
-          .send( myPlaylist )
-          .end( function( err, res )
-          {
-            if( err ) throw err;
+        request( index.app )
+            .put( '/api/playlists/' + playlistId )
+            .send( myPlaylist )
+            .end( function( err, res )
+            {
+              if( err ) throw err;
 
-            expect( res.headers[ 'content-type' ], 'with json' ).to.contain( 'json' );
-            expect( res.status, 'with 200' ).to.equal( 200 );
-            expect( res.body, 'with object' ).to.be.an( 'object' );
+              expect( res.headers[ 'content-type' ], 'with json' ).to.contain( 'json' );
+              expect( res.status, 'with 200' ).to.equal( 200 );
+              expect( res.body, 'with object' ).to.be.an( 'object' );
 
-            expect( res.body._id, 'with _id' ).to.exist;
-            expect( res.body._id, 'with correct _id' ).to.equal( playlistId );
-            expect( res.body._id, 'with correct _id' ).to.equal( myPlaylist._id );
-            expect( res.body.modified, 'with modified' ).to.exist;
-            expect( res.body.modified, 'with updated modified' ).to.be.greaterThan( myPlaylist.modified );
-            expect( res.body.tracks, 'with tracks array' ).to.be.an.instanceof( Array );
-            expect( res.body.name, 'with correct name' ).to.equal( updatedName );
-            expect( res.body.description, 'with correct description' ).to.equal( updatedDescription1 );
+              expect( res.body._id, 'with _id' ).to.exist;
+              expect( res.body._id, 'with correct _id' ).to.equal( playlistId );
+              expect( res.body._id, 'with correct _id' ).to.equal( myPlaylist._id );
+              expect( res.body.modified, 'with modified' ).to.exist;
+              expect( res.body.modified, 'with updated modified' ).to.be.greaterThan( myPlaylist.modified );
+              expect( res.body.tracks, 'with tracks array' ).to.be.an.instanceof( Array );
+              expect( res.body.name, 'with correct name' ).to.equal( updatedName );
+              expect( res.body.description, 'with correct description' ).to.equal( updatedDescription1 );
 
-            // For use in a later test
-            myPlaylist = res.body;
+              // For use in a later test
+              myPlaylist = res.body;
 
-            done();
-          } );
+              done();
+            } );
+      } );
+
+      it( 'should receive invalid format id and return Bad Request status', function( done )
+      {
+        request( index.app )
+            .put( '/api/playlists/' + playlistIdInvalidFormat )
+            .send( myPlaylist )
+            .end( function( err, res )
+            {
+              // Note: Erroneous response is passed as first err arg
+              expect( err.status, 'with 400' ).to.equal( 400 );
+              expect( err.body, 'with empty body' ).to.be.empty;
+
+              done();
+            } );
+      } );
+
+      it( 'should receive non-existent id and return Not Found status', function( done )
+      {
+        request( index.app )
+            .put( '/api/playlists/' + playlistIdNonExist )
+            .send( myPlaylist )
+            .end( function( err, res )
+            {
+              // Note: Erroneous response is passed as first err arg
+              expect( err.status, 'with 400' ).to.equal( 404 );
+              expect( err.body, 'with empty body' ).to.be.empty;
+
+              done();
+            } );
+      } );
     } );
 
-    it( 'should `PATCH /:playlist_id` and return updated playlist', function( done )
+    describe( 'PATCH', function()
     {
-      // Specify a single playlist value for PATCH
-      var myPlaylistPatch = { description: updatedDescription2 };
+      it( 'should receive params and return updated playlist', function( done )
+      {
+        // Specify a single playlist value for PATCH
+        var myPlaylistPatch = { description: updatedDescription2 };
 
-      request( index.app )
-          .put( '/api/playlists/' + playlistId )
-          .send( myPlaylistPatch )
-          .end( function( err, res )
-          {
-            if( err ) throw err;
+        request( index.app )
+            .put( '/api/playlists/' + playlistId )
+            .send( myPlaylistPatch )
+            .end( function( err, res )
+            {
+              if( err ) throw err;
 
-            expect( res.headers[ 'content-type' ], 'with json' ).to.contain( 'json' );
-            expect( res.status, 'with 200' ).to.equal( 200 );
-            expect( res.body, 'with object' ).to.be.an( 'object' );
+              expect( res.headers[ 'content-type' ], 'with json' ).to.contain( 'json' );
+              expect( res.status, 'with 200' ).to.equal( 200 );
+              expect( res.body, 'with object' ).to.be.an( 'object' );
 
-            expect( res.body._id, 'with _id' ).to.exist;
-            expect( res.body._id, 'with correct _id' ).to.equal( playlistId );
-            expect( res.body._id, 'with correct _id' ).to.equal( myPlaylist._id );
-            expect( res.body.modified, 'with modified' ).to.exist;
-            expect( res.body.modified, 'with updated modified' ).to.be.greaterThan( myPlaylist.modified );
-            expect( res.body.tracks, 'with tracks array' ).to.be.an.instanceof( Array );
-            expect( res.body.name, 'with correct name' ).to.equal( updatedName );
-            expect( res.body.description, 'with correct description' ).to.equal( updatedDescription2 );
+              expect( res.body._id, 'with _id' ).to.exist;
+              expect( res.body._id, 'with correct _id' ).to.equal( playlistId );
+              expect( res.body._id, 'with correct _id' ).to.equal( myPlaylist._id );
+              expect( res.body.modified, 'with modified' ).to.exist;
+              expect( res.body.modified, 'with updated modified' ).to.be.greaterThan( myPlaylist.modified );
+              expect( res.body.tracks, 'with tracks array' ).to.be.an.instanceof( Array );
+              expect( res.body.name, 'with correct name' ).to.equal( updatedName );
+              expect( res.body.description, 'with correct description' ).to.equal( updatedDescription2 );
 
-            done();
-          } );
+              done();
+            } );
+      } );
+
+      it( 'should receive invalid format id and return Bad Request status', function( done )
+      {
+        // Specify a single playlist value for PATCH
+        var myPlaylistPatch = { description: updatedDescription2 };
+
+        request( index.app )
+            .put( '/api/playlists/' + playlistIdInvalidFormat )
+            .send( myPlaylistPatch )
+            .end( function( err, res )
+            {
+              // Note: Erroneous response is passed as first err arg
+              expect( err.status, 'with 400' ).to.equal( 400 );
+              expect( err.body, 'with empty body' ).to.be.empty;
+
+              done();
+            } );
+      } );
+
+      it( 'should receive non-existent id and return Not Found status', function( done )
+      {
+        // Specify a single playlist value for PATCH
+        var myPlaylistPatch = { description: updatedDescription2 };
+
+        request( index.app )
+            .put( '/api/playlists/' + playlistIdNonExist )
+            .send( myPlaylistPatch )
+            .end( function( err, res )
+            {
+              // Note: Erroneous response is passed as first err arg
+              expect( err.status, 'with 400' ).to.equal( 404 );
+              expect( err.body, 'with empty body' ).to.be.empty;
+
+              done();
+            } );
+      } );
     } );
 
-    it( 'should `DELETE /:playlist_id` and return empty response', function( done )
+    describe( 'DELETE', function()
     {
-      console.log( 'Attempt to delete /api/playlists/' + playlistId );
-      request( index.app )
-          .delete( '/api/playlists/' + playlistId )
-          .end( function( err, res )
-          {
-            if( err ) throw err;
+      it( 'should return empty response', function( done )
+      {
+        console.log( 'Attempt to delete /api/playlists/' + playlistId );
+        request( index.app )
+            .delete( '/api/playlists/' + playlistId )
+            .end( function( err, res )
+            {
+              if( err ) throw err;
 
-            expect( res.headers[ 'content-type' ], 'with no content-type' ).to.be.undefined;
-            expect( res.status, 'with 204' ).to.equal( 204 );
-            expect( res.body, 'with empty body' ).to.be.empty;
+              expect( res.headers[ 'content-type' ], 'with no content-type' ).to.be.undefined;
+              expect( res.status, 'with 204' ).to.equal( 204 );
+              expect( res.body, 'with empty body' ).to.be.empty;
 
-            done();
-          } );
-    } );
+              done();
+            } );
+      } );
 
-    it( 'should `DELETE /:playlist_id` with invalid format id and return Bad Request status', function( done )
-    {
-      request( index.app )
-          .delete( '/api/playlists/foo-bar' )
-          .end( function( err, res )
-          {
-            // Note: Erroneous response is passed as first err arg
-            expect( err.status, 'with 400' ).to.equal( 400 );
-            expect( err.body, 'with empty body' ).to.be.empty;
+      it( 'should receive invalid format id and return Bad Request status', function( done )
+      {
+        request( index.app )
+            .delete( '/api/playlists/' + playlistIdInvalidFormat )
+            .end( function( err, res )
+            {
+              // Note: Erroneous response is passed as first err arg
+              expect( err.status, 'with 400' ).to.equal( 400 );
+              expect( err.body, 'with empty body' ).to.be.empty;
 
-            done();
-          } );
-    } );
+              done();
+            } );
+      } );
 
-    it( 'should `DELETE /:playlist_id` with non-existent id and return Not Found status', function( done )
-    {
-      request( index.app )
-          .delete( '/api/playlists/556f81878e00000000000000' )
-          .end( function( err, res )
-          {
-            // Note: Erroneous response is passed as first err arg
-            expect( err.status, 'with 400' ).to.equal( 404 );
-            expect( err.body, 'with empty body' ).to.be.empty;
+      it( 'should receive non-existent id and return Not Found status', function( done )
+      {
+        request( index.app )
+            .delete( '/api/playlists/' + playlistIdNonExist )
+            .end( function( err, res )
+            {
+              // Note: Erroneous response is passed as first err arg
+              expect( err.status, 'with 400' ).to.equal( 404 );
+              expect( err.body, 'with empty body' ).to.be.empty;
 
-            done();
-          } );
+              done();
+            } );
+      } );
     } );
   } );
 
