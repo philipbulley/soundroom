@@ -66,7 +66,7 @@ PlaylistController.prototype = {
    */
   addTrackByForeignId: function( provider, foreignId )
   {
-    // Check if track already exists as a Track model (ie. a user has added it before)
+    // Check if track already exists as a Track model in the DB (ie. a user has added it before)
     return this.trackController.getByForeignId( provider, foreignId )
         .then( function( track )
         {
@@ -75,7 +75,7 @@ PlaylistController.prototype = {
         }.bind( this ) )
         .catch( function( err )
         {
-          log.debug( 'PlaylistController.addTrackByForeignId: catch' );
+          // The track isn't yet stored in our DB, time to create it
           if( err.message === TrackErrorEnum.NOT_FOUND )
             return this.trackController.createByForeignId( provider, foreignId );
 
@@ -88,18 +88,16 @@ PlaylistController.prototype = {
         {
           log.debug( 'PlaylistController.addTrackByForeignId: READY TO ADD TRACK TO PLAYLIST!' );
 
-
           // TODO: ADD TRACK TO PLAYLIST
+          // TODO: Ensure track doesn't exist in Playlist.tracks, if not in, create PlaylistTrack
 
-
-        }.bind( this ) );
-
-    //.then( function( track )
-    //{
-    //  console.log( 'PlaylistController.addTrackByForeignId()', track );
-    //  return track;
-    //  // TODO: ensure track doesn't exist in Playlist.tracks, if not in, create PlaylistTrack & add upvote
-    //} )
+        }.bind( this ) )
+        .then( function( track )
+        {
+          console.log( 'PlaylistController.addTrackByForeignId:', track );
+          // TODO: Add upvote to PlaylistTrack
+          return track;
+        } );
 
   },
 
