@@ -1,4 +1,5 @@
 var _                    = require( 'lodash' ),
+    log                  = require( './../../util/LogUtil' ),
     ProviderEnum         = require( './../enum/ProviderEnum' ),
     SpotifyAlbumFactory  = require( './SpotifyAlbumFactory' ),
     SpotifyArtistFactory = require( './SpotifyArtistFactory' ),
@@ -14,11 +15,13 @@ function SpotifyTrackFactory()
 _.extend( SpotifyTrackFactory, {
 
   /**
-   * Takes track data as returned from the node-spotify API and converts it to a local Mongoose model(s).
+   * Takes track data as returned from the node-spotify API and converts it to an object that can be used when querying
+   * with Mongoose (ie. The correct keys are used as per the Mongoose Models, however these are not actual Mongoose
+   * Models).
    *
    * If you plan to save to the DB, you may want to check the DB for duplicate data beforehand.
    *
-   * @param {array|any} trackData
+   * @param {object|array|any} trackData  JSON formatted response from the libspotify API
    * @returns {Track[]|Track}       An array of tracks or a single track, corresponding to the trackData input.
    */
   create: function( trackData )
@@ -26,16 +29,19 @@ _.extend( SpotifyTrackFactory, {
     if( _.isArray( trackData ) )
       return trackData.map( function( value, i, a )
       {
-        SpotifyTrackFactory.create( value );
+        return SpotifyTrackFactory.create( value );
       } );
 
-    var track = new Track();
-    track.name = trackData.name;
-    track.duration = trackData.duration;
-    track.foreignId = trackData.link;
-    track.provider = ProviderEnum.SPOTIFY;
-    track.album = SpotifyAlbumFactory.create( trackData.album );
-    track.artists = SpotifyArtistFactory.create( trackData.artists );
+    var track = {
+      name: trackData.name,
+      duration: trackData.duration,
+      foreignId: trackData.link,
+      provider: ProviderEnum.SPOTIFY,
+      album: SpotifyAlbumFactory.create( trackData.album ),
+      artists: SpotifyArtistFactory.create( trackData.artists )
+    };
+
+    //log.debug( 'SpotifyArtistFactory.create: track:', track );
 
     return track;
   }

@@ -3,6 +3,8 @@ var _                  = require( 'lodash' ),
     FunctionUtil       = require( './../util/FunctionUtil' ),
     log                = require( './../util/LogUtil' ),
     Track              = require( './../model/db/Track' ),
+    Album              = require( './../model/db/Album' ),
+    Artist             = require( './../model/db/Artist' ),
     ProviderEnum       = require( './../model/enum/ProviderEnum' ),
     TrackErrorEnum     = require( './../model/enum/TrackErrorEnum' ),
     SpotifyDataService = require( './../service/SpotifyDataService' ),
@@ -17,6 +19,9 @@ function TrackController()
 _.extend( TrackController, {} );
 
 TrackController.prototype = {
+
+  spotifyDataService: new SpotifyDataService(),
+
   getAll: function()
   {
     console.log( 'TrackController.getAll()' );
@@ -35,23 +40,25 @@ TrackController.prototype = {
             throw new Error( TrackErrorEnum.NOT_FOUND );
 
           res.json( track );
-        } );
+        }.bind( this ) );
   },
 
-  getByForeignId: function( foreignId )
+  /**
+   * Gets a track based on it's foreign ID
+   *
+   * @param {string} provider     Use a value that exists in ProviderEnum
+   * @param {string} foreignId    The ID on the provider's platform
+   */
+  getByForeignId: function( provider, foreignId )
   {
-    // TODO: Implement and test invalid id
-    //if( !Playlist.isValidId( id ) )
-    //  return Q.reject( new Error( PlaylistErrorEnum.INVALID_ID ) );
-
-    return Track.findPopulateQ( { foreignId: foreignId } )
-        .then( function( track )
+    return Track.findPopulateQ( { provider: provider, foreignId: foreignId } )
+        .then( function( tracks )
         {
-          if( !track )
+          if( !tracks || !tracks.length )
             throw new Error( TrackErrorEnum.NOT_FOUND );
 
-          res.json( track );
-        } );
+          return tracks[ 0 ];
+        }.bind( this ) );
   },
 
   /**
@@ -65,38 +72,58 @@ TrackController.prototype = {
   {
     provider = provider.toLowerCase();
 
-    var track;
+    var trackObj;
 
     switch( provider )
     {
       case ProviderEnum.SPOTIFY:
-        track = SpotifyDataService.getTrack( foreignId );
+        trackObj = this.spotifyDataService.getTrack( foreignId );
         break
     }
 
+    log.debug( 'TrackController.createByForeignId: Got track:', trackObj );
+
     // Now we have a track, ensure the individual Models are saved to the DB
-    var promise = Album.findOneAndUpdateQ( { foreignId: track.album.foreignId }, track.album, { upsert: true } )
+    var promise = Album.findOneAndUpdateQ( { foreignId: trackObj.album.foreignId }, trackObj.album, { upsert: true, 'new': true } )
         .then( function( album )
         {
-          track.album = album._id;
-        } );
+          log.debug( 'Got Album:', album );
+          trackObj.album = album._id;
+        }.bind( this ) );
 
-    track.artists.forEach( function( artist, i, arr )
+    trackObj.artists.forEach( function( artistObj, i, arr )
     {
       promise = promise.then( function()
       {
-        return Artist.findOneAndUpdateQ( { foreignId: artist.foreignId }, artist, { upsert: true } );
-      } )
-          .then( function( _artist )
+        console.log( 'About to call Artist.findOneAndUpdateQ:', artistObj );
+        return Artist.findOneAndUpdateQ( { foreignId: artistObj.foreignId }, artistObj, { upsert: true, 'new': true } );
+      }.bind( this ) )
+          .then( function( artist )
           {
-            arr.artists[ i ] = _artist._id;
-          } );
+            log.debug( 'Saved Artist:', artist );
+            arr[ i ] = artist._id;
+          }.bind( this ) );
     } );
+
 
     promise = promise.then( function()
     {
+      log.debug( 'Call save track:', trackObj );
+      var track = new Track( trackObj );
       return track.saveQ();
-    } );
+    }.bind( this ) )
+        .then( function( track )
+        {
+          return track.populateQ( Track.POPULATE_FIELDS );
+        }.bind( this ) )
+        .then( function( track )
+        {
+          log.debug( 'Got saved track:', track );
+          log.debug( 'Got saved track.album:', track.album );
+          log.debug( 'Got saved track.artists:', track.artists );
+
+          return track;
+        }.bind( this ) );
 
     return promise;
   }

@@ -50,7 +50,7 @@ function create()
      * @param id
      * @param fields
      * @param options
-     * @returns {Q.Promise}     Promised resolved with a single Episode or null
+     * @returns {Q.Promise}     Promised resolved with a single Track or null
      */
     findByIdPopulateQ: function( id, fields, options )
     {
@@ -64,17 +64,17 @@ function create()
     },
 
     /**
-     * Use this find method instead of `Playlist.find()` if you need the returned episode to be populated
+     * Use this find method instead of `Playlist.find()` if you need the returned track to be populated
      * with external documents.
      *
      * @param id
      * @param fields
      * @param options
-     * @returns {Q.Promise}     Promised resolved with an array of Episodes or an empty array if no matches.
+     * @returns {Q.Promise}     Promised resolved with an array of Tracks or an empty array if no matches.
      */
     findPopulateQ: function( conditions, fields, options )
     {
-      log.debug( 'Episode.findPopulateQ:', conditions, fields, options );
+      log.debug( 'Track.findPopulateQ:', conditions, fields, options );
 
       return this.find( conditions, fields, options )
           .populate( this.POPULATE_FIELDS )

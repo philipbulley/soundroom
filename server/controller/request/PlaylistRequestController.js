@@ -90,7 +90,7 @@ PlaylistRequestController.prototype = {
 
   addTrackByForeignId: function( req, res )
   {
-    this.playlistController.addTrackByForeignId( req.params.track_id )
+    return this.playlistController.addTrackByForeignId( req.body.provider, req.body.foreignId )
         .then( function( track )
         {
           res.json( track );
@@ -98,7 +98,7 @@ PlaylistRequestController.prototype = {
         .catch( function( err )
         {
           HttpUtil.sendJsonError( res, HttpUtil.status.INTERNAL_SERVER_ERROR );
-          log.formatError( err, 'PlaylistRequestController.addTrackByForeignId: save' );
+          log.formatError( err, 'PlaylistRequestController.addTrackByForeignId' );
         }.bind( this ) );
   },
 

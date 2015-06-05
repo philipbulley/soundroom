@@ -14,7 +14,7 @@ function create()
   var artistSchema = new Schema( {
     name: { type: String, required: true },
     provider: { type: String, enum: _.values( ProviderEnum ), index: true, required: true },
-    foreignId: { type: String, required: true, index: true }
+    foreignId: { type: String, required: true, unique: true }
   } );
 
 

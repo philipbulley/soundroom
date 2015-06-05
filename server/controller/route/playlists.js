@@ -65,8 +65,6 @@ router.route( '/:playlist_id' )
           .done();
     } );
 
-// TODO: DELETE /:playlist_id
-
 router.route( '/:playlist_id/tracks' )
     .post( /*AuthController.verify(),*/
     function( req, res )

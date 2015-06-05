@@ -1,6 +1,8 @@
 var _                   = require( 'lodash' ),
+    log                 = require( './../util/LogUtil' ),
     //Q            = require( 'q' ),
     FunctionUtil        = require( './../util/FunctionUtil' ),
+    SpotifyService      = require( './SpotifyService' ),
     SpotifyTrackFactory = require( './../model/factory/SpotifyTrackFactory' );
 
 
@@ -15,9 +17,11 @@ SpotifyDataService.prototype = {
 
   spotifyService: null,
 
+  // TODO: Does the spotify lib return this sync or async?
   getTrack: function( id )
   {
-    return this.spotify.createFromLink( 'spotify:track:05JqOBN6XW4eFUVQlgR0I3' );
+    var trackResponse = this.spotify.createFromLink( 'spotify:track:05JqOBN6XW4eFUVQlgR0I3' );
+    return SpotifyTrackFactory.create( trackResponse )
   }
 
 };
@@ -33,11 +37,13 @@ function MockSpotifyDataService()
 _.extend( MockSpotifyDataService, {} );
 
 MockSpotifyDataService.prototype = {
+
   spotifyService: null,
 
+  // TODO: Does the spotify lib return this sync or async? (mock should simulate the same)
   getTrack: function( id )
   {
-    var response = {
+    var mockJsonResponse = {
       popularity: 40,
       starred: true,
       album: {
@@ -53,7 +59,7 @@ MockSpotifyDataService.prototype = {
       name: 'Mock Track Name'
     };
 
-    var track = SpotifyTrackFactory.create( response );
+    var track = SpotifyTrackFactory.create( mockJsonResponse );
 
     return track;
   }

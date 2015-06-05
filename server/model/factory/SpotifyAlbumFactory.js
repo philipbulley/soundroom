@@ -1,4 +1,5 @@
 var _            = require( 'lodash' ),
+    log          = require( './../../util/LogUtil' ),
     ProviderEnum = require( './../enum/ProviderEnum' ),
     Album        = require( './../db/Album' );
 
@@ -10,7 +11,9 @@ function SpotifyAlbumFactory()
 _.extend( SpotifyAlbumFactory, {
 
   /**
-   * Takes album data as returned from the node-spotify API and converts it to a local Mongoose model(s).
+   * Takes album data as returned from the node-spotify API and converts it to an object that can be used when querying
+   * with Mongoose (ie. The correct keys are used as per the Mongoose Models, however these are not actual Mongoose
+   * Models).
    *
    * If you plan to save to the DB, you may want to check the DB for duplicate data beforehand.
    *
@@ -25,14 +28,16 @@ _.extend( SpotifyAlbumFactory, {
         SpotifyAlbumFactory.create( value );
       } );
 
-    var album = new Album();
-    album.name = albumData.name;
-    album.foreignId = albumData.link;
-    album.provider = ProviderEnum.SPOTIFY;
+    var album = {
+      name: albumData.name,
+      foreignId: albumData.link,
+      provider: ProviderEnum.SPOTIFY
+    };
 
     return album;
   }
 
-} );
+} )
+;
 
 module.exports = SpotifyAlbumFactory;

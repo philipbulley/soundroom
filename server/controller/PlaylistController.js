@@ -5,6 +5,7 @@ var _                 = require( 'lodash' ),
     Playlist          = require( './../model/db/Playlist' ),
     TrackController   = require( './TrackController' ),
     PlaylistErrorEnum = require( './../model/enum/PlaylistErrorEnum' ),
+    TrackErrorEnum    = require( './../model/enum/TrackErrorEnum' ),
     Config            = require( './../model/Config' );
 
 function PlaylistController()
@@ -37,7 +38,7 @@ PlaylistController.prototype = {
             throw new Error( PlaylistErrorEnum.NOT_FOUND );
 
           return playlist;
-        } )
+        }.bind( this ) )
         .catch( function( err )
         {
           if( err.message !== PlaylistErrorEnum.INVALID_ID && err.message !== PlaylistErrorEnum.NOT_FOUND )
@@ -58,28 +59,48 @@ PlaylistController.prototype = {
     return playlist.saveQ();
   },
 
+  /**
+   *
+   * @param {string} provider     Use a value that exists in ProviderEnum
+   * @param {string} foreignId    The ID on the provider's platform
+   */
   addTrackByForeignId: function( provider, foreignId )
   {
-    // TODO: Implement and test invalid id
-    //if( !Playlist.isValidId( id ) )
-    //  return Q.reject( new Error( PlaylistErrorEnum.INVALID_ID ) );
-
-
-    // Check if track exists as a Track model
-    this.trackController.getByForeignId( foreignId )
+    // Check if track already exists as a Track model (ie. a user has added it before)
+    return this.trackController.getByForeignId( provider, foreignId )
         .then( function( track )
         {
-          if( !track )
+          log.debug( 'PlaylistController.addTrackByForeignId: track already exists' );
+          return track;
+        }.bind( this ) )
+        .catch( function( err )
+        {
+          log.debug( 'PlaylistController.addTrackByForeignId: catch' );
+          if( err.message === TrackErrorEnum.NOT_FOUND )
             return this.trackController.createByForeignId( provider, foreignId );
 
-          return track;
-        } )
+          log.formatError( err, 'PlaylistController.addTrackByForeignId' );
+
+          // Rethrow
+          throw err;
+        }.bind( this ) )
         .then( function( track )
         {
-          console.log( 'PlaylistController.addTrackByForeignId()', track );
-          return track;
-          // TODO: ensure track doesn't exist in Playlist.tracks, if not in, create PlaylistTrack & add upvote
-        } );
+          log.debug( 'PlaylistController.addTrackByForeignId: READY TO ADD TRACK TO PLAYLIST!' );
+
+
+          // TODO: ADD TRACK TO PLAYLIST
+
+
+        }.bind( this ) );
+
+    //.then( function( track )
+    //{
+    //  console.log( 'PlaylistController.addTrackByForeignId()', track );
+    //  return track;
+    //  // TODO: ensure track doesn't exist in Playlist.tracks, if not in, create PlaylistTrack & add upvote
+    //} )
+
   },
 
   upVoteTrack: function( req, res )
@@ -88,7 +109,7 @@ PlaylistController.prototype = {
         .then( function( playlist )
         {
           // TODO: Search for PlaylistTrack, add vote, send change via socket
-        } );
+        }.bind( this ) );
   },
 
   /**
@@ -110,7 +131,7 @@ PlaylistController.prototype = {
             playlist[ key ] = updateObj[ key ];
 
           return playlist.savePopulateQ();
-        } )
+        }.bind( this ) )
         .catch( function( err )
         {
           if( err.message !== PlaylistErrorEnum.INVALID_ID && err.message !== PlaylistErrorEnum.NOT_FOUND )
@@ -135,7 +156,7 @@ PlaylistController.prototype = {
             throw new Error( PlaylistErrorEnum.NOT_FOUND );
           else
             return playlist;
-        } )
+        }.bind( this ) )
         .catch( function( err )
         {
           if( err.message !== PlaylistErrorEnum.NOT_FOUND )
