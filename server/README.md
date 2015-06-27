@@ -2,7 +2,21 @@
 
 Democratic playlist server for Spotify.
 
-## Setting up Raspberry Pi
+## Setting up on Mac OSX
+
+1. Install libspotify via homebrew
+
+        $ brew install homebrew/binary/libspotify
+
+1. Assuming you have node.js already installed:
+
+        $ cd ./server
+        $ npm install
+
+Now you've installed, see "Running the node app" later on in this document.
+
+
+## Setting up on Raspberry Pi
 
 1. Download and install [NOOBS](https://www.raspberrypi.org/downloads/) and install Raspbian.
 
@@ -31,7 +45,7 @@ Democratic playlist server for Spotify.
 
         $ sudo update-alternatives --config gcc
 
-1. Download the `eabi-armv6hf` verison of [libspotify](https://developer.spotify.com/technologies/libspotify/). Extract tarball, open the README and follow instructions:
+1. Download the `eabi-armv6hf` version of [libspotify](https://developer.spotify.com/technologies/libspotify/). Extract tarball, open the README and follow instructions:
 
         $ cd YOUR_LIBSPOTIFY_EXTRACTED_DIR
         $ sudo make install prefix=/usr/local
@@ -121,7 +135,7 @@ Democratic playlist server for Spotify.
 
 ## Running the node app
 
-The app requires that you've setup certain environment variables. One way to do this is by running the app from a shell script. Create a file called `start.sh` next to `index.js`, add the following:
+The app requires that you've setup certain environment variables. One way to do this is by running the app from a shell script. Create a file called `start.dev.sh` next to `index.js`, add the following:
 
     #!/bin/sh
 
@@ -135,7 +149,7 @@ The app requires that you've setup certain environment variables. One way to do 
 
 Start the app like so
 
-    $ start.sh
+    $ start.dev.sh
 
 ### Can't hear any audio?
 
