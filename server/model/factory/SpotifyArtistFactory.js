@@ -1,14 +1,13 @@
-var _            = require( 'lodash' ),
-    log          = require( './../../util/LogUtil' ),
-    ProviderEnum = require( './../enum/ProviderEnum' ),
-    Artist       = require( './../db/Artist' );
+var _ = require('lodash'),
+  log = require('./../../util/LogUtil'),
+  ProviderEnum = require('./../enum/ProviderEnum'),
+  Artist = require('./../db/Artist');
 
-function SpotifyArtistFactory()
-{
+function SpotifyArtistFactory() {
 
 }
 
-_.extend( SpotifyArtistFactory, {
+_.extend(SpotifyArtistFactory, {
 
   /**
    * Takes artist data as returned from the node-spotify API and and converts it to an object that can be used when
@@ -20,15 +19,13 @@ _.extend( SpotifyArtistFactory, {
    * @param {array|any} artistData
    * @returns {Artist[]|Artist}       An array of artists or a single artist, corresponding to the artistData input.
    */
-  create: function( artistData )
-  {
-    log.debug( 'SpotifyArtistFactory.create():', artistData );
+  create: function (artistData) {
+    log.debug('SpotifyArtistFactory.create():', artistData);
 
-    if( _.isArray( artistData ) )
-      return artistData.map( function( value, i, a )
-      {
-        return SpotifyArtistFactory.create( value );
-      } );
+    if (_.isArray(artistData))
+      return artistData.map(function (value, i, a) {
+        return SpotifyArtistFactory.create(value);
+      });
 
     var artist = {
       name: artistData.name,
@@ -41,6 +38,6 @@ _.extend( SpotifyArtistFactory, {
     return artist;
   }
 
-} );
+});
 
 module.exports = SpotifyArtistFactory;

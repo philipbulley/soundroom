@@ -1,12 +1,11 @@
-var _          = require( 'lodash' ),
-    ObjectUtil = require( './ObjectUtil' );
+var _ = require('lodash'),
+  ObjectUtil = require('./ObjectUtil');
 
-function FunctionUtil()
-{
+function FunctionUtil() {
 
 }
 
-_.extend( FunctionUtil, {
+_.extend(FunctionUtil, {
 
   /**
    * Bind all methods on `scope` to that `scope`.
@@ -27,24 +26,22 @@ _.extend( FunctionUtil, {
    *
    * @param scope     Usually, pass the value of `this` from your base class.
    */
-  bindAllMethods: function( scope )
-  {
-    for( var p in scope )
-    {
+  bindAllMethods: function (scope) {
+    for (var p in scope) {
       // Find the object in which prop was originally defined on
-      var ownObject = ObjectUtil.getPropertyDefinitionObject( scope, p );
+      var ownObject = ObjectUtil.getPropertyDefinitionObject(scope, p);
 
       // Now we can check if it is a getter/setter
-      var descriptor = Object.getOwnPropertyDescriptor( ownObject, p );
-      if( descriptor && (descriptor.get || descriptor.set) )
+      var descriptor = Object.getOwnPropertyDescriptor(ownObject, p);
+      if (descriptor && (descriptor.get || descriptor.set))
         continue;   // Don't bind if `scope[p]` is a getter/setter, we'd be attemping to bind the value returned by the getter
 
       // Only bind if scope[p] is a function that's not already a class member
       // the bound function will be added as a class member, referencing the function on the prototype
-      if( !Object.prototype.hasOwnProperty.call( scope, p ) && typeof scope[p] == 'function' )
-        scope[p] = scope[p].bind( scope );
+      if (!Object.prototype.hasOwnProperty.call(scope, p) && typeof scope[p] == 'function')
+        scope[p] = scope[p].bind(scope);
     }
   }
-} );
+});
 
 module.exports = FunctionUtil;

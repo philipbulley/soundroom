@@ -1,11 +1,10 @@
-var _ = require( 'lodash' );
+var _ = require('lodash');
 
-function ObjectUtil()
-{
+function ObjectUtil() {
 
 }
 
-_.extend( ObjectUtil, {
+_.extend(ObjectUtil, {
 
   /**
    * Searches the supplied object, and then down it's prototype chain until it
@@ -18,15 +17,14 @@ _.extend( ObjectUtil, {
    * @param prop    The name of the property we're searching for
    * @returns {*}
    */
-  getPropertyDefinitionObject: function( scope, prop )
-  {
-    if( !scope )
+  getPropertyDefinitionObject: function (scope, prop) {
+    if (!scope)
       return null;
 
-    return scope.hasOwnProperty( prop )
+    return scope.hasOwnProperty(prop)
       ? scope
-      : this.getPropertyDefinitionObject( Object.getPrototypeOf( scope ), prop );
+      : this.getPropertyDefinitionObject(Object.getPrototypeOf(scope), prop);
   }
-} );
+});
 
 module.exports = ObjectUtil;

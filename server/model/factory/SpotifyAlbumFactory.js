@@ -1,14 +1,13 @@
-var _            = require( 'lodash' ),
-    log          = require( './../../util/LogUtil' ),
-    ProviderEnum = require( './../enum/ProviderEnum' ),
-    Album        = require( './../db/Album' );
+var _ = require('lodash'),
+  log = require('./../../util/LogUtil'),
+  ProviderEnum = require('./../enum/ProviderEnum'),
+  Album = require('./../db/Album');
 
-function SpotifyAlbumFactory()
-{
+function SpotifyAlbumFactory() {
 
 }
 
-_.extend( SpotifyAlbumFactory, {
+_.extend(SpotifyAlbumFactory, {
 
   /**
    * Takes album data as returned from the node-spotify API and converts it to an object that can be used when querying
@@ -20,13 +19,11 @@ _.extend( SpotifyAlbumFactory, {
    * @param {array|any} albumData
    * @returns {Album[]|Album}       An array of albums or a single album, corresponding to the albumData input.
    */
-  create: function( albumData )
-  {
-    if( _.isArray( albumData ) )
-      return albumData.map( function( value, i, a )
-      {
-        SpotifyAlbumFactory.create( value );
-      } );
+  create: function (albumData) {
+    if (_.isArray(albumData))
+      return albumData.map(function (value, i, a) {
+        SpotifyAlbumFactory.create(value);
+      });
 
     var album = {
       name: albumData.name,
@@ -37,7 +34,7 @@ _.extend( SpotifyAlbumFactory, {
     return album;
   }
 
-} )
+})
 ;
 
 module.exports = SpotifyAlbumFactory;

@@ -1,33 +1,32 @@
 var
-    _             = require( 'lodash' ),
-    mongoose      = require( 'mongoose-q' )(),
-    Q             = require( 'q' ),
-    log           = require( './../../util/LogUtil' ),
-    MongooseUtil  = require( './../../util/MongooseUtil' ),
-    Modified      = require( './plugin/Modified' ),
-    UserErrorEnum = require( './../enum/UserErrorEnum' ),
-    Schema        = mongoose.Schema;
+  _ = require('lodash'),
+  mongoose = require('mongoose-q')(),
+  Q = require('q'),
+  log = require('./../../util/LogUtil'),
+  MongooseUtil = require('./../../util/MongooseUtil'),
+  Modified = require('./plugin/Modified'),
+  UserErrorEnum = require('./../enum/UserErrorEnum'),
+  Schema = mongoose.Schema;
 
 
-function create()
-{
-  var userSchema = new Schema( {
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
-    email: { type: String, unique: true, required: true },
-    vetoAvailable: { type: Date },
-    created: { type: Date }
-  } );
+function create() {
+  var userSchema = new Schema({
+    firstName: {type: String, required: true},
+    lastName: {type: String, required: true},
+    email: {type: String, unique: true, required: true},
+    vetoAvailable: {type: Date},
+    created: {type: Date}
+  });
 
-  userSchema.plugin( Modified );
+  userSchema.plugin(Modified);
 
-  _.extend( userSchema.methods, {} );
+  _.extend(userSchema.methods, {});
 
-  _.extend( userSchema.statics, {} );
+  _.extend(userSchema.statics, {});
 
   return userSchema;
 }
 
 
 // Export!
-MongooseUtil.exportModuleModel( 'appInstance', 'User', create, module );
+MongooseUtil.exportModuleModel('appInstance', 'User', create, module);
