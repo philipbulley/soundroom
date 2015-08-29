@@ -90,7 +90,7 @@ PlaylistRequestController.prototype = {
 
   addTrackByForeignId: function( req, res )
   {
-    return this.playlistController.addTrackByForeignId( req.body.provider, req.body.foreignId )
+    return this.playlistController.addTrackByForeignId( req.params.playlist_id, req.body.provider, req.body.foreignId )
         .then( function( track )
         {
           res.json( track );

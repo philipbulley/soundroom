@@ -5,7 +5,9 @@ var PlaylistErrorEnum = {
 
   NOT_FOUND: 'NOT_FOUND',
 
-  INVALID_ID: 'INVALID_ID'
+  INVALID_ID: 'INVALID_ID',
+
+  TRACK_NOT_IN_PLAYLIST: 'TRACK_NOT_IN_PLAYLIST'
 
 };
 

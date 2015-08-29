@@ -39,7 +39,7 @@ TrackController.prototype = {
           if( !track )
             throw new Error( TrackErrorEnum.NOT_FOUND );
 
-          res.json( track );
+          return track;
         }.bind( this ) );
   },
 

@@ -10,7 +10,6 @@ function SpotifyDataService() {
 
   FunctionUtil.bindAllMethods(this);
 
-  console.log('SpotifyDataService(): SpotifyService:', SpotifyService);
   this.spotifyService = SpotifyService.getInstance();
   this.spotifyService.login();
 }
@@ -22,7 +21,7 @@ SpotifyDataService.prototype = {
   spotifyService: null,
 
   getTrack: function (id) {
-    console.log('SpotifyDataService.getTrack():', id, 'spotifyService:', this.spotifyService);
+    //console.log('SpotifyDataService.getTrack():', id, 'spotifyService:', this.spotifyService);
 
     var trackResponse = this.spotifyService.getTrack(id);
     console.log('SpotifyDataService.getTrack: trackResponse:', trackResponse);
