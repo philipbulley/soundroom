@@ -20,8 +20,11 @@ _.extend(SpotifyService, {
   instance: null,
 
   getInstance: function () {
-    if (!SpotifyService.instance)
+    if (!SpotifyService.instance) {
       SpotifyService.instance = new SpotifyService(singletonBlocker);
+    }
+
+
 
     return SpotifyService.instance;
   }
@@ -73,7 +76,6 @@ _.extend(SpotifyService.prototype, {
     //});
 
 
-
     spotify.login(process.env.SPOTIFY_USERNAME, process.env.SPOTIFY_PASSWORD, false, false);
 
     return deferred.promise;
@@ -82,6 +84,10 @@ _.extend(SpotifyService.prototype, {
   getTrack: function (id) {
     console.log('SpotifyService.getTrack():', id, 'spotify:', spotify);
     return spotify.createFromLink(id);
+  },
+
+  play: function (id) {
+    spotify.player.play(spotify.createFromLink(id));
   }
 
 });

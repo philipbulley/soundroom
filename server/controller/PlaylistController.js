@@ -187,6 +187,13 @@ PlaylistController.prototype = {
         // Rethrow
         throw err;
       }.bind(this));
+  },
+
+  getNextTrackForPlayback: function(playlistId) {
+    return this.getById(playlistId)
+      .then(function(playlist){
+        return playlist.tracks[0];
+      });
   }
 };
 

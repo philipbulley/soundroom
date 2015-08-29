@@ -104,9 +104,13 @@ function create() {
       if (!playlistTrack)
         throw new Error(PlaylistErrorEnum.TRACK_NOT_IN_PLAYLIST);
 
-      playlistTrack.upVotes.addToSet({});
+      playlistTrack.upVotes.addToSet({}); // TODO: Add user
 
       console.log('Playlist.upVoteTrack:', playlistTrack);
+
+      this.tracks.sort(playlistTrackSortCompare);
+
+      console.log('Playlist.upVoteTrack: tracks after sort:', this.tracks);
 
       return this.savePopulateQ()
         .then(function (playlist) {
@@ -127,6 +131,23 @@ function create() {
     }
 
   });
+
+
+  function playlistTrackSortCompare(a, b) {
+    if (a.upVotes.length > b.upVotes.length) {
+      return -1;
+    } else if (a.upVotes.length < b.upVotes.length) {
+      return 1;
+    } else {
+      if (a.upVotes[a.upVotes.length - 1].created < b.upVotes[b.upVotes.length - 1].created) {
+        return -1;
+      } else if (a.upVotes[a.upVotes.length - 1].created > b.upVotes[b.upVotes.length - 1].created) {
+        return 1;
+      } else {
+        return 0;
+      }
+    }
+  }
 
   _.extend(playlistSchema.statics, {
 

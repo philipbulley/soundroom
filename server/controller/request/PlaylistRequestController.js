@@ -4,6 +4,7 @@ var _ = require('lodash'),
   log = require('./../../util/LogUtil'),
   Playlist = require('./../../model/db/Playlist'),
   PlaylistController = require('./../PlaylistController'),
+  PlaybackController = require('./../PlaybackController'),
   TrackController = require('./../TrackController'),
   HttpUtil = require('./../../util/HttpUtil'),
   PlaylistErrorEnum = require('./../../model/enum/PlaylistErrorEnum'),
@@ -25,6 +26,7 @@ _.extend(PlaylistRequestController, {
 PlaylistRequestController.prototype = {
 
   playlistController: new PlaylistController(),
+  playbackController: new PlaybackController(),
 
   getAll: function (req, res) {
     console.log('PlaylistRequestController.getAll()');
@@ -157,6 +159,13 @@ PlaylistRequestController.prototype = {
             log.formatError(err, 'PlaylistRequestController.deleteByIdParam');
         }
       }.bind(this))
+  },
+
+  play: function (req, res) {
+    return this.playbackController.play(req.params.playlist_id)
+      .then(function (playlistTrack) {
+        res.json(playlistTrack);
+      });
   }
 
 };

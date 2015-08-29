@@ -59,6 +59,17 @@ router.route('/:playlist_id')
       .done();
   });
 
+// TODO: Add integration test for this endpoint
+router.route('/:playlist_id/play')
+  .post(/*AuthController.verify(),*/
+  function (req, res) {
+    console.log('POST /playlists/' + req.params.playlist_id + '/play');
+
+    new PlaylistRequestController()
+      .play(req, res)
+      .done();
+  });
+
 router.route('/:playlist_id/tracks')
   .post(/*AuthController.verify(),*/
   function (req, res) {
@@ -85,5 +96,6 @@ router.route('/:playlist_id/tracks/:track_id/upvote')
   });
 
 // TODO: DELETE /:playlist_id/tracks/:track_id/upvote
+
 
 module.exports = router;
