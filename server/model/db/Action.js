@@ -4,7 +4,7 @@ var
   Q = require('q'),
   log = require('./../../util/LogUtil'),
   MongooseUtil = require('./../../util/MongooseUtil'),
-  Modified = require('./plugin/Modified'),
+  DateFields = require('./plugin/DateFields'),
   ActionTypeEnum = require('./../../enum/ActionTypeEnum'),
   Schema = mongoose.Schema;
 
@@ -18,7 +18,7 @@ function create() {
     created: {type: Date}
   });
 
-  actionSchema.plugin(Modified);
+  actionSchema.plugin(DateFields);
 
   _.extend(actionSchema.methods, {});
 

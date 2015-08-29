@@ -48,7 +48,7 @@ _.extend(SpotifyService.prototype, {
         deferred.reject(err);
       }
 
-      console.log('SpotifyService.login: Success!', spotify.sessionUser);
+      console.log('SpotifyService.login: Success! Logged in as:', spotify.sessionUser.displayName, '(' + spotify.sessionUser.link + ')');
 
       //spotify.player.play(spotify.createFromLink('spotify:track:4PLOJDcUb3gwfMLoZPQt3O'));    // DEBUG
 

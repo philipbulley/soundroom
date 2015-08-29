@@ -4,7 +4,7 @@ var
   Q = require('q'),
   log = require('./../../util/LogUtil'),
   MongooseUtil = require('./../../util/MongooseUtil'),
-  Modified = require('./plugin/Modified'),
+  DateFields = require('./plugin/DateFields'),
   UserErrorEnum = require('./../enum/UserErrorEnum'),
   Schema = mongoose.Schema;
 
@@ -18,7 +18,7 @@ function create() {
     created: {type: Date}
   });
 
-  userSchema.plugin(Modified);
+  userSchema.plugin(DateFields);
 
   _.extend(userSchema.methods, {});
 

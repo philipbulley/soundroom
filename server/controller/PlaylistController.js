@@ -124,7 +124,7 @@ PlaylistController.prototype = {
     return this.getById(playlistId)
       .then(function (playlist) {
         // TODO: Search for PlaylistTrack, add vote, send change via socket
-        return playlist.upVoteTrack();
+        return playlist.upVoteTrack(trackId);
       }.bind(this));
   },
 

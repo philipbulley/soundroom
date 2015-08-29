@@ -4,27 +4,35 @@ var
   Q = require('q'),
   log = require('./../../util/LogUtil'),
   MongooseUtil = require('./../../util/MongooseUtil'),
-  Modified = require('./plugin/Modified'),
+  DateFields = require('./plugin/DateFields'),
   Schema = mongoose.Schema,
   PlaylistErrorEnum = require('./../enum/PlaylistErrorEnum');
 
 
 function create() {
+  var upVoteSchema = new Schema({
+    createdBy: {type: Schema.Types.ObjectId, ref: 'User'}   // TODO: required: true when implemented users
+  });
+
+  upVoteSchema.plugin(DateFields);
+
   var playlistTrackSchema = new Schema({
     track: {type: Schema.Types.ObjectId, ref: 'Track'},
     createdBy: {type: Schema.Types.ObjectId, ref: 'User'},    // TODO: required: true when implemented users
-    upVotes: [{type: Schema.Types.ObjectId, ref: 'User'}]
+    upVotes: [upVoteSchema]
   });
+
+  playlistTrackSchema.plugin(DateFields);
 
   var playlistSchema = new Schema({
     name: {type: String, required: true},
     description: {type: String},
     tracks: [playlistTrackSchema],
-    createdBy: {type: Schema.Types.ObjectId, ref: 'User'},    // TODO: required: true when implemented users
-    created: {type: Date}
+    createdBy: {type: Schema.Types.ObjectId, ref: 'User'}    // TODO: required: true when implemented users
   });
 
-  playlistSchema.plugin(Modified);
+  playlistSchema.plugin(DateFields);
+
 
   _.extend(playlistSchema.methods, {
 
@@ -89,7 +97,19 @@ function create() {
     },
 
     upVoteTrack: function (trackId, user) {
+      var playlistTrack = this.getPlaylistTrackByTrackId(trackId);
 
+      if (!playlistTrack)
+        throw new Error(PlaylistErrorEnum.TRACK_NOT_IN_PLAYLIST);
+
+      playlistTrack.upVotes.addToSet({});
+
+      console.log('Playlist.upVoteTrack:', playlistTrack);
+
+      return this.savePopulateQ()
+        .then(function (playlist) {
+          return this.getPlaylistTrackByTrackId(trackId);
+        }.bind(this));
     },
 
     getPlaylistTrackByTrackId: function (trackId) {

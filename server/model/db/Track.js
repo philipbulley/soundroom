@@ -4,7 +4,7 @@ var
   Q = require('q'),
   log = require('./../../util/LogUtil'),
   MongooseUtil = require('./../../util/MongooseUtil'),
-  Modified = require('./plugin/Modified'),
+  DateFields = require('./plugin/DateFields'),
   ProviderEnum = require('./../enum/ProviderEnum'),
   Schema = mongoose.Schema;
 
@@ -21,7 +21,7 @@ function create() {
     created: {type: Date}
   });
 
-  trackSchema.plugin(Modified);
+  trackSchema.plugin(DateFields);
 
   _.extend(trackSchema.methods, {});
 

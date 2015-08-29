@@ -4,7 +4,7 @@ var
   Q = require('q'),
   log = require('./../../util/LogUtil'),
   MongooseUtil = require('./../../util/MongooseUtil'),
-  Modified = require('./plugin/Modified'),
+  DateFields = require('./plugin/DateFields'),
   ProviderEnum = require('./../enum/ProviderEnum'),
   Schema = mongoose.Schema;
 
@@ -17,7 +17,7 @@ function create() {
   });
 
 
-  artistSchema.plugin(Modified);
+  artistSchema.plugin(DateFields);
 
   _.extend(artistSchema.methods, {});
 

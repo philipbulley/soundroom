@@ -1,9 +1,14 @@
-function Modified(schema, options) {
+function DateFields(schema, options) {
 
-
-  schema.add({modified: Date});
+  schema.add({modified: Date, created: Date});
   schema.pre('save', function (next) {
+
     this.modified = new Date;
+
+    if(typeof this.created === 'undefined'){
+      this.created = this.modified;
+    }
+
     next();
   });
 
@@ -12,8 +17,10 @@ function Modified(schema, options) {
     this.findOneAndUpdate({}, {modified: new Date});
   });
 
-  if (options && options.index)
+  if (options && options.index){
     schema.path('modified').index(options.index);
+    schema.path('created').index(options.index);
+  }
 }
 
-module.exports = Modified;
+module.exports = DateFields;
