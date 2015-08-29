@@ -13,7 +13,8 @@ describe('/api/playlists', function () {
     dummyData2,
     responseLength,
     playlistId1,
-    playlistId2;
+    playlistId2,
+    playlistTrack;
 
   before(function (done) {
     // Extend timeout to allow for real DB connection to be made
@@ -387,6 +388,9 @@ describe('/api/playlists', function () {
 
     describe('/tracks', function () {
       describe('POST', function () {
+
+        this.timeout(10 * 1000);
+
         var dummyExternalTrack = {
           provider: 'spotify',
           foreignId: 'spotify:track:05JqOBN6XW4eFUVQlgR0I3'
@@ -409,11 +413,66 @@ describe('/api/playlists', function () {
               expect(res.body.name, 'with correct name').to.equal(dummyData2.name);
               expect(res.body.description, 'with correct description').to.equal(dummyData2.description);
 
+              playlistTrack = res.body.tracks[0];
+
+              console.log('_____________________ playlistTrack', playlistTrack);
+
               done();
             });
         });
+
+        it('should upvote a track by playlist track id', function (done) {
+          request(index.app)
+            .post('/api/playlists/' + playlistId2 + '/tracks/' + playlistTrack._id + '/upvote')
+            .send(dummyExternalTrack)
+            .end(function (err, res) {
+              if (err) throw err;
+
+              expect(res.headers['content-type'], 'with json').to.contain('json');
+              expect(res.status, 'with 200').to.equal(200);
+              expect(res.body, 'with object').to.be.an('object');
+
+              expect(res.body._id, 'with _id').to.exist;
+              expect(res.body.modified, 'with modified').to.exist;
+              expect(res.body.track, 'with track').to.exist;
+              expect(res.body.upVotes, 'with upVotes array').to.be.an.instanceof(Array);
+              expect(res.body.upVotes.length, 'with more than 1 upVotes').to.be.greaterThan(1);
+
+              playlistTrack = res.body;
+
+              done();
+            });
+        });
+
+        it('should upvote a track by actual track id', function (done) {
+          request(index.app)
+            .post('/api/playlists/' + playlistId2 + '/tracks/' + playlistTrack.track._id + '/upvote')
+            .send(dummyExternalTrack)
+            .end(function (err, res) {
+              if (err) throw err;
+
+              expect(res.headers['content-type'], 'with json').to.contain('json');
+              expect(res.status, 'with 200').to.equal(200);
+              expect(res.body, 'with object').to.be.an('object');
+
+              expect(res.body._id, 'with _id').to.exist;
+              expect(res.body.modified, 'with modified').to.exist;
+              expect(res.body.track, 'with track').to.exist;
+              expect(res.body.upVotes, 'with upVotes array').to.be.an.instanceof(Array);
+              expect(res.body.upVotes.length, 'with more than 1 upVotes').to.be.greaterThan(2);
+
+              playlistTrack = res.body;
+
+              done();
+            });
+        });
+
+
       });
     });
+
+
+
   });
 
 

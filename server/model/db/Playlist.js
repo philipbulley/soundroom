@@ -76,7 +76,7 @@ function create() {
      */
     addPlaylistTrack: function (track, user) {
 
-      var playlistTrack = this.getPlaylistTrackByTrackId(track.id);
+      var playlistTrack = this.getPlaylistTrackByIdOrTrackId(track.id);
 
       if (!!playlistTrack) {
         return playlistTrack;
@@ -94,12 +94,12 @@ function create() {
 
       return this.savePopulateQ()
         .then(function (playlist) {
-          return this.getPlaylistTrackByTrackId(track.id);
+          return this.getPlaylistTrackByIdOrTrackId(track.id);
         }.bind(this));
     },
 
     upVoteTrack: function (trackId, user) {
-      var playlistTrack = this.getPlaylistTrackByTrackId(trackId);
+      var playlistTrack = this.getPlaylistTrackByIdOrTrackId(trackId);
 
       if (!playlistTrack)
         throw new Error(PlaylistErrorEnum.TRACK_NOT_IN_PLAYLIST);
@@ -110,13 +110,19 @@ function create() {
 
       return this.savePopulateQ()
         .then(function (playlist) {
-          return this.getPlaylistTrackByTrackId(trackId);
+          return this.getPlaylistTrackByIdOrTrackId(trackId);
         }.bind(this));
     },
 
-    getPlaylistTrackByTrackId: function (trackId) {
+    /**
+     * Gets a Playlist Track by it's id or the id of it's actual track.
+     *
+     * @param trackId
+     * @returns {*}
+     */
+    getPlaylistTrackByIdOrTrackId: function (trackIdOrPlaylistTrackId) {
       return _.find(this.tracks, function (playlistTrack) {
-        return playlistTrack.track.toObject()._id == trackId;
+        return playlistTrack.id == trackIdOrPlaylistTrackId || playlistTrack.track.toObject()._id == trackIdOrPlaylistTrackId;
       });
     }
 
