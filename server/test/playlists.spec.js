@@ -1,6 +1,6 @@
 // Define the environment variables required by the app
-process.env.MONGO_CONNECT = 'mongodb://localhost:27017/spotidrop-dev-local';
-process.env.APP_ENV = 'dev-local';
+process.env.MONGO_CONNECT = 'mongodb://pacino:jdur7sajcmskd8310dk@ds031922.mongolab.com:31922/spotidrop-dev';
+process.env.APP_ENV = 'dev';
 process.env.MOCK_SPOTIFY = true;
 
 var chai = require('chai'),
@@ -38,7 +38,7 @@ describe('/api/playlists', function () {
   // Playlist API root tests
   describe('', function () {
     describe('GET', function () {
-      it('should return  any existing playlists', function (done) {
+      it('should return any existing playlists', function (done) {
         request(index.app)
           .get('/api/playlists')
           .end(function (err, res) {
@@ -406,8 +406,8 @@ describe('/api/playlists', function () {
               expect(res.body._id, 'with _id').to.exist;
               expect(res.body.modified, 'with modified').to.exist;
               expect(res.body.tracks, 'with tracks array').to.be.an.instanceof(Array);
-              expect(res.body.name, 'with correct name').to.equal(dummyData1.name);
-              expect(res.body.description, 'with correct description').to.equal(dummyData1.description);
+              expect(res.body.name, 'with correct name').to.equal(dummyData2.name);
+              expect(res.body.description, 'with correct description').to.equal(dummyData2.description);
 
               done();
             });
