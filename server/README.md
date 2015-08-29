@@ -8,10 +8,15 @@ Democratic playlist server for Spotify.
 
         $ brew install homebrew/binary/libspotify
 
+1. For the homebrew installation to work with node-spotify, you'll need to remove the file extension from the alias
+
+    $ cd /usr/local/Cellar/libspotify/12.1.51/lib/
+    $ mv libspotify.dylib libspotify
+
 1. Assuming you have node.js already installed:
 
-        $ cd ./server
-        $ npm install
+    $ cd ./server
+    $ npm install
 
 Now you've installed, see "Running the node app" later on in this document.
 

@@ -66,6 +66,8 @@ PlaylistController.prototype = {
    */
   addTrackByForeignId: function( provider, foreignId )
   {
+      console.log( 'PlaylistController.addTrackByForeignId:', provider, foreignId );
+
     // Check if track already exists as a Track model in the DB (ie. a user has added it before)
     return this.trackController.getByForeignId( provider, foreignId )
         .then( function( track )

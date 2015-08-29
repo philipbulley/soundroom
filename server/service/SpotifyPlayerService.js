@@ -24,7 +24,7 @@ function SpotifyPlayerService()
   //} );
 
   // TODO: Why doesn't this like being assigned to `this.spotify`?
-  var spotify = require( './../node_modules/node-spotify/build/Release/spotify' )( { appkeyFile: process.env.SPOTIFY_APP_KEY } );
+  var spotify = require( './.././build/Release/spotify' )( { appkeyFile: process.env.SPOTIFY_APP_KEY } );
   var ready = function( err )
   {
     if( err )

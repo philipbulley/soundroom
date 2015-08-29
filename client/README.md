@@ -10,7 +10,7 @@ There is no proper build process yet. Probably wont implement this until Angular
 
 Note: This is currently using the Angular 2 Beta (which uses Typescript 1.5 beta). These instructions will change as it's a super basic workflow.
 
-    $ npm install -g typescript@^1.5.0-beta
+    $ npm install -g typescript@^1.5.0
 
 ## Compiling the Client App
 
