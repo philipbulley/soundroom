@@ -117,13 +117,25 @@ PlaylistController.prototype = {
         console.log('PlaylistController.addTrackToPlaylist: Found playlistTrack:', playlistTrack);
 
         return this.upVoteTrack(playlist.id, track.id);
+      }.bind(this))
+      .then(function (playlistTrack) {
+        console.log('PlaylistController.addTrackToPlaylist: Found playlistTrack:', playlistTrack);
+
+        // Return fresh playlist
+        return this.getById(playlist.id);
       }.bind(this));
   },
 
+  /**
+   *
+   * @param playlistId
+   * @param trackId
+   * @returns {*}   Promise resolved with playlistTrack
+   */
   upVoteTrack: function (playlistId, trackId) {
     return this.getById(playlistId)
       .then(function (playlist) {
-        // TODO: Search for PlaylistTrack, add vote, send change via socket
+        // TODO: send change via socket
         return playlist.upVoteTrack(trackId);
       }.bind(this));
   },

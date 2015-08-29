@@ -79,8 +79,8 @@ PlaylistRequestController.prototype = {
 
   addTrackByForeignId: function (req, res) {
     return this.playlistController.addTrackByForeignId(req.params.playlist_id, req.body.provider, req.body.foreignId)
-      .then(function (track) {
-        res.json(track);
+      .then(function (playlist) {
+        res.json(playlist);
       }.bind(this))
       .catch(function (err) {
         HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
@@ -89,13 +89,13 @@ PlaylistRequestController.prototype = {
   },
 
   upVoteTrack: function (req, res) {
-    return this.playlistController.upVoteTrack(req.params.playlist_id)
+    return this.playlistController.upVoteTrack(req.params.playlist_id, req.params.track_id)
       .then(function (playlist) {
         res.json(playlist);
       }.bind(this))
       .catch(function (err) {
         HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
-        log.formatError(err, 'PlaylistRequestController.addTrackByForeignId: save');
+        log.formatError(err, 'PlaylistRequestController.upVoteTrack');
       }.bind(this));
   },
 
