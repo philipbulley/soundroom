@@ -6,7 +6,8 @@ var
   MongooseUtil = require('./../../util/MongooseUtil'),
   DateFields = require('./plugin/DateFields'),
   Schema = mongoose.Schema,
-  PlaylistErrorEnum = require('./../enum/PlaylistErrorEnum');
+  PlaylistErrorEnum = require('./../enum/PlaylistErrorEnum'),
+  deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 
 function create() {
@@ -32,6 +33,7 @@ function create() {
   });
 
   playlistSchema.plugin(DateFields);
+  playlistSchema.plugin(deepPopulate);
 
 
   _.extend(playlistSchema.methods, {
@@ -125,7 +127,7 @@ function create() {
     /**
      * These fields need to be populated by a document from another database model. String of fields names, separated by spaces.
      */
-    POPULATE_FIELDS: 'createdBy tracks.track tracks.createdBy tracks.upVotes',
+    POPULATE_FIELDS: 'createdBy tracks.track tracks.createdBy tracks.upVotes tracks.track.artists tracks.track.album',
 
     /**
      * Checks if the format of the ID is valid
@@ -150,7 +152,7 @@ function create() {
         return Q.reject(new Error(PlaylistErrorEnum.INVALID_ID));
 
       return this.findById(id, fields, options)
-        .populate(this.POPULATE_FIELDS)
+        .deepPopulate(this.POPULATE_FIELDS)
         .execQ();
     },
 
@@ -167,7 +169,7 @@ function create() {
       //log.debug( 'Playlist.findPopulateQ:', conditions, fields, options );
 
       return this.find(conditions, fields, options)
-        .populate(this.POPULATE_FIELDS)
+        .deepPopulate(this.POPULATE_FIELDS)
         .execQ();
     }
 
