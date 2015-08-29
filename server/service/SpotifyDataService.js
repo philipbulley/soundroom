@@ -35,6 +35,7 @@ SpotifyDataService.prototype = {
 
 
 function MockSpotifyDataService() {
+  FunctionUtil.bindAllMethods(this);
 }
 
 _.extend(MockSpotifyDataService, {});

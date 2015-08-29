@@ -1,4 +1,4 @@
-var spotify = require('node-spotify')({appkeyFile: process.env.SPOTIFY_APP_KEY}),
+var spotify = require('node-spotify'),
   _ = require('lodash'),
   Q = require('q'),
   FunctionUtil = require('./../util/FunctionUtil'),
@@ -42,6 +42,9 @@ _.extend(SpotifyService.prototype, {
 
     var deferred = Q.defer();
 
+    // Init and overwrite
+    spotify = spotify({appkeyFile: process.env.SPOTIFY_APP_KEY});
+
     var ready = function (err) {
       if (err) {
         console.error('Login failed for ' + process.env.SPOTIFY_USERNAME + ':', err);
@@ -68,6 +71,8 @@ _.extend(SpotifyService.prototype, {
     //    console.log('End of track');
     //  }
     //});
+
+
 
     spotify.login(process.env.SPOTIFY_USERNAME, process.env.SPOTIFY_PASSWORD, false, false);
 
