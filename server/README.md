@@ -175,6 +175,10 @@ If you don't hear audio, you may need to [change the default output](https://www
  
 ## Tests
 
+First install mocha globally:
+
+    $ npm install mocha -g
+
 To run tests:
 
     $ mocha
