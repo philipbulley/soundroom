@@ -3,3 +3,4 @@ server/start.*.sh
 spotify_appkey.key
 settings
 cache
+start.*.sh
