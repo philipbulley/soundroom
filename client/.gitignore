@@ -1,1 +1,5 @@
 build
+src/script/spotidrop/*.js
+src/script/spotidrop/*/*.js
+src/script/spotidrop/*/*/*.js
+src/script/spotidrop/*/*/*/*.js
