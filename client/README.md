@@ -25,4 +25,4 @@ To watch:
 
     $ cd client/build
     $ npm install -g http-server  # Or sudo npm install -g http-server
-    $ http-server                 # Creates a server at localhost:8080
+    $ http-server -o              # Creates server and launches in your browser thansk to -o flag
