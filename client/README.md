@@ -2,22 +2,27 @@
 
 Democratic playlist client for Spotify.
 
+## Setup
+
+    $ cd client
+    $ npm install
+
+WIP: Ensure that Typescript 1.5.0-beta or newer has been installed. We need to keep this up to date in conjunction with latest Angular 2 version.
+
 ## Build
 
-There is no proper build process yet. Probably wont implement this until Angular 2 is fully released, it's still in beta at time of writing.
+To build everything:
 
-## Setting up Angular 2
+    $ cd client
+    $ gulp build
 
-Note: This is currently using the Angular 2 Beta (which uses Typescript 1.5 beta). These instructions will change as it's a super basic workflow.
+To watch:
 
-    $ npm install -g typescript@^1.5.0
-
-## Compiling the Client App
-
-    $ tsc --watch -m commonjs -t es5 --emitDecoratorMetadata src/script/spotidrop/Spotidrop.ts
+    $ cd client
+    $ gulp watch
 
 ## Serving the client app
 
-    $ cd ./client
+    $ cd client
     $ npm install -g http-server  # Or sudo npm install -g http-server
     $ http-server                 # Creates a server at localhost:8080
