@@ -23,6 +23,6 @@ To watch:
 
 ## Serving the client app
 
-    $ cd client
+    $ cd client/build
     $ npm install -g http-server  # Or sudo npm install -g http-server
     $ http-server                 # Creates a server at localhost:8080
