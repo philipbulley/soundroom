@@ -2,6 +2,7 @@ var express = require('express'),
   app = express(),
   bodyParser = require('body-parser'),
   cors = require('cors'),
+  dotenv = require('dotenv').config({silent: true}),
   log = require('./util/LogUtil'),
   MongooseService = require('./service/MongooseService'),
   signals = require('signals');
