@@ -36,7 +36,8 @@ MongooseService.connectToAppInstance(process.env.MONGO_CONNECT)
       index: require('./controller/route/index'),
       playlists: require('./controller/route/playlists'),
       users: require('./controller/route/users'),
-      me: require('./controller/route/me')
+      me: require('./controller/route/me'),
+      search: require('./controller/route/search')
     };
 
     app.use(cors());
@@ -45,7 +46,8 @@ MongooseService.connectToAppInstance(process.env.MONGO_CONNECT)
     app.use('/api', routes.index)
       .use('/api/playlists', routes.playlists)
       .use('/api/users', routes.users)
-      .use('/api/me', routes.me);
+      .use('/api/me', routes.me)
+      .use('/api/search', routes.search);
 
     // Start the server!
     app.listen(process.env.PORT);
