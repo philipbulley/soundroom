@@ -88,6 +88,22 @@ _.extend(SpotifyService.prototype, {
 
   play: function (id) {
     spotify.player.play(spotify.createFromLink(id));
+  },
+
+  // http://www.node-spotify.com/api.html#search
+
+  search: function (terms) {
+    var deferred = Q.defer();
+    var offset = 0;
+    var limit = 10;
+    var search = new spotify.Search(terms, offset, limit);
+    search.execute(function(err, result) {
+      if (err) {
+        deferred.reject(err);
+      }
+      deferred.resolve(result);
+    });
+    return deferred.promise;
   }
 
 });

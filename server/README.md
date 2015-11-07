@@ -29,7 +29,7 @@ Now you've installed, see "Running the node app" later on in this document.
 
 1. Install nodejs ([extra info here](http://weworkweplay.com/play/raspberry-pi-nodejs/)):
 
-        $ wget http://node-arm.herokuapp.com/node_latest_armhf.deb 
+        $ wget http://node-arm.herokuapp.com/node_latest_armhf.deb
         $ sudo dpkg -i node_latest_armhf.deb
 
 1. Install node-gyp globally
@@ -40,7 +40,7 @@ Now you've installed, see "Running the node app" later on in this document.
 
         $ g++ -v
 
-    If < 4.7, you need to update it ([more info here](https://www.youtube.com/watch?v=EabkMaJ-3nk)). 
+    If < 4.7, you need to update it ([more info here](https://www.youtube.com/watch?v=EabkMaJ-3nk)).
 
         $ sudo apt-get install gcc-4.7 g++-4.7
 
@@ -54,7 +54,7 @@ Now you've installed, see "Running the node app" later on in this document.
 
         $ cd YOUR_LIBSPOTIFY_EXTRACTED_DIR
         $ sudo make install prefix=/usr/local
- 
+
     Add the following to your `.bashrc`:
 
         export PKG_CONFIG_PATH=/usr/local/lib
@@ -76,7 +76,7 @@ Now you've installed, see "Running the node app" later on in this document.
         -
         > node-spotify@0.7.1 install /home/pi/spotifytest/node_modules/node-spotify
         > node-gyp rebuild
-        
+
         gyp WARN EACCES user "root" does not have permission to access the dev dir "/root/.node-gyp/0.12.1"
         gyp WARN EACCES attempting to reinstall using temporary dev dir "/home/pi/spotifytest/node_modules/node-spotify/.node-gyp"
         child_process: customFds option is deprecated, use stdio instead.
@@ -144,9 +144,9 @@ The app requires that you've setup certain environment variables. One way to do 
 
     #!/bin/sh
 
-    APP_ENV='dev' PORT=8123 SPOTIFY_APP_KEY='./spotify_appkey.key' SPOTIFY_USERNAME='your-premium-account-username' SPOTIFY_PASSWORD='your-password' node index.js
+    NODE_ENV='dev' HOST=localhost PORT=8123 SPOTIFY_APP_KEY='./spotify_appkey.key' SPOTIFY_USERNAME='your-premium-account-username' SPOTIFY_PASSWORD='your-password' node index.js
 
-* `APP_ENV` works with `Config`
+* `NODE_ENV` works with `Config`
 * `PORT` is used by the express http server
 * `SPOTIFY_APP_KEY` Points to your Spotify binary key. This links libspotify with a Spotify developer account.
 * `SPOTIFY_USERNAME` and `SPOTIFY_PASSWORD` specify the user account that libspotify will login using. This must be a paid for Spotify Premium account.
@@ -162,8 +162,8 @@ If you don't hear audio, you may need to [change the default output](https://www
 
     amixer cset numid=3 1
 
-* Here the output is being set to `2`, which is HDMI. 
-* Setting the output to `1` switches to analogue (headphone jack). 
+* Here the output is being set to `2`, which is HDMI.
+* Setting the output to `1` switches to analogue (headphone jack).
 * The default setting is `0` which is automatic.
 
 
@@ -171,8 +171,8 @@ If you don't hear audio, you may need to [change the default output](https://www
 
 * [Github](https://github.com/FrontierPsychiatrist/node-spotify)
 * [API Docs](http://www.node-spotify.com/api.html)
- 
- 
+
+
 ## Tests
 
 First install mocha globally:
@@ -182,5 +182,5 @@ First install mocha globally:
 To run tests:
 
     $ mocha
-    
+
 This includes integration tests, for which you'll require a connection to the database to be established.
