@@ -1,9 +1,10 @@
 // Define the environment variables required by the app
-process.env.MONGO_CONNECT = 'mongodb://pacino:jdur7sajcmskd8310dk@ds031922.mongolab.com:31922/spotidrop-dev';
+process.env.MONGO_CONNECT = 'mongodb://testuser:dEjVVRCDuTP56Fyh@ds051534.mongolab.com:51534/spotidrop-test';
 process.env.APP_ENV = 'dev';
 process.env.MOCK_SPOTIFY = true;
 
-var chai = require('chai'),
+var mongoose = require('mongoose'),
+  chai = require('chai'),
   expect = chai.expect,
   request = require('supertest'),
   index = require('./../index');
@@ -22,6 +23,20 @@ describe('/api/playlists', function () {
 
     // Listen out for app init completion (including DB connection success)
     index.onInitComplete.addOnce(done);
+  });
+
+  after(function (done) {
+    var testDb = mongoose.connect(process.env.MONGO_CONNECT);
+
+    testDb.connection.on('open', function() {
+      testDb.connection.db.dropDatabase(function(err, result) {
+        if (err) {
+          throw err;
+        }
+        console.log('Test database dropped =', result);
+        done();
+      });
+    });
   });
 
   beforeEach(function () {
