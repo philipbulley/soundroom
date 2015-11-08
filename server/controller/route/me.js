@@ -1,18 +1,17 @@
 var express = require('express'),
   router = express.Router(),
   UserController = require('../UserController'),
-//AuthController = require( './../AuthController' ),
-//PermissionEnum = require( './../../model/enum/PermissionEnum' ),
-  log = require('./../../util/LogUtil');
+  log = require('./../../util/LogUtil'),
+  auth = require('../AuthController');
 
 router.route('/')
-  .get(/*AuthController.verify( PermissionEnum.NDA ),*/
+  .get(auth.verify,
   function (req, res) {
     log.debug('GET AUTHORIZED!');
     res.json({message: 'The more we know, the less we show.'});
   })
 
-  .post(/*AuthController.verify(),*/
+  .post(auth.verify,
   function (req, res) {
     log.debug('POST AUTHORIZED!');
     res.json({message: 'The more we know, the less we show.'});

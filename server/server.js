@@ -1,10 +1,13 @@
 var express = require('express'),
   bodyParser = require('body-parser'),
+  cookieParser = require('cookie-parser'),
+  session = require('express-session'),
   cors = require('cors'),
   dotenv = require('dotenv'),
   log = require('./util/LogUtil'),
   MongooseService = require('./service/MongooseService'),
-  signals = require('signals');
+  signals = require('signals'),
+  AuthController = require('./controller/AuthController');
 
 dotenv.config({silent: true});
 
@@ -29,10 +32,16 @@ MongooseService.connectToAppInstance(process.env.MONGO_CONNECT)
     //AuthController = require( './controller/AuthController' );
   })
   .then(() => {
+    app.use(cookieParser()); // might not be needed?
     app.use(bodyParser.urlencoded({extended: true}));
     app.use(bodyParser.json());
-
-    //AuthController.init( app );
+    app.use(session({
+      secret: 'keyboard cat',
+      resave: false,
+      saveUninitialized: true,
+      // cookie: { secure: true }
+    }));
+    AuthController.init(app);
 
     // Routes
     const routes = {
@@ -40,7 +49,8 @@ MongooseService.connectToAppInstance(process.env.MONGO_CONNECT)
       playlists: require('./controller/route/playlists'),
       users: require('./controller/route/users'),
       me: require('./controller/route/me'),
-      search: require('./controller/route/search')
+      search: require('./controller/route/search'),
+      auth: require('./controller/route/auth')
     };
 
     app.use(cors());
@@ -50,7 +60,8 @@ MongooseService.connectToAppInstance(process.env.MONGO_CONNECT)
       .use('/api/playlists', routes.playlists)
       .use('/api/users', routes.users)
       .use('/api/me', routes.me)
-      .use('/api/search', routes.search);
+      .use('/api/search', routes.search)
+      .use('/auth', routes.auth);
 
     // Start the server!
     app.listen(process.env.PORT);
@@ -63,5 +74,7 @@ MongooseService.connectToAppInstance(process.env.MONGO_CONNECT)
     process.exit(1);    // Fatal. Exit!
   })
   .done();
+
+
 
 module.exports = index;

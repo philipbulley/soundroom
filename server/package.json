@@ -23,8 +23,8 @@
     "mongoose-deep-populate": "^2.0.1",
     "mongoose-q": "0.0.17",
     "node-spotify": "~0.7.1",
-    "passport": "~0.2.1",
-    "passport-google": "~0.3.0",
+    "passport": "~0.3.0",
+    "passport-google-oauth": "^0.2.0",
     "q": "~1.4.1",
     "signals": "~1.0.0"
   },
@@ -40,6 +40,7 @@
     ]
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "test": "mocha"
   }
 }

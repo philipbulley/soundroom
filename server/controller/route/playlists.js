@@ -1,12 +1,11 @@
 var express = require('express'),
   router = express.Router(),
   PlaylistRequestController = require('./../request/PlaylistRequestController'),
-//AuthController = require( './../AuthController' ),
-//PermissionEnum = require( './../../model/enum/PermissionEnum' ),
-  log = require('./../../util/LogUtil');
+  log = require('./../../util/LogUtil'),
+  auth = require('../AuthController');
 
 router.route('/')
-  .get(/*AuthController.verify(),*/
+  .get(auth.verify,
   function (req, res) {
     console.log('GET /playlists/');
 
@@ -15,7 +14,7 @@ router.route('/')
       .done();
   })
 
-  .post(/*AuthController.verify(),*/
+  .post(auth.verify,
   function (req, res) {
     new PlaylistRequestController()
       .create(req, res)
@@ -23,7 +22,7 @@ router.route('/')
   });
 
 router.route('/:playlist_id')
-  .get(/*AuthController.verify(),*/
+  .get(auth.verify,
   function (req, res) {
     console.log('GET /playlists/:playlist_id' + req.params.playlist_id);
 
@@ -32,7 +31,7 @@ router.route('/:playlist_id')
       .done();
   })
 
-  .put(/*AuthController.verify(),*/
+  .put(auth.verify,
   function (req, res) {
     console.log('PUT /playlists/:playlist_id', req.params.playlist_id);
 
@@ -41,7 +40,7 @@ router.route('/:playlist_id')
       .done();
   })
 
-  .patch(/*AuthController.verify(),*/
+  .patch(auth.verify,
   function (req, res) {
     console.log('PATCH /playlists/:playlist_id', req.params.playlist_id);
 
@@ -50,7 +49,7 @@ router.route('/:playlist_id')
       .done();
   })
 
-  .delete(/*AuthController.verify(),*/
+  .delete(auth.verify,
   function (req, res) {
     console.log('DELETE /playlists/:playlist_id', req.params.playlist_id);
 
@@ -61,7 +60,7 @@ router.route('/:playlist_id')
 
 // TODO: Add integration test for this endpoint
 router.route('/:playlist_id/play')
-  .post(/*AuthController.verify(),*/
+  .post(auth.verify,
   function (req, res) {
     console.log('POST /playlists/' + req.params.playlist_id + '/play');
 
@@ -71,7 +70,7 @@ router.route('/:playlist_id/play')
   });
 
 router.route('/:playlist_id/tracks')
-  .post(/*AuthController.verify(),*/
+  .post(auth.verify,
   function (req, res) {
     console.log('POST /playlists/' + req.params.playlist_id + '/tracks/');
 
@@ -86,7 +85,7 @@ router.route('/:playlist_id/tracks/:track_id');
 // TODO: DELETE /:playlist_id/tracks/:track_id
 
 router.route('/:playlist_id/tracks/:track_id/upvote')
-  .post(/*AuthController.verify(),*/
+  .post(auth.verify,
   function (req, res) {
     console.log('POST /playlists/' + req.params.playlist_id + '/tracks/' + req.params.track_id + '/upvote');
 

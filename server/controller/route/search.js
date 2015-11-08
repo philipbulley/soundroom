@@ -1,9 +1,10 @@
 var express = require('express'),
   router = express.Router(),
-  SpotifyService = require('../../service/SpotifyService');
+  SpotifyService = require('../../service/SpotifyService'),
+  auth = require('../AuthController');
 
 router.route('/:terms')
-  .get(function(req, res) {
+  .get(auth.verify, function(req, res) {
 
     console.log('GET /search/:terms', req.params.terms);
 
