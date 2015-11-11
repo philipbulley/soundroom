@@ -13,7 +13,62 @@ function UserController() {
 
 _.extend(UserController, {});
 
+// UserSchema.static('findOrCreate', function (profile) {
+//     return Q.Promise(function (resolve, reject) {
+//         UserDocumentModel.findOne({
+//             email: profile.email
+//         })
+//         .exec()
+//         .then(function (user) {
+//             if (user) {
+//                 return resolve(user);
+//             }
+//             User.create({
+//                 displayName: profile.displayName,
+//                 email: profile.email
+//             }).onFulfill(function (user) {
+//                 resolve(user);
+//             }).onReject(function (err) {
+//                 reject(err);
+//             });
+//         });
+//     });
+// });
+
+
 UserController.prototype = {
+
+  findOrCreate: function(userParams) {
+    return Q.Promise((resolve, reject) => {
+      this.find(userParams)
+        .then((user) => {
+          if (user && user.length) {
+            console.log('FOUND EXISTING USER:', user[0]);
+            return resolve(user[0]);
+          }
+          this.create(userParams)
+            .then((newUser) => {
+              console.log('CREATED NEW USER:', newUser);
+              return resolve(newUser);
+            })
+            .catch((err) => reject(err));
+        });
+    });
+  // findOrCreate: function(userParams) {
+  //   return this.find(userParams)
+  //     .then((user) => {
+  //       if (user && user.length) {
+  //         console.log('FOUND EXISTING USER:', user);
+  //         return user;
+  //       } else {
+  //         return this.create(userParams)
+  //           .then((newUser) => {
+  //             console.log('CREATED NEW USER:', newUser);
+  //             return newUser;
+  //           });
+  //       }
+  //     });
+  },
 
   /**
    *
@@ -22,22 +77,23 @@ UserController.prototype = {
    */
   create: function (userParams) {
     // Only accept allowable fields to create a new user with
-    userParams = _.pick(userParams, ['email', 'password', 'firstName', 'lastName']);
+    // userParams = _.pick(userParams, ['email', 'password', 'firstName', 'lastName']);
+    userParams = _.pick(userParams, ['name', 'avatar', 'googleId', 'spotifyId', 'facebookId', 'twitterId']);
 
     log.info('UserController.create: userParams:', userParams);
 
-    var user = new User(userParams);
+    const user = new User(userParams);
     return user.saveQ()
-      .catch(function (err) {
+      .catch((err) => {
         if (err.name === 'MongoError' && err.code === 11000) {
           // Duplicate key, user with email already exists
-          var err = new Error(UserErrorEnum.ALREADY_EXISTS);
-          err.email = userParams.email;
+          const err = new Error(UserErrorEnum.ALREADY_EXISTS);
+          // err.email = userParams.email;
           throw err;
         }
 
         log.formatError(err, 'UserController.create: save');
-      }.bind(this));
+      });
   },
 
   /**
@@ -46,29 +102,34 @@ UserController.prototype = {
    * @param executingUser
    * @returns {Q.Promise}
    */
-  find: function (query, executingUser) {
-    log.info('UserController.find()', query, executingUser);
+  // find: function (query, executingUser) {
+  find: function (query) {
+    // log.info('UserController.find()', query, executingUser);
 
     // Only accept allowable fields to query by
-    query = executingUser
-      ? _.pick(query, ['_id', 'email', 'accessToken', 'nda'])
-      : _.pick(query, ['_id', 'email']);
+    // query = executingUser
+    //   ? _.pick(query, ['_id', 'email', 'accessToken', 'nda'])
+    //   : _.pick(query, ['_id', 'email']);
 
-    var select = executingUser
-      ? null  // No restrictions on selected fields, as we have an executing user
-      : 'email';
+    // const select = executingUser
+    //   ? null  // No restrictions on selected fields, as we have an executing user
+    //   : 'email';
 
     // Anon access requires a query as we don't want to dump out all users
-    if (!executingUser && !_.keys(query).length)
-      return Q.reject(new Error(PermissionErrorEnum.UNAUTHORIZED));
+    // if (!executingUser && !_.keys(query).length)
+    //   return Q.reject(new Error(PermissionErrorEnum.UNAUTHORIZED));
 
-    return User.findQ(query, select)
-      .then(function (users) {
+    // return User.findQ(query, select)
+    return User.findQ(query)
+      .then((users) => {
         log.info('UserController.find: then:', users);
         return users;
-      }.bind(this))
-  }
+      });
+  },
 
+  findById: function(id, cb) {
+    User.findById(id, cb);
+  }
 
 };
 

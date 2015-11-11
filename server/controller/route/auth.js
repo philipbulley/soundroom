@@ -23,9 +23,48 @@ router.route('/google')
 //   which, in this example, will redirect the user to the home page.
 router.route('/google/callback')
   .get(passport.authenticate('google'), (req, res) => {
-    res.json({message: 'Log in successful'});
+    // res.json({message: 'Log in successful'});
+    res.json(req.user);
   });
 
+// GET /auth/spotify
+router.route('/spotify')
+  .get(passport.authenticate('spotify'));
+
+router.route('/spotify/callback')
+  .get(passport.authenticate('spotify', {
+    failureRedirect: '/login'
+  }),
+  (req, res) => {
+    res.json(req.user);
+  });
+
+// GET /auth/twitter
+router.route('/twitter')
+  .get(passport.authenticate('twitter'));
+
+router.route('/twitter/callback')
+  .get(passport.authenticate('twitter', {
+    failureRedirect: '/login'
+  }),
+  (req, res) => {
+    res.json(req.user);
+  });
+
+
+// GET /auth/facebook
+router.route('/facebook')
+  .get(passport.authenticate('facebook'));
+
+router.route('/facebook/callback')
+  .get(passport.authenticate('facebook', {
+    failureRedirect: '/login'
+  }),
+  (req, res) => {
+    res.json(req.user);
+  });
+
+// GET /auth/logout
 router.route('/logout')
   .get((req, res) => {
     req.logout();
