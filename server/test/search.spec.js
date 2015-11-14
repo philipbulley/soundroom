@@ -39,9 +39,10 @@ describe('/api/search', function () {
           expect(res.status, 'with 200').to.equal(200);
           expect(res.body, 'with array').to.be.an.instanceof(Array);
           expect(res.body, 'with length').to.have.length.above(0);
-          expect(res.body[0], 'with name').to.have.property('name');
+          expect(res.body[0], 'with artist').to.have.property('artist');
+          expect(res.body[0], 'with title').to.have.property('title');
           expect(res.body[0], 'with link').to.have.property('link');
-          expect(res.body[0], 'with artist').to.have.property('artists');
+          expect(res.body[0], 'with album').to.have.property('album');
 
           done();
         });

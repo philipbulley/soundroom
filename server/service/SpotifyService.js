@@ -1,8 +1,9 @@
 var spotify = require('node-spotify'),
   _ = require('lodash'),
   Q = require('q'),
-  FunctionUtil = require('./../util/FunctionUtil'),
-  singletonBlocker = 843485732849825;
+  FunctionUtil = require('./../util/FunctionUtil');
+
+const singletonBlocker = 843485732849825;
 
 
 function SpotifyService(blocker) {
@@ -33,7 +34,7 @@ _.extend(SpotifyService, {
 
 _.extend(SpotifyService.prototype, {
 
-  isLoggedIn: null,
+  isLoggedIn: false,
 
   login: function () {
 
@@ -43,29 +44,27 @@ _.extend(SpotifyService.prototype, {
       return Q.when();
     }
 
-    var deferred = Q.defer();
+    const deferred = Q.defer();
 
     // Init and overwrite
     spotify = spotify({appkeyFile: process.env.SPOTIFY_APP_KEY});
 
-    var ready = function (err) {
-      if (err) {
-        console.error('Login failed for ' + process.env.SPOTIFY_USERNAME + ':', err);
-        deferred.reject(err);
-      }
-
-      console.log('SpotifyService.login: Success! Logged in as:', spotify.sessionUser.displayName, '(' + spotify.sessionUser.link + ')');
-
-      //spotify.player.play(spotify.createFromLink('spotify:track:4PLOJDcUb3gwfMLoZPQt3O'));    // DEBUG
-
-      this.isLoggedIn = true;
-
-      deferred.resolve(spotify.sessionUser);
-    }.bind(this);
-
     // Add listener for login complete
     spotify.on({
-      ready: ready
+      ready: (err) => {
+        if (err) {
+          console.error(`Login failed for ${process.env.SPOTIFY_USERNAME}:`, err);
+          deferred.reject(err);
+        }
+
+        const {displayName, link} = spotify.sessionUser;
+        console.log(`SpotifyService.login: Success! Logged in as: ${displayName}, (${link})`);
+
+        //spotify.player.play(spotify.createFromLink('spotify:track:4PLOJDcUb3gwfMLoZPQt3O'));    // DEBUG
+
+        this.isLoggedIn = true;
+        deferred.resolve(spotify.sessionUser);
+      }
     });
 
     // DEBUG!
@@ -75,37 +74,62 @@ _.extend(SpotifyService.prototype, {
     //  }
     //});
 
-
     spotify.login(process.env.SPOTIFY_USERNAME, process.env.SPOTIFY_PASSWORD, false, false);
 
     return deferred.promise;
   },
 
-  getTrack: function (id) {
+  getTrack (id) {
     console.log('SpotifyService.getTrack():', id, 'spotify:', spotify);
     return spotify.createFromLink(id);
   },
 
-  play: function (id) {
+  play (id) {
     spotify.player.play(spotify.createFromLink(id));
   },
 
   // http://www.node-spotify.com/api.html#search
 
-  search: function (terms) {
-    var deferred = Q.defer();
-    var offset = 0;
-    var limit = 10;
-    var search = new spotify.Search(terms, offset, limit);
-    search.execute(function(err, result) {
+  search (terms) {
+    const deferred = Q.defer();
+    const offset = 0;
+    const limit = 10;
+    const search = new spotify.Search(terms, offset, limit);
+    search.execute((err, result) => {
       if (err) {
         deferred.reject(err);
       }
       deferred.resolve(result);
     });
     return deferred.promise;
-  }
+  },
 
+  getImage (albumLink) {
+    const album = spotify.createFromLink(albumLink);
+
+    function fetchImage(tries, cb) {
+      if (tries === 0) {
+        return cb('Can\'t get cover image', null);
+      }
+      const image = album.getCoverBase64();
+      if (image) {
+        return cb(null, `data:image/jpeg;base64,${image}`);
+      }
+      tries--;
+      setTimeout(() => fetchImage(tries, cb), 100);
+    }
+
+    const deferred = Q.defer();
+
+    fetchImage(10, (err, result) => {
+      if (err) {
+        deferred.reject(err);
+      }
+      deferred.resolve(result);
+    });
+
+    return deferred.promise;
+  }
 });
 
 
