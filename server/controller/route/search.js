@@ -1,22 +1,31 @@
 var express = require('express'),
-  router = express.Router(),
   SpotifyService = require('../../service/SpotifyService'),
   auth = require('../AuthController');
 
+const router = express.Router();
+
+router.route('/')
+  .get(auth.verify, (req, res) => {
+    res.json([]);
+  });
+
 router.route('/:terms')
-  .get(auth.verify, function(req, res) {
+  .get(auth.verify, (req, res) => {
 
     console.log('GET /search/:terms', req.params.terms);
 
     SpotifyService.getInstance().search(req.params.terms)
-      .then(function(result) {
-        console.log(result);
+      .then((result) => {
+        const tracks = [];
         if (result.numTracks) {
-          console.log(result.getTrack(0));
+          const length = Math.min(result.numTracks, 10);
+          while (tracks.length < length) {
+            tracks.push(result.getTrack(tracks.length));
+          }
         }
-        res.json(result);
+        res.json(tracks);
       })
-      .catch(function(err) {
+      .catch((err) => {
         res.send(err);
       });
   });

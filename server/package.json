@@ -41,6 +41,7 @@
   },
   "scripts": {
     "start": "node index.js",
+    "startDev": "NODE_ENV=dev NO_AUTH=true node index.js",
     "test": "mocha"
   }
 }

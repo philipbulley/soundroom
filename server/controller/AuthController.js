@@ -128,7 +128,7 @@ function enableTwitterLogin(userController) {
 //   login page.
 function verify(req, res, next) {
   // do not authenticate for unit tests
-  if (process.env.MOCK_SPOTIFY) {
+  if (process.env.NO_AUTH) {
     return next();
   }
 

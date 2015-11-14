@@ -23,6 +23,10 @@ SpotifyDataService.prototype = {
   getTrack: function (id) {
     //console.log('SpotifyDataService.getTrack():', id, 'spotifyService:', this.spotifyService);
 
+    if (process.env.MOCK_SPOTIFY === 'true') {
+      return new MockSpotifyDataService().getTrack(id);
+    }
+
     var trackResponse = this.spotifyService.getTrack(id);
     console.log('SpotifyDataService.getTrack: trackResponse:', trackResponse);
     return SpotifyTrackFactory.create(trackResponse);
@@ -68,8 +72,4 @@ MockSpotifyDataService.prototype = {
   }
 };
 
-
-if (process.env.MOCK_SPOTIFY === 'true')
-  module.exports = MockSpotifyDataService;
-else
-  module.exports = SpotifyDataService;
+module.exports = SpotifyDataService;
