@@ -13,31 +13,13 @@ function UserController() {
 
 _.extend(UserController, {});
 
-// UserSchema.static('findOrCreate', function (profile) {
-//     return Q.Promise(function (resolve, reject) {
-//         UserDocumentModel.findOne({
-//             email: profile.email
-//         })
-//         .exec()
-//         .then(function (user) {
-//             if (user) {
-//                 return resolve(user);
-//             }
-//             User.create({
-//                 displayName: profile.displayName,
-//                 email: profile.email
-//             }).onFulfill(function (user) {
-//                 resolve(user);
-//             }).onReject(function (err) {
-//                 reject(err);
-//             });
-//         });
-//     });
-// });
-
-
 UserController.prototype = {
 
+  /**
+   *
+   * @param userParams
+   * @returns {Q.Promise}
+   */
   findOrCreate: function(userParams) {
     return Q.Promise((resolve, reject) => {
       this.find(userParams)
@@ -54,20 +36,6 @@ UserController.prototype = {
             .catch((err) => reject(err));
         });
     });
-  // findOrCreate: function(userParams) {
-  //   return this.find(userParams)
-  //     .then((user) => {
-  //       if (user && user.length) {
-  //         console.log('FOUND EXISTING USER:', user);
-  //         return user;
-  //       } else {
-  //         return this.create(userParams)
-  //           .then((newUser) => {
-  //             console.log('CREATED NEW USER:', newUser);
-  //             return newUser;
-  //           });
-  //       }
-  //     });
   },
 
   /**
@@ -127,6 +95,11 @@ UserController.prototype = {
       });
   },
 
+  /**
+   *
+   * @param id
+   * @param cb
+   */
   findById: function(id, cb) {
     User.findById(id, cb);
   }
