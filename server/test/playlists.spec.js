@@ -2,14 +2,16 @@
 process.env.MONGO_CONNECT = 'mongodb://testuser:dEjVVRCDuTP56Fyh@ds051534.mongolab.com:51534/spotidrop-test';
 process.env.NODE_ENV = 'dev';
 process.env.MOCK_SPOTIFY = true;
+process.env.NO_AUTH = true;
 
-var mongoose = require('mongoose'),
-  chai = require('chai'),
+var chai = require('chai'),
   expect = chai.expect,
   request = require('supertest'),
   index = require('./../index');
 
 describe('/api/playlists', function () {
+  this.timeout(5000);
+
   var dummyData1,
     dummyData2,
     responseLength,
@@ -25,18 +27,8 @@ describe('/api/playlists', function () {
     index.onInitComplete.addOnce(done);
   });
 
-  after(function (done) {
-    var testDb = mongoose.connect(process.env.MONGO_CONNECT);
-
-    testDb.connection.on('open', function() {
-      testDb.connection.db.dropDatabase(function(err, result) {
-        if (err) {
-          throw err;
-        }
-        console.log('Test database dropped =', result);
-        done();
-      });
-    });
+  after(function(done) {
+    require('./helper/drop-db')(done);
   });
 
   beforeEach(function () {
@@ -362,7 +354,7 @@ describe('/api/playlists', function () {
 
     describe('DELETE', function () {
       it('should return empty response', function (done) {
-        console.log('Attempt to delete /api/playlists/' + playlistId1);
+        // console.log('Attempt to delete /api/playlists/' + playlistId1);
         request(index.app)
           .delete('/api/playlists/' + playlistId1)
           .end(function (err, res) {
@@ -430,7 +422,7 @@ describe('/api/playlists', function () {
 
               playlistTrack = res.body.tracks[0];
 
-              console.log('_____________________ playlistTrack', playlistTrack);
+              // console.log('_____________________ playlistTrack', playlistTrack);
 
               done();
             });
