@@ -29,9 +29,10 @@
     "signals": "~1.0.0"
   },
   "devDependencies": {
-    "supertest": "~1.0.1",
+    "babel-eslint": "^4.1.5",
+    "chai": "~2.3.0",
     "mocha": "~2.2.5",
-    "chai": "~2.3.0"
+    "supertest": "~1.0.1"
   },
   "babel": {
     "presets": [
