@@ -4,13 +4,14 @@ process.env.NODE_ENV = 'dev';
 process.env.MOCK_SPOTIFY = true;
 process.env.NO_AUTH = true;
 
-var chai = require('chai'),
-  expect = chai.expect,
+var expect = require('chai').expect,
   request = require('supertest'),
   index = require('./../index');
 
+var timeout = 10 * 1000;
+
 describe('/api/playlists', function () {
-  this.timeout(5000);
+  this.timeout(timeout);
 
   var dummyData1,
     dummyData2,
@@ -21,7 +22,7 @@ describe('/api/playlists', function () {
 
   before(function (done) {
     // Extend timeout to allow for real DB connection to be made
-    this.timeout(10 * 1000);
+    this.timeout(timeout);
 
     // Listen out for app init completion (including DB connection success)
     index.onInitComplete.addOnce(done);

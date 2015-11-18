@@ -1,17 +1,17 @@
-var express = require('express'),
-  SpotifyService = require('../../service/SpotifyService'),
-  auth = require('../AuthController'),
-  _ = require('lodash');
+import _ from 'lodash';
+import express from 'express';
+import SpotifyService from '../../service/SpotifyService';
+import { verify } from '../AuthController';
 
 const router = express.Router();
 
 router.route('/')
-  .get(auth.verify, (req, res) => {
+  .get(verify, (req, res) => {
     res.json([]);
   });
 
 router.route('/:terms')
-  .get(auth.verify, (req, res) => {
+  .get(verify, (req, res) => {
 
     console.log('GET /search/:terms', req.params.terms);
 

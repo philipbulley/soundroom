@@ -2,9 +2,9 @@ var _ = require('lodash'),
   log = require('./../util/LogUtil'),
 //Q            = require( 'q' ),
   FunctionUtil = require('./../util/FunctionUtil'),
-  SpotifyService = require('./SpotifyService'),
   SpotifyTrackFactory = require('./../model/factory/SpotifyTrackFactory');
 
+import SpotifyService from './SpotifyService';
 
 function SpotifyDataService() {
 

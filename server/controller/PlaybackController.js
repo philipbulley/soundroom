@@ -1,35 +1,43 @@
-var _ = require('lodash'),
-  Q = require('q'),
-  FunctionUtil = require('./../util/FunctionUtil'),
-  log = require('./../util/LogUtil'),
-  PlaylistController = require('./PlaylistController'),
-  SpotifyService = require('./../service/SpotifyService'),
-  Config = require('./../model/Config');
+import { EventEmitter } from 'events';
+import FunctionUtil from './../util/FunctionUtil';
+import PlaylistController from './PlaylistController';
+import spotifyService from './../service/SpotifyService';
 
-function PlaybackController() {
-  FunctionUtil.bindAllMethods(this);
+class PlaybackController extends EventEmitter {
 
-  this.playlistController = new PlaylistController();
-  this.spotifyService = SpotifyService.getInstance();
-}
+  constructor () {
+    super();
 
-_.extend(PlaybackController, {});
+    FunctionUtil.bindAllMethods(this);
 
-PlaybackController.prototype = {
-  playlistController: null,
-  spotifyService: null,
-
-  play: function (playlistId) {
-    return this.playlistController.getNextTrackForPlayback(playlistId)
-      .then(function (playlistTrack) {
-        console.log('PlaybackController.play: Next track:', playlistTrack);
-
-        this.spotifyService.play(playlistTrack.track.foreignId);
-
-        return playlistTrack;
-      }.bind(this));
+    this.playlistController = new PlaylistController();
   }
 
-};
+  play (playlistId) {
+    return this.playlistController.getNextTrackForPlayback(playlistId)
+      .then((playlistTrack) => {
+        console.log(`PlaybackController.play: Next track: ${playlistTrack}`);
 
-module.exports = PlaybackController;
+        spotifyService.removeAllListeners('progress');
+        spotifyService.removeAllListeners('end');
+
+        if (!playlistTrack) {
+          console.log('playlist ended');
+          this.emit('end');
+          return null;
+        }
+
+        spotifyService.on('progress', (progress) => console.log('progress:', progress));
+        spotifyService.on('end', () => console.log('track ended'));
+        spotifyService.on('end', () => this.play(playlistId));
+        spotifyService.play(playlistTrack.track.foreignId);
+
+        this.emit('track', playlistTrack);
+
+        return playlistTrack;
+      });
+  }
+
+}
+
+export default PlaybackController;
