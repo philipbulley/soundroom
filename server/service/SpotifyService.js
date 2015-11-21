@@ -24,7 +24,7 @@ class SpotifyService extends EventEmitter {
 
   login () {
 
-    console.log('SpotifyService.login()');
+    console.log('SpotifyService.login()', this.isLoggedIn);
 
     if (this.isLoggedIn) {
       return Q.when();
@@ -78,9 +78,11 @@ class SpotifyService extends EventEmitter {
   }
 
   onProgress () {
+    const currentTime = this.getCurrentTime();
     const progress = this.getProgress();
+    const duration = this.getDuration();
 
-    this.emit('progress', progress);
+    this.emit('progress', { currentTime, duration, progress });
 
     if (progress < 1) {
       setTimeout(() => this.onProgress(), 900);
@@ -96,7 +98,7 @@ class SpotifyService extends EventEmitter {
   }
 
   resume () {
-    this.spotify.player.pause();
+    this.spotify.player.resume();
   }
 
   seek (second) {

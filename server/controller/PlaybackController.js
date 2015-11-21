@@ -1,16 +1,18 @@
-import { EventEmitter } from 'events';
 import FunctionUtil from './../util/FunctionUtil';
 import PlaylistController from './PlaylistController';
 import spotifyService from './../service/SpotifyService';
+import socketService from './../service/SocketService';
 
-class PlaybackController extends EventEmitter {
+class PlaybackController {
 
   constructor () {
-    super();
-
     FunctionUtil.bindAllMethods(this);
 
     this.playlistController = new PlaylistController();
+
+    socketService.on('pause', this.pause);
+    socketService.on('resume', this.resume);
+
   }
 
   play (playlistId) {
@@ -23,19 +25,37 @@ class PlaybackController extends EventEmitter {
 
         if (!playlistTrack) {
           console.log('playlist ended');
-          this.emit('end');
+          socketService.emitPlaylistEnd();
           return null;
         }
 
-        spotifyService.on('progress', (progress) => console.log('progress:', progress));
-        spotifyService.on('end', () => console.log('track ended'));
-        spotifyService.on('end', () => this.play(playlistId));
-        spotifyService.play(playlistTrack.track.foreignId);
+        socketService.emitTrackStart(playlistTrack);
 
-        this.emit('track', playlistTrack);
+        spotifyService.on('progress', (progressData) => {
+          // const { currentTime, duration, progress } = progressData;
+          // console.log('progress:', `${currentTime}/${duration} ${progress}`);
+          socketService.emitTrackProgress(progressData);
+        });
+
+        spotifyService.on('end', () => {
+          console.log('track ended');
+          this.play(playlistId);
+        });
+
+        spotifyService.play(playlistTrack.track.foreignId);
 
         return playlistTrack;
       });
+  }
+
+  pause () {
+    spotifyService.pause();
+    socketService.emitPause();
+  }
+
+  resume () {
+    spotifyService.resume();
+    socketService.emitResume();
   }
 
 }

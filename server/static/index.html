@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+  <style type="text/css">
+    body { font-family: sans-serif; }
+    dt { font-weight: bold; }
+  </style>
+</head>
+<body>
+	<h1>Hello</h1>
+
+	<section>
+    <dl>
+      <dt>Connected</dt><dd data-connect>false</dd>
+      <dt>Track</dt><dd data-track></dd>
+      <dt>Progress</dt><dd data-progress></dd>
+    </dl>
+    <button data-pause>pause</button>
+    <button data-resume>resume</button>
+  </secton>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var track = document.querySelector('[data-track]');
+    var progress = document.querySelector('[data-progress]');
+    var connect = document.querySelector('[data-connect]');
+
+		var pause = document.querySelector('[data-pause]');
+    var resume = document.querySelector('[data-resume]');
+		pause.disabled = true;
+		resume.disabled = true;
+
+    var socket = io('http://localhost:8080');
+
+    socket.on('connect', function (data) {
+      console.log('connect', data);
+      socket.emit('user:connect', 'hello!');
+      connect.innerHTML = 'true';
+    });
+
+    socket.on('track:start', function (data) {
+      console.log('track:start', data);
+      var artist = data.track.artists[0].name;
+      var title = data.track.name;
+      var votes = data.upVotes.length;
+      track.innerHTML = artist + ' -- ' + title + ' (' + votes + ' votes)';
+			pause.disabled = false;
+      resume.disabled = true;
+    });
+
+    socket.on('track:progress', function (data) {
+      console.log('track:progress', data);
+      var currentTime = data.currentTime;
+      var duration = data.duration;
+      var percent = Math.floor(data.progress * 100);
+      progress.innerHTML = currentTime + ' / ' + duration + ' (' + percent + '%)';
+    });
+
+    socket.on('playlist:end', function (data) {
+      console.log('playlist:end', data);
+      track.innerHTML = '';
+      progress.innerHTML = '';
+    });
+
+    socket.on('user:connect', function (data) {
+      console.log('user:connect', data);
+    });
+
+    socket.on('pause', function () {
+      console.log('pause');
+      pause.disabled = true;
+      resume.disabled = false;
+    });
+
+    socket.on('resume', function () {
+      console.log('resume');
+      pause.disabled = false;
+      resume.disabled = true;
+    });
+
+    pause.addEventListener('click', function() {
+      socket.emit('pause');
+    });
+
+    resume.addEventListener('click', function() {
+      socket.emit('resume');
+    });
+  </script>
+</body>
+</html>

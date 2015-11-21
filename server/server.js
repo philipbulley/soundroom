@@ -1,13 +1,15 @@
-var express = require('express'),
-  bodyParser = require('body-parser'),
-  cookieParser = require('cookie-parser'),
-  session = require('express-session'),
-  cors = require('cors'),
-  dotenv = require('dotenv'),
-  log = require('./util/LogUtil'),
-  MongooseService = require('./service/MongooseService'),
-  signals = require('signals'),
-  AuthController = require('./controller/AuthController');
+import express from 'express';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import log from './util/LogUtil';
+import MongooseService from './service/MongooseService';
+import path from 'path';
+import signals from 'signals';
+import { init as initAuth } from './controller/AuthController';
+import socketService from './service/SocketService';
 
 dotenv.config({silent: true});
 
@@ -29,9 +31,6 @@ if (!process.env.MONGO_CONNECT)
 MongooseService.connectToAppInstance(process.env.MONGO_CONNECT)
   // DB Setup complete. Safe to execute anything that creates Mongoose Models
   .then(() => {
-    //AuthController = require( './controller/AuthController' );
-  })
-  .then(() => {
     app.use(cookieParser()); // might not be needed?
     app.use(bodyParser.urlencoded({extended: true}));
     app.use(bodyParser.json());
@@ -41,7 +40,7 @@ MongooseService.connectToAppInstance(process.env.MONGO_CONNECT)
       saveUninitialized: true,
       // cookie: { secure: true }
     }));
-    AuthController.init(app);
+    initAuth(app);
 
     // Routes
     const routes = {
@@ -54,7 +53,6 @@ MongooseService.connectToAppInstance(process.env.MONGO_CONNECT)
     };
 
     app.use(cors());
-    //app.use( '/media', express.static( __dirname + '/media' ) );
 
     app.use('/api', routes.index)
       .use('/api/playlists', routes.playlists)
@@ -63,8 +61,14 @@ MongooseService.connectToAppInstance(process.env.MONGO_CONNECT)
       .use('/api/search', routes.search)
       .use('/auth', routes.auth);
 
+    // Serve static files for testing
+    app.use('/static', express.static(path.join(__dirname, 'static')));
+
     // Start the server!
-    app.listen(process.env.PORT);
+    const server = app.listen(process.env.PORT);
+
+    socketService.init(server);
+
     log.info(`Initialization complete! Hit me up on localhost:${process.env.PORT}!`);
 
     index.onInitComplete.dispatch();
@@ -74,7 +78,5 @@ MongooseService.connectToAppInstance(process.env.MONGO_CONNECT)
     process.exit(1);    // Fatal. Exit!
   })
   .done();
-
-
 
 module.exports = index;

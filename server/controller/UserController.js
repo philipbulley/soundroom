@@ -1,49 +1,48 @@
-var _ = require('lodash'),
-  Q = require('q'),
-  FunctionUtil = require('./../util/FunctionUtil'),
-  log = require('./../util/LogUtil'),
-  User = require('./../model/db/User'),
-  UserErrorEnum = require('./../model/enum/UserErrorEnum'),
-//PermissionErrorEnum = require( './../model/enum/PermissionErrorEnum' ),
-  Config = require('./../model/Config');
+import _ from 'lodash';
+import FunctionUtil from './../util/FunctionUtil';
+import Q from 'q';
+import log from './../util/LogUtil';
+import User from './../model/db/User';
+import UserErrorEnum from './../model/enum/UserErrorEnum';
+// import Config from './../model/Config';
+import socketService from './../service/SocketService';
 
-function UserController() {
-  FunctionUtil.bindAllMethods(this);
-}
-
-_.extend(UserController, {});
-
-UserController.prototype = {
+class UserController {
+  constructor () {
+    FunctionUtil.bindAllMethods(this);
+  }
 
   /**
    *
    * @param userParams
    * @returns {Q.Promise}
    */
-  findOrCreate: function(userParams) {
+  findOrCreate (userParams) {
     return Q.Promise((resolve, reject) => {
       this.find(userParams)
         .then((user) => {
           if (user && user.length) {
             console.log('FOUND EXISTING USER:', user[0]);
+            this.emitUserConnect(user[0]);
             return resolve(user[0]);
           }
           this.create(userParams)
             .then((newUser) => {
               console.log('CREATED NEW USER:', newUser);
+              this.emitUserConnect(newUser);
               return resolve(newUser);
             })
             .catch((err) => reject(err));
         });
     });
-  },
+  }
 
   /**
    *
    * @param userParams
    * @returns {Q.Promise}
    */
-  create: function (userParams) {
+  create (userParams) {
     // Only accept allowable fields to create a new user with
     // userParams = _.pick(userParams, ['email', 'password', 'firstName', 'lastName']);
     userParams = _.pick(userParams, ['name', 'avatar', 'googleId', 'spotifyId', 'facebookId', 'twitterId']);
@@ -55,14 +54,14 @@ UserController.prototype = {
       .catch((err) => {
         if (err.name === 'MongoError' && err.code === 11000) {
           // Duplicate key, user with email already exists
-          const err = new Error(UserErrorEnum.ALREADY_EXISTS);
-          // err.email = userParams.email;
-          throw err;
+          const error = new Error(UserErrorEnum.ALREADY_EXISTS);
+          // error.email = userParams.email;
+          throw error;
         }
 
         log.formatError(err, 'UserController.create: save');
       });
-  },
+  }
 
   /**
    *
@@ -71,7 +70,7 @@ UserController.prototype = {
    * @returns {Q.Promise}
    */
   // find: function (query, executingUser) {
-  find: function (query) {
+  find (query) {
     // log.info('UserController.find()', query, executingUser);
 
     // Only accept allowable fields to query by
@@ -93,17 +92,22 @@ UserController.prototype = {
         log.info('UserController.find: then:', users);
         return users;
       });
-  },
+  }
 
   /**
    *
    * @param id
    * @param cb
    */
-  findById: function(id, cb) {
+  findById (id, cb) {
     User.findById(id, cb);
   }
 
-};
+  emitUserConnect (user) {
+    socketService.emitUserConnect(user);
+  }
 
+}
+
+// export default UserController;
 module.exports = UserController;
