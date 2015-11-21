@@ -45,7 +45,15 @@ class UserController {
   create (userParams) {
     // Only accept allowable fields to create a new user with
     // userParams = _.pick(userParams, ['email', 'password', 'firstName', 'lastName']);
-    userParams = _.pick(userParams, ['name', 'avatar', 'googleId', 'spotifyId', 'facebookId', 'twitterId']);
+    userParams = _.pick(userParams, [
+      'name',
+      'avatar',
+      'googleId',
+      'spotifyId',
+      'facebookId',
+      'twitterId',
+      'userId'
+    ]);
 
     log.info('UserController.create: userParams:', userParams);
 

@@ -3,6 +3,7 @@ import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
 import { Strategy as SpotifyStrategy } from 'passport-spotify';
 import { Strategy as TwitterStrategy } from 'passport-twitter';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
+import { BasicStrategy } from 'passport-http';
 
 
 function enableGoogleLogin(userController) {
@@ -108,6 +109,31 @@ function enableTwitterLogin(userController) {
   }));
 }
 
+function enableBasicAuthLogin(userController) {
+
+  const {AUTH_USER, AUTH_PASS} = process.env;
+
+  const hasCredentials = AUTH_USER && AUTH_PASS;
+  if (!hasCredentials) {
+    return;
+  }
+
+  passport.use(new BasicStrategy(
+  (username, password, done) => {
+    if (username === AUTH_USER && password === AUTH_PASS) {
+      userController.findOrCreate({
+        userId: username,
+        name: 'BasicAuth User',
+        avatar: null
+      })
+      .then((user) => done(null, user))
+      .catch((err) => done(err));
+    } else {
+      return done(null, false);
+    }
+  }));
+}
+
 // Simple route middleware to ensure user is authenticated.
 
 function verify(req, res, next) {
@@ -149,6 +175,7 @@ function init(app) {
   enableSpotifyLogin(userController);
   enableTwitterLogin(userController);
   enableFacebookLogin(userController);
+  enableBasicAuthLogin(userController);
 
   // init passport
 

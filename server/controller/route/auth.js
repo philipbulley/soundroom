@@ -80,6 +80,13 @@ router.route('/facebook')
 router.route('/facebook/callback')
   .get(customCallback('facebook'));
 
+
+// GET /auth/facebook
+router.route('/basic')
+  .get(setRedirect, passport.authenticate('basic'),
+  (req, res) => res.json(req.user));
+
+
 // GET /auth/logout
 router.route('/logout')
   .get((req, res) => {
