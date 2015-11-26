@@ -1,20 +1,23 @@
-var express = require('express'),
-  router = express.Router(),
-  UserController = require('../UserController'),
-  log = require('./../../util/LogUtil'),
-  auth = require('../AuthController');
+// import _ from 'lodash';
+import express from 'express';
+// import UserController from '../UserController';
+import { verify } from '../AuthController';
+import log from './../../util/LogUtil';
+
+
+const router = express.Router();
 
 router.route('/')
-  .get(auth.verify,
-  function (req, res) {
+  .get(verify,
+  (req, res) => {
     log.debug('GET AUTHORIZED!');
     res.json({message: 'The more we know, the less we show.'});
   })
 
-  .post(auth.verify,
-  function (req, res) {
+  .post(verify,
+  (req, res) => {
     log.debug('POST AUTHORIZED!');
     res.json({message: 'The more we know, the less we show.'});
   });
 
-module.exports = router;
+export default router;

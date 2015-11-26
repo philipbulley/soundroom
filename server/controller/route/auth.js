@@ -1,5 +1,6 @@
-const express = require('express'),
-  passport = require('passport');
+import express from 'express';
+import passport from 'passport';
+
 
 const router = express.Router();
 
@@ -95,4 +96,4 @@ router.route('/logout')
     res.json({message: 'The more we know, the less we show.'});
   });
 
-module.exports = router;
+export default router;

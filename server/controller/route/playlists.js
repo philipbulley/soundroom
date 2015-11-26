@@ -1,7 +1,7 @@
 import express from 'express';
 import PlaylistRequestController from './../request/PlaylistRequestController';
-// import log from './../../util/LogUtil';
 import { verify } from '../AuthController';
+
 
 const router = express.Router();
 
@@ -80,7 +80,7 @@ router.route('/:playlist_id/tracks')
       .done();
   });
 
-router.route('/:playlist_id/tracks/:track_id')
+// router.route('/:playlist_id/tracks/:track_id')
   // .get(verify, (req, res) => )
 
 // TODO: GET /:playlist_id/tracks/:track_id
@@ -98,5 +98,4 @@ router.route('/:playlist_id/tracks/:track_id/upvote')
 
 // TODO: DELETE /:playlist_id/tracks/:track_id/upvote
 
-
-module.exports = router;
+export default router;

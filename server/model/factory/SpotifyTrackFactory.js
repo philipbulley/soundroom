@@ -1,11 +1,7 @@
-var _ = require('lodash'),
-  log = require('./../../util/LogUtil'),
-  ProviderEnum = require('./../enum/ProviderEnum'),
-  SpotifyAlbumFactory = require('./SpotifyAlbumFactory'),
-  SpotifyArtistFactory = require('./SpotifyArtistFactory'),
-  Track = require('./../db/Track'),
-  Artist = require('./../db/Artist'),
-  Album = require('./../db/Album');
+import _ from 'lodash';
+import ProviderEnum from './../enum/ProviderEnum';
+import SpotifyAlbumFactory from './SpotifyAlbumFactory';
+import SpotifyArtistFactory from './SpotifyArtistFactory';
 
 function SpotifyTrackFactory() {
 
@@ -25,11 +21,9 @@ _.extend(SpotifyTrackFactory, {
    */
   create: function (trackData) {
     if (_.isArray(trackData))
-      return trackData.map(function (value, i, a) {
-        return SpotifyTrackFactory.create(value);
-      });
+      return trackData.map((value) => SpotifyTrackFactory.create(value));
 
-    var track = {
+    const track = {
       name: trackData.name,
       duration: trackData.duration,
       foreignId: trackData.link,
@@ -45,4 +39,4 @@ _.extend(SpotifyTrackFactory, {
 
 });
 
-module.exports = SpotifyTrackFactory;
+export default SpotifyTrackFactory;

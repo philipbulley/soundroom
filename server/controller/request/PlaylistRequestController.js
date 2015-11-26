@@ -1,34 +1,27 @@
 import _ from 'lodash';
-// import Q from 'q';
 import FunctionUtil from './../../util/FunctionUtil';
 import log from './../../util/LogUtil';
-// import Playlist from './../../model/db/Playlist';
 import PlaylistController from './../PlaylistController';
 import PlaybackController from './../PlaybackController';
-// import TrackController from './../TrackController';
 import HttpUtil from './../../util/HttpUtil';
 import PlaylistErrorEnum from './../../model/enum/PlaylistErrorEnum';
 // import Config from './../../model/Config';
 
-function PlaylistRequestController() {
-  FunctionUtil.bindAllMethods(this);
-}
-
-_.extend(PlaylistRequestController, {
-
+class PlaylistRequestController {
   /**
    * These are Playlist fields that may be updated via HTTP PUT and PATCH requests
    */
-  ALLOW_UPDATE_FIELDS: ['name', 'description']
+  static ALLOW_UPDATE_FIELDS = ['name', 'description']
 
-});
+  constructor () {
 
-PlaylistRequestController.prototype = {
+    FunctionUtil.bindAllMethods(this);
 
-  playlistController: new PlaylistController(),
-  playbackController: new PlaybackController(),
+    this.playlistController = new PlaylistController();
+    this.playbackController = new PlaybackController();
+  }
 
-  getAll: function (req, res) {
+  getAll (req, res) {
     console.log('PlaylistRequestController.getAll()');
 
     return this.playlistController.getAll()
@@ -40,9 +33,9 @@ PlaylistRequestController.prototype = {
         HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
         log.formatError(err, 'PlaylistRequestController.get');
       });
-  },
+  }
 
-  getByIdParam: function (req, res) {
+  getByIdParam (req, res) {
     console.log('PlaylistRequestController.getByIdParam()', req.params.playlist_id);
 
     return this.playlistController.getById(req.params.playlist_id)
@@ -64,9 +57,9 @@ PlaylistRequestController.prototype = {
             log.formatError(err, 'PlaylistRequestController.getByIdParam');
         }
       });
-  },
+  }
 
-  create: function (req, res) {
+  create (req, res) {
     log.debug('PlaylistRequestController.create: req.body', req.body);
 
     return this.playlistController.create(req.body.name, req.body.description, req.body.user)
@@ -77,9 +70,9 @@ PlaylistRequestController.prototype = {
         HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
         log.formatError(err, 'PlaylistRequestController.create: save');
       });
-  },
+  }
 
-  addTrackByForeignId: function (req, res) {
+  addTrackByForeignId (req, res) {
     return this.playlistController.addTrackByForeignId(req.params.playlist_id, req.body.provider, req.body.foreignId)
       .then((playlist) => {
         res.json(playlist);
@@ -88,9 +81,9 @@ PlaylistRequestController.prototype = {
         HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
         log.formatError(err, 'PlaylistRequestController.addTrackByForeignId');
       });
-  },
+  }
 
-  upVoteTrack: function (req, res) {
+  upVoteTrack (req, res) {
     return this.playlistController.upVoteTrack(req.params.playlist_id, req.params.track_id)
       .then((playlist) => {
         res.json(playlist);
@@ -99,7 +92,7 @@ PlaylistRequestController.prototype = {
         HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
         log.formatError(err, 'PlaylistRequestController.upVoteTrack');
       });
-  },
+  }
 
   /**
    * Update segments / fields. Can be used with PUT or PATCH.
@@ -108,7 +101,7 @@ PlaylistRequestController.prototype = {
    *
    * @returns {Q.Promise}
    */
-  updateByIdParam: function (req, res) {
+  updateByIdParam (req, res) {
     console.log('PlaylistRequestController.updateByIdParam()', req.params.playlist_id, req.body);
 
     const updateObject = _.pick(req.body, PlaylistRequestController.ALLOW_UPDATE_FIELDS);
@@ -135,9 +128,9 @@ PlaylistRequestController.prototype = {
             log.formatError(err, 'PlaylistRequestController.updateByIdParam');
         }
       });
-  },
+  }
 
-  deleteByIdParam: function (req, res) {
+  deleteByIdParam (req, res) {
     console.log('PlaylistRequestController.deleteByIdParam()', req.params.playlist_id, req.body);
 
     return this.playlistController.deleteById(req.params.playlist_id)
@@ -159,9 +152,9 @@ PlaylistRequestController.prototype = {
             log.formatError(err, 'PlaylistRequestController.deleteByIdParam');
         }
       });
-  },
+  }
 
-  play: function (req, res) {
+  play (req, res) {
     return this.playbackController.play(req.params.playlist_id)
       .then((playlistTrack) => {
         res.json(playlistTrack);
@@ -170,6 +163,4 @@ PlaylistRequestController.prototype = {
 
 };
 
-// module.exports = PlaylistRequestController;
 export default PlaylistRequestController;
-// export { PlaylistRequestController };
