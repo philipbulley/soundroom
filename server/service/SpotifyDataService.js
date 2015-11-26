@@ -8,10 +8,6 @@ class SpotifyDataService {
 
   constructor () {
     FunctionUtil.bindAllMethods(this);
-
-    console.log('new data service');
-
-    spotifyService.login();
   }
 
   getTrack (id) {
@@ -25,6 +21,11 @@ class SpotifyDataService {
     console.log('SpotifyDataService.getTrack: trackResponse:', trackResponse);
     return SpotifyTrackFactory.create(trackResponse);
   }
+
+  getTrackArtwork (albumId) {
+    return spotifyService.getImage(albumId);
+  }
+
 }
 
 ///////////////////////////////////////////////////

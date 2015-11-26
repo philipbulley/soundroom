@@ -13,6 +13,7 @@
 	<h1>Hello</h1>
 
 	<section>
+		<img data-img>
     <dl>
       <dt>Connected</dt><dd data-connect>false</dd>
       <dt>Track</dt><dd data-track></dd>
@@ -27,13 +28,17 @@
     var track = document.querySelector('[data-track]');
     var progress = document.querySelector('[data-progress]');
     var connect = document.querySelector('[data-connect]');
+    var img = document.querySelector('[data-img]');
 
 		var pause = document.querySelector('[data-pause]');
     var resume = document.querySelector('[data-resume]');
 		pause.disabled = true;
 		resume.disabled = true;
 
-    var socket = io('http://localhost:8080');
+		var host = document.location.protocol + '//' + document.location.host;
+		console.log(host);
+
+    var socket = io(host);
 
     socket.on('connect', function (data) {
       console.log('connect', data);
@@ -49,10 +54,22 @@
       track.innerHTML = artist + ' -- ' + title + ' (' + votes + ' votes)';
 			pause.disabled = false;
       resume.disabled = true;
+
+			var url = '/api/track/' + data.track._id + '/artwork';
+			console.log('load image:', url);
+			var req = new XMLHttpRequest();
+			req.addEventListener('load', function() {
+				img.src = this.responseText;
+			});
+			req.addEventListener('error', function(err) {
+				console.error(err);
+			});
+			req.open('GET', url);
+			req.send();
     });
 
     socket.on('track:progress', function (data) {
-      console.log('track:progress', data);
+      // console.log('track:progress', data);
       var currentTime = data.currentTime;
       var duration = data.duration;
       var percent = Math.floor(data.progress * 100);

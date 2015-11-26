@@ -13,13 +13,7 @@ class SpotifyService extends EventEmitter {
 
   constructor () {
     super();
-
     FunctionUtil.bindAllMethods(this);
-  }
-
-  // leave for now to save refactoring across app
-  getInstance () {
-    return this;
   }
 
   login () {
@@ -137,6 +131,7 @@ class SpotifyService extends EventEmitter {
     const album = this.spotify.createFromLink(albumLink);
 
     function fetchImage(tries, cb) {
+      console.log('fetchImage', tries);
       if (tries === 0) {
         return cb('Can\'t get cover image', null);
       }
@@ -160,6 +155,5 @@ class SpotifyService extends EventEmitter {
     return deferred.promise;
   }
 }
-
 
 export default new SpotifyService();
