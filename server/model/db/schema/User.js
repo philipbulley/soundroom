@@ -1,16 +1,13 @@
-var
-  _ = require('lodash'),
-  mongoose = require('mongoose-q')(),
-  // Q = require('q'),
-  // log = require('./../../util/LogUtil'),
-  MongooseUtil = require('./../../util/MongooseUtil'),
-  DateFields = require('./plugin/DateFields'),
-  // UserErrorEnum = require('./../enum/UserErrorEnum'),
-  Schema = mongoose.Schema;
+import _ from 'lodash';
+import mongooseQ from 'mongoose-q';
+import DateFields from '../plugin/DateFields';
 
 
-function create() {
-  const userSchema = new Schema({
+const mongoose = mongooseQ();
+const Schema = mongoose.Schema;
+
+export default function create() {
+  const userSchema = Schema({
     name: {type: String, required: true},
     avatar: {type: String},
     googleId: {type: String},
@@ -33,7 +30,3 @@ function create() {
 
   return userSchema;
 }
-
-
-// Export!
-MongooseUtil.exportModuleModel('appInstance', 'User', create, module);

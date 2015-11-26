@@ -1,5 +1,5 @@
-var _ = require('lodash'),
-  MongooseService = require('./../service/MongooseService');
+import _ from 'lodash';
+import MongooseService from './../service/MongooseService';
 
 function MongooseUtil() {
 
@@ -17,19 +17,23 @@ _.extend(MongooseUtil, {
    * @param createFn            Ensure we only create the model once, this method reference should do the creation of the schema
    * @param module              The require module to export onto
    */
-  exportModuleModel: function (connectionName, modelName, createFn, module) {
+  exportModuleModel: function (connectionName, modelName, createFn) {
+    let model;
+    const db = MongooseService.db[connectionName];
     try {
       // Return existing model instance, if exists
-      module.exports = MongooseService.db[connectionName].model(modelName);
+      model = db.model(modelName);
     } catch (error) {
       // Otherwise create it
-      if (!MongooseService.db[connectionName])
-        throw new Error('Please ensure the "' + connectionName + '" DB connection is opened before exporting the "' + modelName + '" model');
+      if (!db)
+        throw new Error(`Please ensure the "${connectionName}" DB connection is opened before exporting the "${modelName}" model`);
 
-      module.exports = MongooseService.db[connectionName].model(modelName, createFn());
+      model = db.model(modelName, createFn());
     }
+    return model;
   }
 });
 
+export const exportModuleModel = MongooseUtil.exportModuleModel;
 
-module.exports = MongooseUtil;
+export default MongooseUtil;

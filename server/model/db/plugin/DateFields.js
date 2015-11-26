@@ -23,4 +23,4 @@ function DateFields(schema, options) {
   }
 }
 
-module.exports = DateFields;
+export default DateFields;

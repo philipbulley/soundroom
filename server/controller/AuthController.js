@@ -1,9 +1,10 @@
 import passport from 'passport';
+import UserController from './UserController';
+import { BasicStrategy } from 'passport-http';
 import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
+import { Strategy as FacebookStrategy } from 'passport-facebook';
 import { Strategy as SpotifyStrategy } from 'passport-spotify';
 import { Strategy as TwitterStrategy } from 'passport-twitter';
-import { Strategy as FacebookStrategy } from 'passport-facebook';
-import { BasicStrategy } from 'passport-http';
 
 
 function enableGoogleLogin(userController) {
@@ -149,9 +150,8 @@ function verify(req, res, next) {
   res.status(401).end('Unauthorized');
 }
 
-function init(app) {
+function initAuth(app) {
 
-  const UserController = require('./UserController');
   const userController = new UserController();
 
   // Passport session setup.
@@ -181,6 +181,8 @@ function init(app) {
 
   app.use(passport.initialize());
   app.use(passport.session());
+
+  return app;
 }
 
-export { init, verify };
+export { initAuth, verify };

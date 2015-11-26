@@ -25,7 +25,8 @@ describe('/api/playlists', function () {
     this.timeout(timeout);
 
     // Listen out for app init completion (including DB connection success)
-    index.onInitComplete.addOnce(done);
+    // index.onInitComplete.addOnce(done);
+    index.cb = done;
   });
 
   after(function(done) {

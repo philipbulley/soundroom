@@ -1,11 +1,11 @@
 import _ from 'lodash';
+import db from './../model/db';
 import FunctionUtil from './../util/FunctionUtil';
-import Q from 'q';
 import log from './../util/LogUtil';
-import User from './../model/db/User';
-import UserErrorEnum from './../model/enum/UserErrorEnum';
-// import Config from './../model/Config';
+import Q from 'q';
 import socketService from './../service/SocketService';
+import UserErrorEnum from './../model/enum/UserErrorEnum';
+
 
 class UserController {
   constructor () {
@@ -57,7 +57,8 @@ class UserController {
 
     log.info('UserController.create: userParams:', userParams);
 
-    const user = new User(userParams);
+    const user = db.User(userParams);
+
     return user.saveQ()
       .catch((err) => {
         if (err.name === 'MongoError' && err.code === 11000) {
@@ -94,8 +95,8 @@ class UserController {
     // if (!executingUser && !_.keys(query).length)
     //   return Q.reject(new Error(PermissionErrorEnum.UNAUTHORIZED));
 
-    // return User.findQ(query, select)
-    return User.findQ(query)
+    // return db.User.findQ(query, select)
+    return db.User.findQ(query)
       .then((users) => {
         log.info('UserController.find: then:', users);
         return users;
@@ -108,7 +109,7 @@ class UserController {
    * @param cb
    */
   findById (id, cb) {
-    User.findById(id, cb);
+    db.User.findById(id, cb);
   }
 
   emitUserConnect (user) {
@@ -117,5 +118,4 @@ class UserController {
 
 }
 
-// export default UserController;
-module.exports = UserController;
+export default UserController;
