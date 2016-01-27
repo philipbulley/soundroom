@@ -7,22 +7,25 @@ Democratic playlist client for Spotify.
     $ cd client
     $ npm install
 
-WIP: Ensure that Typescript 1.5.0-beta or newer has been installed. We need to keep this up to date in conjunction with latest Angular 2 version.
-
 ## Build
 
-To build everything:
+To watch and open in browser (includes Browersync):
 
     $ cd client
-    $ gulp build
+    $ npm start
 
-To watch:
+Build only:
 
     $ cd client
-    $ gulp watch
+    $ npm build
 
-## Serving the client app
+## Implementation
 
-    $ cd client/build
-    $ npm install -g http-server  # Or sudo npm install -g http-server
-    $ http-server -o              # Creates server and launches in your browser thansk to -o flag
+Based on Angular 2 using SystemJS loader.
+
+Not based on an existing seed project in order to avoid complexity for the time being. But the following seem to be the two contenders:
+
+* [mgechev/angular2-seed](https://github.com/mgechev/angular2-seed) - SystemJS, Gulp, TypeScript, TSD, Versioned, Env Dev/Prod, Protractor, Karma, Jasmine, Env Dev/Prod
+* [angular-class/angular2-webpack-starter](https://github.com/angular-class/angular2-webpack-starter) - Webpack, TypeScript, TSD, Protractor, Karma, Jasmine, Env Dev/Prod, Server API
+
+The SystemJS implementation of [mgechev/angular2-seed](https://github.com/mgechev/angular2-seed) appears to be the flavour of the month right now, but with both seed projects getting almost daily updates, probably best to let them mature before jumping in.
