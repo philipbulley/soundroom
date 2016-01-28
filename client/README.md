@@ -17,7 +17,7 @@ To watch and open in browser (includes Browersync):
 Build only:
 
     $ cd client
-    $ npm build
+    $ npm run build
 
 ## Implementation
 
