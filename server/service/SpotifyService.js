@@ -7,9 +7,9 @@ import FunctionUtil from './../util/FunctionUtil';
 
 class SpotifyService extends EventEmitter {
 
-  spotify = null
-  isLoggedIn = false
-  currentTrack = null
+  spotify = null;
+  isLoggedIn = false;
+  currentTrack = null;
 
   constructor () {
     super();
