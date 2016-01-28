@@ -2,6 +2,8 @@
 
 Democratic playlist server for Spotify.
 
+Requires node `0.12.x` due to dependency on [node-spotify](https://www.npmjs.com/package/node-spotify). You can use [n](https://www.npmjs.com/package/n) to interactively manage node versions on your development machine.
+
 ## Setting up on Mac OSX
 
 1. Install libspotify via homebrew
@@ -140,13 +142,37 @@ Now you've installed, see "Running the node app" later on in this document.
 
 ## Running the node app
 
-The app requires that you've setup certain environment variables. One way to do this is by running the app from a shell script. Create a file called `start.dev.sh` next to `index.js`, add the following:
+The app requires that you've setup certain environment variables. The best way to do this is via a [.env](https://www.npmjs.com/package/dotenv) file. Create a file called `.env` next to `index.js`, add the following:
 
-    #!/bin/sh
+    NODE_ENV = 'dev'
+    PORT = 8123
+    
+    SPOTIFY_APP_KEY = './spotify_appkey.key'
+    SPOTIFY_USERNAME = 'your_spotify_premium_username'
+    SPOTIFY_PASSWORD = 'your_spotify_premium_password'
+    MOCK_SPOTIFY='false'
+    
+    MONGO_CONNECT = 'mongodb://your_mongo_username:your_mongo_password@ds123456.mongolab.com:12345/soundroom'
+    
+    # auth
+    GOOGLE_CLIENT_ID = '123456.apps.googleusercontent.com'
+    GOOGLE_CLIENT_SECRET = '123456'
+    
+    TWITTER_CONSUMER_KEY = '123456'
+    TWITTER_CONSUMER_SECRET = '123456'
+    
+    FACEBOOK_APP_ID = '123456'
+    FACEBOOK_APP_SECRET = '123456'
+    
+    SPOTIFY_CLIENT_ID = '123456'
+    SPOTIFY_CLIENT_SECRET = '123456'
+    
+    AUTH_USER = 'postman'
+    AUTH_PASS = 'postman1234567890'
+    NO_AUTH = true;
 
-    NODE_ENV='dev' HOST=localhost PORT=8123 SPOTIFY_APP_KEY='./spotify_appkey.key' SPOTIFY_USERNAME='your-premium-account-username' SPOTIFY_PASSWORD='your-password' node index.js
 
-* `NODE_ENV` works with `Config`
+* `NODE_ENV` is used primarily to determine if the app is in a dev environment, try not to rely on this and instead use env vars specific to the requirement
 * `PORT` is used by the express http server
 * `SPOTIFY_APP_KEY` Points to your Spotify binary key. This links libspotify with a Spotify developer account.
 * `SPOTIFY_USERNAME` and `SPOTIFY_PASSWORD` specify the user account that libspotify will login using. This must be a paid for Spotify Premium account.
@@ -154,7 +180,7 @@ The app requires that you've setup certain environment variables. One way to do 
 
 Start the app like so
 
-    $ start.dev.sh
+    $ npm start
 
 ### Can't hear any audio?
 
