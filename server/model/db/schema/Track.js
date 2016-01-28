@@ -1,16 +1,15 @@
-var
-  _ = require('lodash'),
-  mongoose = require('mongoose-q')(),
-  Q = require('q'),
-  log = require('./../../util/LogUtil'),
-  MongooseUtil = require('./../../util/MongooseUtil'),
-  DateFields = require('./plugin/DateFields'),
-  ProviderEnum = require('./../enum/ProviderEnum'),
-  Schema = mongoose.Schema;
+import _ from 'lodash';
+import mongooseQ from 'mongoose-q';
+import log from '../../../util/LogUtil';
+import DateFields from '../plugin/DateFields';
+import ProviderEnum from '../../enum/ProviderEnum';
 
 
-function create() {
-  var trackSchema = new Schema({
+const mongoose = mongooseQ();
+const Schema = mongoose.Schema;
+
+export default function create() {
+  const trackSchema = new Schema({
     name: {type: String, required: true},
     duration: {type: Number, required: true},
     provider: {type: String, enum: _.values(ProviderEnum), index: true, required: true},
@@ -37,7 +36,7 @@ function create() {
      *
      * @param id
      */
-    isValidId: function (id) {
+    isValidId (id) {
       return mongoose.Types.ObjectId.isValid(id);
     },
 
@@ -50,7 +49,7 @@ function create() {
      * @param options
      * @returns {Q.Promise}     Promised resolved with a single Track or null
      */
-    findByIdPopulateQ: function (id, fields, options) {
+    findByIdPopulateQ (id, fields, options) {
       // TODO: Implement and test invalid id
       //if( !Track.isValidId( id ) )
       //  return Q.reject( new Error( TrackErrorEnum.INVALID_ID ) );
@@ -69,7 +68,7 @@ function create() {
      * @param options
      * @returns {Q.Promise}     Promised resolved with an array of Tracks or an empty array if no matches.
      */
-    findPopulateQ: function (conditions, fields, options) {
+    findPopulateQ (conditions, fields, options) {
       log.debug('Track.findPopulateQ:', conditions, fields, options);
 
       return this.find(conditions, fields, options)
@@ -77,8 +76,8 @@ function create() {
         .execQ();
     },
 
-    setAlbum: function (name, provider, foreignId) {
-      var album = new albumSchema();
+    setAlbum (name, provider, foreignId) {
+      const album = new albumSchema();
       album.name = name;
       album.provider = provider;
       album.foreignId = foreignId;
@@ -86,8 +85,8 @@ function create() {
       return album;
     },
 
-    addArtist: function (name, provider, foreignId) {
-      var artist = new artistSchema();
+    addArtist (name, provider, foreignId) {
+      const artist = new artistSchema();
       artist.name = name;
       artist.provider = provider;
       artist.foreignId = foreignId;
@@ -102,7 +101,3 @@ function create() {
 
   return trackSchema;
 }
-
-
-// Export!
-MongooseUtil.exportModuleModel('appInstance', 'Track', create, module);

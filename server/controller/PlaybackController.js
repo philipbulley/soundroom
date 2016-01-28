@@ -1,35 +1,63 @@
-var _ = require('lodash'),
-  Q = require('q'),
-  FunctionUtil = require('./../util/FunctionUtil'),
-  log = require('./../util/LogUtil'),
-  PlaylistController = require('./PlaylistController'),
-  SpotifyService = require('./../service/SpotifyService'),
-  Config = require('./../model/Config');
+import FunctionUtil from './../util/FunctionUtil';
+import PlaylistController from './PlaylistController';
+import spotifyService from './../service/SpotifyService';
+import socketService from './../service/SocketService';
 
-function PlaybackController() {
-  FunctionUtil.bindAllMethods(this);
+class PlaybackController {
 
-  this.playlistController = new PlaylistController();
-  this.spotifyService = SpotifyService.getInstance();
-}
+  constructor () {
+    FunctionUtil.bindAllMethods(this);
 
-_.extend(PlaybackController, {});
+    this.playlistController = new PlaylistController();
 
-PlaybackController.prototype = {
-  playlistController: null,
-  spotifyService: null,
+    socketService.on('pause', this.pause);
+    socketService.on('resume', this.resume);
 
-  play: function (playlistId) {
-    return this.playlistController.getNextTrackForPlayback(playlistId)
-      .then(function (playlistTrack) {
-        console.log('PlaybackController.play: Next track:', playlistTrack);
-
-        this.spotifyService.play(playlistTrack.track.foreignId);
-
-        return playlistTrack;
-      }.bind(this));
   }
 
-};
+  play (playlistId) {
+    return this.playlistController.getNextTrackForPlayback(playlistId)
+      .then((playlistTrack) => {
+        console.log(`PlaybackController.play: Next track: ${playlistTrack}`);
 
-module.exports = PlaybackController;
+        spotifyService.removeAllListeners('progress');
+        spotifyService.removeAllListeners('end');
+
+        if (!playlistTrack) {
+          console.log('playlist ended');
+          socketService.emitPlaylistEnd();
+          return null;
+        }
+
+        socketService.emitTrackStart(playlistTrack);
+
+        spotifyService.on('progress', (progressData) => {
+          // const { currentTime, duration, progress } = progressData;
+          // console.log('progress:', `${currentTime}/${duration} ${progress}`);
+          socketService.emitTrackProgress(progressData);
+        });
+
+        spotifyService.on('end', () => {
+          console.log('track ended');
+          this.play(playlistId);
+        });
+
+        spotifyService.play(playlistTrack.track.foreignId);
+
+        return playlistTrack;
+      });
+  }
+
+  pause () {
+    spotifyService.pause();
+    socketService.emitPause();
+  }
+
+  resume () {
+    spotifyService.resume();
+    socketService.emitResume();
+  }
+
+}
+
+export default PlaybackController;

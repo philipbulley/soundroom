@@ -13,7 +13,7 @@ _.extend(Config, {
   /** This will contain the config object for the current environment */
   data: null,
 
-  /** Config across enviornments. Keys are based on the possible values of `process.env.APP_ENV` */
+  /** Config across enviornments. Keys are based on the possible values of `process.env.NODE_ENV` */
   env: {
     'dev': {
       //baseUrlApi:    template.BASE_URL_API.replace( ':env', 'dev' ),
@@ -26,6 +26,6 @@ _.extend(Config, {
 });
 
 // Assign the current environment's config object to Config.data
-Config.data = Config.env[process.env.APP_ENV];
+Config.data = Config.env[process.env.NODE_ENV];
 
 module.exports = Config;

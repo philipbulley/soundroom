@@ -1,96 +1,159 @@
-var spotify = require('node-spotify'),
-  _ = require('lodash'),
-  Q = require('q'),
-  FunctionUtil = require('./../util/FunctionUtil'),
-  singletonBlocker = 843485732849825;
+import { EventEmitter } from 'events';
+import spotify from 'node-spotify';
+// import _ from 'lodash';
+import Q from 'q';
+import FunctionUtil from './../util/FunctionUtil';
 
 
-function SpotifyService(blocker) {
+class SpotifyService extends EventEmitter {
 
-  FunctionUtil.bindAllMethods(this);
+  spotify = null
+  isLoggedIn = false
+  currentTrack = null
 
-  console.log('SpotifyService():', blocker);
-  if (blocker !== singletonBlocker)
-    throw new Error('SpotifyService is to be used as a singleton. Please use SpotifyService.getInstance()');
-
-}
-
-_.extend(SpotifyService, {
-
-  instance: null,
-
-  getInstance: function () {
-    if (!SpotifyService.instance) {
-      SpotifyService.instance = new SpotifyService(singletonBlocker);
-    }
-
-
-
-    return SpotifyService.instance;
+  constructor () {
+    super();
+    FunctionUtil.bindAllMethods(this);
   }
 
-});
+  login () {
 
-_.extend(SpotifyService.prototype, {
-
-  isLoggedIn: null,
-
-  login: function () {
-
-    console.log('SpotifyService.login()');
+    console.log('SpotifyService.login()', this.isLoggedIn);
 
     if (this.isLoggedIn) {
       return Q.when();
     }
 
-    var deferred = Q.defer();
+    const { SPOTIFY_USERNAME, SPOTIFY_PASSWORD, SPOTIFY_APP_KEY } = process.env;
+
+    const deferred = Q.defer();
 
     // Init and overwrite
-    spotify = spotify({appkeyFile: process.env.SPOTIFY_APP_KEY});
-
-    var ready = function (err) {
-      if (err) {
-        console.error('Login failed for ' + process.env.SPOTIFY_USERNAME + ':', err);
-        deferred.reject(err);
-      }
-
-      console.log('SpotifyService.login: Success! Logged in as:', spotify.sessionUser.displayName, '(' + spotify.sessionUser.link + ')');
-
-      //spotify.player.play(spotify.createFromLink('spotify:track:4PLOJDcUb3gwfMLoZPQt3O'));    // DEBUG
-
-      this.isLoggedIn = true;
-
-      deferred.resolve(spotify.sessionUser);
-    }.bind(this);
+    this.spotify = spotify({appkeyFile: SPOTIFY_APP_KEY});
 
     // Add listener for login complete
-    spotify.on({
-      ready: ready
+    this.spotify.on({
+      ready: (err) => {
+        if (err) {
+          console.error(`Login failed for ${SPOTIFY_USERNAME}:`, err);
+          deferred.reject(err);
+        }
+
+        const {displayName, link} = this.spotify.sessionUser;
+        console.log(`SpotifyService.login: Success! Logged in as: ${displayName}, (${link})`);
+
+        //spotify.player.play(spotify.createFromLink('spotify:track:4PLOJDcUb3gwfMLoZPQt3O'));    // DEBUG
+
+        this.isLoggedIn = true;
+        deferred.resolve(this.spotify.sessionUser);
+      }
     });
 
-    // DEBUG!
-    //spotify.player.on({
-    //  endOfTrack: function () {
-    //    console.log('End of track');
-    //  }
-    //});
-
-
-    spotify.login(process.env.SPOTIFY_USERNAME, process.env.SPOTIFY_PASSWORD, false, false);
+    this.spotify.login(SPOTIFY_USERNAME, SPOTIFY_PASSWORD, false, false);
 
     return deferred.promise;
-  },
-
-  getTrack: function (id) {
-    console.log('SpotifyService.getTrack():', id, 'spotify:', spotify);
-    return spotify.createFromLink(id);
-  },
-
-  play: function (id) {
-    spotify.player.play(spotify.createFromLink(id));
   }
 
-});
+  getTrack (id) {
+    console.log('SpotifyService.getTrack():', id, 'spotify:', this.spotify);
+    return this.spotify.createFromLink(id);
+  }
 
+  play (id) {
+    this.currentTrack = this.spotify.createFromLink(id);
+    this.spotify.player.on({
+      endOfTrack: () => this.onEnded()
+    });
+    this.spotify.player.play(this.currentTrack);
 
-module.exports = SpotifyService;
+    setTimeout(() => this.seek(this.getDuration() - 20), 1000);
+
+    this.onProgress();
+  }
+
+  onProgress () {
+    const currentTime = this.getCurrentTime();
+    const progress = this.getProgress();
+    const duration = this.getDuration();
+
+    this.emit('progress', { currentTime, duration, progress });
+
+    if (progress < 1) {
+      setTimeout(() => this.onProgress(), 900);
+    }
+  }
+
+  onEnded () {
+    this.emit('end');
+  }
+
+  pause () {
+    this.spotify.player.pause();
+  }
+
+  resume () {
+    this.spotify.player.resume();
+  }
+
+  seek (second) {
+    this.spotify.player.seek(second);
+  }
+
+  getCurrentTime () {
+    return this.spotify.player.currentSecond || 0;
+  }
+
+  getDuration () {
+    return (this.currentTrack && this.currentTrack.duration) || 1;
+  }
+
+  getProgress () {
+    return this.getCurrentTime() / this.getDuration();
+  }
+
+  // http://www.node-spotify.com/api.html#search
+
+  search (terms) {
+    const deferred = Q.defer();
+    const offset = 0;
+    const limit = 10;
+    const spotiSearch = new this.spotify.Search(terms, offset, limit);
+    spotiSearch.execute((err, result) => {
+      if (err) {
+        deferred.reject(err);
+      }
+      deferred.resolve(result);
+    });
+    return deferred.promise;
+  }
+
+  getImage (albumLink) {
+    const album = this.spotify.createFromLink(albumLink);
+
+    function fetchImage(tries, cb) {
+      console.log('fetchImage', tries);
+      if (tries === 0) {
+        return cb('Can\'t get cover image', null);
+      }
+      const image = album.getCoverBase64();
+      if (image) {
+        return cb(null, `data:image/jpeg;base64,${image}`);
+      }
+      tries--;
+      setTimeout(() => fetchImage(tries, cb), 100);
+    }
+
+    const deferred = Q.defer();
+
+    fetchImage(10, (err, result) => {
+      if (err) {
+        deferred.reject(err);
+      }
+      deferred.resolve(result);
+    });
+
+    return deferred.promise;
+  }
+}
+
+export default new SpotifyService();

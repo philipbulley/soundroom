@@ -1,43 +1,35 @@
-var _ = require('lodash'),
-  Q = require('q'),
-  FunctionUtil = require('./../util/FunctionUtil'),
-  log = require('./../util/LogUtil'),
-  Track = require('./../model/db/Track'),
-  Album = require('./../model/db/Album'),
-  Artist = require('./../model/db/Artist'),
-  ProviderEnum = require('./../model/enum/ProviderEnum'),
-  TrackErrorEnum = require('./../model/enum/TrackErrorEnum'),
-  SpotifyDataService = require('./../service/SpotifyDataService'),
-  HttpUtil = require('./../util/HttpUtil'),
-  Config = require('./../model/Config');
+import db from './../model/db';
+import FunctionUtil from './../util/FunctionUtil';
+import log from './../util/LogUtil';
+import ProviderEnum from './../model/enum/ProviderEnum';
+import SpotifyDataService from './../service/SpotifyDataService';
+import TrackErrorEnum from './../model/enum/TrackErrorEnum';
 
-function TrackController() {
-  FunctionUtil.bindAllMethods(this);
-}
 
-_.extend(TrackController, {});
+class TrackController {
 
-TrackController.prototype = {
+  constructor () {
+    FunctionUtil.bindAllMethods(this);
 
-  spotifyDataService: new SpotifyDataService(),
+    this.spotifyDataService = new SpotifyDataService();
+  }
 
-  getAll: function () {
+  getAll () {
     console.log('TrackController.getAll()');
+    return db.Track.findPopulateQ();
+  }
 
-    return Track.findPopulateQ();
-  },
-
-  getById: function (id) {
+  getById (id) {
     console.log('TrackController.getById()', id);
 
-    return Track.findByIdPopulateQ(id)
-      .then(function (track) {
+    return db.Track.findByIdPopulateQ(id)
+      .then((track) => {
         if (!track)
           throw new Error(TrackErrorEnum.NOT_FOUND);
 
         return track;
-      }.bind(this));
-  },
+      });
+  }
 
   /**
    * Gets a track based on it's foreign ID
@@ -45,15 +37,15 @@ TrackController.prototype = {
    * @param {string} provider     Use a value that exists in ProviderEnum
    * @param {string} foreignId    The ID on the provider's platform
    */
-  getByForeignId: function (provider, foreignId) {
-    return Track.findPopulateQ({provider: provider, foreignId: foreignId})
-      .then(function (tracks) {
+  getByForeignId (provider, foreignId) {
+    return db.Track.findPopulateQ({provider: provider, foreignId: foreignId})
+      .then((tracks) => {
         if (!tracks || !tracks.length)
           throw new Error(TrackErrorEnum.NOT_FOUND);
 
         return tracks[0];
-      }.bind(this));
-  },
+      });
+  }
 
   /**
    * Creates a track based on the foreignId then saves it to the database.
@@ -62,59 +54,78 @@ TrackController.prototype = {
    * @param foreignId
    * @returns {Q.Promise<Track>}
    */
-  createByForeignId: function (provider, foreignId) {
+  createByForeignId (provider, foreignId) {
     provider = provider.toLowerCase();
 
-    var trackObj;
+    let trackObj;
 
     switch (provider) {
       case ProviderEnum.SPOTIFY:
         trackObj = this.spotifyDataService.getTrack(foreignId);
-        break
+        break;
     }
 
     log.debug('TrackController.createByForeignId: Got track:', trackObj);
-
     // Now we have a track, ensure the individual Models are saved to the DB
-    var promise = Album.findOneAndUpdateQ({foreignId: trackObj.album.foreignId}, trackObj.album, {
+    let promise = db.Album.findOneAndUpdateQ({foreignId: trackObj.album.foreignId}, trackObj.album, {
       upsert: true,
       'new': true
     })
-      .then(function (album) {
-        log.debug('Got Album:', album);
-        trackObj.album = album._id;
-      }.bind(this));
-
-    trackObj.artists.forEach(function (artistObj, i, arr) {
-      promise = promise.then(function () {
-        console.log('About to call Artist.findOneAndUpdateQ:', artistObj);
-        return Artist.findOneAndUpdateQ({foreignId: artistObj.foreignId}, artistObj, {upsert: true, 'new': true});
-      }.bind(this))
-        .then(function (artist) {
-          log.debug('Saved Artist:', artist);
-          arr[i] = artist._id;
-        }.bind(this));
+    .then((album) => {
+      log.debug('Got Album:', album);
+      trackObj.album = album._id;
     });
 
+    trackObj.artists.forEach((artistObj, i, arr) => {
+      promise = promise.then(() => {
+        console.log('About to call Artist.findOneAndUpdateQ:', artistObj);
+        return db.Artist.findOneAndUpdateQ({foreignId: artistObj.foreignId}, artistObj, {upsert: true, 'new': true});
+      })
+        .then((artist) => {
+          log.debug('Saved Artist:', artist);
+          arr[i] = artist._id;
+        });
+    });
 
-    promise = promise.then(function () {
+    promise = promise.then(() => {
       log.debug('Call save track:', trackObj);
-      var track = new Track(trackObj);
+      const track = db.Track(trackObj);
       return track.saveQ();
-    }.bind(this))
-      .then(function (track) {
-        return track.populateQ(Track.POPULATE_FIELDS);
-      }.bind(this))
-      .then(function (track) {
+    })
+      .then((track) => {
+        return track.populateQ(db.Track.POPULATE_FIELDS);
+      })
+      .then((track) => {
         log.debug('Got saved track:', track);
         log.debug('Got saved track.album:', track.album);
         log.debug('Got saved track.artists:', track.artists);
 
         return track;
-      }.bind(this));
+      });
 
     return promise;
   }
-};
 
-module.exports = TrackController;
+  /**
+   * Get artwork for a track
+   *
+   * @param id
+   * @returns {Q.Promise<String>}
+   */
+  getArtwork (id) {
+    return this.getById(id)
+      .then((track) => {
+        switch (track.provider) {
+          case ProviderEnum.SPOTIFY:
+            const albumId = track.album.foreignId;
+            return this.spotifyDataService.getTrackArtwork(albumId);
+            break;
+          default:
+            return null;
+            break;
+        }
+      });
+  }
+}
+
+export default TrackController;

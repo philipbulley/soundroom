@@ -1,44 +1,76 @@
-var _ = require('lodash'),
-  Q = require('q'),
-  FunctionUtil = require('./../util/FunctionUtil'),
-  log = require('./../util/LogUtil'),
-  User = require('./../model/db/User'),
-  UserErrorEnum = require('./../model/enum/UserErrorEnum'),
-//PermissionErrorEnum = require( './../model/enum/PermissionErrorEnum' ),
-  Config = require('./../model/Config');
+import _ from 'lodash';
+import db from './../model/db';
+import FunctionUtil from './../util/FunctionUtil';
+import log from './../util/LogUtil';
+import Q from 'q';
+import socketService from './../service/SocketService';
+import UserErrorEnum from './../model/enum/UserErrorEnum';
 
-function UserController() {
-  FunctionUtil.bindAllMethods(this);
-}
 
-_.extend(UserController, {});
-
-UserController.prototype = {
+class UserController {
+  constructor () {
+    FunctionUtil.bindAllMethods(this);
+  }
 
   /**
    *
    * @param userParams
    * @returns {Q.Promise}
    */
-  create: function (userParams) {
+  findOrCreate (userParams) {
+    return Q.Promise((resolve, reject) => {
+      this.find(userParams)
+        .then((user) => {
+          if (user && user.length) {
+            console.log('FOUND EXISTING USER:', user[0]);
+            this.emitUserConnect(user[0]);
+            return resolve(user[0]);
+          }
+          this.create(userParams)
+            .then((newUser) => {
+              console.log('CREATED NEW USER:', newUser);
+              this.emitUserConnect(newUser);
+              return resolve(newUser);
+            })
+            .catch((err) => reject(err));
+        });
+    });
+  }
+
+  /**
+   *
+   * @param userParams
+   * @returns {Q.Promise}
+   */
+  create (userParams) {
     // Only accept allowable fields to create a new user with
-    userParams = _.pick(userParams, ['email', 'password', 'firstName', 'lastName']);
+    // userParams = _.pick(userParams, ['email', 'password', 'firstName', 'lastName']);
+    userParams = _.pick(userParams, [
+      'name',
+      'avatar',
+      'googleId',
+      'spotifyId',
+      'facebookId',
+      'twitterId',
+      'userId'
+    ]);
 
     log.info('UserController.create: userParams:', userParams);
 
-    var user = new User(userParams);
+    const user = db.User(userParams);
+
     return user.saveQ()
-      .catch(function (err) {
+      .catch((err) => {
         if (err.name === 'MongoError' && err.code === 11000) {
           // Duplicate key, user with email already exists
-          var err = new Error(UserErrorEnum.ALREADY_EXISTS);
-          err.email = userParams.email;
-          throw err;
+          const error = new Error(UserErrorEnum.ALREADY_EXISTS);
+          // error.email = userParams.email;
+          throw error;
         }
 
         log.formatError(err, 'UserController.create: save');
-      }.bind(this));
-  },
+      });
+  }
 
   /**
    *
@@ -46,30 +78,44 @@ UserController.prototype = {
    * @param executingUser
    * @returns {Q.Promise}
    */
-  find: function (query, executingUser) {
-    log.info('UserController.find()', query, executingUser);
+  // find: function (query, executingUser) {
+  find (query) {
+    // log.info('UserController.find()', query, executingUser);
 
     // Only accept allowable fields to query by
-    query = executingUser
-      ? _.pick(query, ['_id', 'email', 'accessToken', 'nda'])
-      : _.pick(query, ['_id', 'email']);
+    // query = executingUser
+    //   ? _.pick(query, ['_id', 'email', 'accessToken', 'nda'])
+    //   : _.pick(query, ['_id', 'email']);
 
-    var select = executingUser
-      ? null  // No restrictions on selected fields, as we have an executing user
-      : 'email';
+    // const select = executingUser
+    //   ? null  // No restrictions on selected fields, as we have an executing user
+    //   : 'email';
 
     // Anon access requires a query as we don't want to dump out all users
-    if (!executingUser && !_.keys(query).length)
-      return Q.reject(new Error(PermissionErrorEnum.UNAUTHORIZED));
+    // if (!executingUser && !_.keys(query).length)
+    //   return Q.reject(new Error(PermissionErrorEnum.UNAUTHORIZED));
 
-    return User.findQ(query, select)
-      .then(function (users) {
+    // return db.User.findQ(query, select)
+    return db.User.findQ(query)
+      .then((users) => {
         log.info('UserController.find: then:', users);
         return users;
-      }.bind(this))
+      });
   }
 
+  /**
+   *
+   * @param id
+   * @param cb
+   */
+  findById (id, cb) {
+    db.User.findById(id, cb);
+  }
 
-};
+  emitUserConnect (user) {
+    socketService.emitUserConnect(user);
+  }
 
-module.exports = UserController;
+}
+
+export default UserController;

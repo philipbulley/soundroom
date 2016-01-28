@@ -1,21 +1,24 @@
-var express = require('express'),
-  router = express.Router(),
-  UserController = require('../UserController'),
-//AuthController = require( './../AuthController' ),
-//PermissionEnum = require( './../../model/enum/PermissionEnum' ),
-  log = require('./../../util/LogUtil');
+// import _ from 'lodash';
+import express from 'express';
+import log from './../../util/LogUtil';
+import UserController from '../UserController';
+import { verify } from '../AuthController';
+
+
+const router = express.Router();
 
 router.route('/')
-  .get(/*AuthController.verify( PermissionEnum.NDA ),*/
-  function (req, res) {
-    log.debug('GET AUTHORIZED!');
-    res.json({message: 'The more we know, the less we show.'});
+  .get(verify,
+  (req, res) => {
+    new UserController().find()
+      .then((users) => res.json(users))
+      .catch((err) => res.send(err));
   })
 
-  .post(/*AuthController.verify(),*/
-  function (req, res) {
+  .post(verify,
+  (req, res) => {
     log.debug('POST AUTHORIZED!');
     res.json({message: 'The more we know, the less we show.'});
   });
 
-module.exports = router;
+export default router;

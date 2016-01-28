@@ -1,6 +1,5 @@
 var _ = require('lodash'),
   Q = require('q'),
-  signals = require('signals'),
   mongoose = require('mongoose'),
   log = require('./../util/LogUtil'),
   FunctionUtil = require('./../util/FunctionUtil');
@@ -15,22 +14,19 @@ _.extend(MongooseService, {
     appInstance: null
   },
 
-  onAppInstanceOpen: new signals.Signal(),
-
-  connectToAppInstance: function (connectionUri) {
+  connectToAppInstance (connectionUri) {
     log.debug('MongooseService.connectToAppInstance', connectionUri);
     if (!connectionUri)
       throw new Error('Please specify a connectionUri before attempting to connect to the appInstance DB');
 
-    var deferred = Q.defer();
+    const deferred = Q.defer();
 
     //mongoose.connect();
     this.db.appInstance = mongoose.createConnection(connectionUri);
-    this.db.appInstance.on('error', function () {
+    this.db.appInstance.on('error', () => {
       deferred.reject('MongooseService: db.appInstance connection error');
     });
-    this.db.appInstance.once('open', function () {
-      MongooseService.onAppInstanceOpen.dispatch();
+    this.db.appInstance.once('open', () => {
 
       log.info('Connected to AppInstance DB: ', connectionUri.split('@')[1]);    // Not logging DB credentials
 

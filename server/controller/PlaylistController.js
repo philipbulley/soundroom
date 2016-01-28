@@ -1,73 +1,72 @@
-var _ = require('lodash'),
-  Q = require('q'),
-  FunctionUtil = require('./../util/FunctionUtil'),
-  log = require('./../util/LogUtil'),
-  Playlist = require('./../model/db/Playlist'),
-  TrackController = require('./TrackController'),
-  PlaylistErrorEnum = require('./../model/enum/PlaylistErrorEnum'),
-  TrackErrorEnum = require('./../model/enum/TrackErrorEnum'),
-  Config = require('./../model/Config');
+import db from './../model/db';
+import FunctionUtil from './../util/FunctionUtil';
+import log from './../util/LogUtil';
+import PlaylistErrorEnum from './../model/enum/PlaylistErrorEnum';
+import Q from 'q';
+import TrackController from './TrackController';
+import TrackErrorEnum from './../model/enum/TrackErrorEnum';
 
-function PlaylistController() {
-  FunctionUtil.bindAllMethods(this);
 
-  this.trackController = new TrackController();
-}
+class PlaylistController {
 
-_.extend(PlaylistController, {});
+  currentTrack = -1
+  trackController = null
 
-PlaylistController.prototype = {
-  trackController: null,
+  constructor () {
+    FunctionUtil.bindAllMethods(this);
 
-  getAll: function () {
+    this.trackController = new TrackController();
+  }
+
+  getAll () {
     console.log('PlaylistController.getAll()');
 
-    return Playlist.findPopulateQ();
-  },
+    return db.Playlist.findPopulateQ();
+  }
 
-  getById: function (id) {
+  getById (id) {
     console.log('PlaylistController.getById()', id);
 
-    return Playlist.findByIdPopulateQ(id)
-      .then(function (playlist) {
+    return db.Playlist.findByIdPopulateQ(id)
+      .then((playlist) => {
         if (!playlist)
           throw new Error(PlaylistErrorEnum.NOT_FOUND);
 
         return playlist;
-      }.bind(this))
-      .catch(function (err) {
+      })
+      .catch((err) => {
         if (err.message !== PlaylistErrorEnum.INVALID_ID && err.message !== PlaylistErrorEnum.NOT_FOUND)
           log.formatError(err, 'PlaylistController.getById');
 
         // Rethrow
         throw err;
-      }.bind(this));
-  },
+      });
+  }
 
-  create: function (name, description, user) {
-    var playlist = new Playlist();
+  create (name, description, user) {
+    const playlist = db.Playlist();
     playlist.name = name;
     playlist.description = description;
     playlist.createdBy = user;
 
     return playlist.saveQ();
-  },
+  }
 
   /**
    *
    * @param {string} provider     Use a value that exists in ProviderEnum
    * @param {string} foreignId    The ID on the provider's platform
    */
-  addTrackByForeignId: function (playlistId, provider, foreignId) {
+  addTrackByForeignId (playlistId, provider, foreignId) {
     console.log('PlaylistController.addTrackByForeignId:', provider, foreignId);
 
     // Check if track already exists as a Track model in the DB (ie. a user has added it before)
     return this.trackController.getByForeignId(provider, foreignId)
-      .then(function (track) {
+      .then((track) => {
         log.debug('PlaylistController.addTrackByForeignId: track already exists');
         return track;
-      }.bind(this))
-      .catch(function (err) {
+      })
+      .catch((err) => {
         // The track isn't yet stored in our DB, time to create it
         if (err.message === TrackErrorEnum.NOT_FOUND)
           return this.trackController.createByForeignId(provider, foreignId);
@@ -76,13 +75,13 @@ PlaylistController.prototype = {
 
         // Rethrow
         throw err;
-      }.bind(this))
-      .then(function (track) {
+      })
+      .then((track) => {
         log.debug('PlaylistController.addTrackByForeignId: READY TO ADD TRACK TO PLAYLIST!');
 
         return this.addTrackToPlaylist(playlistId, track.id);
-      }.bind(this))
-  },
+      });
+  }
 
   /**
    * Adds a track to a playlist and upvotes it.
@@ -91,20 +90,20 @@ PlaylistController.prototype = {
    * @param trackId
    * @returns {Promise<TResult>}
    */
-  addTrackToPlaylist: function (playlistId, trackId/*, user*/) {
+  addTrackToPlaylist (playlistId, trackId/*, user*/) {
     console.log('PlaylistController.addTrackToPlaylist:', playlistId, trackId);
 
-    var playlist, track;
+    let playlist, track;
 
     return this.getById(playlistId)
-      .then(function (_playlist) {
+      .then((_playlist) => {
         playlist = _playlist;
 
         console.log('PlaylistController.addTrackToPlaylist: Found playlist:', playlist);
 
         return this.trackController.getById(trackId);
-      }.bind(this))
-      .then(function (_track) {
+      })
+      .then((_track) => {
         track = _track;
         // TODO: ADD TRACK TO PLAYLIST
         // TODO: Ensure track doesn't exist in Playlist.tracks, if not in, create PlaylistTrack
@@ -112,19 +111,19 @@ PlaylistController.prototype = {
         console.log('PlaylistController.addTrackToPlaylist: Found track:', track);
 
         return playlist.addPlaylistTrack(track/*, user*/);
-      }.bind(this))
-      .then(function (playlistTrack) {
+      })
+      .then((playlistTrack) => {
         console.log('PlaylistController.addTrackToPlaylist: Found playlistTrack:', playlistTrack);
 
         return this.upVoteTrack(playlist.id, track.id);
-      }.bind(this))
-      .then(function (playlistTrack) {
+      })
+      .then((playlistTrack) => {
         console.log('PlaylistController.addTrackToPlaylist: Found playlistTrack:', playlistTrack);
 
         // Return fresh playlist
         return this.getById(playlist.id);
-      }.bind(this));
-  },
+      });
+  }
 
   /**
    *
@@ -132,13 +131,13 @@ PlaylistController.prototype = {
    * @param trackId
    * @returns {*}   Promise resolved with playlistTrack
    */
-  upVoteTrack: function (playlistId, trackId) {
+  upVoteTrack (playlistId, trackId) {
     return this.getById(playlistId)
-      .then(function (playlist) {
+      .then((playlist) => {
         // TODO: send change via socket
         return playlist.upVoteTrack(trackId);
-      }.bind(this));
-  },
+      });
+  }
 
   /**
    * Updates the playlist with id with the key/values in the updateObj
@@ -146,55 +145,63 @@ PlaylistController.prototype = {
    * @param id            The id of the playlist
    * @param updateObj     These should be pre-sanitized before passing
    */
-  updateById: function (id, updateObj) {
-    return Playlist.findByIdPopulateQ(id)
-      .then(function (playlist) {
+  updateById (id, updateObj) {
+    return db.Playlist.findByIdPopulateQ(id)
+      .then((playlist) => {
         if (!playlist)
           throw new Error(PlaylistErrorEnum.NOT_FOUND);
 
         // Not sanitizing update keys, this should be done before
-        for (var key in updateObj)
-          playlist[key] = updateObj[key];
+        for (const key in updateObj) {
+          if (updateObj.hasOwnProperty(key)) {
+            playlist[key] = updateObj[key];
+          }
+        }
 
         return playlist.savePopulateQ();
-      }.bind(this))
-      .catch(function (err) {
+      })
+      .catch((err) => {
         if (err.message !== PlaylistErrorEnum.INVALID_ID && err.message !== PlaylistErrorEnum.NOT_FOUND)
           log.formatError(err, 'PlaylistController.updateById');
 
         // Rethrow
         throw err;
-      }.bind(this));
-  },
+      });
+  }
 
-  deleteById: function (id) {
+  deleteById (id) {
     log.debug('PlaylistController.deleteByIdParam', id);
 
-    if (!Playlist.isValidId(id))
+    if (!db.Playlist.isValidId(id))
       return Q.reject(new Error(PlaylistErrorEnum.INVALID_ID));
 
-    return Playlist.findByIdAndRemoveQ(id)
-      .then(function (playlist) {
+    return db.Playlist.findByIdAndRemoveQ(id)
+      .then((playlist) => {
         if (!playlist)
           throw new Error(PlaylistErrorEnum.NOT_FOUND);
         else
           return playlist;
-      }.bind(this))
-      .catch(function (err) {
+      })
+      .catch((err) => {
         if (err.message !== PlaylistErrorEnum.NOT_FOUND)
           log.formatError(err, 'PlaylistController.updateById');
 
         // Rethrow
         throw err;
-      }.bind(this));
-  },
-
-  getNextTrackForPlayback: function(playlistId) {
-    return this.getById(playlistId)
-      .then(function(playlist){
-        return playlist.tracks[0];
       });
   }
-};
 
-module.exports = PlaylistController;
+  getNextTrackForPlayback (playlistId) {
+    this.currentTrack++;
+    return this.getById(playlistId)
+      .then((playlist) => {
+        if (this.currentTrack === playlist.tracks.length) {
+          this.currentTrack = -1;
+          return null;
+        }
+        return playlist.tracks[this.currentTrack];
+      });
+  }
+}
+
+export default PlaylistController;

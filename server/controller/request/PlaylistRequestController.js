@@ -1,55 +1,48 @@
-var _ = require('lodash'),
-  Q = require('q'),
-  FunctionUtil = require('./../../util/FunctionUtil'),
-  log = require('./../../util/LogUtil'),
-  Playlist = require('./../../model/db/Playlist'),
-  PlaylistController = require('./../PlaylistController'),
-  PlaybackController = require('./../PlaybackController'),
-  TrackController = require('./../TrackController'),
-  HttpUtil = require('./../../util/HttpUtil'),
-  PlaylistErrorEnum = require('./../../model/enum/PlaylistErrorEnum'),
-  Config = require('./../../model/Config');
+import _ from 'lodash';
+import FunctionUtil from './../../util/FunctionUtil';
+import log from './../../util/LogUtil';
+import PlaylistController from './../PlaylistController';
+import PlaybackController from './../PlaybackController';
+import HttpUtil from './../../util/HttpUtil';
+import PlaylistErrorEnum from './../../model/enum/PlaylistErrorEnum';
+// import Config from './../../model/Config';
 
-function PlaylistRequestController() {
-  FunctionUtil.bindAllMethods(this);
-}
-
-_.extend(PlaylistRequestController, {
-
+class PlaylistRequestController {
   /**
    * These are Playlist fields that may be updated via HTTP PUT and PATCH requests
    */
-  ALLOW_UPDATE_FIELDS: ['name', 'description']
+  static ALLOW_UPDATE_FIELDS = ['name', 'description']
 
-});
+  constructor () {
 
-PlaylistRequestController.prototype = {
+    FunctionUtil.bindAllMethods(this);
 
-  playlistController: new PlaylistController(),
-  playbackController: new PlaybackController(),
+    this.playlistController = new PlaylistController();
+    this.playbackController = new PlaybackController();
+  }
 
-  getAll: function (req, res) {
+  getAll (req, res) {
     console.log('PlaylistRequestController.getAll()');
 
     return this.playlistController.getAll()
-      .then(function (playlists) {
+      .then((playlists) => {
         // If no playlists, return empty array, not a 404
         res.json(playlists);
-      }.bind(this))
-      .catch(function (err) {
+      })
+      .catch((err) => {
         HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
         log.formatError(err, 'PlaylistRequestController.get');
-      }.bind(this));
-  },
+      });
+  }
 
-  getByIdParam: function (req, res) {
+  getByIdParam (req, res) {
     console.log('PlaylistRequestController.getByIdParam()', req.params.playlist_id);
 
     return this.playlistController.getById(req.params.playlist_id)
-      .then(function (playlist) {
+      .then((playlist) => {
         res.json(playlist);
-      }.bind(this))
-      .catch(function (err) {
+      })
+      .catch((err) => {
         switch (err.message) {
           case PlaylistErrorEnum.INVALID_ID:
             HttpUtil.sendJsonError(res, HttpUtil.status.BAD_REQUEST);
@@ -63,43 +56,43 @@ PlaylistRequestController.prototype = {
             HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
             log.formatError(err, 'PlaylistRequestController.getByIdParam');
         }
-      }.bind(this));
-  },
+      });
+  }
 
-  create: function (req, res) {
+  create (req, res) {
     log.debug('PlaylistRequestController.create: req.body', req.body);
 
     return this.playlistController.create(req.body.name, req.body.description, req.body.user)
-      .then(function (playlist) {
+      .then((playlist) => {
         res.json(playlist);
-      }.bind(this))
-      .catch(function (err) {
+      })
+      .catch((err) => {
         HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
         log.formatError(err, 'PlaylistRequestController.create: save');
-      }.bind(this));
-  },
+      });
+  }
 
-  addTrackByForeignId: function (req, res) {
+  addTrackByForeignId (req, res) {
     return this.playlistController.addTrackByForeignId(req.params.playlist_id, req.body.provider, req.body.foreignId)
-      .then(function (playlist) {
+      .then((playlist) => {
         res.json(playlist);
-      }.bind(this))
-      .catch(function (err) {
+      })
+      .catch((err) => {
         HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
         log.formatError(err, 'PlaylistRequestController.addTrackByForeignId');
-      }.bind(this));
-  },
+      });
+  }
 
-  upVoteTrack: function (req, res) {
+  upVoteTrack (req, res) {
     return this.playlistController.upVoteTrack(req.params.playlist_id, req.params.track_id)
-      .then(function (playlist) {
+      .then((playlist) => {
         res.json(playlist);
-      }.bind(this))
-      .catch(function (err) {
+      })
+      .catch((err) => {
         HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
         log.formatError(err, 'PlaylistRequestController.upVoteTrack');
-      }.bind(this));
-  },
+      });
+  }
 
   /**
    * Update segments / fields. Can be used with PUT or PATCH.
@@ -108,19 +101,19 @@ PlaylistRequestController.prototype = {
    *
    * @returns {Q.Promise}
    */
-  updateByIdParam: function (req, res) {
+  updateByIdParam (req, res) {
     console.log('PlaylistRequestController.updateByIdParam()', req.params.playlist_id, req.body);
 
-    var updateObject = _.pick(req.body, PlaylistRequestController.ALLOW_UPDATE_FIELDS);
+    const updateObject = _.pick(req.body, PlaylistRequestController.ALLOW_UPDATE_FIELDS);
 
     return this.playlistController.updateById(req.params.playlist_id, updateObject)
-      .then(function (playlist) {
+      .then((playlist) => {
         if (!playlist)
           return HttpUtil.sendJsonError(res, HttpUtil.status.NOT_FOUND);
 
         res.json(playlist);
-      }.bind(this))
-      .catch(function (err) {
+      })
+      .catch((err) => {
         switch (err.message) {
           case PlaylistErrorEnum.INVALID_ID:
             HttpUtil.sendJsonError(res, HttpUtil.status.BAD_REQUEST);
@@ -134,17 +127,17 @@ PlaylistRequestController.prototype = {
             HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
             log.formatError(err, 'PlaylistRequestController.updateByIdParam');
         }
-      }.bind(this))
-  },
+      });
+  }
 
-  deleteByIdParam: function (req, res) {
+  deleteByIdParam (req, res) {
     console.log('PlaylistRequestController.deleteByIdParam()', req.params.playlist_id, req.body);
 
     return this.playlistController.deleteById(req.params.playlist_id)
-      .then(function (playlist) {
+      .then((playlist) => {
         res.sendStatus(HttpUtil.status.NO_CONTENT);
-      }.bind(this))
-      .catch(function (err) {
+      })
+      .catch((err) => {
         switch (err.message) {
           case PlaylistErrorEnum.INVALID_ID:
             HttpUtil.sendJsonError(res, HttpUtil.status.BAD_REQUEST);
@@ -158,16 +151,16 @@ PlaylistRequestController.prototype = {
             HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
             log.formatError(err, 'PlaylistRequestController.deleteByIdParam');
         }
-      }.bind(this))
-  },
+      });
+  }
 
-  play: function (req, res) {
+  play (req, res) {
     return this.playbackController.play(req.params.playlist_id)
-      .then(function (playlistTrack) {
+      .then((playlistTrack) => {
         res.json(playlistTrack);
       });
   }
 
 };
 
-module.exports = PlaylistRequestController;
+export default PlaylistRequestController;

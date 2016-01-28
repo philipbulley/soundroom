@@ -1,23 +1,23 @@
-var
-  _ = require('lodash'),
-  mongoose = require('mongoose-q')(),
-  Q = require('q'),
-  log = require('./../../util/LogUtil'),
-  MongooseUtil = require('./../../util/MongooseUtil'),
-  DateFields = require('./plugin/DateFields'),
-  Schema = mongoose.Schema,
-  PlaylistErrorEnum = require('./../enum/PlaylistErrorEnum'),
-  deepPopulate = require('mongoose-deep-populate')(mongoose);
+import _ from 'lodash';
+import mongooseQ from 'mongoose-q';
+import Q from 'q';
+import DateFields from '../plugin/DateFields';
+import PlaylistErrorEnum from '../../enum/PlaylistErrorEnum';
+import mongooseDeepPopulate from 'mongoose-deep-populate';
 
 
-function create() {
-  var upVoteSchema = new Schema({
+const mongoose = mongooseQ();
+const deepPopulate = mongooseDeepPopulate(mongoose);
+const Schema = mongoose.Schema;
+
+export default function create() {
+  const upVoteSchema = new Schema({
     createdBy: {type: Schema.Types.ObjectId, ref: 'User'}   // TODO: required: true when implemented users
   });
 
   upVoteSchema.plugin(DateFields);
 
-  var playlistTrackSchema = new Schema({
+  const playlistTrackSchema = new Schema({
     track: {type: Schema.Types.ObjectId, ref: 'Track'},
     createdBy: {type: Schema.Types.ObjectId, ref: 'User'},    // TODO: required: true when implemented users
     upVotes: [upVoteSchema]
@@ -25,7 +25,7 @@ function create() {
 
   playlistTrackSchema.plugin(DateFields);
 
-  var playlistSchema = new Schema({
+  const playlistSchema = new Schema({
     name: {type: String, required: true},
     description: {type: String},
     tracks: [playlistTrackSchema],
@@ -44,8 +44,8 @@ function create() {
      */
     savePopulateQ: function () {
       return this.saveQ()
-        .then(function (playlist) {
-          return playlist.populateQ(playlistSchema.statics.POPULATE_FIELDS)
+        .then((playlist) => {
+          return playlist.populateQ(playlistSchema.statics.POPULATE_FIELDS);
         });
     },
 
@@ -64,7 +64,7 @@ function create() {
     //        throw new Error(TrackErrorEnum.NOT_FOUND);
     //
     //      return tracks[0];
-    //    }.bind(this));
+    //    });
     //},
 
     /**
@@ -76,7 +76,7 @@ function create() {
      */
     addPlaylistTrack: function (track, user) {
 
-      var playlistTrack = this.getPlaylistTrackByIdOrTrackId(track.id);
+      let playlistTrack = this.getPlaylistTrackByIdOrTrackId(track.id);
 
       if (!!playlistTrack) {
         return playlistTrack;
@@ -93,13 +93,13 @@ function create() {
       this.tracks.addToSet(playlistTrack);
 
       return this.savePopulateQ()
-        .then(function (playlist) {
+        .then((playlist) => {
           return this.getPlaylistTrackByIdOrTrackId(track.id);
-        }.bind(this));
+        });
     },
 
     upVoteTrack: function (trackId, user) {
-      var playlistTrack = this.getPlaylistTrackByIdOrTrackId(trackId);
+      const playlistTrack = this.getPlaylistTrackByIdOrTrackId(trackId);
 
       if (!playlistTrack)
         throw new Error(PlaylistErrorEnum.TRACK_NOT_IN_PLAYLIST);
@@ -113,9 +113,9 @@ function create() {
       console.log('Playlist.upVoteTrack: tracks after sort:', this.tracks);
 
       return this.savePopulateQ()
-        .then(function (playlist) {
+        .then((playlist) => {
           return this.getPlaylistTrackByIdOrTrackId(trackId);
-        }.bind(this));
+        });
     },
 
     /**
@@ -125,7 +125,7 @@ function create() {
      * @returns {*}
      */
     getPlaylistTrackByIdOrTrackId: function (trackIdOrPlaylistTrackId) {
-      return _.find(this.tracks, function (playlistTrack) {
+      return _.find(this.tracks, (playlistTrack) => {
         return playlistTrack.id == trackIdOrPlaylistTrackId || playlistTrack.track.toObject()._id == trackIdOrPlaylistTrackId;
       });
     }
@@ -204,7 +204,3 @@ function create() {
 
   return playlistSchema;
 }
-
-
-// Export!
-MongooseUtil.exportModuleModel('appInstance', 'Playlist', create, module);
