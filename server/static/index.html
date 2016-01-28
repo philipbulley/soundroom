@@ -16,7 +16,10 @@
 		<img data-img>
     <dl>
       <dt>Connected</dt><dd data-connect>false</dd>
-      <dt>Track</dt><dd data-track></dd>
+      <dt>Id</dt><dd data-id></dd>
+      <dt>Artist</dt><dd data-artist></dd>
+      <dt>Title</dt><dd data-title></dd>
+      <dt>Votes</dt><dd data-votes></dd>
       <dt>Progress</dt><dd data-progress></dd>
     </dl>
     <button data-pause>pause</button>
@@ -25,7 +28,10 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    var track = document.querySelector('[data-track]');
+    var id = document.querySelector('[data-id]');
+    var artist = document.querySelector('[data-artist]');
+    var title = document.querySelector('[data-title]');
+    var votes = document.querySelector('[data-votes]');
     var progress = document.querySelector('[data-progress]');
     var connect = document.querySelector('[data-connect]');
     var img = document.querySelector('[data-img]');
@@ -48,10 +54,10 @@
 
     socket.on('track:start', function (data) {
       console.log('track:start', data);
-      var artist = data.track.artists[0].name;
-      var title = data.track.name;
-      var votes = data.upVotes.length;
-      track.innerHTML = artist + ' -- ' + title + ' (' + votes + ' votes)';
+      id.innerHTML = data.track._id;
+      artist.innerHTML = data.track.artists[0].name;
+      title.innerHTML = data.track.name;
+      votes.innerHTML = data.upVotes.length;
 			pause.disabled = false;
       resume.disabled = true;
 
@@ -76,9 +82,18 @@
       progress.innerHTML = currentTime + ' / ' + duration + ' (' + percent + '%)';
     });
 
+		socket.on('track:upvote', function (data) {
+			console.log('track:upvote', data);
+			if (data.track._id === id.innerHTML) {
+				votes.innerHTML = data.upVotes.length;
+			}
+		});
+
     socket.on('playlist:end', function (data) {
       console.log('playlist:end', data);
-      track.innerHTML = '';
+      artist.innerHTML = '';
+      title.innerHTML = '';
+      votes.innerHTML = '';
       progress.innerHTML = '';
     });
 
