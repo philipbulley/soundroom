@@ -1,35 +1,37 @@
 <html>
 
 <head>
-    <base href="/">
+  <base href="/">
 
-    <title>Soundroom</title>
+  <title>Soundroom</title>
 
-    <!-- 1. Load libraries -->
-    <!--<script src="js/vendor.js"></script>-->
+  <!-- 1. Load libraries -->
+  <!--<script src="js/vendor.js"></script>-->
 
-    <!--<script src="vendor/es6-shim/es6-shim.js"></script>-->
-    <!--<script src="vendor/systemjs/dist/system-polyfills.js"></script>-->
+  <!--<script src="vendor/es6-shim/es6-shim.js"></script>-->
+  <!--<script src="vendor/systemjs/dist/system-polyfills.js"></script>-->
 
-    <script src="vendor/angular2/bundles/angular2-polyfills.js"></script>
-    <script src="vendor/systemjs/dist/system.src.js"></script>
-    <script src="vendor/rxjs/bundles/Rx.js"></script>
-    <script src="vendor/angular2/bundles/angular2.dev.js"></script>
-    <script src="vendor/angular2/bundles/router.dev.js"></script>
+  <script src="vendor/angular2/bundles/angular2-polyfills.js"></script>
+  <script src="vendor/systemjs/dist/system.src.js"></script>
+  <script src="vendor/rxjs/bundles/Rx.js"></script>
+  <script src="vendor/angular2/bundles/angular2.dev.js"></script>
+  <script src="vendor/angular2/bundles/router.dev.js"></script>
 
-    <!-- 2. Configure SystemJS -->
-    <script>
-        System.config({
-            packages: {
-                soundroom: {
-                    format: 'register',
-                    defaultExtension: 'js'//,
-                }
-            }
-        });
-        System.import('soundroom/boot')
-                .then(null, console.error.bind(console));
-    </script>
+  <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.min.css">
+
+  <!-- 2. Configure SystemJS -->
+  <script>
+    System.config({
+      packages: {
+        soundroom: {
+          format: 'register',
+          defaultExtension: 'js'
+        }
+      }
+    });
+    System.import('soundroom/boot')
+      .then(null, console.error.bind(console));
+  </script>
 
 </head>
 

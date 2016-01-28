@@ -13,13 +13,15 @@ var rimraf = Q.denodeify(require('rimraf')),
 var paths = {
   dynamicFiles: [
     'soundroom/*.ts',
-    'soundroom/**/*.ts'
+    'soundroom/**/*.ts',
+    'soundroom/**/**/*.ts'
   ],
 
   staticFiles: [
     'index.html',
     'soundroom/!(*.ts)',
-    'soundroom/**/!(*.ts)'
+    'soundroom/**/!(*.ts)',
+    'soundroom/**/**/!(*.ts)'
   ],
 
   vendor: [
@@ -30,7 +32,8 @@ var paths = {
     'node_modules/systemjs/dist/system.src.js',
     'node_modules/rxjs/bundles/Rx.js',
     'node_modules/angular2/bundles/angular2.dev.js',
-    'node_modules/angular2/bundles/router.dev.js'
+    'node_modules/angular2/bundles/router.dev.js',
+    'node_modules/bootstrap/dist/**/*'
   ]
 };
 
