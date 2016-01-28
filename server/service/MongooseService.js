@@ -1,14 +1,9 @@
-var _ = require('lodash'),
-  Q = require('q'),
-  mongoose = require('mongoose'),
-  log = require('./../util/LogUtil'),
-  FunctionUtil = require('./../util/FunctionUtil');
+import Q from 'q';
+import mongoose from 'mongoose';
+import log from './../util/LogUtil';
 
-function MongooseService() {
-  FunctionUtil.bindAllMethods(this);
-}
 
-_.extend(MongooseService, {
+const MongooseService = {
 
   db: {
     appInstance: null
@@ -21,11 +16,12 @@ _.extend(MongooseService, {
 
     const deferred = Q.defer();
 
-    //mongoose.connect();
     this.db.appInstance = mongoose.createConnection(connectionUri);
+
     this.db.appInstance.on('error', () => {
       deferred.reject('MongooseService: db.appInstance connection error');
     });
+
     this.db.appInstance.once('open', () => {
 
       log.info('Connected to AppInstance DB: ', connectionUri.split('@')[1]);    // Not logging DB credentials
@@ -35,10 +31,6 @@ _.extend(MongooseService, {
 
     return deferred.promise;
   }
+};
 
-
-});
-
-MongooseService.prototype = {};
-
-module.exports = MongooseService;
+export default MongooseService;
