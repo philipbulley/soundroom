@@ -9,8 +9,8 @@ import TrackErrorEnum from './../model/enum/TrackErrorEnum';
 
 class PlaylistController {
 
-  currentTrack = -1
-  trackController = null
+  currentTrack = -1;
+  trackController = null;
 
   constructor () {
     FunctionUtil.bindAllMethods(this);

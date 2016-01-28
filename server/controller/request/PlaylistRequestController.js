@@ -11,7 +11,7 @@ class PlaylistRequestController {
   /**
    * These are Playlist fields that may be updated via HTTP PUT and PATCH requests
    */
-  static ALLOW_UPDATE_FIELDS = ['name', 'description']
+  static ALLOW_UPDATE_FIELDS = ['name', 'description'];
 
   constructor () {
 
