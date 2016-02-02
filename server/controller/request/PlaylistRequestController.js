@@ -95,8 +95,8 @@ class PlaylistRequestController {
   }
 
   /**
-   * Update segments / fields. Can be used with PUT or PATCH.
-   * Add fields names to `EpisodeController.ALLOW_UPDATE_FIELDS` to enable
+   * Update playlist fields. Can be used with PUT or PATCH.
+   * Add fields names to `PlaylistRequestController.ALLOW_UPDATE_FIELDS` to enable
    * update via this method.
    *
    * @returns {Q.Promise}

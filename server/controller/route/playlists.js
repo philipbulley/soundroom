@@ -59,7 +59,7 @@ router.route('/:playlist_id')
       .done();
   });
 
-// TODO: Add integration test for this endpoint
+// TODO: DEPRECATE PLAY REST ENDPOINT, TO BE INVOKED VIA WEB SOCKET
 router.route('/:playlist_id/play')
   .post(verify,
   (req, res) => {

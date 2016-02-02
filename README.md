@@ -1,4 +1,4 @@
-# Spotidrop
+# Soundroom :sound::notes::dancer::tada:
 
 Democratic playlist server and client for Spotify.
 
