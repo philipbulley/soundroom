@@ -24,7 +24,7 @@ export class PlaylistService {
       //.map(res => <Playlist[]> res.json().data)
       .map(( res ) => {
         let playlist = <Playlist[]> res.json();
-        console.log('PlaylistService.getPlaylists(): map:', playlist);
+        console.log('PlaylistService.getPlaylists(): map:', res);
 
         return playlist;
       })
@@ -34,4 +34,8 @@ export class PlaylistService {
       });
   }
 
+  deletePlaylist( playlist:Playlist ):Observable<boolean> {
+    return this.http.delete(Config.API_BASE_URL + this.endpoint + '/' + playlist._id)
+      .map(( res ) => res.headers.status === 204);
+  }
 }
