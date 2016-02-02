@@ -1,4 +1,9 @@
 <div *ngIf="!playlists"><i class="fa fa-circle-o-notch fa-spin"></i> Loading Soundrooms...</div>
-<ul *ngIf="playlists">
-  <li *ngFor="#playlist of playlists">{{playlist.name}} <a (click)="deletePlaylist(playlist)">[x]</a></li>
-</ul>
+
+<div *ngIf="playlists">
+  <ul>
+    <li *ngFor="#playlist of playlists"><playlist-menu-item [playlist]="playlist"></playlist-menu-item></li>
+  </ul>
+
+  {{playlists.length}} rooms!
+</div>

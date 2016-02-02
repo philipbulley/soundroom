@@ -12,6 +12,8 @@ export class PlaylistService {
 
   private endpoint:string = '/playlists';
 
+  playlists:Playlist[];
+
   constructor( private http:Http ) {
 
   }
@@ -23,10 +25,10 @@ export class PlaylistService {
     return this.http.get(Config.API_BASE_URL + this.endpoint)
       //.map(res => <Playlist[]> res.json().data)
       .map(( res ) => {
-        let playlist = <Playlist[]> res.json();
+        this.playlists = <Playlist[]> res.json();
         console.log('PlaylistService.getPlaylists(): map:', res);
 
-        return playlist;
+        return this.playlists;
       })
       .catch(( error ) => {
         console.error(error);
@@ -36,6 +38,12 @@ export class PlaylistService {
 
   deletePlaylist( playlist:Playlist ):Observable<boolean> {
     return this.http.delete(Config.API_BASE_URL + this.endpoint + '/' + playlist._id)
-      .map(( res ) => res.headers.status === 204);
+      .map(( res ) => {
+
+        console.log('PlaylistService.deletePlaylist() map: status:', res.headers.status, 'splice:', playlist);
+        this.playlists.splice(this.playlists.indexOf(playlist), 1);
+
+        return res.headers.status === 204;
+      });
   }
 }
