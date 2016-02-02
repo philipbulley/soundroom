@@ -1,5 +1,6 @@
 import {Component} from 'angular2/core';
 import {RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
+import {HTTP_PROVIDERS} from 'angular2/http';
 import 'rxjs/Rx';
 
 import {MainLayout} from "./layout/main/main.component";
@@ -9,7 +10,7 @@ import {PlaylistService} from "./service/playlist.service";
   selector: 'soundroom',
   directives: [ROUTER_DIRECTIVES],
   templateUrl: 'soundroom/soundroom.html',
-  providers: [PlaylistService]
+  providers: [HTTP_PROVIDERS, PlaylistService]
 })
 @RouteConfig([
   {path: '/', name: 'MainLayout', component: MainLayout, useAsDefault: true}

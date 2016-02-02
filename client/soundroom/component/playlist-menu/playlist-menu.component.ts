@@ -10,14 +10,17 @@ import {PlaylistService} from "../../service/playlist.service";
   styleUrls: ['soundroom/component/playlist-menu/playlist-menu.css']
 })
 export class PlaylistMenuComponent implements OnInit {
-  public playlists:Playlist[] = [];
+  public playlists:Playlist[];
+  private errorMessage:any;
 
-  constructor(private playlistService:PlaylistService) {
+  constructor( private playlistService:PlaylistService ) {
 
   }
 
   ngOnInit():any {
     return this.playlistService.getPlaylists()
-      .then(playlists => this.playlists = playlists);
+      .subscribe(playlists => this.playlists = playlists,
+        error => this.errorMessage = <any>error);
+    //.then(playlists => this.playlists = playlists);
   }
 }

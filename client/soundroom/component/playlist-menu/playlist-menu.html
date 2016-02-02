@@ -1,3 +1,4 @@
-<ul>
+<div *ngIf="!playlists">Loading Soundrooms...</div>
+<ul *ngIf="playlists">
   <li *ngFor="#playlist of playlists">{{playlist.name}}</li>
 </ul>
