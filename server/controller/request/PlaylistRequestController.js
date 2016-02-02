@@ -5,6 +5,7 @@ import PlaylistController from './../PlaylistController';
 import PlaybackController from './../PlaybackController';
 import HttpUtil from './../../util/HttpUtil';
 import PlaylistErrorEnum from './../../model/enum/PlaylistErrorEnum';
+import socketService from './../../service/SocketService';
 // import Config from './../../model/Config';
 
 class PlaylistRequestController {
@@ -84,9 +85,11 @@ class PlaylistRequestController {
   }
 
   upVoteTrack (req, res) {
-    return this.playlistController.upVoteTrack(req.params.playlist_id, req.params.track_id)
-      .then((playlist) => {
-        res.json(playlist);
+    const { playlist_id, track_id } = req.params;
+    return this.playlistController.upVoteTrack(playlist_id, track_id)
+      .then((track) => {
+        socketService.emitUpVote(track);
+        res.json(track);
       })
       .catch((err) => {
         HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);

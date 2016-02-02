@@ -10,8 +10,7 @@ const router = express.Router();
 router.route('/')
   .get(verify,
   (req, res) => {
-    log.debug('GET AUTHORIZED!');
-    res.json({message: 'The more we know, the less we show.'});
+    res.json(req.user);
   })
 
   .post(verify,

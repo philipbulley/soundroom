@@ -66,8 +66,12 @@ class SocketService extends EventEmitter {
     this.io.emit('resume');
   }
 
-  // TODO:
   // emit new upvote
+  emitUpVote (data) {
+    this.io.emit('track:upvote', data);
+  }
+
+  // TODO:
   // new playlist order
   // new track added
   // user diconnect

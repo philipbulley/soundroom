@@ -31,7 +31,6 @@ export function initRoutes(app, dirname) {
     .use('/auth', auth);
 
   // Serve static files for testing
-  // app.use('/static', express.static(join(__dirname, 'static')));
   app.use('/static', express.static(join(dirname, 'static')));
 
   return app;

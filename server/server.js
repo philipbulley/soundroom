@@ -23,7 +23,7 @@ if (!process.env.MONGO_CONNECT)
   throw new Error('Please specify the MONGO_CONNECT env var. ie. MONGO_CONNECT=mongodb://username:password@hostname.foo.bar:27017/spotidrop-xxxx');
 
 // wrapper to hold callback from test
-const wrapper = {};
+const wrapper = {app: null, cb: null};
 
 // Promise chain ensures DB is set up first, then app
 MongooseService.connectToAppInstance(process.env.MONGO_CONNECT)
