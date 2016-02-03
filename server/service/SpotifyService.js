@@ -66,7 +66,9 @@ class SpotifyService extends EventEmitter {
     });
     this.spotify.player.play(this.currentTrack);
 
-    setTimeout(() => this.seek(this.getDuration() - 20), 1000);
+    if (process.env.SKIP_TRACKS === 'true') {
+      setTimeout(() => this.seek(this.getDuration() - 20), 1000);
+    }
 
     this.onProgress();
   }

@@ -6,7 +6,9 @@
   "author": "",
   "license": "ISC",
   "scripts":{
-    "start": "node index.js"
+    "start": "node index.js",
+    "startDev": "NODE_ENV=dev NO_AUTH=true SKIP_TRACKS=true node index.js",
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -49,10 +51,5 @@
       "es2015",
       "stage-0"
     ]
-  },
-  "scripts": {
-    "start": "node index.js",
-    "startDev": "NODE_ENV=dev NO_AUTH=true node index.js",
-    "test": "mocha"
   }
 }
