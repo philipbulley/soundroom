@@ -117,8 +117,7 @@ class TrackController {
       .then((track) => {
         switch (track.provider) {
           case ProviderEnum.SPOTIFY:
-            const albumId = track.album.foreignId;
-            return this.spotifyDataService.getTrackArtwork(albumId);
+            return this.spotifyDataService.getTrackArtwork(track);
             break;
           default:
             return null;
