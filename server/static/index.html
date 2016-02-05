@@ -48,7 +48,8 @@
 
     socket.on('connect', function (data) {
       console.log('connect', data);
-      socket.emit('user:connect', 'hello!');
+			var userId = '56428fd8c24016da78639ef5';
+      socket.emit('client:connect', userId);
       connect.innerHTML = 'true';
     });
 
@@ -97,8 +98,8 @@
       progress.innerHTML = '';
     });
 
-    socket.on('user:connect', function (data) {
-      console.log('user:connect', data);
+    socket.on('user:connect', function (users) {
+      console.log('user:connect', users);
     });
 
     socket.on('pause', function () {
@@ -114,11 +115,11 @@
     });
 
     pause.addEventListener('click', function() {
-      socket.emit('pause');
+      socket.emit('client:pause');
     });
 
     resume.addEventListener('click', function() {
-      socket.emit('resume');
+      socket.emit('client:resume');
     });
   </script>
 </body>

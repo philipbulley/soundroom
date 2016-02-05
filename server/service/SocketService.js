@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import socketIO from 'socket.io';
+import _ from 'lodash';
 
 class SocketService extends EventEmitter {
 
@@ -8,6 +9,7 @@ class SocketService extends EventEmitter {
   }
 
   init (server) {
+    this.users = {};
     this.io = socketIO(server);
     this.io.on('connection', (socket) => {
       // console.log('--> new socket connection', socket);
@@ -15,12 +17,37 @@ class SocketService extends EventEmitter {
       // alternatively send with progress updates?
       const currentState = {};
       socket.emit('connect', currentState)
-        .on('user:connect', (data) => {
-          console.log(`user connect ${data}`);
+        .on('client:connect', (userId) => {
+          this.users[socket.client.id] = userId;
+          console.log(`client connect`, socket.client.id);
+          // console.log(`user connect ${data}`);
+          console.log('connections:', Object.keys(this.io.engine.clients));
+          this.emit('client:connect', userId);
+
         })
-        .on('pause', () => this.emit('pause'))
-        .on('resume', () => this.emit('resume'));
+        .on('client:pause', () => this.emit('pause'))
+        .on('client:resume', () => this.emit('resume'))
+        .on('disconnect', () => {
+          console.log('user disconnected');
+          const userId = this.users[socket.client.id];
+          delete this.users[socket.client.id];
+          console.log('connections:', Object.keys(this.io.engine.clients));
+          console.log('users:', Object.keys(this.users));
+          this.emit('client:disconnect', userId);
+        });
     });
+
+    // const allClients = [];
+    // io.sockets.on('connection', function(socket) {
+    //   allClients.push(socket);
+    //
+    //   socket.on('disconnect', function() {
+    //     console.log('Got disconnect!');
+    //
+    //     var i = allClients.indexOf(socket);
+    //     allClients.splice(i, 1);
+    //   });
+    // });
   }
 
   /**
@@ -54,8 +81,14 @@ class SocketService extends EventEmitter {
    * @param user
    * @returns void
    */
-  emitUserConnect (user) {
-    this.io.emit('user:connect', user);
+  userConnected (user, users) {
+    this.io.emit('user:connect', user, users);
+  }
+
+  updateConnectedUsers (users) {
+    const ids = Object.keys(this.users).map((id) => this.users[id]);
+    const connectedUsers = users.filter((user) => ids.indexOf(user.id) > -1);
+    this.io.emit('user:connect', connectedUsers);
   }
 
   emitPause () {
