@@ -1,9 +1,12 @@
-<div *ngIf="!playlists"><i class="fa fa-circle-o-notch fa-spin"></i> Loading Soundrooms...</div>
+<div *ngIf="!(playlists | async)"><i class="fa fa-circle-o-notch fa-spin"></i> Loading Soundrooms...</div>
 
-<div *ngIf="playlists">
-  <ul>
-    <li *ngFor="#playlist of playlists"><playlist-menu-item [playlist]="playlist"></playlist-menu-item></li>
-  </ul>
+<!-- The ngFor doesn't work well if wrapped in an *ngIf="playlists | async" — throws exception, likely change detection issues -->
+<ul>
+  <li *ngFor="#playlist of playlists | async">
+    <playlist-menu-item [playlist]="playlist"></playlist-menu-item>
+  </li>
+</ul>
 
-  {{playlists.length}} rooms!
+<div *ngIf="playlists | async">
+  {{playlists | async | count}} rooms!
 </div>

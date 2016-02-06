@@ -14,13 +14,16 @@ export class PlaylistMenuItemComponent {
   private playlist:Playlist;
 
   private errorMessage:string;
+  private isDeleting:boolean = false;
 
-  constructor(private playlistService:PlaylistService) {
+  constructor( private playlistService:PlaylistService ) {
 
   }
 
   deleteMe() {
     console.log('PlaylistMenuComponent.deleteMe()', this.playlist);
+
+    this.isDeleting = true;
 
     return this.playlistService.deletePlaylist(this.playlist)
       .subscribe(( success ) => {
@@ -29,7 +32,11 @@ export class PlaylistMenuItemComponent {
           //this.playlists.splice(this.playlists.indexOf(playlist), 1);
           console.log('PlaylistMenuItemComponent.deletePlaylist() subscribe: success', success);
         },
-        error => this.errorMessage = <any>error);
-    // TODO: Handle error message in UI
+        error => {
+          // TODO: Handle error message in UI
+          this.isDeleting = false;
+          this.errorMessage = <any>error;
+        });
+
   }
 }

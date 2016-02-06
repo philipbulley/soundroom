@@ -1,1 +1,1 @@
-{{playlist.name}} <a (click)="deleteMe(playlist)">[x]</a>
+{{playlist.name}} <button *ngIf="!isDeleting" (click)="deleteMe(playlist)">x</button><i *ngIf="isDeleting" class="fa fa-circle-o-notch fa-spin"></i>
