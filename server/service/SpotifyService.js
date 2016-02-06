@@ -3,6 +3,7 @@ import spotify from 'node-spotify';
 // import _ from 'lodash';
 import Q from 'q';
 import FunctionUtil from './../util/FunctionUtil';
+import https from 'https';
 
 
 class SpotifyService extends EventEmitter {
@@ -66,7 +67,9 @@ class SpotifyService extends EventEmitter {
     });
     this.spotify.player.play(this.currentTrack);
 
-    setTimeout(() => this.seek(this.getDuration() - 20), 1000);
+    if (process.env.SKIP_TRACKS === 'true') {
+      setTimeout(() => this.seek(this.getDuration() - 20), 1000);
+    }
 
     this.onProgress();
   }
@@ -127,29 +130,30 @@ class SpotifyService extends EventEmitter {
     return deferred.promise;
   }
 
-  getImage (albumLink) {
-    const album = this.spotify.createFromLink(albumLink);
-
-    function fetchImage(tries, cb) {
-      console.log('fetchImage', tries);
-      if (tries === 0) {
-        return cb('Can\'t get cover image', null);
-      }
-      const image = album.getCoverBase64();
-      if (image) {
-        return cb(null, `data:image/jpeg;base64,${image}`);
-      }
-      tries--;
-      setTimeout(() => fetchImage(tries, cb), 100);
-    }
-
+  getImage (track) {
+    const {foreignId} = track;
+    const trackId = foreignId.split(':').pop();
+    const url = `https://api.spotify.com/v1/tracks/${trackId}`;
     const deferred = Q.defer();
 
-    fetchImage(10, (err, result) => {
-      if (err) {
-        deferred.reject(err);
-      }
-      deferred.resolve(result);
+    https.get(url, (res) => {
+      res.setEncoding('utf8');
+
+      let body = '';
+
+      res.on('data', (chunk) => {
+        body += chunk;
+      });
+
+      res.on('end', () => {
+        const image = JSON.parse(body).album.images[0];
+        console.log('Got image:', image);
+        deferred.resolve(image.url);
+      });
+
+    }).on('error', (err) => {
+      console.error(err);
+      deferred.reject(err);
     });
 
     return deferred.promise;

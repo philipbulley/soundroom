@@ -1,7 +1,7 @@
 // import _ from 'lodash';
 import express from 'express';
 import log from './../../util/LogUtil';
-import UserController from '../UserController';
+import { find as findUser } from '../UserController';
 import { verify } from '../AuthController';
 
 
@@ -10,7 +10,7 @@ const router = express.Router();
 router.route('/')
   .get(verify,
   (req, res) => {
-    new UserController().find()
+    findUser()
       .then((users) => res.json(users))
       .catch((err) => res.send(err));
   })

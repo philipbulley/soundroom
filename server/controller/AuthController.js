@@ -1,5 +1,5 @@
 import passport from 'passport';
-import UserController from './UserController';
+import { findOrCreate, findById } from './UserController';
 import { BasicStrategy } from 'passport-http';
 import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
@@ -7,7 +7,7 @@ import { Strategy as SpotifyStrategy } from 'passport-spotify';
 import { Strategy as TwitterStrategy } from 'passport-twitter';
 
 
-function enableGoogleLogin(userController) {
+function enableGoogleLogin() {
   // API Access link for creating client ID and secret:
   // https://code.google.com/apis/console/
   const {GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET} = process.env;
@@ -23,7 +23,7 @@ function enableGoogleLogin(userController) {
     callbackURL: `http://localhost:${process.env.PORT}/auth/google/callback`
   },
   (accessToken, refreshToken, profile, done) => {
-    userController.findOrCreate({
+    findOrCreate({
       googleId: profile.id,
       name: profile.displayName,
       avatar: profile.photos[0].value
@@ -33,7 +33,7 @@ function enableGoogleLogin(userController) {
   }));
 }
 
-function enableSpotifyLogin(userController) {
+function enableSpotifyLogin() {
 
   const {SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET} = process.env;
 
@@ -48,7 +48,7 @@ function enableSpotifyLogin(userController) {
     callbackURL: `http://localhost:${process.env.PORT}/auth/spotify/callback`
   },
   (accessToken, refreshToken, profile, done) => {
-    userController.findOrCreate({
+    findOrCreate({
       spotifyId: profile.id,
       name: profile.displayName || profile.username,
       avatar: profile.photos.length ? profile.photos[0].value : null
@@ -58,7 +58,7 @@ function enableSpotifyLogin(userController) {
   }));
 }
 
-function enableFacebookLogin(userController) {
+function enableFacebookLogin() {
 
   const {FACEBOOK_APP_ID, FACEBOOK_APP_SECRET} = process.env;
 
@@ -75,7 +75,7 @@ function enableFacebookLogin(userController) {
     profileFields: ['id', 'displayName', 'picture']
   },
   (accessToken, refreshToken, profile, done) => {
-    userController.findOrCreate({
+    findOrCreate({
       facebookId: profile.id,
       name: profile.displayName,
       avatar: profile.photos[0].value
@@ -85,7 +85,7 @@ function enableFacebookLogin(userController) {
   }));
 }
 
-function enableTwitterLogin(userController) {
+function enableTwitterLogin() {
 
   const {TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET} = process.env;
 
@@ -100,7 +100,7 @@ function enableTwitterLogin(userController) {
     callbackURL: `http://localhost:${process.env.PORT}/auth/twitter/callback`
   },
   (token, tokenSecret, profile, done) => {
-    userController.findOrCreate({
+    findOrCreate({
       twitterId: profile.id,
       name: profile.displayName,
       avatar: profile.photos[0].value
@@ -110,7 +110,7 @@ function enableTwitterLogin(userController) {
   }));
 }
 
-function enableBasicAuthLogin(userController) {
+function enableBasicAuthLogin() {
 
   const {AUTH_USER, AUTH_PASS} = process.env;
 
@@ -122,7 +122,7 @@ function enableBasicAuthLogin(userController) {
   passport.use(new BasicStrategy(
   (username, password, done) => {
     if (username === AUTH_USER && password === AUTH_PASS) {
-      userController.findOrCreate({
+      findOrCreate({
         userId: username,
         name: 'BasicAuth User',
         avatar: null
@@ -151,9 +151,6 @@ function verify(req, res, next) {
 }
 
 function initAuth(app) {
-
-  const userController = new UserController();
-
   // Passport session setup.
   //   To support persistent login sessions, Passport needs to be able to
   //   serialize users into and deserialize users out of the session.  Typically,
@@ -164,18 +161,18 @@ function initAuth(app) {
   });
 
   passport.deserializeUser((id, done) => {
-    userController.findById(id, (err, user) => {
-      done(err, user);
-    });
+    findById(id)
+      .then((user) => done(null, user))
+      .catch((err) => done(err));
   });
 
   // enable login providers
 
-  enableGoogleLogin(userController);
-  enableSpotifyLogin(userController);
-  enableTwitterLogin(userController);
-  enableFacebookLogin(userController);
-  enableBasicAuthLogin(userController);
+  enableGoogleLogin();
+  enableSpotifyLogin();
+  enableTwitterLogin();
+  enableFacebookLogin();
+  enableBasicAuthLogin();
 
   // init passport
 
