@@ -146,9 +146,8 @@ class SpotifyService extends EventEmitter {
       });
 
       res.on('end', () => {
-        const image = JSON.parse(body).album.images[0];
-        console.log('Got image:', image);
-        deferred.resolve(image.url);
+        const images = JSON.parse(body).album.images;
+        deferred.resolve(images);
       });
 
     }).on('error', (err) => {

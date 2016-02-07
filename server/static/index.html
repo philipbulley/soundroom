@@ -66,11 +66,13 @@
 			console.log('load image:', url);
 			var req = new XMLHttpRequest();
 			req.addEventListener('load', function() {
-				img.src = this.responseText;
+				console.log(this.response);
+				img.src = this.response[0].url;
 			});
 			req.addEventListener('error', function(err) {
 				console.error(err);
 			});
+			req.responseType = 'json';
 			req.open('GET', url);
 			req.send();
     });
