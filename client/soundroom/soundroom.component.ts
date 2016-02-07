@@ -1,7 +1,9 @@
 import {Component} from 'angular2/core';
 import {RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
 import {HTTP_PROVIDERS} from 'angular2/http';
+
 import 'rxjs/Rx';
+import * as alertify from 'alertify';
 
 import {MainLayout} from "./layout/main/main.component";
 import {PlaylistService} from "./service/playlist.service";
@@ -16,5 +18,11 @@ import {PlaylistService} from "./service/playlist.service";
   {path: '/', name: 'MainLayout', component: MainLayout, useAsDefault: true}
 ])
 export class SoundroomComponent {
+  constructor() {
 
+    // Global config for alertify
+    alertify.logPosition("top right");
+    alertify.delay(8000);
+
+  }
 }

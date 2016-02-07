@@ -1,4 +1,5 @@
 <div *ngIf="!(playlists | async)"><i class="fa fa-circle-o-notch fa-spin"></i> Loading Soundrooms...</div>
+<div *ngIf="isSlowConnection"><i class="fa fa-wifi"></i> Slow connection, we'll keep trying...</div>
 
 <!-- The ngFor doesn't work well if wrapped in an *ngIf="playlists | async" — throws exception, likely change detection issues -->
 <ul>

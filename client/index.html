@@ -11,6 +11,7 @@
   <!--<script src="vendor/es6-shim/es6-shim.js"></script>-->
   <!--<script src="vendor/systemjs/dist/system-polyfills.js"></script>-->
 
+  <!--<script src="vendor/alertify.js/dist/js/alertify.js"></script>-->
   <script src="vendor/angular2/bundles/angular2-polyfills.js"></script>
   <script src="vendor/systemjs/dist/system.src.js"></script>
   <script src="vendor/rxjs/bundles/Rx.js"></script>
@@ -27,7 +28,10 @@
       packages: {
         soundroom: {
           format: 'register',
-          defaultExtension: 'js'
+          defaultExtension: 'js',
+          map: {
+            alertify: 'vendor/alertify.js/dist/js/alertify.js'
+          }
         }
       }
     });

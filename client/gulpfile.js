@@ -25,6 +25,9 @@ var paths = {
   ],
 
   vendor: [
+    'node_modules/alertify.js/dist/js/alertify.js',
+    'node_modules/alertify.js/dist/css/alertify.css',
+
     'node_modules/es6-shim/es6-shim.js',
     'node_modules/systemjs/dist/system-polyfills.js',
 
