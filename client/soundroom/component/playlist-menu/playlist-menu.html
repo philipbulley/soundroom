@@ -2,12 +2,13 @@
 <div *ngIf="isSlowConnection"><i class="fa fa-wifi"></i> Slow connection, we'll keep trying...</div>
 
 <!-- The ngFor doesn't work well if wrapped in an *ngIf="playlists | async" — throws exception, likely change detection issues -->
-<ul>
-  <li *ngFor="#playlist of playlists | async">
+<ul class="row list-unstyled">
+  <li *ngFor="#playlist of playlists | async" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+
     <playlist-menu-item [playlist]="playlist"></playlist-menu-item>
   </li>
 </ul>
 
-<div *ngIf="playlists | async">
-  {{playlists | async | count}} rooms!
+<div *ngIf="playlists | async" class="room-count">
+  You have {{playlists | async | count}} rooms to choose from
 </div>

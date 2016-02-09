@@ -1,3 +1,13 @@
 h2 {
   text-align: center;
 }
+
+li {
+  height: 420px;
+  padding: 2px;
+}
+
+.room-count{
+  color: #ccc;
+  text-align: center;
+}

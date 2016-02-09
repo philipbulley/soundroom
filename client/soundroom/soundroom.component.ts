@@ -12,7 +12,8 @@ import {PlaylistService} from "./service/playlist.service";
   selector: 'soundroom',
   directives: [ROUTER_DIRECTIVES],
   templateUrl: 'soundroom/soundroom.html',
-  providers: [HTTP_PROVIDERS, PlaylistService]
+  providers: [HTTP_PROVIDERS, PlaylistService],
+  styleUrls: ['soundroom/soundroom.css']
 })
 @RouteConfig([
   {path: '/', name: 'MainLayout', component: MainLayout, useAsDefault: true}

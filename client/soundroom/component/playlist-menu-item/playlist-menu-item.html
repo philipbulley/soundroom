@@ -1,1 +1,5 @@
-{{playlist.name}} <button *ngIf="!isDeleting" (click)="deleteMe(playlist)">x</button><i *ngIf="isDeleting" class="fa fa-circle-o-notch fa-spin"></i>
+<h3>{{playlist.name}}</h3>
+<button *ngIf="!isDeleting" (click)="deleteMe(playlist)">x</button>
+<i *ngIf="isDeleting" class="fa fa-circle-o-notch fa-spin"></i>
+
+<button>Join Room (soon!)</button>
