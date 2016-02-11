@@ -8,12 +8,13 @@ import {Playlist} from "../../model/playlist";
 import {PlaylistService} from "../../service/playlist.service";
 import {PlaylistMenuItemComponent} from "../../component/playlist-menu-item/playlist-menu-item.component";
 import {CountPipe} from "../../pipe/CountPipe";
+import {PlaylistCreateComponent} from "../playlist-create/playlist-create.component";
 
 @Component({
   selector: 'playlist-menu',
   templateUrl: 'soundroom/component/playlist-menu/playlist-menu.html',
   styleUrls: ['soundroom/component/playlist-menu/playlist-menu.css'],
-  directives: [PlaylistMenuItemComponent],
+  directives: [PlaylistMenuItemComponent, PlaylistCreateComponent],
   pipes: [CountPipe]
 })
 export class PlaylistMenuComponent implements OnInit, OnDestroy {
@@ -22,7 +23,7 @@ export class PlaylistMenuComponent implements OnInit, OnDestroy {
   private errorMessage:any;
 
   constructor( private playlistService:PlaylistService ) {
-    console.log('alertify:', alertify);
+
   }
 
   ngOnInit():any {
@@ -38,23 +39,21 @@ export class PlaylistMenuComponent implements OnInit, OnDestroy {
       }
     );
 
-    setTimeout(()=>{
-      // DEBUG!
-      console.log('attempt to call playlistService.create');
-      this.playlistService.create('Room 1')
-        .subscribe(( success ) => {
-          // success should really always be true, otherwise we should have errored
-          //console.log('PlaylistMenuComponent.deletePlaylist() subscribe: removing', playlist);
-          //this.playlists.splice(this.playlists.indexOf(playlist), 1);
-          alertify.success("Yay! You've created a new room!");
-          console.log('PlaylistMenuItemComponent.deletePlaylist() subscribe: success', success);
-        },
-        error => {
-          alertify.error("Can't couldn't create a new room. Try again later.");
-          //this.isDeleting = false;
-          this.errorMessage = <any>error;
-        });
-    }, 1000);
+    //setTimeout(()=>{
+    //  // DEBUG!
+    //  console.log('attempt to call playlistService.create');
+    //  this.playlistService.create('Room 1')
+    //    .subscribe(( success ) => {
+    //      // success should really always be true, otherwise we should have errored
+    //      alertify.success("Yay! You've created a new room!");
+    //      console.log('PlaylistMenuItemComponent.deletePlaylist() subscribe: success', success);
+    //    },
+    //    error => {
+    //      alertify.error("Can't couldn't create a new room. Try again later.");
+    //      //this.isDeleting = false;
+    //      this.errorMessage = <any>error;
+    //    });
+    //}, 1000);
   }
 
   ngOnDestroy():any {

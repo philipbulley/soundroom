@@ -1,0 +1,7 @@
+<button *ngIf="state=='default'" class="btn btn-default" (click)="state='edit'">Create a room +</button>
+<div *ngIf="state=='edit'">
+  <input type="text" [(ngModel)]="name"><button class="btn btn-default" (click)="create()">Create</button>
+</div>
+<div *ngIf="state=='creating'">
+  <span>{{name}}</span><i class="fa fa-circle-o-notch fa-spin"></i>
+</div>
