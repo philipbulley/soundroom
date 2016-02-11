@@ -28,10 +28,16 @@ export class PlaylistCreateComponent {
 
     this.state = 'creating';
 
+    if (!this.name || !this.name.length) {
+      alertify.error("You have to give your new room a nice name!");
+      this.state = 'default';
+      return;
+    }
+
     return this.playlistService.create(this.name)
       .subscribe(( success ) => {
           // success should really always be true, otherwise we should have errored
-          alertify.success("Successfully created \"" + this.name + "\".");
+          alertify.success("Created the \"" + this.name + "\" room!");
           console.log('PlaylistCreateComponent.create() subscribe: success', success);
           this.reset();
         },
