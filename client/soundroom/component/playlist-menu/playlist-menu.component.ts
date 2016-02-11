@@ -37,6 +37,24 @@ export class PlaylistMenuComponent implements OnInit, OnDestroy {
         this.errorMessage = <any>error;
       }
     );
+
+    setTimeout(()=>{
+      // DEBUG!
+      console.log('attempt to call playlistService.create');
+      this.playlistService.create('Room 1')
+        .subscribe(( success ) => {
+          // success should really always be true, otherwise we should have errored
+          //console.log('PlaylistMenuComponent.deletePlaylist() subscribe: removing', playlist);
+          //this.playlists.splice(this.playlists.indexOf(playlist), 1);
+          alertify.success("Yay! You've created a new room!");
+          console.log('PlaylistMenuItemComponent.deletePlaylist() subscribe: success', success);
+        },
+        error => {
+          alertify.error("Can't couldn't create a new room. Try again later.");
+          //this.isDeleting = false;
+          this.errorMessage = <any>error;
+        });
+    }, 1000);
   }
 
   ngOnDestroy():any {

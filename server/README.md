@@ -22,6 +22,18 @@ Requires node `0.12.x` due to dependency on [node-spotify](https://www.npmjs.com
 
 Now you've installed, see "Running the node app" later on in this document.
 
+### Running MongoDB
+
+You can either create a free db on [mongolab.com](http://www.mongolab.com) or install and run mongo on your dev system.
+
+    $ brew update
+    $ brew install mongodb
+    $ sudo mkdir -p /data/db
+    $ whoami
+    mkyong
+    $ sudo chown philip /data/db
+    $ mongod
+
 
 ## Setting up on Raspberry Pi
 

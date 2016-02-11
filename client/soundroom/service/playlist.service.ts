@@ -1,5 +1,5 @@
 import {Injectable, EventEmitter} from 'angular2/core';
-import {Http, Response} from 'angular2/http';
+import {Http, Response, RequestOptions, Headers} from 'angular2/http';
 
 import {Observable} from 'rxjs/Observable';
 import {Observer} from 'rxjs/Observer';
@@ -7,6 +7,7 @@ import {Observer} from 'rxjs/Observer';
 import {Config} from '../model/config';
 import {PLAYLISTS} from './mock-playlists';
 import {Playlist} from '../model/playlist';
+import {PlaylistCreateBody} from "./playlist-create-body";
 
 @Injectable()
 export class PlaylistService {
@@ -20,8 +21,13 @@ export class PlaylistService {
 
   private MAX_RETRY_INTERVAL:number = 30;
   private SLOW_CONNECTION_RETRIES:number = 2;
+  private postOptions:RequestOptions;
 
   constructor( private http:Http ) {
+
+    this.postOptions = new RequestOptions({
+      headers: new Headers({'Content-Type': 'application/json'})
+    });
 
     // Create an Observable to wrap our data store
     this.playlists = new Observable(observer => {
@@ -58,6 +64,39 @@ export class PlaylistService {
         console.error(error);
 
         return Observable.throw(error || 'Server error');
+      });
+  }
+
+  create( name:string, description?:string ):Observable<boolean> {
+
+    var body:PlaylistCreateBody = {
+      name: name
+    };
+
+    if (description) {
+      body.description = description;
+    }
+
+    //var req = new Request(options);
+
+    console.log('PlaylistService.create() call post:', Config.API_BASE_URL + this.endpoint, JSON.stringify(body), this.postOptions);
+
+    return this.http.post(Config.API_BASE_URL + this.endpoint, JSON.stringify(body), this.postOptions)
+      .map(( res ) => {
+        let body = res.json();
+
+        console.log('PlaylistService.create() map: status:', res.headers.status, 'body:', body);
+
+        // Add new playlist to store
+        this.playlistsStore.push(body);
+
+        // Push updated store to the Observable — is this required? Works without.
+        //this.playlistsObserver.next(this.playlistsStore);
+
+        return res.headers.status === 200;
+      }).catch(( error:Response ) => {
+        console.error(error);
+        return Observable.throw(error.json().error || 'Server error');
       });
   }
 
