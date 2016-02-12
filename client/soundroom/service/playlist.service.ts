@@ -34,7 +34,7 @@ export class PlaylistService {
       this.playlistsObserver = observer;
 
       // Trigger a load of the data set upon the first subscription to this Observable
-      this.load();
+      this.load();    // TODO: Consider removing so we can choose which data is loaded (ie. /playlists or /playlists/:id)
     })
     // Ensure 2nd-Nth subscribers get the most recent data on subscribe (not sure why shareReplay() was removed from RxJS 5 - asked here: http://stackoverflow.com/questions/35246873/sharereplay-in-rxjs-5)
       .publishReplay(1).refCount();

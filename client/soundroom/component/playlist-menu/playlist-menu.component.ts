@@ -1,5 +1,4 @@
-import {Component, ViewEncapsulation} from 'angular2/core';
-import {OnInit, OnDestroy} from 'angular2/core';
+import {Component, ViewEncapsulation, OnInit, OnDestroy} from 'angular2/core';
 
 import {Observable} from 'rxjs/Observable';
 import * as alertify from "alertify"
