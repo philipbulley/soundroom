@@ -1,4 +1,5 @@
 import {Component, Input} from 'angular2/core';
+import {Router} from 'angular2/router';
 
 import * as alertify from 'alertify';
 
@@ -18,8 +19,12 @@ export class PlaylistMenuItemComponent {
   private errorMessage:string;
   private isDeleting:boolean = false;
 
-  constructor( private playlistService:PlaylistService ) {
+  constructor( private playlistService:PlaylistService, private router:Router ) {
 
+  }
+
+  join() {
+    this.router.navigate([`PlaylistLayout`, {id: this.playlist._id}]);
   }
 
   deleteMe() {

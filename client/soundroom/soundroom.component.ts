@@ -5,8 +5,9 @@ import {HTTP_PROVIDERS} from 'angular2/http';
 import 'rxjs/Rx';
 import * as alertify from 'alertify';
 
-import {MainLayout} from "./layout/main/main.component";
+import {MainLayout} from "./layout/main-layout/main-layout.component";
 import {PlaylistService} from "./service/playlist.service";
+import {PlaylistLayout} from "./layout/playlist-layout/playlist-layout.component";
 
 @Component({
   selector: 'soundroom',
@@ -16,7 +17,8 @@ import {PlaylistService} from "./service/playlist.service";
   styleUrls: ['soundroom/soundroom.css']
 })
 @RouteConfig([
-  {path: '/', name: 'MainLayout', component: MainLayout, useAsDefault: true}
+  {path: '/', name: 'MainLayout', component: MainLayout, useAsDefault: true},
+  {path: '/playlist/:id', name: 'PlaylistLayout', component: PlaylistLayout},
 ])
 export class SoundroomComponent {
   constructor() {

@@ -1,5 +1,6 @@
 <h3>{{playlist.name}}</h3>
+<h3>{{playlist._id}}</h3>
 <button *ngIf="!isDeleting" (click)="deleteMe(playlist)" class="btn btn-default">x</button>
 <i *ngIf="isDeleting" class="fa fa-circle-o-notch fa-spin"></i>
 
-<button disabled class="btn btn-default">Join Room (soon!)</button>
+<button (click)="join()" class="btn btn-default">Join Room</button>
