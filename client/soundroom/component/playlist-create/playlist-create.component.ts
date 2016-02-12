@@ -16,11 +16,33 @@ export class PlaylistCreateComponent {
   private playlist:Playlist;
 
   private state:string;
-  private name:string;
   private errorMessage:string;
+
+  private name:string;
+  private description:string;
 
   constructor( private playlistService:PlaylistService ) {
     this.state = 'default';
+  }
+
+  validate() {
+    switch (this.state) {
+      case 'editStep1':
+        if (!this.name || !this.name.length) {
+          alertify.error("You have to give your new room a nice name!");
+          return;
+        }
+        this.state = 'editStep2';
+        break;
+
+      case 'editStep2':
+        if (!this.description || this.description.length < 3) {
+          alertify.error("Tell people what your room's all about!!");
+          return;
+        }
+        this.create();
+        break;
+    }
   }
 
   create() {
@@ -28,13 +50,7 @@ export class PlaylistCreateComponent {
 
     this.state = 'creating';
 
-    if (!this.name || !this.name.length) {
-      alertify.error("You have to give your new room a nice name!");
-      this.state = 'default';
-      return;
-    }
-
-    return this.playlistService.create(this.name)
+    return this.playlistService.create(this.name, this.description)
       .subscribe(( success ) => {
           // success should really always be true, otherwise we should have errored
           alertify.success("Created the \"" + this.name + "\" room!");
@@ -51,5 +67,6 @@ export class PlaylistCreateComponent {
   private reset() {
     this.state = 'default';
     this.name = '';
+    this.description = '';
   }
 }
