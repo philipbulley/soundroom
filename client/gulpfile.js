@@ -25,6 +25,9 @@ var paths = {
   ],
 
   vendor: [
+    'node_modules/alertify.js/dist/js/alertify.js',
+    'node_modules/alertify.js/dist/css/alertify.css',
+
     'node_modules/es6-shim/es6-shim.js',
     'node_modules/systemjs/dist/system-polyfills.js',
 
@@ -34,7 +37,10 @@ var paths = {
     'node_modules/angular2/bundles/angular2.dev.js',
     'node_modules/angular2/bundles/router.dev.js',
     'node_modules/angular2/bundles/http.dev.js',
-    'node_modules/bootstrap/dist/**/*'
+    'node_modules/bootstrap/dist/**/*',
+
+    'node_modules/font-awesome/css/font-awesome.min.css',
+    'node_modules/font-awesome/fonts/*'
   ]
 };
 

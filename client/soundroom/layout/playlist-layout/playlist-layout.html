@@ -1,0 +1,20 @@
+<section class="container">
+
+  <div *ngIf="!playlist && !noPlaylist">
+    <i class="fa fa-circle-o-notch fa-spin"></i> Loading your Soundroom...
+  </div>
+
+  <div *ngIf="!playlist && noPlaylist">
+    Can't find your Soundroom!
+  </div>
+
+  <div *ngIf="playlist">
+    <h2>{{playlist.name}}</h2>
+    {{playlist._id}}
+  </div>
+
+  <!--<now-playing></now-playing>-->
+  <!--<add-track></add-track>-->
+  <!--<playlist></playlist>-->
+
+</section>
