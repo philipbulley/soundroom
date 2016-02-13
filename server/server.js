@@ -5,11 +5,11 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import log from './util/LogUtil';
 import MongooseService from './service/MongooseService';
-import socketService from './service/SocketService';
 import spotifyService from './service/SpotifyService';
 import {initAuth} from './controller/AuthController';
-import {initRoutes} from './controller/routes';
 import {initModels} from './model/db';
+import {initRoutes} from './controller/routes';
+import {initSocket} from './controller/SocketController';
 
 
 log.level = log.LEVEL_DEBUG;
@@ -49,7 +49,7 @@ MongooseService.connectToAppInstance(process.env.MONGO_CONNECT)
   .then((app) => initRoutes(app, __dirname))
   //  Start the server and Initialise WebSocket
   .then((app) => app.listen(process.env.PORT))
-  .then((server) => socketService.init(server))
+  .then((server) => initSocket(server))
   // Login to Spotify
   .then(() => spotifyService.login())
   .then(() => log.info(`Initialization complete! Hit me up on localhost:${process.env.PORT}!`))

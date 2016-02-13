@@ -1,63 +1,55 @@
-import FunctionUtil from './../util/FunctionUtil';
 import PlaylistController from './PlaylistController';
 import spotifyService from './../service/SpotifyService';
 import socketService from './../service/SocketService';
 
-class PlaybackController {
+const playlistController = new PlaylistController();
+let isTrackPlaying = false;
 
-  constructor () {
-    FunctionUtil.bindAllMethods(this);
 
-    this.playlistController = new PlaylistController();
+const pause = () => {
+  spotifyService.pause();
+  socketService.emitPause();
+};
 
-    socketService.on('pause', this.pause);
-    socketService.on('resume', this.resume);
+const resume = () => {
+  spotifyService.resume();
+  socketService.emitPlay();
+};
 
+const play = (playlistId) => {
+  if (isTrackPlaying) {
+    return resume();
   }
 
-  play (playlistId) {
-    return this.playlistController.getNextTrackForPlayback(playlistId)
-      .then((playlistTrack) => {
-        console.log(`PlaybackController.play: Next track: ${playlistTrack}`);
+  return playlistController.getNextTrackForPlayback(playlistId)
+    .then((track) => {
+      console.log(`PlaybackController.play: Next track: ${track}`);
 
-        spotifyService.removeAllListeners('progress');
-        spotifyService.removeAllListeners('end');
+      spotifyService.removeAllListeners('progress');
+      spotifyService.removeAllListeners('end');
 
-        if (!playlistTrack) {
-          console.log('playlist ended');
-          socketService.emitPlaylistEnd();
-          return null;
-        }
+      if (!track) {
+        isTrackPlaying = false;
+        return socketService.emitPlaylistEnd(playlistId);
+      }
 
-        socketService.emitTrackStart(playlistTrack);
+      socketService.emitTrackStart(track);
 
-        spotifyService.on('progress', (progressData) => {
-          // const { currentTime, duration, progress } = progressData;
-          // console.log('progress:', `${currentTime}/${duration} ${progress}`);
-          socketService.emitTrackProgress(progressData);
-        });
-
-        spotifyService.on('end', () => {
-          console.log('track ended');
-          this.play(playlistId);
-        });
-
-        spotifyService.play(playlistTrack.track.foreignId);
-
-        return playlistTrack;
+      spotifyService.on('progress', (progressData) => {
+        socketService.emitTrackProgress(track, progressData);
       });
-  }
 
-  pause () {
-    spotifyService.pause();
-    socketService.emitPause();
-  }
+      spotifyService.on('end', () => {
+        isTrackPlaying = false;
+        play(playlistId);
+      });
 
-  resume () {
-    spotifyService.resume();
-    socketService.emitResume();
-  }
+      spotifyService.play(track.track.foreignId);
 
-}
+      isTrackPlaying = true;
 
-export default PlaybackController;
+      return track;
+    });
+};
+
+export {play, pause};
