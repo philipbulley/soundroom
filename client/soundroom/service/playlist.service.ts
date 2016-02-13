@@ -5,7 +5,6 @@ import {Observable} from 'rxjs/Observable';
 import {Observer} from 'rxjs/Observer';
 
 import {Config} from '../model/config';
-import {PLAYLISTS} from './mock-playlists';
 import {Playlist} from '../model/playlist';
 import {PlaylistCreateBody} from "./playlist-create-body";
 
@@ -13,7 +12,8 @@ import {PlaylistCreateBody} from "./playlist-create-body";
 export class PlaylistService {
 
   playlists:Observable<Array<Playlist>>;
-  onSlowConnection:EventEmitter = new EventEmitter();
+
+  onSlowConnection:EventEmitter<boolean> = new EventEmitter();
 
   private endpoint:string = '/playlists';
   private playlistsStore:Playlist[];
@@ -30,7 +30,7 @@ export class PlaylistService {
     });
 
     // Create an Observable to wrap our data store
-    this.playlists = new Observable(observer => {
+    this.playlists = new Observable(( observer:Observer<Playlist[]> ) => {
       this.playlistsObserver = observer;
 
       // Trigger a load of the data set upon the first subscription to this Observable
@@ -85,7 +85,7 @@ export class PlaylistService {
       .map(( res ) => {
         let body = res.json();
 
-        console.log('PlaylistService.create() map: status:', res.headers.status, 'body:', body);
+        console.log('PlaylistService.create() map: status:', res.headers.get('status'), 'body:', body);
 
         // Add new playlist to store
         this.playlistsStore.push(body);
@@ -93,7 +93,7 @@ export class PlaylistService {
         // Push updated store to the Observable — is this required? Works without.
         //this.playlistsObserver.next(this.playlistsStore);
 
-        return res.headers.status === 200;
+        return res.headers.get('status') === '200';
       }).catch(( error:Response ) => {
         console.error(error);
         return Observable.throw(error.json().error || 'Server error');
@@ -103,7 +103,7 @@ export class PlaylistService {
   deletePlaylist( playlist:Playlist ):Observable<boolean> {
     return this.http.delete(Config.API_BASE_URL + this.endpoint + '/' + playlist._id)
       .map(( res ) => {
-        console.log('PlaylistService.deletePlaylist() map: status:', res.headers.status, 'splice:', playlist);
+        console.log('PlaylistService.deletePlaylist() map: status:', res.headers.get('status'), 'splice:', playlist);
 
         // Delete success - reflect change in local data store
         this.playlistsStore.splice(this.playlistsStore.indexOf(playlist), 1);
@@ -111,7 +111,7 @@ export class PlaylistService {
         // Push updated store to the Observable
         this.playlistsObserver.next(this.playlistsStore);
 
-        return res.headers.status === 204;
+        return res.headers.get('status') === '204';
       }).catch(( error:Response ) => {
         console.error(error);
         return Observable.throw(error.json().error || 'Server error');

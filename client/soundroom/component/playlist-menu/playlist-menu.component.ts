@@ -26,7 +26,7 @@ export class PlaylistMenuComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit():any {
-    this.playlistService.onSlowConnection.subscribe(isSlow => this.handleSlowConnection(isSlow));
+    this.playlistService.onSlowConnection.subscribe(( isSlow:boolean ) => this.handleSlowConnection(isSlow));
     this.playlists = this.playlistService.playlists;
 
     // Subscribe not necessary due to use of AsyncPipe in template, but may be useful for catching errors later
