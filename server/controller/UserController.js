@@ -4,7 +4,7 @@ import log from './../util/LogUtil';
 import Q from 'q';
 import socketService from './../service/SocketService';
 import UserErrorEnum from './../model/enum/UserErrorEnum';
-
+import EventTypeEnum from '../model/enum/EventTypeEnum';
 
 /**
  *
@@ -67,8 +67,13 @@ function find(query = null) {
   // return db.User.findQ(query, select)
   return db.User.findQ(query)
     .then((users) => {
-      log.info('UserController.find: then:', users);
-      return users;
+      // log.info('UserController.find: then:', users);
+      // return users;
+      return users.map((user) => ({
+        id: user._id,
+        name: user.name,
+        avatar: user.avatar
+      }));
     });
 }
 
@@ -92,7 +97,7 @@ function findOrCreate(userParams) {
           updateUserList();
           return resolve(user[0]);
         }
-        create(userParams)
+        return create(userParams)
           .then((newUser) => {
             console.log('CREATED NEW USER:', newUser.id);
             updateUserList();
@@ -112,10 +117,4 @@ function findById(id) {
   return db.User.findByIdQ(id);
 }
 
-
-socketService
-  .on('client:connect', updateUserList)
-  .on('client:disconnect', updateUserList);
-
-
-export { find, findOrCreate, findById, updateUserList };
+export {find, findOrCreate, findById, updateUserList};

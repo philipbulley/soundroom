@@ -7,122 +7,202 @@
   <style type="text/css">
     body { font-family: sans-serif; }
     dt { font-weight: bold; }
+		section { display: block; padding: 1em; }
+		ul { list-style: none; margin: 0; padding: 0; }
+		img { float: right; max-width: 200px; }
   </style>
 </head>
 <body>
-	<h1>Hello</h1>
+	<h1>Soundroom</h1>
 
 	<section>
-		<img data-img>
     <dl>
       <dt>Connected</dt><dd data-connect>false</dd>
-      <dt>Id</dt><dd data-id></dd>
+			<dt>Playlist</dt><dd data-playlist></dd>
+
+			<img data-img>
+			<dt>Track</dt><dd data-track-id></dd>
       <dt>Artist</dt><dd data-artist></dd>
-      <dt>Title</dt><dd data-title></dd>
+      <dt>Name</dt><dd data-name></dd>
       <dt>Votes</dt><dd data-votes></dd>
       <dt>Progress</dt><dd data-progress></dd>
     </dl>
     <button data-pause>pause</button>
-    <button data-resume>resume</button>
-  </secton>
+    <button data-play>play</button>
+  </section>
+
+	<section>
+		<ul data-tracks></ul>
+	</section>
+
+	<section>
+		<pre data-output></pre>
+	</section>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    var id = document.querySelector('[data-id]');
-    var artist = document.querySelector('[data-artist]');
-    var title = document.querySelector('[data-title]');
-    var votes = document.querySelector('[data-votes]');
-    var progress = document.querySelector('[data-progress]');
-    var connect = document.querySelector('[data-connect]');
-    var img = document.querySelector('[data-img]');
+		'use strict';
 
-		var pause = document.querySelector('[data-pause]');
-    var resume = document.querySelector('[data-resume]');
+		const playlist = document.querySelector('[data-playlist]');
+    const trackId = document.querySelector('[data-track-id]');
+    const artist = document.querySelector('[data-artist]');
+    const name = document.querySelector('[data-name]');
+    const votes = document.querySelector('[data-votes]');
+    const progress = document.querySelector('[data-progress]');
+    const connect = document.querySelector('[data-connect]');
+    const img = document.querySelector('[data-img]');
+    const tracks = document.querySelector('[data-tracks]');
+    const output = document.querySelector('[data-output]');
+		const play = document.querySelector('[data-play]');
+		const pause = document.querySelector('[data-pause]');
+
+		const EventTypeEnum = {
+		  CONNECTION: 'connection',
+		  CONNECT: 'connect',
+		  USER_ENTER: 'user.enter',
+		  PLAYLIST_PLAY: 'playlist.play',
+		  PLAYLIST_PAUSE: 'playlist.pause',
+		  PLAYLIST_TRACK_UPVOTE: 'playlist.track.upvote',
+		  PLAYLIST_TRACK_VETO: 'playlist.track.veto',
+		  DISCONNECT: 'disconnect',
+		  PLAYLIST_TRACK_START: 'playlist.track.start',
+		  PLAYLIST_TRACK_PROGRESS: 'playlist.track.progress',
+		  PLAYLIST_END: 'playlist.end',
+		  USER_UPDATE: 'user.update',
+			ERROR_PLAYLIST_TRACK_UPVOTE: 'error.playlist.track.upvote',
+			ERROR_PLAYLIST_TRACK_VETO: 'error.playlist.track.veto'
+		};
+
+		function http(url) {
+			var p = new Promise((resolve, reject) => {
+				var req = new XMLHttpRequest();
+				req.addEventListener('load', () => resolve(req.response));
+				req.addEventListener('error', (err) => reject(err));
+				req.responseType = 'json';
+				req.open('GET', url);
+				req.send();
+			});
+			return p;
+		}
+
+		function outputJSON(json) {
+			output.innerHTML = JSON.stringify(json, null, 2);
+		}
+
+		function togglePlay(isPlaying) {
+			play.disabled = isPlaying;
+			pause.disabled = !isPlaying;
+		}
+
+		function playlistId() {
+			return playlist.getAttribute('data-id');
+		}
+
+		play.disabled = true;
 		pause.disabled = true;
-		resume.disabled = true;
 
-		var host = document.location.protocol + '//' + document.location.host;
-		console.log(host);
+		const host = document.location.protocol + '//' + document.location.host;
+		const socket = io(host);
 
-    var socket = io(host);
-
-    socket.on('connect', function (data) {
+    socket.on(EventTypeEnum.CONNECT, (data) => {
       console.log('connect', data);
 			var userId = '56428fd8c24016da78639ef5';
-      socket.emit('client:connect', userId);
+      socket.emit(EventTypeEnum.USER_CONNECT, userId);
       connect.innerHTML = 'true';
+			http('/api/playlists')
+				.then((json) => {
+					const pl = json.filter((item) => item.tracks.length)[0];
+					playlist.innerHTML = pl.name;
+					playlist.setAttribute('data-id', pl._id);
+					togglePlay(false);
+					outputJSON(pl);
+
+					tracks.innerHTML = pl.tracks.map((item) => {
+						const id = item.track._id;
+						const name = item.track.name;
+						const votes = item.upVotes.length;
+						return `<li>
+											${name}
+											<button data-action="veto" data-track="${id}">
+												veto
+											</button>
+											<button data-action="upvote" data-track="${id}">
+												upvote (<span>${votes}</span>)
+											</button>
+										</li>`;
+					}).join('');
+
+				})
+				.catch((err) => console.error(err));
     });
 
-    socket.on('track:start', function (data) {
+    socket.on(EventTypeEnum.PLAYLIST_TRACK_START, (data) => {
       console.log('track:start', data);
-      id.innerHTML = data.track._id;
+      trackId.innerHTML = data.track._id;
       artist.innerHTML = data.track.artists[0].name;
-      title.innerHTML = data.track.name;
+      name.innerHTML = data.track.name;
       votes.innerHTML = data.upVotes.length;
-			pause.disabled = false;
-      resume.disabled = true;
+			togglePlay(true);
 
-			var url = '/api/track/' + data.track._id + '/artwork';
-			console.log('load image:', url);
-			var req = new XMLHttpRequest();
-			req.addEventListener('load', function() {
-				console.log(this.response);
-				img.src = this.response[0].url;
-			});
-			req.addEventListener('error', function(err) {
-				console.error(err);
-			});
-			req.responseType = 'json';
-			req.open('GET', url);
-			req.send();
+			http('/api/track/' + data.track._id + '/artwork')
+				.then((response) => {img.src = response[0].url});
     });
 
-    socket.on('track:progress', function (data) {
-      // console.log('track:progress', data);
+    socket.on(EventTypeEnum.PLAYLIST_TRACK_PROGRESS, (track, data) => {
       var currentTime = data.currentTime;
       var duration = data.duration;
       var percent = Math.floor(data.progress * 100);
       progress.innerHTML = currentTime + ' / ' + duration + ' (' + percent + '%)';
     });
 
-		socket.on('track:upvote', function (data) {
-			console.log('track:upvote', data);
-			if (data.track._id === id.innerHTML) {
-				votes.innerHTML = data.upVotes.length;
+		socket.on(EventTypeEnum.PLAYLIST_TRACK_UPVOTE, (data) => {
+			console.log('track upvoted', data);
+			const numVotes = data.upVotes.length;
+			if (data.track._id === trackId.innerHTML) {
+				votes.innerHTML = numVotes;
 			}
+			const selector = `[data-action="upvote"][data-track="${data.track._id}"] span`;
+			const el = tracks.querySelector(selector);
+			el.innerHTML = numVotes;
 		});
 
-    socket.on('playlist:end', function (data) {
+    socket.on(EventTypeEnum.PLAYLIST_END, (data) => {
       console.log('playlist:end', data);
       artist.innerHTML = '';
-      title.innerHTML = '';
+      name.innerHTML = '';
       votes.innerHTML = '';
       progress.innerHTML = '';
     });
 
-    socket.on('user:connect', function (users) {
-      console.log('user:connect', users);
-    });
+    socket.on(EventTypeEnum.USER_UPDATE, (users) => console.log('users', users));
+    socket.on(EventTypeEnum.PLAYLIST_PAUSE, () => togglePlay(false));
+    socket.on(EventTypeEnum.PLAYLIST_PLAY, () => togglePlay(true));
+    socket.on(EventTypeEnum.ERROR_PLAYLIST_TRACK_UPVOTE, (err, playlistId, trackId) => (
+			console.error('upvote error', err, playlistId, trackId)
+		));
+    socket.on(EventTypeEnum.ERROR_PLAYLIST_TRACK_VETO, (err, playlistId, trackId) => (
+			console.error('veto error', err, playlistId, trackId)
+		));
+    pause.addEventListener('click', () => socket.emit(EventTypeEnum.PLAYLIST_PAUSE));
+    play.addEventListener('click', () => socket.emit(EventTypeEnum.PLAYLIST_PLAY, playlistId()));
 
-    socket.on('pause', function () {
-      console.log('pause');
-      pause.disabled = true;
-      resume.disabled = false;
-    });
+		tracks.addEventListener('click', (event) => {
+			const el = event.target;
+			if (el.nodeName !== 'BUTTON') {return;}
 
-    socket.on('resume', function () {
-      console.log('resume');
-      pause.disabled = false;
-      resume.disabled = true;
-    });
+			const action = el.getAttribute('data-action');
+			const trackId = el.getAttribute('data-track');
 
-    pause.addEventListener('click', function() {
-      socket.emit('client:pause');
-    });
-
-    resume.addEventListener('click', function() {
-      socket.emit('client:resume');
-    });
+			switch (action) {
+				case 'upvote':
+					socket.emit(EventTypeEnum.PLAYLIST_TRACK_UPVOTE, playlistId(), trackId);
+					break;
+				case 'veto':
+					socket.emit(EventTypeEnum.PLAYLIST_TRACK_VETO, playlistId(), trackId);
+					break;
+				default:
+			}
+		});
   </script>
 </body>
 </html>

@@ -1,162 +1,113 @@
-import { EventEmitter } from 'events';
-import spotify from 'node-spotify';
-// import _ from 'lodash';
+import _ from 'lodash';
+import {EventEmitter} from 'events';
+import getJSON from '../util/getJSON';
+import nodeSpotify from 'node-spotify';
 import Q from 'q';
-import FunctionUtil from './../util/FunctionUtil';
-import https from 'https';
 
+const {SPOTIFY_APP_KEY, SPOTIFY_USERNAME, SPOTIFY_PASSWORD} = process.env;
+const webAPI = 'https://api.spotify.com/v1';
+const spotify = nodeSpotify({appkeyFile: SPOTIFY_APP_KEY});
+const spotifyService = Object.create(EventEmitter.prototype);
+const emit = spotifyService.emit.bind(spotifyService);
 
-class SpotifyService extends EventEmitter {
+// state
+let isLoggedIn = false;
+let currentTrack = null;
 
-  spotify = null;
-  isLoggedIn = false;
-  currentTrack = null;
+const login = () => {
 
-  constructor () {
-    super();
-    FunctionUtil.bindAllMethods(this);
+  console.log('SpotifyService.login() isLoggedIn =', isLoggedIn);
+
+  if (isLoggedIn) {
+    return Q.when();
   }
 
-  login () {
+  const deferred = Q.defer();
 
-    console.log('SpotifyService.login()', this.isLoggedIn);
-
-    if (this.isLoggedIn) {
-      return Q.when();
-    }
-
-    const { SPOTIFY_USERNAME, SPOTIFY_PASSWORD, SPOTIFY_APP_KEY } = process.env;
-
-    const deferred = Q.defer();
-
-    // Init and overwrite
-    this.spotify = spotify({appkeyFile: SPOTIFY_APP_KEY});
-
-    // Add listener for login complete
-    this.spotify.on({
-      ready: (err) => {
-        if (err) {
-          console.error(`Login failed for ${SPOTIFY_USERNAME}:`, err);
-          deferred.reject(err);
-        }
-
-        const {displayName, link} = this.spotify.sessionUser;
-        console.log(`SpotifyService.login: Success! Logged in as: ${displayName}, (${link})`);
-
-        //spotify.player.play(spotify.createFromLink('spotify:track:4PLOJDcUb3gwfMLoZPQt3O'));    // DEBUG
-
-        this.isLoggedIn = true;
-        deferred.resolve(this.spotify.sessionUser);
-      }
-    });
-
-    this.spotify.login(SPOTIFY_USERNAME, SPOTIFY_PASSWORD, false, false);
-
-    return deferred.promise;
-  }
-
-  getTrack (id) {
-    console.log('SpotifyService.getTrack():', id, 'spotify:', this.spotify);
-    return this.spotify.createFromLink(id);
-  }
-
-  play (id) {
-    this.currentTrack = this.spotify.createFromLink(id);
-    this.spotify.player.on({
-      endOfTrack: () => this.onEnded()
-    });
-    this.spotify.player.play(this.currentTrack);
-
-    if (process.env.SKIP_TRACKS === 'true') {
-      setTimeout(() => this.seek(this.getDuration() - 20), 1000);
-    }
-
-    this.onProgress();
-  }
-
-  onProgress () {
-    const currentTime = this.getCurrentTime();
-    const progress = this.getProgress();
-    const duration = this.getDuration();
-
-    this.emit('progress', { currentTime, duration, progress });
-
-    if (progress < 1) {
-      setTimeout(() => this.onProgress(), 900);
-    }
-  }
-
-  onEnded () {
-    this.emit('end');
-  }
-
-  pause () {
-    this.spotify.player.pause();
-  }
-
-  resume () {
-    this.spotify.player.resume();
-  }
-
-  seek (second) {
-    this.spotify.player.seek(second);
-  }
-
-  getCurrentTime () {
-    return this.spotify.player.currentSecond || 0;
-  }
-
-  getDuration () {
-    return (this.currentTrack && this.currentTrack.duration) || 1;
-  }
-
-  getProgress () {
-    return this.getCurrentTime() / this.getDuration();
-  }
-
-  // http://www.node-spotify.com/api.html#search
-
-  search (terms) {
-    const deferred = Q.defer();
-    const offset = 0;
-    const limit = 10;
-    const spotiSearch = new this.spotify.Search(terms, offset, limit);
-    spotiSearch.execute((err, result) => {
-      if (err) {
-        deferred.reject(err);
-      }
-      deferred.resolve(result);
-    });
-    return deferred.promise;
-  }
-
-  getImage (track) {
-    const {foreignId} = track;
-    const trackId = foreignId.split(':').pop();
-    const url = `https://api.spotify.com/v1/tracks/${trackId}`;
-    const deferred = Q.defer();
-
-    https.get(url, (res) => {
-      res.setEncoding('utf8');
-
-      let body = '';
-
-      res.on('data', (chunk) => {
-        body += chunk;
-      });
-
-      res.on('end', () => {
-        const images = JSON.parse(body).album.images;
-        deferred.resolve(images);
-      });
-
-    }).on('error', (err) => {
-      console.error(err);
+  const ready = (err) => {
+    if (err) {
+      console.error(`Login failed for ${SPOTIFY_USERNAME}:`, err);
       deferred.reject(err);
-    });
+    }
 
-    return deferred.promise;
+    const {sessionUser} = spotify;
+
+    const {displayName, link} = sessionUser;
+    console.log(`SpotifyService.login: Success! Logged in as: ${displayName}, (${link})`);
+
+    isLoggedIn = true;
+    deferred.resolve(sessionUser);
+  };
+
+  spotify.on({ready});
+  spotify.login(SPOTIFY_USERNAME, SPOTIFY_PASSWORD, false, false);
+
+  return deferred.promise;
+};
+
+const getTrack = (id) => spotify.createFromLink(id);
+
+const endOfTrack = () => spotifyService.emit('end');
+
+const pause = () => spotify.player.pause();
+
+const resume = () => spotify.player.resume();
+
+const seek = (second) => spotify.player.seek(second);
+
+const getCurrentTime = () => spotify.player.currentSecond || 0;
+
+const getDuration = () => (currentTrack && currentTrack.duration) || 1;
+
+const getProgress = () => getCurrentTime() / getDuration();
+
+const onProgress = () => {
+  const currentTime = getCurrentTime();
+  const progress = getProgress();
+  const duration = getDuration();
+
+  emit('progress', {currentTime, duration, progress});
+
+  if (progress < 1) {
+    setTimeout(() => onProgress(), 900);
   }
-}
+};
 
-export default new SpotifyService();
+const play = (id) => {
+  currentTrack = getTrack(id);
+  spotify.player.on({endOfTrack});
+  spotify.player.play(currentTrack);
+
+  if (process.env.SKIP_TRACKS === 'true') {
+    setTimeout(() => seek(getDuration() - 20), 1000);
+  }
+
+  onProgress();
+};
+
+const search = (terms = '') => {
+  terms = encodeURIComponent(terms);
+  return getJSON(`${webAPI}/search?type=track&q=${terms}`);
+};
+
+const getImage = (track) => {
+  const {foreignId} = track;
+  const trackId = foreignId.split(':').pop();
+  const url = `${webAPI}/tracks/${trackId}`;
+  const deferred = Q.defer();
+  getJSON(url)
+    .then((json) => deferred.resolve(json.album.images))
+    .catch((err) => deferred.reject(err));
+
+  return deferred.promise;
+};
+
+export default _.assign(spotifyService, {
+  login,
+  getImage,
+  getTrack,
+  play,
+  pause,
+  resume,
+  search
+});

@@ -2,10 +2,8 @@ import _ from 'lodash';
 import FunctionUtil from './../../util/FunctionUtil';
 import log from './../../util/LogUtil';
 import PlaylistController from './../PlaylistController';
-import PlaybackController from './../PlaybackController';
 import HttpUtil from './../../util/HttpUtil';
 import PlaylistErrorEnum from './../../model/enum/PlaylistErrorEnum';
-import socketService from './../../service/SocketService';
 // import Config from './../../model/Config';
 
 class PlaylistRequestController {
@@ -19,7 +17,7 @@ class PlaylistRequestController {
     FunctionUtil.bindAllMethods(this);
 
     this.playlistController = new PlaylistController();
-    this.playbackController = new PlaybackController();
+
   }
 
   getAll (req, res) {
@@ -84,19 +82,6 @@ class PlaylistRequestController {
       });
   }
 
-  upVoteTrack (req, res) {
-    const { playlist_id, track_id } = req.params;
-    return this.playlistController.upVoteTrack(playlist_id, track_id)
-      .then((track) => {
-        socketService.emitUpVote(track);
-        res.json(track);
-      })
-      .catch((err) => {
-        HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
-        log.formatError(err, 'PlaylistRequestController.upVoteTrack');
-      });
-  }
-
   /**
    * Update playlist fields. Can be used with PUT or PATCH.
    * Add fields names to `PlaylistRequestController.ALLOW_UPDATE_FIELDS` to enable
@@ -154,13 +139,6 @@ class PlaylistRequestController {
             HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
             log.formatError(err, 'PlaylistRequestController.deleteByIdParam');
         }
-      });
-  }
-
-  play (req, res) {
-    return this.playbackController.play(req.params.playlist_id)
-      .then((playlistTrack) => {
-        res.json(playlistTrack);
       });
   }
 

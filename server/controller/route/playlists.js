@@ -59,17 +59,6 @@ router.route('/:playlist_id')
       .done();
   });
 
-// TODO: DEPRECATE PLAY REST ENDPOINT, TO BE INVOKED VIA WEB SOCKET
-router.route('/:playlist_id/play')
-  .post(verify,
-  (req, res) => {
-    console.log('POST /playlists/' + req.params.playlist_id + '/play');
-
-    new PlaylistRequestController()
-      .play(req, res)
-      .done();
-  });
-
 router.route('/:playlist_id/tracks')
   .post(verify,
   (req, res) => {
@@ -77,22 +66,6 @@ router.route('/:playlist_id/tracks')
 
     new PlaylistRequestController()
       .addTrackByForeignId(req, res)
-      .done();
-  });
-
-// router.route('/:playlist_id/tracks/:track_id')
-  // .get(verify, (req, res) => )
-
-// TODO: GET /:playlist_id/tracks/:track_id
-// TODO: DELETE /:playlist_id/tracks/:track_id
-
-router.route('/:playlist_id/tracks/:track_id/upvote')
-  .post(verify,
-  (req, res) => {
-    console.log('POST /playlists/' + req.params.playlist_id + '/tracks/' + req.params.track_id + '/upvote');
-
-    new PlaylistRequestController()
-      .upVoteTrack(req, res)
       .done();
   });
 

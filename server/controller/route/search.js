@@ -1,6 +1,6 @@
 import express from 'express';
-import SearchController from '../SearchController';
-import { verify } from '../AuthController';
+import searchController from '../SearchController';
+import {verify} from '../AuthController';
 
 
 const router = express.Router();
@@ -15,7 +15,7 @@ router.route('/:terms')
 
     console.log('GET /search/:terms', req.params.terms);
 
-    new SearchController().search(req.params.terms)
+    searchController.search(req.params.terms)
       .then((results) => res.json(results))
       .catch((err) => res.send(err));
   });

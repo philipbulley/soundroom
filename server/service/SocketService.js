@@ -1,6 +1,6 @@
-import { EventEmitter } from 'events';
+import {EventEmitter} from 'events';
 import socketIO from 'socket.io';
-import _ from 'lodash';
+import EventTypeEnum from '../model/enum/EventTypeEnum';
 
 class SocketService extends EventEmitter {
 
@@ -11,43 +11,33 @@ class SocketService extends EventEmitter {
   init (server) {
     this.users = {};
     this.io = socketIO(server);
-    this.io.on('connection', (socket) => {
+    this.io.on(EventTypeEnum.CONNECTION, (socket) => {
       // console.log('--> new socket connection', socket);
       // TODO: send current state when user connects: current track, playing or paused
       // alternatively send with progress updates?
       const currentState = {};
-      socket.emit('connect', currentState)
-        .on('client:connect', (userId) => {
+      socket.emit(EventTypeEnum.CONNECT, currentState)
+        .on(EventTypeEnum.USER_ENTER, (userId) => {
           this.users[socket.client.id] = userId;
-          console.log(`client connect`, socket.client.id);
-          // console.log(`user connect ${data}`);
-          console.log('connections:', Object.keys(this.io.engine.clients));
-          this.emit('client:connect', userId);
-
+          this.emit(EventTypeEnum.USER_UPDATE);
         })
-        .on('client:pause', () => this.emit('pause'))
-        .on('client:resume', () => this.emit('resume'))
-        .on('disconnect', () => {
-          console.log('user disconnected');
-          const userId = this.users[socket.client.id];
+        .on(EventTypeEnum.PLAYLIST_PLAY, (id) => (
+          this.emit(EventTypeEnum.PLAYLIST_PLAY, id)
+        ))
+        .on(EventTypeEnum.PLAYLIST_PAUSE, (id) => (
+          this.emit(EventTypeEnum.PLAYLIST_PAUSE, id)
+        ))
+        .on(EventTypeEnum.PLAYLIST_TRACK_UPVOTE, (playlistId, trackId) => (
+          this.emit(EventTypeEnum.PLAYLIST_TRACK_UPVOTE, socket, playlistId, trackId)
+        ))
+        .on(EventTypeEnum.PLAYLIST_TRACK_VETO, (playlistId, trackId) => (
+          this.emit(EventTypeEnum.PLAYLIST_TRACK_VETO, socket, playlistId, trackId)
+        ))
+        .on(EventTypeEnum.DISCONNECT, () => {
           delete this.users[socket.client.id];
-          console.log('connections:', Object.keys(this.io.engine.clients));
-          console.log('users:', Object.keys(this.users));
-          this.emit('client:disconnect', userId);
+          this.emit(EventTypeEnum.USER_UPDATE);
         });
     });
-
-    // const allClients = [];
-    // io.sockets.on('connection', function(socket) {
-    //   allClients.push(socket);
-    //
-    //   socket.on('disconnect', function() {
-    //     console.log('Got disconnect!');
-    //
-    //     var i = allClients.indexOf(socket);
-    //     allClients.splice(i, 1);
-    //   });
-    // });
   }
 
   /**
@@ -56,52 +46,44 @@ class SocketService extends EventEmitter {
    * @returns void
    */
   emitTrackStart (track) {
-    this.io.emit('track:start', track);
+    this.io.emit(EventTypeEnum.PLAYLIST_TRACK_START, track);
   }
 
   /**
    * Update progress of current track
    * @param track
+   * @param progress
    * @returns void
    */
-  emitTrackProgress (progress) {
-    this.io.emit('track:progress', progress);
+  emitTrackProgress (track, progress) {
+    this.io.emit(EventTypeEnum.PLAYLIST_TRACK_PROGRESS, track, progress);
   }
 
   /**
    * End of playlist
+   * @param playlistId
    * @returns void
    */
-  emitPlaylistEnd () {
-    this.io.emit('playlist:end');
-  }
-
-  /**
-   * Tell connected users about new user
-   * @param user
-   * @returns void
-   */
-  userConnected (user, users) {
-    this.io.emit('user:connect', user, users);
+  emitPlaylistEnd (playlistId) {
+    this.io.emit(EventTypeEnum.PLAYLIST_END, playlistId);
   }
 
   updateConnectedUsers (users) {
     const ids = Object.keys(this.users).map((id) => this.users[id]);
     const connectedUsers = users.filter((user) => ids.indexOf(user.id) > -1);
-    this.io.emit('user:connect', connectedUsers);
+    this.io.emit(EventTypeEnum.USER_UPDATE, connectedUsers);
   }
 
   emitPause () {
-    this.io.emit('pause');
+    this.io.emit(EventTypeEnum.PLAYLIST_PAUSE);
   }
 
-  emitResume () {
-    this.io.emit('resume');
+  emitPlay () {
+    this.io.emit(EventTypeEnum.PLAYLIST_PLAY);
   }
 
-  // emit new upvote
-  emitUpVote (data) {
-    this.io.emit('track:upvote', data);
+  emitUpVote (track) {
+    this.io.emit(EventTypeEnum.PLAYLIST_TRACK_UPVOTE, track);
   }
 
   // TODO:
