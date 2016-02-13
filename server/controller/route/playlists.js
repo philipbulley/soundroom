@@ -69,22 +69,6 @@ router.route('/:playlist_id/tracks')
       .done();
   });
 
-// router.route('/:playlist_id/tracks/:track_id')
-  // .get(verify, (req, res) => )
-
-// TODO: GET /:playlist_id/tracks/:track_id
-// TODO: DELETE /:playlist_id/tracks/:track_id
-
-router.route('/:playlist_id/tracks/:track_id/upvote')
-  .post(verify,
-  (req, res) => {
-    console.log('POST /playlists/' + req.params.playlist_id + '/tracks/' + req.params.track_id + '/upvote');
-
-    new PlaylistRequestController()
-      .upVoteTrack(req, res)
-      .done();
-  });
-
 // TODO: DELETE /:playlist_id/tracks/:track_id/upvote
 
 export default router;

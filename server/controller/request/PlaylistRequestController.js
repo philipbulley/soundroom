@@ -4,7 +4,6 @@ import log from './../../util/LogUtil';
 import PlaylistController from './../PlaylistController';
 import HttpUtil from './../../util/HttpUtil';
 import PlaylistErrorEnum from './../../model/enum/PlaylistErrorEnum';
-import socketService from './../../service/SocketService';
 // import Config from './../../model/Config';
 
 class PlaylistRequestController {
@@ -80,19 +79,6 @@ class PlaylistRequestController {
       .catch((err) => {
         HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
         log.formatError(err, 'PlaylistRequestController.addTrackByForeignId');
-      });
-  }
-
-  upVoteTrack (req, res) {
-    const {playlist_id, track_id} = req.params;
-    return this.playlistController.upVoteTrack(playlist_id, track_id)
-      .then((track) => {
-        socketService.emitUpVote(track);
-        res.json(track);
-      })
-      .catch((err) => {
-        HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
-        log.formatError(err, 'PlaylistRequestController.upVoteTrack');
       });
   }
 

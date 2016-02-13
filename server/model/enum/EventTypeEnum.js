@@ -10,7 +10,10 @@ const EventTypeEnum = {
   PLAYLIST_TRACK_START: 'playlist.track.start',
   PLAYLIST_TRACK_PROGRESS: 'playlist.track.progress',
   PLAYLIST_END: 'playlist.end',
-  USER_UPDATE: 'user.update'
+  USER_UPDATE: 'user.update',
+
+  ERROR_PLAYLIST_TRACK_UPVOTE: 'error.playlist.track.upvote',
+  ERROR_PLAYLIST_TRACK_VETO: 'error.playlist.track.veto'
 };
 
 export default EventTypeEnum;

@@ -21,10 +21,18 @@ class SocketService extends EventEmitter {
           this.users[socket.client.id] = userId;
           this.emit(EventTypeEnum.USER_UPDATE);
         })
-        .on(EventTypeEnum.PLAYLIST_PLAY, (id) => this.emit('play', id))
-        .on(EventTypeEnum.PLAYLIST_PAUSE, (id) => this.emit('pause', id))
-        .on(EventTypeEnum.PLAYLIST_TRACK_UPVOTE, (id) => this.emit('upvote', id))
-        .on(EventTypeEnum.PLAYLIST_TRACK_VETO, (id) => this.emit('veto', id))
+        .on(EventTypeEnum.PLAYLIST_PLAY, (id) => (
+          this.emit(EventTypeEnum.PLAYLIST_PLAY, id)
+        ))
+        .on(EventTypeEnum.PLAYLIST_PAUSE, (id) => (
+          this.emit(EventTypeEnum.PLAYLIST_PAUSE, id)
+        ))
+        .on(EventTypeEnum.PLAYLIST_TRACK_UPVOTE, (playlistId, trackId) => (
+          this.emit(EventTypeEnum.PLAYLIST_TRACK_UPVOTE, socket, playlistId, trackId)
+        ))
+        .on(EventTypeEnum.PLAYLIST_TRACK_VETO, (playlistId, trackId) => (
+          this.emit(EventTypeEnum.PLAYLIST_TRACK_VETO, socket, playlistId, trackId)
+        ))
         .on(EventTypeEnum.DISCONNECT, () => {
           delete this.users[socket.client.id];
           this.emit(EventTypeEnum.USER_UPDATE);

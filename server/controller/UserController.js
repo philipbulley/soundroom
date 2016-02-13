@@ -117,9 +117,4 @@ function findById(id) {
   return db.User.findByIdQ(id);
 }
 
-
-socketService
-  .on(EventTypeEnum.USER_UPDATE, updateUserList);
-
-
 export {find, findOrCreate, findById, updateUserList};
