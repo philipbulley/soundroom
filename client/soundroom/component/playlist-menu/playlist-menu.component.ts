@@ -1,6 +1,6 @@
-import {Component, ViewEncapsulation, OnInit, OnDestroy} from 'angular2/core';
+import {Component, ViewEncapsulation, OnInit, OnDestroy, ChangeDetectionStrategy} from 'angular2/core';
 
-import {Observable} from 'rxjs/Observable';
+import {Observable, Subscription} from 'rxjs/Observable';
 import * as alertify from "alertify"
 
 import {Playlist} from "../../model/playlist";
@@ -14,23 +14,29 @@ import {PlaylistCreateComponent} from "../playlist-create/playlist-create.compon
   templateUrl: 'soundroom/component/playlist-menu/playlist-menu.html',
   styleUrls: ['soundroom/component/playlist-menu/playlist-menu.css'],
   directives: [PlaylistMenuItemComponent, PlaylistCreateComponent],
-  pipes: [CountPipe]
+  pipes: [CountPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlaylistMenuComponent implements OnInit, OnDestroy {
-  private playlists:Observable<Array<Playlist>>;
+  private playlists:Observable<Playlist[]>;
   private isSlowConnection:boolean = false;
   private errorMessage:any;
+  private onSlowConnectionSubscription:Subscription<boolean>;
+  private playlistsSubscription:Subscription<Playlist[]>;
 
   constructor( private playlistService:PlaylistService ) {
 
   }
 
   ngOnInit():any {
-    this.playlistService.onSlowConnection.subscribe(( isSlow:boolean ) => this.handleSlowConnection(isSlow));
+    this.onSlowConnectionSubscription = this.playlistService.onSlowConnection.subscribe(
+      ( isSlow:boolean ) => this.handleSlowConnection(isSlow)
+    );
+
     this.playlists = this.playlistService.playlists;
 
-    // Subscribe not necessary due to use of AsyncPipe in template, but may be useful for catching errors later
-    this.playlists.subscribe(
+    // Subscribe so we can catch errors
+    this.playlistsSubscription = this.playlists.subscribe(
       data => console.log('PlaylistMenuComponent.ngOnInit(): subscribe:', data),
       error => {
         alertify.error("Can't load Soundrooms. Try again later.");
@@ -40,7 +46,8 @@ export class PlaylistMenuComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy():any {
-    this.playlistService.onSlowConnection.unsubscribe();
+    this.onSlowConnectionSubscription.unsubscribe();
+    this.playlistsSubscription.unsubscribe();
   }
 
   private handleSlowConnection( isSlow:boolean ) {

@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy} from 'angular2/core';
+import {Component, OnInit, OnDestroy, ChangeDetectionStrategy} from 'angular2/core';
 import {RouteParams} from 'angular2/router';
 
 import * as alertify from 'alertify';
@@ -11,7 +11,8 @@ import {Playlist} from "../../model/playlist";
   selector: 'playlist-layout',
   templateUrl: 'soundroom/layout/playlist-layout/playlist-layout.html',
   styleUrls: ['soundroom/layout/playlist-layout/playlist-layout.css'],
-  directives: [PlaylistMenuComponent]
+  directives: [PlaylistMenuComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlaylistLayout implements OnInit {
   private playlist:Playlist;
@@ -24,27 +25,26 @@ export class PlaylistLayout implements OnInit {
   ngOnInit():any {
     // TODO: Ask playlistService to load playist details endpoint instead of /playlists within observer creation
 
+    this.playlistService.playlists
+      .map(playlists => {
+        return playlists.filter(playlist=> playlist._id === this.routeParams.get('id'))[0]
+      })
+      .subscribe(
+        ( playlist:Playlist ) => {
+          console.log('PlaylistLayout.ngOnInit(): subscribe:', playlist)
 
-    //this.playlistService.playlists
-    //  .map(playlists => {
-    //    return playlists.filter(playlist=> playlist._id === this.routeParams.get('id'))[0]
-    //  })
-    //  .subscribe(
-    //    playlist => {
-    //      console.log('PlaylistLayout.ngOnInit(): subscribe:', playlist)
-    //
-    //      if (!playlist) {
-    //        alertify.error("The Soundroom you've asked for doesn't exist");
-    //        this.noPlaylist = true;
-    //        return;
-    //      }
-    //
-    //      this.playlist = playlist;
-    //    },
-    //    error => {
-    //      alertify.error("We can't find the Soundroom you've asked for");
-    //      //this.errorMessage = <any>error;
-    //    }
-    //  );
+          if (!playlist) {
+            alertify.error("The Soundroom you've asked for doesn't exist");
+            this.noPlaylist = true;
+            return;
+          }
+
+          this.playlist = playlist;
+        },
+        error => {
+          alertify.error("We can't find the Soundroom you've asked for");
+          //this.errorMessage = <any>error;
+        }
+      );
   }
 }

@@ -1,4 +1,4 @@
-import {Component, Input} from 'angular2/core';
+import {Component, Input, ChangeDetectionStrategy} from 'angular2/core';
 import {RouterLink} from 'angular2/router';
 
 import * as alertify from 'alertify';
@@ -10,7 +10,8 @@ import {PlaylistService} from "../../service/playlist.service";
   selector: 'playlist-menu-item',
   templateUrl: 'soundroom/component/playlist-menu-item/playlist-menu-item.html',
   styleUrls: ['soundroom/component/playlist-menu-item/playlist-menu-item.css'],
-  directives: [RouterLink]
+  directives: [RouterLink],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlaylistMenuItemComponent {
 

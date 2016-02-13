@@ -1,4 +1,4 @@
-import {Component} from 'angular2/core';
+import {Component, ChangeDetectionStrategy} from 'angular2/core';
 
 import {PlaylistMenuComponent} from "../../component/playlist-menu/playlist-menu.component";
 
@@ -6,7 +6,8 @@ import {PlaylistMenuComponent} from "../../component/playlist-menu/playlist-menu
   selector: 'main-layout',
   templateUrl: 'soundroom/layout/main-layout/main-layout.html',
   styleUrls: ['soundroom/layout/main-layout/main-layout.css'],
-  directives: [PlaylistMenuComponent]
+  directives: [PlaylistMenuComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MainLayout {
 

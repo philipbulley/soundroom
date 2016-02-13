@@ -1,4 +1,4 @@
-import {Component, Input} from 'angular2/core';
+import {Component, Input, ChangeDetectionStrategy} from 'angular2/core';
 
 import * as alertify from 'alertify';
 
@@ -8,7 +8,8 @@ import {PlaylistService} from "../../service/playlist.service";
 @Component({
   selector: 'playlist-create',
   templateUrl: 'soundroom/component/playlist-create/playlist-create.html',
-  styleUrls: ['soundroom/component/playlist-create/playlist-create.css']
+  styleUrls: ['soundroom/component/playlist-create/playlist-create.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlaylistCreateComponent {
 

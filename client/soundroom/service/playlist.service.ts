@@ -1,7 +1,7 @@
 import {Injectable, EventEmitter} from 'angular2/core';
 import {Http, Response, RequestOptions, Headers} from 'angular2/http';
 
-import {Observable} from 'rxjs/Observable';
+import {Observable, ConnectableObservable} from 'rxjs/Observable';
 import {Observer} from 'rxjs/Observer';
 
 import {Config} from '../model/config';
@@ -11,8 +11,12 @@ import {PlaylistCreateBody} from "./playlist-create-body";
 @Injectable()
 export class PlaylistService {
 
-  playlists:Observable<Array<Playlist>>;
+  playlists:ConnectableObservable<Playlist[]>;
 
+  /**
+   * TODO refactor into it's own connection service?
+   * @type {EventEmitter}
+   */
   onSlowConnection:EventEmitter<boolean> = new EventEmitter();
 
   private endpoint:string = '/playlists';
@@ -41,11 +45,13 @@ export class PlaylistService {
       }
     })
     // Ensure the 2nd+ subscribers get the most recent data on subscribe (not sure why shareReplay() was removed from RxJS 5 - asked here: http://stackoverflow.com/questions/35246873/sharereplay-in-rxjs-5)
-      .publishReplay(1)
-      .refCount();
+      .publishReplay(1);
 
-    // Subscribe to prevent Observable from disposing on route change - this can't be best practice?!!
-    this.playlists.subscribe(playlists => {});
+    // Connect to keep this Observable hot, even after all components have unsubscribed
+    // BTW - I like the idea of `.publishReplay(1).refCount()` which makes the Observable cold once all have
+    // unsubscribed, but ng throws "Error: Cannot subscribe to a disposed Subject" when trying to subscribe after
+    // being cold (ie. when changing route). Not sure if this is to be expected?
+    this.playlists.connect();
   }
 
   /**
@@ -96,6 +102,7 @@ export class PlaylistService {
         console.log('PlaylistService.create() map: status:', res.headers.get('status'), 'body:', body);
 
         // Add new playlist to store
+        // TODO: Use spread ... for new array
         this.playlistsStore.push(body);
 
         // Push updated store to the Observable — is this required? Works without.
@@ -117,6 +124,7 @@ export class PlaylistService {
         this.playlistsStore.splice(this.playlistsStore.indexOf(playlist), 1);
 
         // Push updated store to the Observable
+        // TODO: Use spread ... for new array
         this.playlistsObserver.next(this.playlistsStore);
 
         return res.headers.get('status') === '204';
