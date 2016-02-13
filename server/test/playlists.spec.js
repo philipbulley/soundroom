@@ -1,14 +1,10 @@
-// Define the environment variables required by the app
-process.env.MONGO_CONNECT = 'mongodb://testuser:dEjVVRCDuTP56Fyh@ds051534.mongolab.com:51534/spotidrop-test';
-process.env.NODE_ENV = 'dev';
-process.env.MOCK_SPOTIFY = true;
-process.env.NO_AUTH = true;
+require('./helper/env');
 
-var expect = require('chai').expect,
+const expect = require('chai').expect,
   request = require('supertest'),
   index = require('./../index');
 
-var timeout = 10 * 1000;
+const timeout = 10 * 1000;
 
 describe('/api/playlists', function () {
   this.timeout(timeout);

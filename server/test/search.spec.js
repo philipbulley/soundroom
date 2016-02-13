@@ -1,10 +1,7 @@
-process.env.MONGO_CONNECT = 'mongodb://testuser:dEjVVRCDuTP56Fyh@ds051534.mongolab.com:51534/spotidrop-test';
-process.env.NODE_ENV = 'dev';
-process.env.NO_AUTH = true;
+require('./helper/env');
 
-var chai = require('chai'),
+const expect = require('chai').expect,
   request = require('supertest'),
-  expect = chai.expect,
   index = require('../index');
 
 describe('/api/search', function () {
@@ -39,10 +36,9 @@ describe('/api/search', function () {
           expect(res.status, 'with 200').to.equal(200);
           expect(res.body, 'with array').to.be.an.instanceof(Array);
           expect(res.body, 'with length').to.have.length.above(0);
+          expect(res.body[0], 'with id').to.have.property('id');
           expect(res.body[0], 'with artist').to.have.property('artist');
-          expect(res.body[0], 'with title').to.have.property('title');
-          expect(res.body[0], 'with link').to.have.property('link');
-          expect(res.body[0], 'with album').to.have.property('album');
+          expect(res.body[0], 'with name').to.have.property('name');
 
           done();
         });
