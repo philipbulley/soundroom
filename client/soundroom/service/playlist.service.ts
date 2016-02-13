@@ -11,6 +11,10 @@ import {PlaylistCreateBody} from "./playlist-create-body";
 @Injectable()
 export class PlaylistService {
 
+  /**
+   * An `Observable` that can be subscribed to for playlist data. Use this in components to the data of access one or
+   * more playlists.
+   */
   playlists:ConnectableObservable<Playlist[]>;
 
   /**
@@ -19,12 +23,40 @@ export class PlaylistService {
    */
   onSlowConnection:EventEmitter<boolean> = new EventEmitter();
 
-  private endpoint:string = '/playlists';
-  private playlistsStore:Playlist[];
+  /**
+   * Location of RESTful resource on server
+   * @type {string}
+   */
+  private API_ENDPOINT:string = '/playlists';
+
+  /**
+   * An exponential backoff strategy is used when loading playlist data, but we won't allow that exponential delay
+   * exceed this value.
+   * @type {number}
+   */
+  private MAX_RETRY_INTERVAL:number = 30;
+
+  /**
+   * On this number of retries (within the exponential backoff strategy), we will emit our slow connection. This may be
+   * communicated to the user via UI.
+   * @type {number}
+   */
+  private SLOW_CONNECTION_RETRIES:number = 2;
+
+  /**
+   * A simple array holding all of the `Playlist` model objects. This can be accessed via subscribing to the public
+   * `playlists` Observable on this service.
+   */
+  private playlistsCollection:Playlist[];
+
+  /**
+   * The observer that the `playlistsCollection` is pushed to when `playlistsCollection` has changed.
+   */
   private playlistsObserver:Observer<Playlist[]>;
 
-  private MAX_RETRY_INTERVAL:number = 30;
-  private SLOW_CONNECTION_RETRIES:number = 2;
+  /**
+   * Standard options we need to use when sending POST requests to the server
+   */
   private postOptions:RequestOptions;
 
   constructor( private http:Http ) {
@@ -33,34 +65,16 @@ export class PlaylistService {
       headers: new Headers({'Content-Type': 'application/json'})
     });
 
-    // Create an Observable to wrap our data store
-    this.playlists = new Observable(( observer:Observer<Playlist[]> ) => {
-      this.playlistsObserver = observer;
-
-      // Trigger a load of the data set upon the first subscription to this Observable
-      this.load();    // TODO: Consider removing so we can choose which data is loaded (ie. /playlists or /playlists/:id)
-
-      return () => {
-        console.log('%cPlaylistService dispose!', 'background-color:#f00;color:#fff;padding:2px 5px;font-weight:bold');
-      }
-    })
-    // Ensure the 2nd+ subscribers get the most recent data on subscribe (not sure why shareReplay() was removed from RxJS 5 - asked here: http://stackoverflow.com/questions/35246873/sharereplay-in-rxjs-5)
-      .publishReplay(1);
-
-    // Connect to keep this Observable hot, even after all components have unsubscribed
-    // BTW - I like the idea of `.publishReplay(1).refCount()` which makes the Observable cold once all have
-    // unsubscribed, but ng throws "Error: Cannot subscribe to a disposed Subject" when trying to subscribe after
-    // being cold (ie. when changing route). Not sure if this is to be expected?
-    this.playlists.connect();
+    this.initObservable()
   }
 
   /**
    * Starts load of the full data set.
    */
   load():void {
-    console.log('PlaylistService.load():', Config.API_BASE_URL + this.endpoint);
+    console.log('PlaylistService.load():', Config.API_BASE_URL + this.API_ENDPOINT);
 
-    this.http.get(Config.API_BASE_URL + this.endpoint)
+    this.http.get(Config.API_BASE_URL + this.API_ENDPOINT)
       .retryWhen(errors => this.retry(errors))
       //.timeout(120 * 1000, new Error('Timeout'))
       .map(res => res.json())
@@ -68,12 +82,12 @@ export class PlaylistService {
         this.onSlowConnection.emit(false);
 
         // Assign initial data to store
-        this.playlistsStore = data;
+        this.playlistsCollection = data;
 
         // Push update to Observer
-        this.playlistsObserver.next(this.playlistsStore);
+        this.playlistsObserver.next(this.playlistsCollection);
 
-        //setTimeout(() => this.playlistsObserver.next(this.playlistsStore.splice(0,2)), 2000);    // Debug - change data
+        //setTimeout(() => this.playlistsObserver.next(this.playlistsCollection.splice(0,2)), 2000);    // Debug - change data
       }, ( error:Response ) => {
         console.error(error);
 
@@ -82,7 +96,6 @@ export class PlaylistService {
   }
 
   create( name:string, description?:string ):Observable<boolean> {
-
     var body:PlaylistCreateBody = {
       name: name
     };
@@ -93,9 +106,9 @@ export class PlaylistService {
 
     //var req = new Request(options);
 
-    console.log('PlaylistService.create() call post:', Config.API_BASE_URL + this.endpoint, JSON.stringify(body), this.postOptions);
+    console.log('PlaylistService.create() call post:', Config.API_BASE_URL + this.API_ENDPOINT, JSON.stringify(body), this.postOptions);
 
-    return this.http.post(Config.API_BASE_URL + this.endpoint, JSON.stringify(body), this.postOptions)
+    return this.http.post(Config.API_BASE_URL + this.API_ENDPOINT, JSON.stringify(body), this.postOptions)
       .map(( res ) => {
         let body = res.json();
 
@@ -103,10 +116,10 @@ export class PlaylistService {
 
         // Add new playlist to store
         // TODO: Use spread ... for new array
-        this.playlistsStore.push(body);
+        this.playlistsCollection.push(body);
 
         // Push updated store to the Observable — is this required? Works without.
-        //this.playlistsObserver.next(this.playlistsStore);
+        //this.playlistsObserver.next(this.playlistsCollection);
 
         return res.headers.get('status') === '200';
       }).catch(( error:Response ) => {
@@ -116,16 +129,16 @@ export class PlaylistService {
   }
 
   deletePlaylist( playlist:Playlist ):Observable<boolean> {
-    return this.http.delete(Config.API_BASE_URL + this.endpoint + '/' + playlist._id)
+    return this.http.delete(Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id)
       .map(( res ) => {
         console.log('PlaylistService.deletePlaylist() map: status:', res.headers.get('status'), 'splice:', playlist);
 
         // Delete success - reflect change in local data store
-        this.playlistsStore.splice(this.playlistsStore.indexOf(playlist), 1);
+        // TODO: Use spread ... for new array
+        this.playlistsCollection.splice(this.playlistsCollection.indexOf(playlist), 1);
 
         // Push updated store to the Observable
-        // TODO: Use spread ... for new array
-        this.playlistsObserver.next(this.playlistsStore);
+        this.playlistsObserver.next(this.playlistsCollection);
 
         return res.headers.get('status') === '204';
       }).catch(( error:Response ) => {
@@ -160,5 +173,30 @@ export class PlaylistService {
         return Observable.of(err)
           .delay(retrySecs * 1000);
       });
+  }
+
+  /**
+   * Creates the hot playlists Observable that cn be usd throughout the app to subscribe to playlist data and changes.
+   */
+  private initObservable():void {
+    // Create an Observable to wrap our data store
+    this.playlists = new Observable(( observer:Observer<Playlist[]> ) => {
+      this.playlistsObserver = observer;
+
+      // Trigger a load of the data set upon the first subscription to this Observable
+      this.load();    // TODO: Consider removing so we can choose which data is loaded (ie. /playlists or /playlists/:id)
+
+      return () => {
+        console.log('%cPlaylistService dispose!', 'background-color:#f00;color:#fff;padding:2px 5px;font-weight:bold');
+      }
+    })
+    // Ensure the 2nd+ subscribers get the most recent data on subscribe (not sure why shareReplay() was removed from RxJS 5 - asked here: http://stackoverflow.com/questions/35246873/sharereplay-in-rxjs-5)
+      .publishReplay(1);
+
+    // Connect to keep this Observable hot, even after all components have unsubscribed
+    // BTW - I like the idea of `.publishReplay(1).refCount()` which makes the Observable cold once all have
+    // unsubscribed, but ng throws "Error: Cannot subscribe to a disposed Subject" when trying to subscribe after
+    // being cold (ie. when changing route). Not sure if this is to be expected?
+    this.playlists.connect();
   }
 }
