@@ -3,4 +3,4 @@
 <button *ngIf="!isDeleting" (click)="deleteMe(playlist)" class="btn btn-default">x</button>
 <i *ngIf="isDeleting" class="fa fa-circle-o-notch fa-spin"></i>
 
-<button (click)="join()" class="btn btn-default">Join Room</button>
+<button [routerLink]="['PlaylistLayout', {id: playlist._id}]" class="btn btn-default">Join Room</button>

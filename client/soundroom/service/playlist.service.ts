@@ -35,9 +35,17 @@ export class PlaylistService {
 
       // Trigger a load of the data set upon the first subscription to this Observable
       this.load();    // TODO: Consider removing so we can choose which data is loaded (ie. /playlists or /playlists/:id)
+
+      return () => {
+        console.log('%cPlaylistService dispose!', 'background-color:#f00;color:#fff;padding:2px 5px;font-weight:bold');
+      }
     })
-    // Ensure 2nd-Nth subscribers get the most recent data on subscribe (not sure why shareReplay() was removed from RxJS 5 - asked here: http://stackoverflow.com/questions/35246873/sharereplay-in-rxjs-5)
-      .publishReplay(1).refCount();
+    // Ensure the 2nd+ subscribers get the most recent data on subscribe (not sure why shareReplay() was removed from RxJS 5 - asked here: http://stackoverflow.com/questions/35246873/sharereplay-in-rxjs-5)
+      .publishReplay(1)
+      .refCount();
+
+    // Subscribe to prevent Observable from disposing on route change - this can't be best practice?!!
+    this.playlists.subscribe(playlists => {});
   }
 
   /**

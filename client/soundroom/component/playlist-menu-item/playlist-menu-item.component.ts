@@ -1,5 +1,5 @@
 import {Component, Input} from 'angular2/core';
-import {Router} from 'angular2/router';
+import {RouterLink} from 'angular2/router';
 
 import * as alertify from 'alertify';
 
@@ -9,7 +9,8 @@ import {PlaylistService} from "../../service/playlist.service";
 @Component({
   selector: 'playlist-menu-item',
   templateUrl: 'soundroom/component/playlist-menu-item/playlist-menu-item.html',
-  styleUrls: ['soundroom/component/playlist-menu-item/playlist-menu-item.css']
+  styleUrls: ['soundroom/component/playlist-menu-item/playlist-menu-item.css'],
+  directives: [RouterLink]
 })
 export class PlaylistMenuItemComponent {
 
@@ -19,12 +20,8 @@ export class PlaylistMenuItemComponent {
   private errorMessage:string;
   private isDeleting:boolean = false;
 
-  constructor( private playlistService:PlaylistService, private router:Router ) {
+  constructor( private playlistService:PlaylistService ) {
 
-  }
-
-  join() {
-    this.router.navigate([`PlaylistLayout`, {id: this.playlist._id}]);
   }
 
   deleteMe() {
