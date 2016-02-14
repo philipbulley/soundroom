@@ -1,6 +1,6 @@
 import express from 'express';
-import TrackController from '../TrackController';
-import { verify } from '../AuthController';
+import trackController from '../TrackController';
+import {verify} from '../AuthController';
 
 
 const router = express.Router();
@@ -8,8 +8,8 @@ const router = express.Router();
 router.route('/:track_id/artwork')
   .get(verify,
   (req, res) => {
-    const { track_id } = req.params;
-    new TrackController().getArtwork(track_id)
+    const {track_id} = req.params;
+    trackController.getArtwork(track_id)
       .then((src) => {
         res.send(src);
       })

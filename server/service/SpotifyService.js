@@ -3,6 +3,7 @@ import {EventEmitter} from 'events';
 import getJSON from '../util/getJSON';
 import nodeSpotify from 'node-spotify';
 import Q from 'q';
+import playbackState from '../model/state/PlaybackState';
 
 const {SPOTIFY_APP_KEY, SPOTIFY_USERNAME, SPOTIFY_PASSWORD} = process.env;
 const webAPI = 'https://api.spotify.com/v1';
@@ -10,15 +11,12 @@ const spotify = nodeSpotify({appkeyFile: SPOTIFY_APP_KEY});
 const spotifyService = Object.create(EventEmitter.prototype);
 const emit = spotifyService.emit.bind(spotifyService);
 
-// state
-let isLoggedIn = false;
-let currentTrack = null;
 
 const login = () => {
 
-  console.log('SpotifyService.login() isLoggedIn =', isLoggedIn);
+  console.log('SpotifyService.login() isConnected =', playbackState.isConnected);
 
-  if (isLoggedIn) {
+  if (playbackState.isConnected) {
     return Q.when();
   }
 
@@ -35,7 +33,8 @@ const login = () => {
     const {displayName, link} = sessionUser;
     console.log(`SpotifyService.login: Success! Logged in as: ${displayName}, (${link})`);
 
-    isLoggedIn = true;
+    playbackState.isConnected = true;
+
     deferred.resolve(sessionUser);
   };
 
@@ -57,7 +56,10 @@ const seek = (second) => spotify.player.seek(second);
 
 const getCurrentTime = () => spotify.player.currentSecond || 0;
 
-const getDuration = () => (currentTrack && currentTrack.duration) || 1;
+const getDuration = () => {
+  const {currentPlaylistTrack} = playbackState;
+  return (currentPlaylistTrack && currentPlaylistTrack.track.duration) || 1;
+};
 
 const getProgress = () => getCurrentTime() / getDuration();
 
@@ -74,9 +76,8 @@ const onProgress = () => {
 };
 
 const play = (id) => {
-  currentTrack = getTrack(id);
   spotify.player.on({endOfTrack});
-  spotify.player.play(currentTrack);
+  spotify.player.play(getTrack(id));
 
   if (process.env.SKIP_TRACKS === 'true') {
     setTimeout(() => seek(getDuration() - 20), 1000);

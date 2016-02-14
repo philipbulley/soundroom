@@ -184,6 +184,8 @@
       name.innerHTML = '';
       votes.innerHTML = '';
       progress.innerHTML = '';
+      trackId.innerHTML = '';
+			togglePlay(false);
     });
 
     socket.on(EventTypeEnum.USER_UPDATE, (users) => {

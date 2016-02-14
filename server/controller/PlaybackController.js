@@ -1,9 +1,7 @@
-import PlaylistController from './PlaylistController';
+import playlistController from './PlaylistController';
 import spotifyService from './../service/SpotifyService';
 import socketService from './../service/SocketService';
-
-const playlistController = new PlaylistController();
-let isTrackPlaying = false;
+import playbackState from '../model/state/PlaybackState';
 
 
 const pause = () => {
@@ -16,39 +14,41 @@ const resume = () => {
   socketService.emitPlay();
 };
 
-const play = (playlistId) => {
-  if (isTrackPlaying) {
+const play = (playlistId, previousTrack = null) => {
+  console.log('playbackState Track Playing', !!playbackState.currentPlaylistTrack);
+  if (playbackState.currentPlaylistTrack) {
     return resume();
   }
 
-  return playlistController.getNextTrackForPlayback(playlistId)
-    .then((track) => {
-      console.log(`PlaybackController.play: Next track: ${track}`);
+  return playlistController.getNextTrackForPlayback(playlistId, previousTrack)
+    .then((playlistTrack) => {
+      // console.log(`PlaybackController.play: Next track: ${playlistTrack}`);
 
       spotifyService.removeAllListeners('progress');
       spotifyService.removeAllListeners('end');
 
-      if (!track) {
-        isTrackPlaying = false;
+      playbackState.currentPlaylistId = playlistId;
+      playbackState.currentPlaylistTrack = playlistTrack;
+
+      if (!playlistTrack) {
         return socketService.emitPlaylistEnd(playlistId);
       }
 
-      socketService.emitTrackStart(track);
+      socketService.emitTrackStart(playlistTrack);
 
       spotifyService.on('progress', (progressData) => {
-        socketService.emitTrackProgress(track, progressData);
+        socketService.emitTrackProgress(playlistTrack, progressData);
       });
 
       spotifyService.on('end', () => {
-        isTrackPlaying = false;
-        play(playlistId);
+        const {currentPlaylistTrack} = playbackState;
+        playbackState.currentPlaylistTrack = null;
+        play(playlistId, currentPlaylistTrack);
       });
 
-      spotifyService.play(track.track.foreignId);
+      spotifyService.play(playlistTrack.track.foreignId);
 
-      isTrackPlaying = true;
-
-      return track;
+      return playlistTrack;
     });
 };
 

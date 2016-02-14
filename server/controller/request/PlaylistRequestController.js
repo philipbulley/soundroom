@@ -1,7 +1,6 @@
 import _ from 'lodash';
-import FunctionUtil from './../../util/FunctionUtil';
 import log from './../../util/LogUtil';
-import PlaylistController from './../PlaylistController';
+import playlistController from './../PlaylistController';
 import HttpUtil from './../../util/HttpUtil';
 import PlaylistErrorEnum from './../../model/enum/PlaylistErrorEnum';
 // import Config from './../../model/Config';
@@ -12,18 +11,10 @@ class PlaylistRequestController {
    */
   static ALLOW_UPDATE_FIELDS = ['name', 'description'];
 
-  constructor () {
-
-    FunctionUtil.bindAllMethods(this);
-
-    this.playlistController = new PlaylistController();
-
-  }
-
   getAll (req, res) {
     console.log('PlaylistRequestController.getAll()');
 
-    return this.playlistController.getAll()
+    return playlistController.getAll()
       .then((playlists) => {
         // If no playlists, return empty array, not a 404
         res.json(playlists);
@@ -37,7 +28,7 @@ class PlaylistRequestController {
   getByIdParam (req, res) {
     console.log('PlaylistRequestController.getByIdParam()', req.params.playlist_id);
 
-    return this.playlistController.getById(req.params.playlist_id)
+    return playlistController.getById(req.params.playlist_id)
       .then((playlist) => {
         res.json(playlist);
       })
@@ -61,7 +52,7 @@ class PlaylistRequestController {
   create (req, res) {
     log.debug('PlaylistRequestController.create: req.body', req.body);
 
-    return this.playlistController.create(req.body.name, req.body.description, req.body.user)
+    return playlistController.create(req.body.name, req.body.description, req.body.user)
       .then((playlist) => {
         res.json(playlist);
       })
@@ -72,7 +63,7 @@ class PlaylistRequestController {
   }
 
   addTrackByForeignId (req, res) {
-    return this.playlistController.addTrackByForeignId(req.params.playlist_id, req.body.provider, req.body.foreignId)
+    return playlistController.addTrackByForeignId(req.params.playlist_id, req.body.provider, req.body.foreignId)
       .then((playlist) => {
         res.json(playlist);
       })
@@ -94,7 +85,7 @@ class PlaylistRequestController {
 
     const updateObject = _.pick(req.body, PlaylistRequestController.ALLOW_UPDATE_FIELDS);
 
-    return this.playlistController.updateById(req.params.playlist_id, updateObject)
+    return playlistController.updateById(req.params.playlist_id, updateObject)
       .then((playlist) => {
         if (!playlist)
           return HttpUtil.sendJsonError(res, HttpUtil.status.NOT_FOUND);
@@ -121,7 +112,7 @@ class PlaylistRequestController {
   deleteByIdParam (req, res) {
     console.log('PlaylistRequestController.deleteByIdParam()', req.params.playlist_id, req.body);
 
-    return this.playlistController.deleteById(req.params.playlist_id)
+    return playlistController.deleteById(req.params.playlist_id)
       .then((playlist) => {
         res.sendStatus(HttpUtil.status.NO_CONTENT);
       })
@@ -144,4 +135,6 @@ class PlaylistRequestController {
 
 };
 
-export default PlaylistRequestController;
+// getAll, create, getByIdParam, updateByIdParam, deleteByIdParam, addTrackByForeignId
+
+export default new PlaylistRequestController();

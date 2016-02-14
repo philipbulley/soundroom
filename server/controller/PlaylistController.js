@@ -1,21 +1,17 @@
+import _ from 'lodash';
 import db from './../model/db';
 import FunctionUtil from './../util/FunctionUtil';
 import log from './../util/LogUtil';
 import PlaylistErrorEnum from './../model/enum/PlaylistErrorEnum';
 import Q from 'q';
-import TrackController from './TrackController';
+import trackController from './TrackController';
 import TrackErrorEnum from './../model/enum/TrackErrorEnum';
 
 
 class PlaylistController {
 
-  currentTrack = -1;
-  trackController = null;
-
   constructor () {
     FunctionUtil.bindAllMethods(this);
-
-    this.trackController = new TrackController();
   }
 
   getAll () {
@@ -61,7 +57,7 @@ class PlaylistController {
     console.log('PlaylistController.addTrackByForeignId:', provider, foreignId);
 
     // Check if track already exists as a Track model in the DB (ie. a user has added it before)
-    return this.trackController.getByForeignId(provider, foreignId)
+    return trackController.getByForeignId(provider, foreignId)
       .then((track) => {
         log.debug('PlaylistController.addTrackByForeignId: track already exists');
         return track;
@@ -69,7 +65,7 @@ class PlaylistController {
       .catch((err) => {
         // The track isn't yet stored in our DB, time to create it
         if (err.message === TrackErrorEnum.NOT_FOUND)
-          return this.trackController.createByForeignId(provider, foreignId);
+          return trackController.createByForeignId(provider, foreignId);
 
         log.formatError(err, 'PlaylistController.addTrackByForeignId');
 
@@ -101,7 +97,7 @@ class PlaylistController {
 
         console.log('PlaylistController.addTrackToPlaylist: Found playlist:', playlist);
 
-        return this.trackController.getById(trackId);
+        return trackController.getById(trackId);
       })
       .then((_track) => {
         track = _track;
@@ -191,17 +187,21 @@ class PlaylistController {
       });
   }
 
-  getNextTrackForPlayback (playlistId) {
-    this.currentTrack++;
+  getNextTrackForPlayback (playlistId, previousTrack) {
     return this.getById(playlistId)
       .then((playlist) => {
-        if (this.currentTrack === playlist.tracks.length) {
-          this.currentTrack = -1;
+        const previousTrackId = previousTrack && previousTrack._id;
+        const track = _.find(playlist.tracks, {_id: previousTrackId});
+        const index = playlist.tracks.indexOf(track);
+        const playlistTrackIds = playlist.tracks.map((t) => t._id).join(', ');
+        console.log('playlistTrackId', previousTrackId, 'playlist tracks', playlistTrackIds);
+        console.log('index of current track', index, 'playlist length', playlist.tracks.length);
+        if (index === playlist.tracks.length - 1) {
           return null;
         }
-        return playlist.tracks[this.currentTrack];
+        return playlist.tracks[index + 1];
       });
   }
 }
 
-export default PlaylistController;
+export default new PlaylistController();

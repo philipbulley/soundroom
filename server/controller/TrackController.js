@@ -127,4 +127,4 @@ class TrackController {
   }
 }
 
-export default TrackController;
+export default new TrackController();

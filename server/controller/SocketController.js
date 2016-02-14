@@ -1,12 +1,11 @@
 // import _ from 'lodash';
 import {play, pause} from './PlaybackController';
-import PlaylistController from './PlaylistController';
+import playlistController from './PlaylistController';
 import {updateUserList} from './UserController';
 import socketService from '../service/SocketService';
 import EventTypeEnum from '../model/enum/EventTypeEnum';
 import log from './../util/LogUtil';
 
-const playlistController = new PlaylistController();
 
 const upVote = (client, playlistId, trackId) => {
   return playlistController.upVoteTrack(playlistId, trackId)

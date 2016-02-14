@@ -1,6 +1,6 @@
 import express from 'express';
-import PlaylistRequestController from './../request/PlaylistRequestController';
-import { verify } from '../AuthController';
+import playlistRequestController from './../request/PlaylistRequestController';
+import {verify} from '../AuthController';
 
 
 const router = express.Router();
@@ -10,14 +10,14 @@ router.route('/')
   (req, res) => {
     console.log('GET /playlists/');
 
-    new PlaylistRequestController()
+    playlistRequestController
       .getAll(req, res)
       .done();
   })
 
   .post(verify,
   (req, res) => {
-    new PlaylistRequestController()
+    playlistRequestController
       .create(req, res)
       .done();
   });
@@ -27,7 +27,7 @@ router.route('/:playlist_id')
   (req, res) => {
     console.log('GET /playlists/:playlist_id' + req.params.playlist_id);
 
-    new PlaylistRequestController()
+    playlistRequestController
       .getByIdParam(req, res)
       .done();
   })
@@ -36,7 +36,7 @@ router.route('/:playlist_id')
   (req, res) => {
     console.log('PUT /playlists/:playlist_id', req.params.playlist_id);
 
-    new PlaylistRequestController()
+    playlistRequestController
       .updateByIdParam(req, res)
       .done();
   })
@@ -45,7 +45,7 @@ router.route('/:playlist_id')
   (req, res) => {
     console.log('PATCH /playlists/:playlist_id', req.params.playlist_id);
 
-    new PlaylistRequestController()
+    playlistRequestController
       .updateByIdParam(req, res)
       .done();
   })
@@ -54,7 +54,7 @@ router.route('/:playlist_id')
   (req, res) => {
     console.log('DELETE /playlists/:playlist_id', req.params.playlist_id);
 
-    new PlaylistRequestController()
+    playlistRequestController
       .deleteByIdParam(req, res)
       .done();
   });
@@ -64,7 +64,7 @@ router.route('/:playlist_id/tracks')
   (req, res) => {
     console.log('POST /playlists/' + req.params.playlist_id + '/tracks/');
 
-    new PlaylistRequestController()
+    playlistRequestController
       .addTrackByForeignId(req, res)
       .done();
   });
