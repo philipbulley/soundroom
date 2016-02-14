@@ -81,13 +81,11 @@ export class PlaylistService {
       .subscribe(( data ) => {
         this.onSlowConnection.emit(false);
 
-        // Assign initial data to store
+        // Assign initial data to collection
         this.playlistsCollection = data;
 
         // Push update to Observer
         this.playlistsObserver.next(this.playlistsCollection);
-
-        //setTimeout(() => this.playlistsObserver.next(this.playlistsCollection.splice(0,2)), 2000);    // Debug - change data
       }, ( error:Response ) => {
         console.error(error);
 
@@ -104,24 +102,24 @@ export class PlaylistService {
       body.description = description;
     }
 
-    //var req = new Request(options);
-
     console.log('PlaylistService.create() call post:', Config.API_BASE_URL + this.API_ENDPOINT, JSON.stringify(body), this.postOptions);
 
     return this.http.post(Config.API_BASE_URL + this.API_ENDPOINT, JSON.stringify(body), this.postOptions)
       .map(( res ) => {
-        let body = res.json();
+        let playlist:Playlist = res.json();
 
-        console.log('PlaylistService.create() map: status:', res.headers.get('status'), 'body:', body);
+        console.log('PlaylistService.create() map: status:', res.headers.get('status'), 'playlist:', playlist);
 
-        // Add new playlist to store
-        // TODO: Use spread ... for new array
-        this.playlistsCollection.push(body);
+        // Add new playlist to collection
+        this.playlistsCollection = [...this.playlistsCollection, playlist];
 
-        // Push updated store to the Observable — is this required? Works without.
-        //this.playlistsObserver.next(this.playlistsCollection);
+        // Push updated collection to the Observer
+        this.playlistsObserver.next(this.playlistsCollection);
 
-        return res.headers.get('status') === '200';
+        console.log('status', res.headers.get('status'), 'headers', res.headers);
+
+
+        return res.status === 200;
       }).catch(( error:Response ) => {
         console.error(error);
         return Observable.throw(error.json().error || 'Server error');
@@ -133,14 +131,17 @@ export class PlaylistService {
       .map(( res ) => {
         console.log('PlaylistService.deletePlaylist() map: status:', res.headers.get('status'), 'splice:', playlist);
 
-        // Delete success - reflect change in local data store
-        // TODO: Use spread ... for new array
-        this.playlistsCollection.splice(this.playlistsCollection.indexOf(playlist), 1);
+        // Delete success - reflect change in local data collection
+        const i = this.playlistsCollection.indexOf(playlist);
+        this.playlistsCollection = [
+          ...this.playlistsCollection.slice(0, i),
+          ...this.playlistsCollection.slice(i + 1)
+        ];
 
-        // Push updated store to the Observable
+        // Push updated collection to the Observable
         this.playlistsObserver.next(this.playlistsCollection);
 
-        return res.headers.get('status') === '204';
+        return res.status === 204;
       }).catch(( error:Response ) => {
         console.error(error);
         return Observable.throw(error.json().error || 'Server error');
@@ -179,7 +180,7 @@ export class PlaylistService {
    * Creates the hot playlists Observable that cn be usd throughout the app to subscribe to playlist data and changes.
    */
   private initObservable():void {
-    // Create an Observable to wrap our data store
+    // Create an Observable to wrap our data collection
     this.playlists = new Observable(( observer:Observer<Playlist[]> ) => {
       this.playlistsObserver = observer;
 
