@@ -1,4 +1,4 @@
-import {Component, Input, ChangeDetectionStrategy} from 'angular2/core';
+import {Component, Input, ChangeDetectionStrategy, ChangeDetectorRef} from 'angular2/core';
 
 import * as alertify from 'alertify';
 
@@ -17,12 +17,10 @@ export class PlaylistCreateComponent {
   private playlist:Playlist;
 
   private state:string;
-  private errorMessage:string;
-
   private name:string;
   private description:string;
 
-  constructor( private playlistService:PlaylistService ) {
+  constructor( private playlistService:PlaylistService, private cdr:ChangeDetectorRef ) {
     this.state = 'default';
   }
 
@@ -57,11 +55,16 @@ export class PlaylistCreateComponent {
           alertify.success("Created the \"" + this.name + "\" room!");
           console.log('PlaylistCreateComponent.create() subscribe: success', success);
           this.reset();
+
+          // Changes made after last change detection, so inform detector that check is required
+          this.cdr.markForCheck();
         },
         error => {
           alertify.error("Can't create \"" + this.name + "\". Try again later.");
           this.reset();
-          this.errorMessage = <any>error;
+
+          // Changes made after last change detection, so inform detector that check is required
+          this.cdr.markForCheck();
         });
   }
 
