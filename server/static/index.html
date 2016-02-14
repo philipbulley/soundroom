@@ -9,7 +9,8 @@
     dt { font-weight: bold; }
 		section { display: block; padding: 1em; }
 		ul { list-style: none; margin: 0; padding: 0; }
-		img { float: right; max-width: 200px; }
+		img { max-width: 30px; }
+		img[data-img] { float: right; max-width: 200px; }
   </style>
 </head>
 <body>
@@ -36,6 +37,10 @@
 	</section>
 
 	<section>
+		<ul data-user></ul>
+	</section>
+
+	<section>
 		<pre data-output></pre>
 	</section>
 
@@ -52,6 +57,7 @@
     const connect = document.querySelector('[data-connect]');
     const img = document.querySelector('[data-img]');
     const tracks = document.querySelector('[data-tracks]');
+		const user = document.querySelector('[data-user]');
     const output = document.querySelector('[data-output]');
 		const play = document.querySelector('[data-play]');
 		const pause = document.querySelector('[data-pause]');
@@ -101,14 +107,20 @@
 		play.disabled = true;
 		pause.disabled = true;
 
+
 		const host = document.location.protocol + '//' + document.location.host;
 		const socket = io(host);
 
     socket.on(EventTypeEnum.CONNECT, (data) => {
       console.log('connect', data);
-			var userId = '56428fd8c24016da78639ef5';
-      socket.emit(EventTypeEnum.USER_CONNECT, userId);
-      connect.innerHTML = 'true';
+			connect.innerHTML = 'true';
+
+			http('/api/users')
+			.then((json) => {
+				const userId = json[Math.floor(Math.random() * json.length)].id;
+				socket.emit(EventTypeEnum.USER_ENTER, userId);
+			});
+
 			http('/api/playlists')
 				.then((json) => {
 					const pl = json.filter((item) => item.tracks.length)[0];
@@ -174,7 +186,14 @@
       progress.innerHTML = '';
     });
 
-    socket.on(EventTypeEnum.USER_UPDATE, (users) => console.log('users', users));
+    socket.on(EventTypeEnum.USER_UPDATE, (users) => {
+			console.log('users', users);
+			user.innerHTML = users.map((item) => {
+				const name = item.name;
+				const avatar = item.avatar;
+				return `<li><img src="${avatar}"/> ${name}</li>`;
+			}).join('');
+		});
     socket.on(EventTypeEnum.PLAYLIST_PAUSE, () => togglePlay(false));
     socket.on(EventTypeEnum.PLAYLIST_PLAY, () => togglePlay(true));
     socket.on(EventTypeEnum.ERROR_PLAYLIST_TRACK_UPVOTE, (err, playlistId, trackId) => (

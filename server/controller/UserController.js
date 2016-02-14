@@ -4,7 +4,6 @@ import log from './../util/LogUtil';
 import Q from 'q';
 import socketService from './../service/SocketService';
 import UserErrorEnum from './../model/enum/UserErrorEnum';
-import EventTypeEnum from '../model/enum/EventTypeEnum';
 
 /**
  *

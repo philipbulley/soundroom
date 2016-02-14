@@ -1,6 +1,7 @@
 import {EventEmitter} from 'events';
 import socketIO from 'socket.io';
 import EventTypeEnum from '../model/enum/EventTypeEnum';
+import socketUsers from '../model/state/SocketUsers';
 
 class SocketService extends EventEmitter {
 
@@ -9,7 +10,6 @@ class SocketService extends EventEmitter {
   }
 
   init (server) {
-    this.users = {};
     this.io = socketIO(server);
     this.io.on(EventTypeEnum.CONNECTION, (socket) => {
       // console.log('--> new socket connection', socket);
@@ -18,7 +18,7 @@ class SocketService extends EventEmitter {
       const currentState = {};
       socket.emit(EventTypeEnum.CONNECT, currentState)
         .on(EventTypeEnum.USER_ENTER, (userId) => {
-          this.users[socket.client.id] = userId;
+          socketUsers.add(socket.client.id, userId);
           this.emit(EventTypeEnum.USER_UPDATE);
         })
         .on(EventTypeEnum.PLAYLIST_PLAY, (id) => (
@@ -34,7 +34,8 @@ class SocketService extends EventEmitter {
           this.emit(EventTypeEnum.PLAYLIST_TRACK_VETO, socket, playlistId, trackId)
         ))
         .on(EventTypeEnum.DISCONNECT, () => {
-          delete this.users[socket.client.id];
+          socket.removeAllListeners();
+          socketUsers.remove(socket.client.id);
           this.emit(EventTypeEnum.USER_UPDATE);
         });
     });
@@ -69,8 +70,9 @@ class SocketService extends EventEmitter {
   }
 
   updateConnectedUsers (users) {
-    const ids = Object.keys(this.users).map((id) => this.users[id]);
-    const connectedUsers = users.filter((user) => ids.indexOf(user.id) > -1);
+    console.log(users.map((user) => user.id).join(','));
+    const connectedUsers = users.filter((user) => socketUsers.contains(user.id));
+    console.log('connectedUsers', connectedUsers.length);
     this.io.emit(EventTypeEnum.USER_UPDATE, connectedUsers);
   }
 
