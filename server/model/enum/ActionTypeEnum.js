@@ -1,4 +1,4 @@
-var ActionTypeEnum = {
+const ActionTypeEnum = {
 
   /**
    * Relating to a Track that has been up voted by a user
@@ -12,4 +12,4 @@ var ActionTypeEnum = {
 
 };
 
-module.exports = ActionTypeEnum;
+export default ActionTypeEnum;

@@ -1,7 +1,7 @@
-var ProviderEnum = {
+const ProviderEnum = {
 
   SPOTIFY: 'spotify'
 
 };
 
-module.exports = ProviderEnum;
+export default ProviderEnum;

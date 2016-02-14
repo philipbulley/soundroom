@@ -1,5 +1,5 @@
 // TODO: Create and extend DocumentErrorEnum
-var PlaylistErrorEnum = {
+const PlaylistErrorEnum = {
 
   ALREADY_EXISTS: 'ALREADY_EXISTS',
 
@@ -11,4 +11,4 @@ var PlaylistErrorEnum = {
 
 };
 
-module.exports = PlaylistErrorEnum;
+export default PlaylistErrorEnum;

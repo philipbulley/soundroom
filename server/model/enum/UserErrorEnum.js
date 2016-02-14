@@ -1,5 +1,5 @@
 // TODO: Create and extend DocumentErrorEnum
-var UserErrorEnum = {
+const UserErrorEnum = {
 
   ALREADY_EXISTS: 'ALREADY_EXISTS',
 
@@ -7,4 +7,4 @@ var UserErrorEnum = {
 
 };
 
-module.exports = UserErrorEnum;
+export default UserErrorEnum;

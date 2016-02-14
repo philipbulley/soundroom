@@ -1,5 +1,5 @@
 // TODO: Create and extend DocumentErrorEnum
-var TrackErrorEnum = {
+const TrackErrorEnum = {
 
   ALREADY_EXISTS: 'ALREADY_EXISTS',
 
@@ -9,4 +9,4 @@ var TrackErrorEnum = {
 
 };
 
-module.exports = TrackErrorEnum;
+export default TrackErrorEnum;
