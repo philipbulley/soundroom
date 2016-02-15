@@ -426,51 +426,51 @@ describe('/api/playlists', function () {
             });
         });
 
-        it('should upvote a track by playlist track id', function (done) {
-          request(index.app)
-            .post('/api/playlists/' + playlistId2 + '/tracks/' + playlistTrack._id + '/upvote')
-            .send(dummyExternalTrack)
-            .end(function (err, res) {
-              if (err) throw err;
-
-              expect(res.headers['content-type'], 'with json').to.contain('json');
-              expect(res.status, 'with 200').to.equal(200);
-              expect(res.body, 'with object').to.be.an('object');
-
-              expect(res.body._id, 'with _id').to.exist;
-              expect(res.body.modified, 'with modified').to.exist;
-              expect(res.body.track, 'with track').to.exist;
-              expect(res.body.upVotes, 'with upVotes array').to.be.an.instanceof(Array);
-              expect(res.body.upVotes.length, 'with more than 1 upVotes').to.be.greaterThan(1);
-
-              playlistTrack = res.body;
-
-              done();
-            });
-        });
-
-        it('should upvote a track by actual track id', function (done) {
-          request(index.app)
-            .post('/api/playlists/' + playlistId2 + '/tracks/' + playlistTrack.track._id + '/upvote')
-            .send(dummyExternalTrack)
-            .end(function (err, res) {
-              if (err) throw err;
-
-              expect(res.headers['content-type'], 'with json').to.contain('json');
-              expect(res.status, 'with 200').to.equal(200);
-              expect(res.body, 'with object').to.be.an('object');
-
-              expect(res.body._id, 'with _id').to.exist;
-              expect(res.body.modified, 'with modified').to.exist;
-              expect(res.body.track, 'with track').to.exist;
-              expect(res.body.upVotes, 'with upVotes array').to.be.an.instanceof(Array);
-              expect(res.body.upVotes.length, 'with more than 1 upVotes').to.be.greaterThan(2);
-
-              playlistTrack = res.body;
-
-              done();
-            });
-        });
+        // it('should upvote a track by playlist track id', function (done) {
+        //   request(index.app)
+        //     .post('/api/playlists/' + playlistId2 + '/tracks/' + playlistTrack._id + '/upvote')
+        //     .send(dummyExternalTrack)
+        //     .end(function (err, res) {
+        //       if (err) throw err;
+        //
+        //       expect(res.headers['content-type'], 'with json').to.contain('json');
+        //       expect(res.status, 'with 200').to.equal(200);
+        //       expect(res.body, 'with object').to.be.an('object');
+        //
+        //       expect(res.body._id, 'with _id').to.exist;
+        //       expect(res.body.modified, 'with modified').to.exist;
+        //       expect(res.body.track, 'with track').to.exist;
+        //       expect(res.body.upVotes, 'with upVotes array').to.be.an.instanceof(Array);
+        //       expect(res.body.upVotes.length, 'with more than 1 upVotes').to.be.greaterThan(1);
+        //
+        //       playlistTrack = res.body;
+        //
+        //       done();
+        //     });
+        // });
+        //
+        // it('should upvote a track by actual track id', function (done) {
+        //   request(index.app)
+        //     .post('/api/playlists/' + playlistId2 + '/tracks/' + playlistTrack.track._id + '/upvote')
+        //     .send(dummyExternalTrack)
+        //     .end(function (err, res) {
+        //       if (err) throw err;
+        //
+        //       expect(res.headers['content-type'], 'with json').to.contain('json');
+        //       expect(res.status, 'with 200').to.equal(200);
+        //       expect(res.body, 'with object').to.be.an('object');
+        //
+        //       expect(res.body._id, 'with _id').to.exist;
+        //       expect(res.body.modified, 'with modified').to.exist;
+        //       expect(res.body.track, 'with track').to.exist;
+        //       expect(res.body.upVotes, 'with upVotes array').to.be.an.instanceof(Array);
+        //       expect(res.body.upVotes.length, 'with more than 1 upVotes').to.be.greaterThan(2);
+        //
+        //       playlistTrack = res.body;
+        //
+        //       done();
+        //     });
+        // });
 
 
       });
