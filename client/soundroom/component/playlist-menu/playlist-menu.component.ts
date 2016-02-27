@@ -2,12 +2,16 @@ import {Component, ViewEncapsulation, OnInit, OnDestroy, ChangeDetectionStrategy
 
 import {Observable, Subscription} from 'rxjs/Observable';
 import * as alertify from "alertify"
+import {Store} from '@ngrx/store';
 
 import {Playlist} from "../../model/playlist";
 import {PlaylistService} from "../../service/playlist.service";
 import {PlaylistMenuItemComponent} from "../../component/playlist-menu-item/playlist-menu-item.component";
 import {CountPipe} from "../../pipe/CountPipe";
 import {PlaylistCreateComponent} from "../playlist-create/playlist-create.component";
+import {RESET} from "../../counter";
+import {DECREMENT} from "../../counter";
+import {INCREMENT} from "../../counter";
 
 @Component({
   selector: 'playlist-menu',
@@ -20,34 +24,20 @@ import {PlaylistCreateComponent} from "../playlist-create/playlist-create.compon
 export class PlaylistMenuComponent implements OnInit, OnDestroy {
   private playlists:Observable<Playlist[]>;
   private isSlowConnection:boolean = false;
-  private errorMessage:any;
   private onSlowConnectionSubscription:Subscription<boolean>;
-  private playlistsSubscription:Subscription<Playlist[]>;
 
-  constructor( private playlistService:PlaylistService ) {
-
+  constructor( private playlistService:PlaylistService, private store:Store ) {
+    this.playlists = store.select('playlists');
   }
 
   ngOnInit():any {
     this.onSlowConnectionSubscription = this.playlistService.onSlowConnection.subscribe(
       ( isSlow:boolean ) => this.handleSlowConnection(isSlow)
     );
-
-    this.playlists = this.playlistService.playlists;
-
-    // Subscribe so we can catch errors
-    this.playlistsSubscription = this.playlists.subscribe(
-      data => console.log('PlaylistMenuComponent.ngOnInit(): subscribe:', data),
-      error => {
-        alertify.error("Can't load Soundrooms. Try again later.");
-        this.errorMessage = <any>error;
-      }
-    );
   }
 
   ngOnDestroy():any {
     this.onSlowConnectionSubscription.unsubscribe();
-    this.playlistsSubscription.unsubscribe();
   }
 
   private handleSlowConnection( isSlow:boolean ) {

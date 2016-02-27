@@ -38,6 +38,7 @@ var paths = {
     'node_modules/angular2/bundles/router.dev.js',
     'node_modules/angular2/bundles/http.dev.js',
     'node_modules/bootstrap/dist/**/*',
+    'node_modules/@ngrx/store/**',
 
     'node_modules/font-awesome/css/font-awesome.min.css',
     'node_modules/font-awesome/fonts/*'

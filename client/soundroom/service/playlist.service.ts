@@ -3,10 +3,12 @@ import {Http, Response, RequestOptions, Headers} from 'angular2/http';
 
 import {Observable, ConnectableObservable} from 'rxjs/Observable';
 import {Observer} from 'rxjs/Observer';
+import {Store} from '@ngrx/store';
 
 import {Config} from '../model/config';
 import {Playlist} from '../model/playlist';
 import {PlaylistCreateBody} from "./playlist-create-body";
+import {ADD_PLAYLIST} from "../model/reducers/playlists.reducer";
 
 @Injectable()
 export class PlaylistService {
@@ -14,6 +16,7 @@ export class PlaylistService {
   /**
    * An `Observable` that can be subscribed to for playlist data. Use this in components to the data of access one or
    * more playlists.
+   * @deprecated
    */
   playlists:ConnectableObservable<Playlist[]>;
 
@@ -59,13 +62,12 @@ export class PlaylistService {
    */
   private postOptions:RequestOptions;
 
-  constructor( private http:Http ) {
-
+  constructor( private http:Http, public store: Store ) {
     this.postOptions = new RequestOptions({
       headers: new Headers({'Content-Type': 'application/json'})
     });
 
-    this.initObservable()
+    this.initObservable();
   }
 
   /**
@@ -76,16 +78,17 @@ export class PlaylistService {
 
     this.http.get(Config.API_BASE_URL + this.API_ENDPOINT)
       .retryWhen(errors => this.retry(errors))
-      //.timeout(120 * 1000, new Error('Timeout'))
       .map(res => res.json())
       .subscribe(( data ) => {
         this.onSlowConnection.emit(false);
 
         // Assign initial data to collection
-        this.playlistsCollection = data;
+        //this.playlistsCollection = data;
+        this.store.dispatch({type: ADD_PLAYLIST, payload: data});
+        //this.store.dispatch({type: ADD_PLAYLIST, payload: 1});
 
         // Push update to Observer
-        this.playlistsObserver.next(this.playlistsCollection);
+        //this.playlistsObserver.next(this.playlistsCollection);
       }, ( error:Response ) => {
         console.error(error);
 
