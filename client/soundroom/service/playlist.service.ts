@@ -8,7 +8,7 @@ import {Store} from '@ngrx/store';
 import {Config} from '../model/config';
 import {Playlist} from '../model/playlist';
 import {PlaylistCreateBody} from "./playlist-create-body";
-import {ADD_PLAYLIST} from "../model/reducers/playlists.reducer";
+import {PlaylistAction} from "../model/enum/playlist-action";
 
 @Injectable()
 export class PlaylistService {
@@ -76,7 +76,10 @@ export class PlaylistService {
   load():void {
     console.log('PlaylistService.load():', Config.API_BASE_URL + this.API_ENDPOINT);
 
+    this.store.dispatch({type: PlaylistAction.LOAD_ALL});
+
     this.http.get(Config.API_BASE_URL + this.API_ENDPOINT)
+      .delay(2000)    // DEBUG: Delay for simulation purposes only
       .retryWhen(errors => this.retry(errors))
       .map(res => res.json())
       .subscribe(( data ) => {
@@ -84,7 +87,7 @@ export class PlaylistService {
 
         // Assign initial data to collection
         //this.playlistsCollection = data;
-        this.store.dispatch({type: ADD_PLAYLIST, payload: data});
+        this.store.dispatch({type: PlaylistAction.ADD, payload: data});
         //this.store.dispatch({type: ADD_PLAYLIST, payload: 1});
 
         // Push update to Observer

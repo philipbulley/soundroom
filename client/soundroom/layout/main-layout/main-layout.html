@@ -2,6 +2,8 @@
 
   <h2>Join a room!</h2>
 
-  <playlist-menu></playlist-menu>
+  <pre>playlistCollection: {{(playlistCollection | async).playlists.length}}</pre>
+
+  <playlist-menu [playlistCollection]="playlistCollection | async"></playlist-menu>
 
 </section>

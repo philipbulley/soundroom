@@ -5,12 +5,12 @@ import {provideStore} from '@ngrx/store';
 //import * as devtools from '@ngrx/devtools'
 
 import {SoundroomComponent} from './soundroom.component'
-import {playlistsReducer} from "./model/reducers/playlists.reducer";
+import {playlistCollectionReducer} from "./model/reducers/playlists-collection.reducer";
 
 //let enhanced = devtools.instrument()(createStore);
 
 bootstrap(SoundroomComponent, [
-  provideStore({playlists: playlistsReducer}),
+  provideStore({playlistsCollection: playlistCollectionReducer}),
   ROUTER_PROVIDERS
 ])
   .catch(err => console.error(err));

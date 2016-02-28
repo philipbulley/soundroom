@@ -1,17 +1,22 @@
-<div *ngIf="!(playlists | async)"><i class="fa fa-circle-o-notch fa-spin"></i> Loading Soundrooms...</div>
+<pre>playlist menu play: {{playlistCollection.playlists.length}}</pre>
+
+<div *ngIf="playlistCollection.loadState === 'PlaylistState.LOADING_ALL'"><i class="fa fa-circle-o-notch fa-spin"></i> Loading Soundrooms...</div>
 <div *ngIf="isSlowConnection"><i class="fa fa-wifi"></i> Slow connection, we'll keep trying...</div>
 
-<!-- The ngFor doesn't work well if wrapped in an *ngIf="playlists | async" — throws exception, likely change detection issues -->
-<ul class="row list-unstyled">
-  <li *ngFor="#playlist of playlists | async" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
 
-    <playlist-menu-item [playlist]="playlist"></playlist-menu-item>
-  </li>
-  <li class="create col-xs-12 col-sm-6 col-md-4 col-lg-3">
-    <playlist-create></playlist-create>
-  </li>
-</ul>
+<!--The ngFor doesn't work well if wrapped in an *ngIf="playlists | async" — throws exception, likely change detection issues-->
+<section *ngIf="playlistCollection.loadState !== 'PlaylistState.LOADING_ALL'">
+  <ul class="row list-unstyled">
+    <li *ngFor="#playlist of playlistCollection.playlists" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
 
-<div *ngIf="playlists | async" class="room-count">
-  You have {{playlists | async | count}} rooms to choose from
-</div>
+      <playlist-menu-item [playlist]="playlist"></playlist-menu-item>
+    </li>
+    <li class="create col-xs-12 col-sm-6 col-md-4 col-lg-3">
+      <playlist-create></playlist-create>
+    </li>
+  </ul>
+
+  <div class="room-count">
+    You have {{playlistCollection.playlists.length}} rooms to choose from
+  </div>
+</section>
