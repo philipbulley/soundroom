@@ -123,9 +123,12 @@ export class PlaylistService {
         console.log('PlaylistService.initCreate: subscribe:', newPlaylist);
 
         // TODO: It would be amazing if we could type this payload to Playlist|Playlist[]
-        this.store.dispatch({type: PlaylistCreateAction.RESET});
+        // For the benefit of notifying PlaylistCreateComponent that we're successful
+        this.store.dispatch({type: PlaylistCreateAction.SUCCESS, payload: newPlaylist});
+
+        // Separate action to actually add new playlist to our collection.
         this.store.dispatch({type: PlaylistAction.ADD, payload: newPlaylist});
-      }, error => this.store.dispatch({type: PlaylistCreateAction.ERROR, payload: error));
+      }, error => this.store.dispatch({type: PlaylistCreateAction.ERROR, payload: error}));
   }
 
   create( name:string, description?:string ):Observable<Playlist> {

@@ -4,6 +4,7 @@ export enum PlaylistCreateState {
   ADDING_NAME = `PlaylistCreateState.ADDING_NAME`,
   ADDING_DESCRIPTION = `PlaylistCreateState.ADDING_DESCRIPTION`,
   CREATING = `PlaylistCreateState.CREATING`,
-  ERROR = `PlaylistCreateState.ERROR`
+  ERROR = `PlaylistCreateState.ERROR`,
+  SUCCESS = `PlaylistCreateState.SUCCESS`
 
 }

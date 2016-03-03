@@ -11,9 +11,9 @@
     </button>
 
     <!-- TODO: Wrap in form and use submit -->
-    <input type="text" autofocus placeholder="Give your room a snazzy name" class="form-control" [(ngModel)]="name" [disabled]="playlistCreate.state === 'PlaylistCreateState.ADDING_DESCRIPTION'">
+    <input #nameEl type="text" autofocus placeholder="Give your room a snazzy name" class="form-control" [(ngModel)]="name" [disabled]="playlistCreate.state === 'PlaylistCreateState.ADDING_DESCRIPTION'">
 
-    <input *ngIf="playlistCreate.state === 'PlaylistCreateState.ADDING_DESCRIPTION'" type="text" placeholder="What's the music policy?" class="form-control" [(ngModel)]="description">
+    <input #descriptionEl *ngIf="playlistCreate.state === 'PlaylistCreateState.ADDING_DESCRIPTION'" type="text" placeholder="What's the music policy?" class="form-control" [(ngModel)]="description">
 
     <button class="btn btn-default" (click)="next()">
       {{getButtonLabel(playlistCreate.state)}}

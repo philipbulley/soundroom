@@ -33,22 +33,23 @@ export const playlistCreateReducer:Reducer<PlaylistCreate> = ( state:PlaylistCre
       newState.name = action.payload;
       return newState;
 
-    case PlaylistCreateAction.ADD_DESCRIPTION:
+    case PlaylistCreateAction.ADD_DESCRIPTION_AND_CREATE:
       let newState:PlaylistCreate = Object.assign(new PlaylistCreate, state);
       // Set next state
-      newState.state = PlaylistCreateState.ADDING_DESCRIPTION;
+      newState.state = PlaylistCreateState.CREATING;
 
       newState.description = action.payload;
-      return newState;
-
-    case PlaylistCreateAction.CREATE:
-      let newState:PlaylistCreate = Object.assign(new PlaylistCreate, state);
-      newState.state = PlaylistCreateState.CREATING;
       return newState;
 
     case PlaylistCreateAction.ERROR:
       let newState:PlaylistCreate = Object.assign(new PlaylistCreate, state);
       newState.state = PlaylistCreateState.ERROR;
+      return newState;
+
+    case PlaylistCreateAction.SUCCESS:
+      let newState:PlaylistCreate = Object.assign(new PlaylistCreate, state);
+      newState.state = PlaylistCreateState.SUCCESS;
+      newState.playlistCreated = action.payload;
       return newState;
 
     default:

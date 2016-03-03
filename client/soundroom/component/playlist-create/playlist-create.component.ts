@@ -1,4 +1,4 @@
-import {Component, Input, ChangeDetectionStrategy, ChangeDetectorRef} from 'angular2/core';
+import {Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef} from 'angular2/core';
 
 import * as alertify from 'alertify';
 import {Store} from '@ngrx/store';
@@ -18,6 +18,12 @@ import {PlaylistCreateState} from "../../model/enum/playlist-create-state";
 })
 export class PlaylistCreateComponent {
 
+  @ViewChild('nameEl')
+  nameEl:ElementRef;
+
+  @ViewChild('descriptionEl')
+  descriptionEl:ElementRef;
+
   private name:string;
   private description:string;
   private playlistCreate$:Observable<PlaylistCreate>;
@@ -27,27 +33,46 @@ export class PlaylistCreateComponent {
 
   constructor( private store:Store, private cdr:ChangeDetectorRef ) {
 
-    this.playlistCreate$ = this.store.select('playlistCreate');
     console.log('PlaylistCreateComponent()');
+    this.playlistCreate$ = this.store.select('playlistCreate');
 
     this.playlistCreate$.subscribe(( data:PlaylistCreate ) => {
       console.log('PlaylistCreateComponent.playlistCreate$: data:', data);
 
-      // Infer successful creation when state transitions from CREATING back to DEFAULT (there is no success state)
-      if (this.playlistCreate && this.playlistCreate.state === PlaylistCreateState.CREATING && data.state === PlaylistCreateState.DEFAULT) {
-        alertify.success("Created the \"" + this.playlistCreate.name + "\" room!");
-        this.reset();
-      }
-
+      // The immutible store
       this.playlistCreate = data;
 
+      // Update our template-bound properties with latest data from the store
+      this.name = this.playlistCreate.name;
+      this.description = this.playlistCreate.description;
+
+      switch (data.state) {
+        case PlaylistCreateState.ADDING_NAME:
+          // NOTE: Wait for element to show before we can focus it. Know a better way?
+          setTimeout(() => this.nameEl.nativeElement.focus(), 1);
+          break;
+
+        case PlaylistCreateState.ADDING_DESCRIPTION:
+          // NOTE: Wait for element to show before we can focus it. Know a better way?
+          setTimeout(() => this.descriptionEl.nativeElement.focus(), 1);
+          break;
+
+        case PlaylistCreateState.SUCCESS:
+          alertify.success("Created the \"" + data.playlistCreated.name + "\" room!");
+
+          // Immediately transition to reset this component, ready for another playlist
+          // TODO: Perhaps in future we open the new playlist's route instead
+          this.store.dispatch({type: PlaylistCreateAction.RESET});
+          return;
+
+        case PlaylistCreateState.ERROR:
+          alertify.error("Can't create \"" + this.playlistCreate.name + "\". Try again later.");
+          break;
+      }
+
+      // As our store Observable is via DI, ChangeDetectionStrategy.OnPush won't notice changes. Tell it to check.
       this.cdr.markForCheck();
     });
-
-    // Show notification for error
-    this.playlistCreate$.filter(( data:PlaylistCreate ) => data.state === PlaylistCreateState.ERROR)
-      .subscribe(( error:any ) => alertify.error("Can't create \"" + this.playlistCreate.name + "\". Try again later."))
-
   }
 
   next() {
@@ -60,8 +85,9 @@ export class PlaylistCreateComponent {
         break;
 
       case PlaylistCreateState.ADDING_NAME:
-        console.log('PlaylistCreateComponent.next: a');
         if (!this.name || !this.name.length) {
+          console.log('this.$name:', this.nameEl);
+          this.nameEl.nativeElement.focus();
           alertify.error("You have to give your new room a nice name!");
           return;
         }
@@ -69,22 +95,17 @@ export class PlaylistCreateComponent {
         break;
 
       case PlaylistCreateState.ADDING_DESCRIPTION:
-        console.log('PlaylistCreateComponent.next: b');
-        if (!this.description || this.description.length < 3) {
-          alertify.error("Tell people what your room's all about!!");
-          return;
+        if (!this.description) {
+          this.descriptionEl.nativeElement.focus();
+          return alertify.error("Tell people what your room's all about!!");
+        } else if (this.description.length < 5) {
+          this.descriptionEl.nativeElement.focus();
+          return alertify.error("Surely you can come up with a better description than that!");
         }
-        this.store.dispatch({type: PlaylistCreateAction.ADD_DESCRIPTION, payload: this.description});
-        this.create();
+        this.store.dispatch({type: PlaylistCreateAction.ADD_DESCRIPTION_AND_CREATE, payload: this.description});
         break;
 
     }
-  }
-
-  create() {
-    console.log('PlaylistCreateComponent.create()', this.name);
-
-    this.store.dispatch({type: PlaylistCreateAction.CREATE});
   }
 
   getButtonLabel( state:PlaylistCreateState ) {
@@ -94,11 +115,5 @@ export class PlaylistCreateComponent {
       case PlaylistCreateState.ADDING_DESCRIPTION:
         return 'Create!';
     }
-  }
-
-  private reset() {
-    // TODO: Should these values come from the store?
-    this.name = '';
-    this.description = '';
   }
 }
