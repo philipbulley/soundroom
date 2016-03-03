@@ -6,6 +6,8 @@ export class PlaylistCreate {
 
   state:PlaylistCreateState = PlaylistCreateState.DEFAULT;
 
-  playlist:Playlist = {};
+  name:string;
+
+  description:string;
 
 }

@@ -16,9 +16,8 @@ export const playlistCreateReducer:Reducer<PlaylistCreate> = ( state:PlaylistCre
       let newState:PlaylistCreate = Object.assign(new PlaylistCreate, state);
       newState.state = PlaylistCreateState.DEFAULT;
 
-      newState.playlist = Object.assign({}, state.playlist);
-      newState.playlist.name = null;
-      newState.playlist.description = null;
+      newState.name = null;
+      newState.description = null;
       return newState;
 
     case PlaylistCreateAction.START:
@@ -31,8 +30,7 @@ export const playlistCreateReducer:Reducer<PlaylistCreate> = ( state:PlaylistCre
       // Set next state
       newState.state = PlaylistCreateState.ADDING_DESCRIPTION;
 
-      newState.playlist = Object.assign({}, state.playlist);
-      newState.playlist.name = action.payload;
+      newState.name = action.payload;
       return newState;
 
     case PlaylistCreateAction.ADD_DESCRIPTION:
@@ -40,8 +38,7 @@ export const playlistCreateReducer:Reducer<PlaylistCreate> = ( state:PlaylistCre
       // Set next state
       newState.state = PlaylistCreateState.ADDING_DESCRIPTION;
 
-      newState.playlist = Object.assign({}, state.playlist);
-      newState.playlist.description = action.payload;
+      newState.description = action.payload;
       return newState;
 
     case PlaylistCreateAction.CREATE:

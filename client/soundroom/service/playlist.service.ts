@@ -116,8 +116,8 @@ export class PlaylistService {
         return playlistCreate.state === PlaylistCreateState.CREATING;
       })
       .mergeMap(( playlistCreate:PlaylistCreate ) => this.create(
-        playlistCreate.playlist.name,
-        playlistCreate.playlist.description
+        playlistCreate.name,
+        playlistCreate.description
       ))
       .subscribe(( newPlaylist:Playlist ) => {
         console.log('PlaylistService.initCreate: subscribe:', newPlaylist);

@@ -35,7 +35,7 @@ export class PlaylistCreateComponent {
 
       // Infer successful creation when state transitions from CREATING back to DEFAULT (there is no success state)
       if (this.playlistCreate && this.playlistCreate.state === PlaylistCreateState.CREATING && data.state === PlaylistCreateState.DEFAULT) {
-        alertify.success("Created the \"" + this.playlistCreate.playlist.name + "\" room!");
+        alertify.success("Created the \"" + this.playlistCreate.name + "\" room!");
         this.reset();
       }
 
@@ -46,7 +46,7 @@ export class PlaylistCreateComponent {
 
     // Show notification for error
     this.playlistCreate$.filter(( data:PlaylistCreate ) => data.state === PlaylistCreateState.ERROR)
-      .subscribe(( error:any ) => alertify.error("Can't create \"" + this.playlistCreate.playlist.name + "\". Try again later."))
+      .subscribe(( error:any ) => alertify.error("Can't create \"" + this.playlistCreate.name + "\". Try again later."))
 
   }
 
@@ -97,6 +97,7 @@ export class PlaylistCreateComponent {
   }
 
   private reset() {
+    // TODO: Should these values come from the store?
     this.name = '';
     this.description = '';
   }
