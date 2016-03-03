@@ -9,6 +9,10 @@ import {Config} from '../model/config';
 import {Playlist} from '../model/playlist';
 import {PlaylistCreateBody} from "./playlist-create-body";
 import {PlaylistAction} from "../model/enum/playlist-action";
+import {PlaylistCreate} from "../model/playlist-create";
+import {PlaylistCreateAction} from "../model/enum/playlist-create-action";
+import {PlaylistCreateState} from "../model/enum/playlist-create-state";
+import {PlaylistCollection} from "../model/playlist-collection";
 
 @Injectable()
 export class PlaylistService {
@@ -61,13 +65,17 @@ export class PlaylistService {
    * Standard options we need to use when sending POST requests to the server
    */
   private postOptions:RequestOptions;
+  private playlistCreate$:Observable<PlaylistCreate>;
 
-  constructor( private http:Http, public store: Store ) {
+  constructor( private http:Http, public store:Store ) {
     this.postOptions = new RequestOptions({
       headers: new Headers({'Content-Type': 'application/json'})
     });
 
+    this.playlistCreate$ = this.store.select('playlistCreate');
+
     this.initObservable();
+    this.initCreate();
   }
 
   /**
@@ -99,7 +107,31 @@ export class PlaylistService {
       });
   }
 
-  create( name:string, description?:string ):Observable<boolean> {
+  initCreate() {
+    this.playlistCreate$
+      //.filter(action => action.type === PlaylistCreateAction.CREATE)
+      .filter(( playlistCreate:PlaylistCreate ) => {
+        console.log('PlaylistService.initCreate: filter:', playlistCreate);
+
+        return playlistCreate.state === PlaylistCreateState.CREATING;
+      })
+      .mergeMap(( playlistCreate:PlaylistCreate ) => this.create(
+        playlistCreate.playlist.name,
+        playlistCreate.playlist.description
+      ))
+      .subscribe(( newPlaylist:Playlist ) => {
+        console.log('PlaylistService.initCreate: subscribe:', newPlaylist);
+
+        // TODO: It would be amazing if we could type this payload to Playlist|Playlist[]
+        this.store.dispatch({type: PlaylistCreateAction.RESET});
+        this.store.dispatch({type: PlaylistAction.ADD, payload: newPlaylist});
+      }, error => this.store.dispatch({type: PlaylistCreateAction.ERROR, payload: error));
+  }
+
+  create( name:string, description?:string ):Observable<Playlist> {
+
+    console.log('PlaylistCreateService.create:', name, description);
+
     var body:PlaylistCreateBody = {
       name: name
     };
@@ -116,16 +148,16 @@ export class PlaylistService {
 
         console.log('PlaylistService.create() map: status:', res.headers.get('status'), 'playlist:', playlist);
 
-        // Add new playlist to collection
-        this.playlistsCollection = [...this.playlistsCollection, playlist];
-
-        // Push updated collection to the Observer
-        this.playlistsObserver.next(this.playlistsCollection);
+        //// Add new playlist to collection
+        //this.playlistsCollection = [...this.playlistsCollection, playlist];
+        //
+        //// Push updated collection to the Observer
+        //this.playlistsObserver.next(this.playlistsCollection);
 
         console.log('status', res.headers.get('status'), 'headers', res.headers);
 
 
-        return res.status === 200;
+        return playlist;
       }).catch(( error:Response ) => {
         console.error(error);
         return Observable.throw(error.json().error || 'Server error');

@@ -9,6 +9,7 @@ import {PlaylistMenuItemComponent} from "../../component/playlist-menu-item/play
 import {CountPipe} from "../../pipe/CountPipe";
 import {PlaylistCreateComponent} from "../playlist-create/playlist-create.component";
 import {PlaylistCollection} from "../../model/playlist-collection";
+import {PlaylistCreate} from "../../model/playlist-create";
 
 @Component({
   selector: 'playlist-menu',
@@ -25,8 +26,10 @@ export class PlaylistMenuComponent implements OnInit, OnDestroy {
 
   private isSlowConnection:boolean = false;
   private onSlowConnectionSubscription:Subscription<boolean>;
+  private playlistCreate$:Observable<PlaylistCreate>;
 
   constructor( private playlistService:PlaylistService ) {
+
   }
 
   ngOnInit():any {
