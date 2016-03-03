@@ -104,8 +104,11 @@ export class PlaylistCreateComponent {
         }
         this.store.dispatch({type: PlaylistCreateAction.ADD_DESCRIPTION_AND_CREATE, payload: this.description});
         break;
-
     }
+  }
+
+  close() {
+    this.store.dispatch({type: PlaylistCreateAction.RESET});
   }
 
   getButtonLabel( state:PlaylistCreateState ) {

@@ -6,7 +6,7 @@
 
   <!-- Assign state enums in a component property `states`? -->
   <div *ngIf="playlistCreate.state === 'PlaylistCreateState.ADDING_NAME' || playlistCreate.state === 'PlaylistCreateState.ADDING_DESCRIPTION' || playlistCreate.state === 'PlaylistCreateState.ERROR'">
-    <button class="close no-style" (click)="next()">
+    <button class="close no-style" (click)="close()">
       <i class="fa fa-close"></i>
     </button>
 
