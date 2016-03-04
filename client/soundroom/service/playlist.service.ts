@@ -173,14 +173,7 @@ export class PlaylistService {
         console.log('PlaylistService.deletePlaylist() map: status:', res.headers.get('status'), 'splice:', playlist);
 
         // Delete success - reflect change in local data collection
-        const i = this.playlistsCollection.indexOf(playlist);
-        this.playlistsCollection = [
-          ...this.playlistsCollection.slice(0, i),
-          ...this.playlistsCollection.slice(i + 1)
-        ];
-
-        // Push updated collection to the Observable
-        this.playlistsObserver.next(this.playlistsCollection);
+        this.store.dispatch({type: PlaylistAction.DELETE, payload: playlist});
 
         return res.status === 204;
       }).catch(( error:Response ) => {

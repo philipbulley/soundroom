@@ -30,6 +30,17 @@ export const playlistCollectionReducer:Reducer<PlaylistCollection> = ( state:Pla
       newState.loadState = null;
       return newState;
 
+    case PlaylistAction.DELETE:
+      let newState = Object.assign({}, state);
+      let playlist:Playlist = action.payload;
+
+      const i = newState.playlists.indexOf(playlist);
+      newState.playlists = [
+        ...newState.playlists.slice(0, i),
+        ...newState.playlists.slice(i + 1)
+      ];
+      return newState;
+
     default:
       return state;
   }
