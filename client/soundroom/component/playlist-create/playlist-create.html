@@ -2,18 +2,18 @@
 
   <code>playlistCreate.state: {{playlistCreate.state}}</code>
 
-  <button *ngIf="playlistCreate.state  === 'PlaylistCreateState.DEFAULT'" class="btn btn-default" (click)="next()">Create a room +</button>
+  <button *ngIf="playlistCreate.state  === states.DEFAULT" class="btn btn-default" (click)="next()">Create a room +</button>
 
   <!-- Assign state enums in a component property `states`? -->
-  <div *ngIf="playlistCreate.state === 'PlaylistCreateState.ADDING_NAME' || playlistCreate.state === 'PlaylistCreateState.ADDING_DESCRIPTION' || playlistCreate.state === 'PlaylistCreateState.ERROR'">
+  <div *ngIf="playlistCreate.state === states.ADDING_NAME || playlistCreate.state === states.ADDING_DESCRIPTION || playlistCreate.state === states.ERROR">
     <button class="close no-style" (click)="close()">
       <i class="fa fa-close"></i>
     </button>
 
     <!-- TODO: Wrap in form and use submit -->
-    <input #nameEl type="text" autofocus placeholder="Give your room a snazzy name" class="form-control" [(ngModel)]="name" [disabled]="playlistCreate.state === 'PlaylistCreateState.ADDING_DESCRIPTION'">
+    <input #nameEl type="text" autofocus placeholder="Give your room a snazzy name" class="form-control" [(ngModel)]="name" [disabled]="playlistCreate.state === states.ADDING_DESCRIPTION">
 
-    <input #descriptionEl *ngIf="playlistCreate.state === 'PlaylistCreateState.ADDING_DESCRIPTION'" type="text" placeholder="What's the music policy?" class="form-control" [(ngModel)]="description">
+    <input #descriptionEl *ngIf="playlistCreate.state === states.ADDING_DESCRIPTION" type="text" placeholder="What's the music policy?" class="form-control" [(ngModel)]="description">
 
     <button class="btn btn-default" (click)="next()">
       {{getButtonLabel(playlistCreate.state)}}
