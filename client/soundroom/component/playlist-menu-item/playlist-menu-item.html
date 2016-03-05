@@ -1,6 +1,13 @@
+<button class="playlist-menu-item__close no-style" [class.is-delete-confirm]="isDeleteConfirm" *ngIf="!isDeleting" (click)="deleteMe(playlist)" [disabled]="isDeleteConfirm && (DELETE_CONFIRM_WAIT_SECS - (deleteWait | async)) > 0">
+  <i class="fa fa-close"></i>
+  <span *ngIf="isDeleteConfirm">Sure you want to delete playlist?
+    <span *ngIf="(deleteWaitDisplay | async) > 0">({{deleteWaitDisplay | async}})</span>
+  </span>
+</button>
+
 <h3>{{playlist.name}}</h3>
-<h3>{{playlist._id}}</h3>
-<button *ngIf="!isDeleting" (click)="deleteMe(playlist)" class="btn btn-default">x</button>
+<code>{{playlist._id}}</code>
+
 <i *ngIf="isDeleting" class="fa fa-circle-o-notch fa-spin"></i>
 
 <button [routerLink]="['PlaylistLayout', {id: playlist._id}]" class="btn btn-default">Join Room</button>

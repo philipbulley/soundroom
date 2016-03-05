@@ -6,3 +6,48 @@
 
   background-color: #fff;
 }
+
+button.playlist-menu-item__close {
+  display: inline-block;
+  float: right;
+}
+
+button.playlist-menu-item__close.is-delete-confirm {
+  width: 100%;
+  padding: 10px;
+
+  color: #fff;
+  background-color: crimson;
+  border-radius: 4px;
+}
+
+button.playlist-menu-item__close.is-delete-confirm:hover {
+  color: #fff;
+  background-color: red;
+}
+
+button.playlist-menu-item__close.is-delete-confirm[disabled] {
+  cursor: auto;
+  color: #999;
+  background-color: #ccc;
+}
+
+
+button.no-style {
+  /* Remove styling of <button> element */
+  display: block;
+  cursor: pointer;
+
+  border: 0 solid transparent;
+  border-radius: 0;
+
+  background: transparent;
+
+  box-shadow: none;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+
+  padding: 0;
+  margin: 0;
+
+  -webkit-appearance: button;
+}
