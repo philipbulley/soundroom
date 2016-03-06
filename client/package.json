@@ -4,6 +4,8 @@
   "description": "Democratic playlist client for Spotify.",
   "main": "build/index.html",
   "scripts": {
+    "postinstall": "typings install",
+    "typings": "typings",
     "build": "gulp build",
     "watch": "gulp watch",
     "lite": "lite-server --baseDir './build'",
@@ -14,25 +16,26 @@
   "dependencies": {
     "@ngrx/store": "1.2.1",
     "alertify.js": "^1.0.8",
-    "angular2": "2.0.0-beta.0",
+    "angular2": "2.0.0-beta.8",
     "bootstrap": "^3.3.6",
     "es6-promise": "^3.0.2",
     "es6-shim": "^0.33.3",
     "font-awesome": "^4.5.0",
     "reflect-metadata": "0.1.2",
-    "rxjs": "5.0.0-beta.0",
-    "systemjs": "0.19.6",
-    "zone.js": "0.5.10"
+    "rxjs": "5.0.0-beta.2",
+    "systemjs": "0.19.22",
+    "zone.js": "0.5.15"
   },
   "devDependencies": {
-    "concurrently": "^1.0.0",
+    "concurrently": "^2.0.0",
     "fs-extra": "^0.22.1",
     "gulp": "^3.9.0",
     "gulp-copy": "0.0.2",
-    "gulp-typescript": "^2.10.0",
-    "lite-server": "^1.3.1",
+    "gulp-typescript": "^2.12.1",
+    "lite-server": "1.3.1",
     "q": "^1.4.1",
     "rimraf": "^2.4.1",
-    "run-sequence": "^1.1.1"
+    "run-sequence": "^1.1.1",
+    "typings":"^0.6.8"
   }
 }

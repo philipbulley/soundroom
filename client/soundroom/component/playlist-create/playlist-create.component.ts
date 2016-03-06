@@ -72,7 +72,8 @@ export class PlaylistCreateComponent {
       }
 
       // As our store Observable is via DI, ChangeDetectionStrategy.OnPush won't notice changes. Tell it to check.
-      this.cdr.markForCheck();
+      //cdr.markForCheck();   // Calling synchronously causes error within markForCheck(). PlaylistCreate can't return to default as a result on success.
+      setTimeout(() => cdr.markForCheck(), 1 ); // Until the above is fixed (issue with angular2 2.0.0-beta.8), setTimeout fixes by calling asynchronously
     });
   }
 
