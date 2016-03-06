@@ -26,12 +26,12 @@ export class PlaylistLayout implements OnInit {
     // TODO: Ask playlistService to load playist details endpoint instead of /playlists within observer creation
 
     this.playlistService.playlists
-      .map(playlists => {
-        return playlists.filter(playlist=> playlist._id === this.routeParams.get('id'))[0]
+      .map(( playlists:Playlist[] ) => {
+        return playlists.filter(( playlist:Playlist )=> playlist._id === this.routeParams.get('id'))[0];
       })
       .subscribe(
         ( playlist:Playlist ) => {
-          console.log('PlaylistLayout.ngOnInit(): subscribe:', playlist)
+          console.log('PlaylistLayout.ngOnInit(): subscribe:', playlist);
 
           if (!playlist) {
             alertify.error("The Soundroom you've asked for doesn't exist");
@@ -41,7 +41,7 @@ export class PlaylistLayout implements OnInit {
 
           this.playlist = playlist;
         },
-        error => {
+        ( error:any ) => {
           alertify.error("We can't find the Soundroom you've asked for");
           //this.errorMessage = <any>error;
         }

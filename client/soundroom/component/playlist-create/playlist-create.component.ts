@@ -28,10 +28,9 @@ export class PlaylistCreateComponent {
   private description:string;
   private playlistCreate$:Observable<PlaylistCreate>;
   private playlistCreate:PlaylistCreate;
-  private cdr:ChangeDetectorRef;
   private states:PlaylistCreateState;
 
-  constructor( private store:Store, private cdr:ChangeDetectorRef ) {
+  constructor( private store:Store<PlaylistCreate>, private cdr:ChangeDetectorRef ) {
 
     console.log('PlaylistCreateComponent()');
     this.playlistCreate$ = this.store.select('playlistCreate');

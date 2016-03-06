@@ -10,11 +10,13 @@ export const playlistCollectionReducer:Reducer<PlaylistCollection> = ( state:Pla
   //console.log(' - action:', action);
   //console.log(' - state:', state);
 
+  let newState:PlaylistCollection;
+
   switch (action.type) {
 
     case PlaylistAction.LOAD_ALL:
       // Update state only
-      let newState = Object.assign({}, state);
+      newState = Object.assign({}, state);
       newState.loadState = PlaylistState.LOADING_ALL;
       return newState;
 
@@ -25,13 +27,13 @@ export const playlistCollectionReducer:Reducer<PlaylistCollection> = ( state:Pla
         action.payload = [action.payload];
       }
 
-      let newState:PlaylistCollection = Object.assign(new PlaylistCollection, state);
+      newState = Object.assign(new PlaylistCollection, state);
       newState.playlists = [...state.playlists, ...action.payload];
       newState.loadState = null;
       return newState;
 
     case PlaylistAction.DELETE:
-      let newState = Object.assign({}, state);
+      newState = Object.assign({}, state);
       let playlist:Playlist = action.payload;
 
       const i = newState.playlists.indexOf(playlist);

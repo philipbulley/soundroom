@@ -10,10 +10,12 @@ export const playlistCreateReducer:Reducer<PlaylistCreate> = ( state:PlaylistCre
   console.log(' - action:', action);
   console.log(' - state:', state);
 
+  let newState:PlaylistCreate;
+
   switch (action.type) {
 
     case PlaylistCreateAction.RESET:
-      let newState:PlaylistCreate = Object.assign(new PlaylistCreate, state);
+      newState = Object.assign(new PlaylistCreate, state);
       newState.state = PlaylistCreateState.DEFAULT;
 
       newState.name = null;
@@ -21,12 +23,12 @@ export const playlistCreateReducer:Reducer<PlaylistCreate> = ( state:PlaylistCre
       return newState;
 
     case PlaylistCreateAction.START:
-      let newState:PlaylistCreate = Object.assign(new PlaylistCreate, state);
+      newState = Object.assign(new PlaylistCreate, state);
       newState.state = PlaylistCreateState.ADDING_NAME;
       return newState;
 
     case PlaylistCreateAction.ADD_NAME:
-      let newState:PlaylistCreate = Object.assign(new PlaylistCreate, state);
+      newState = Object.assign(new PlaylistCreate, state);
       // Set next state
       newState.state = PlaylistCreateState.ADDING_DESCRIPTION;
 
@@ -34,7 +36,7 @@ export const playlistCreateReducer:Reducer<PlaylistCreate> = ( state:PlaylistCre
       return newState;
 
     case PlaylistCreateAction.ADD_DESCRIPTION_AND_CREATE:
-      let newState:PlaylistCreate = Object.assign(new PlaylistCreate, state);
+      newState = Object.assign(new PlaylistCreate, state);
       // Set next state
       newState.state = PlaylistCreateState.CREATING;
 
@@ -42,12 +44,12 @@ export const playlistCreateReducer:Reducer<PlaylistCreate> = ( state:PlaylistCre
       return newState;
 
     case PlaylistCreateAction.ERROR:
-      let newState:PlaylistCreate = Object.assign(new PlaylistCreate, state);
+      newState = Object.assign(new PlaylistCreate, state);
       newState.state = PlaylistCreateState.ERROR;
       return newState;
 
     case PlaylistCreateAction.SUCCESS:
-      let newState:PlaylistCreate = Object.assign(new PlaylistCreate, state);
+      newState = Object.assign(new PlaylistCreate, state);
       newState.state = PlaylistCreateState.SUCCESS;
       newState.playlistCreated = action.payload;
       return newState;

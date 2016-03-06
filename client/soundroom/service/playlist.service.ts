@@ -1,7 +1,8 @@
 import {Injectable, EventEmitter} from 'angular2/core';
 import {Http, Response, RequestOptions, Headers} from 'angular2/http';
 
-import {Observable, ConnectableObservable} from 'rxjs/Observable';
+import {Observable} from 'rxjs/Observable';
+import {ConnectableObservable} from 'rxjs/observable/ConnectableObservable';
 import {Observer} from 'rxjs/Observer';
 import {Store} from '@ngrx/store';
 
@@ -67,7 +68,7 @@ export class PlaylistService {
   private postOptions:RequestOptions;
   private playlistCreate$:Observable<PlaylistCreate>;
 
-  constructor( private http:Http, public store:Store ) {
+  constructor( private http:Http, public store:Store<PlaylistCreate> ) {
     this.postOptions = new RequestOptions({
       headers: new Headers({'Content-Type': 'application/json'})
     });

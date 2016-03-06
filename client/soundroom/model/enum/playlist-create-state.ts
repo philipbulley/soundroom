@@ -1,10 +1,10 @@
 export enum PlaylistCreateState {
 
-  DEFAULT = `PlaylistCreateState.DEFAULT`,
-  ADDING_NAME = `PlaylistCreateState.ADDING_NAME`,
-  ADDING_DESCRIPTION = `PlaylistCreateState.ADDING_DESCRIPTION`,
-  CREATING = `PlaylistCreateState.CREATING`,
-  ERROR = `PlaylistCreateState.ERROR`,
-  SUCCESS = `PlaylistCreateState.SUCCESS`
+  DEFAULT = <PlaylistCreateState><any>`PlaylistCreateState.DEFAULT`,
+  ADDING_NAME = <PlaylistCreateState><any>`PlaylistCreateState.ADDING_NAME`,
+  ADDING_DESCRIPTION = <PlaylistCreateState><any>`PlaylistCreateState.ADDING_DESCRIPTION`,
+  CREATING = <PlaylistCreateState><any>`PlaylistCreateState.CREATING`,
+  ERROR = <PlaylistCreateState><any>`PlaylistCreateState.ERROR`,
+  SUCCESS = <PlaylistCreateState><any>`PlaylistCreateState.SUCCESS`
 
 }

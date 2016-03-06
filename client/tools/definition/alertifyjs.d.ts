@@ -102,7 +102,7 @@ declare module alertify {
 
     delay(ms:number):void;
 
-    setLogTemplate()
+    setLogTemplate():any
   }
 
   /**

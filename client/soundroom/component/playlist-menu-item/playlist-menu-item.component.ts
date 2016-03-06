@@ -24,8 +24,8 @@ export class PlaylistMenuItemComponent {
   private errorMessage:string;
   private isDeleting:boolean = false;
   private isDeleteConfirm:boolean = false;
-  private deleteWait:Observable;
-  private deleteWaitDisplay:Observable;
+  private deleteWait:Observable<number>;
+  private deleteWaitDisplay:Observable<number>;
 
   constructor( private playlistService:PlaylistService ) {
 
@@ -46,11 +46,11 @@ export class PlaylistMenuItemComponent {
         .map(secs => secs);
 
       // Observer for seconds before delete can be clicked
-      this.deleteWaitDisplay = this.deleteWait.map(secs => Math.max(0, this.DELETE_CONFIRM_WAIT_SECS - secs));
+      this.deleteWaitDisplay = this.deleteWait.map((secs:number) => Math.max(0, this.DELETE_CONFIRM_WAIT_SECS - secs));
 
       // Observer which will exit the delete confirmation, assuming user is not wanting to delete anymore
-      this.deleteWait.filter(secs => secs === this.DELETE_CONFIRM_WAIT_SECS + this.DELETE_CONFIRM_WAIT_EXIT_SECS)
-        .subscribe(secs => this.isDeleteConfirm = false);
+      this.deleteWait.filter((secs:number) => secs === this.DELETE_CONFIRM_WAIT_SECS + this.DELETE_CONFIRM_WAIT_EXIT_SECS)
+        .subscribe((secs:number) => this.isDeleteConfirm = false);
 
     } else {
 

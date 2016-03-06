@@ -1,6 +1,6 @@
 import {Component, ChangeDetectionStrategy} from 'angular2/core';
 
-import {Observable, Subscription} from 'rxjs/Observable';
+import {Observable} from 'rxjs/Observable';
 import {Store} from '@ngrx/store';
 
 import {PlaylistMenuComponent} from "../../component/playlist-menu/playlist-menu.component";
@@ -17,7 +17,7 @@ export class MainLayout {
 
   private playlistCollection:Observable<PlaylistCollection>;
 
-  constructor( store:Store ) {
+  constructor( store:Store<PlaylistCollection> ) {
 
     this.playlistCollection = store.select('playlistsCollection');
     this.playlistCollection.subscribe(data => console.log('MainLayout.playlistCollection: data:', data));   // debug!
