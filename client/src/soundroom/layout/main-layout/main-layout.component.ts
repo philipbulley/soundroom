@@ -8,8 +8,8 @@ import {PlaylistCollection} from "../../model/playlist-collection";
 
 @Component({
   selector: 'main-layout',
-  templateUrl: 'soundroom/layout/main-layout/main-layout.html',
-  styleUrls: ['soundroom/layout/main-layout/main-layout.css'],
+  template: require('./main-layout.html'),
+  styles: [require('./main-layout.css')],
   directives: [PlaylistMenuComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

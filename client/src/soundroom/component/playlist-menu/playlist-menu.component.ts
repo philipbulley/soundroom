@@ -2,7 +2,7 @@ import {Component, ViewEncapsulation, OnInit, OnDestroy, ChangeDetectionStrategy
 
 import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
-import * as alertify from "alertify"
+//import alertify from 'alertify.js';
 import {Store} from '@ngrx/store';
 
 import {PlaylistService} from "../../service/playlist.service";
@@ -14,8 +14,8 @@ import {PlaylistCreate} from "../../model/playlist-create";
 
 @Component({
   selector: 'playlist-menu',
-  templateUrl: 'soundroom/component/playlist-menu/playlist-menu.html',
-  styleUrls: ['soundroom/component/playlist-menu/playlist-menu.css'],
+  template: require('./playlist-menu.html'),
+  styles: [require('./playlist-menu.css')],
   directives: [PlaylistMenuItemComponent, PlaylistCreateComponent],
   pipes: [CountPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -45,12 +45,13 @@ export class PlaylistMenuComponent implements OnInit, OnDestroy {
   }
 
   private handleSlowConnection( isSlow:boolean ) {
-    console.log("PlaylistMenuComponent.onSlowConnection()", isSlow);
+    console.log("PlaylistMenuComponent.handleSlowConnection()", isSlow);
 
     this.isSlowConnection = isSlow;
 
     if (isSlow) {
-      alertify.log("<i class=\"fa fa-wifi\"></i> There are problems with your connection, we'll keep trying.");
+      console.log('// TODO: Show alertify dialog');
+      //alertify.log("<i class=\"fa fa-wifi\"></i> There are problems with your connection, we'll keep trying.");
     }
   }
 
