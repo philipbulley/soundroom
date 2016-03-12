@@ -26,7 +26,7 @@ export class PlaylistMenuComponent implements OnInit, OnDestroy {
   private playlistCollection:Observable<PlaylistCollection>;
 
   private isSlowConnection:boolean = false;
-  private onSlowConnectionSubscription:Subscription<boolean>;
+  private onSlowConnectionSubscription:Subscription;
   private playlistCreate$:Observable<PlaylistCreate>;
 
   constructor( private playlistService:PlaylistService ) {
