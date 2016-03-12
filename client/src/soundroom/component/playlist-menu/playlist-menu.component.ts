@@ -15,7 +15,7 @@ import {PlaylistCreate} from "../../model/playlist-create";
 @Component({
   selector: 'playlist-menu',
   template: require('./playlist-menu.html'),
-  styles: [require('./playlist-menu.css')],
+  styles: [require('./playlist-menu.scss')],
   directives: [PlaylistMenuItemComponent, PlaylistCreateComponent],
   pipes: [CountPipe],
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -1,0 +1,21 @@
+// Breakpoints
+@function get-breakpoint-index($breakpoint, $breakpoint-set: $breakpoints) {
+  @for $i from 1 through length($breakpoint-set) {
+    $bp: nth($breakpoint-set, $i);
+    @if nth($bp, 1) == $breakpoint {
+      @return $i;
+    }
+  }
+}
+
+@function get-breakpoint-sibling-width($direction, $breakpoint, $breakpoint-set: $breakpoints) {
+  // Get index of breakpoint
+  $index: get-breakpoint-index($breakpoint, $breakpoint-set);
+  @if ($direction == above and $index == length($breakpoint-set)) or ($direction == below and $index == 0) {
+    @return -1;
+  } @else {
+    $sibling-index: if($direction == above, $index + 1, $index - 1);
+    $bp-above: nth($breakpoint-set, $sibling-index);
+    @return nth($bp-above, 2);
+  }
+}

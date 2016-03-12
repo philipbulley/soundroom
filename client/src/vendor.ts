@@ -20,3 +20,4 @@ import 'rxjs';
 
 require("font-awesome-webpack");
 require('normalize.css');
+require('./style/global.scss');

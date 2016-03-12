@@ -1,6 +1,8 @@
 <span *ngIf="playlistCreate">
 
-  <code>playlistCreate.state: {{playlistCreate.state}}</code>
+  <div>
+    <code>playlistCreate.state: {{playlistCreate.state}}</code>
+  </div>
 
   <button *ngIf="playlistCreate.state  === states.DEFAULT" class="btn btn-default" (click)="next()">Create a room +</button>
 

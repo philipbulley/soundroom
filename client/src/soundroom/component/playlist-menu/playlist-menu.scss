@@ -1,0 +1,34 @@
+@import '../../../style/setup/main';
+
+h2 {
+  text-align: center;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  display: inline-block;
+  height: 420px;
+  padding: 0;
+  width: 100%;
+}
+
+.room-count {
+  color: #ccc;
+  text-align: center;
+}
+
+@include wider-than(medium) {
+  li {
+    width: 50%;
+  }
+}
+
+@include wider-than(large) {
+  li {
+    width: 33.333%;
+  }
+}
