@@ -19,3 +19,4 @@ import 'rxjs';
 // You can import js, ts, css, sass, ...
 
 require("font-awesome-webpack");
+require('normalize.css');
