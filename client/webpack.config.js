@@ -131,7 +131,13 @@ module.exports = function makeWebpackConfig() {
 
       // support for .html as raw text
       // todo: change the loader to something that adds a hash to images
-      {test: /\.html$/, loader: 'raw'}
+      {test: /\.html$/, loader: 'raw'},
+
+      // font-awesome-webpack
+      // the url-loader uses DataUrls.
+      // the file-loader emits files.
+      {test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "url-loader?limit=10000&minetype=application/font-woff"},
+      {test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "file-loader"}
     ],
     postLoaders: [],
     noParse: [/.+zone\.js\/dist\/.+/, /.+angular2\/bundles\/.+/, /angular2-polyfills\.js/]
