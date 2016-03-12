@@ -72,8 +72,7 @@ module.exports = function makeWebpackConfig() {
     extensions: ['', '.ts', '.js', '.json', '.css', '.scss', '.html'],
     alias: {
       'soundroom': 'src/soundroom',
-      'common': 'src/common'/*,
-      'alertify.js': 'node_modules/alertify.js/dist/js/alertify.js'*/
+      'common': 'src/common'
     }
   };
 

@@ -31,13 +31,10 @@ Thumbs.db
 # Node Files #
 node_modules
 
-# Coverage #
-/coverage/
-
 # Typing #
-/src/typings/tsd/
-/typings/
-/tsd_typings/
+src/typings/tsd/
+typings/
+tsd_typings/
 
 # Dist #
 /dist
@@ -47,7 +44,7 @@ __build__/**
 .webpack.json
 
 # Doc #
-/doc/
+doc/
 
 # IDE #
 .idea/

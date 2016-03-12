@@ -2,7 +2,7 @@ import {Component, ViewEncapsulation, OnInit, OnDestroy, ChangeDetectionStrategy
 
 import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
-//import alertify from 'alertify.js';
+var alertify = require('alertify.js');
 import {Store} from '@ngrx/store';
 
 import {PlaylistService} from "../../service/playlist.service";
@@ -51,7 +51,7 @@ export class PlaylistMenuComponent implements OnInit, OnDestroy {
 
     if (isSlow) {
       console.log('// TODO: Show alertify dialog');
-      //alertify.log("<i class=\"fa fa-wifi\"></i> There are problems with your connection, we'll keep trying.");
+      alertify.log("<i class=\"fa fa-wifi\"></i> There are problems with your connection, we'll keep trying.");
     }
   }
 

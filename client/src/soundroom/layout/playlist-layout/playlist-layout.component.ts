@@ -1,7 +1,7 @@
 import {Component, OnInit, OnDestroy, ChangeDetectionStrategy} from 'angular2/core';
 import {RouteParams} from 'angular2/router';
 
-//import alertify from 'alertify.js';
+var alertify = require('alertify.js');
 
 import {PlaylistMenuComponent} from "../../component/playlist-menu/playlist-menu.component";
 import {PlaylistService} from "../../service/playlist.service";
@@ -34,7 +34,7 @@ export class PlaylistLayout implements OnInit {
           console.log('PlaylistLayout.ngOnInit(): subscribe:', playlist);
 
           if (!playlist) {
-            //alertify.error("The Soundroom you've asked for doesn't exist");
+            alertify.error("The Soundroom you've asked for doesn't exist");
             this.noPlaylist = true;
             return;
           }
@@ -42,7 +42,7 @@ export class PlaylistLayout implements OnInit {
           this.playlist = playlist;
         },
         ( error:any ) => {
-          //alertify.error("We can't find the Soundroom you've asked for");
+          alertify.error("We can't find the Soundroom you've asked for");
           //this.errorMessage = <any>error;
         }
       );

@@ -3,7 +3,7 @@ import {RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
 import {HTTP_PROVIDERS} from 'angular2/http';
 
 import 'rxjs/Rx';
-//import alertify from 'alertify.js';
+var alertify = require('alertify.js');
 
 import {MainLayout} from "./layout/main-layout/main-layout.component";
 import {PlaylistService} from "./service/playlist.service";
@@ -27,8 +27,7 @@ export class SoundroomComponent {
     console.log('%c' + new Date, 'color:#fff;padding:0 20px');
 
     // Global config for alertify
-    //alertify.logPosition("top right");
-    //alertify.delay(8000);
-
+    alertify.logPosition("top right");
+    alertify.delay(8000);
   }
 }

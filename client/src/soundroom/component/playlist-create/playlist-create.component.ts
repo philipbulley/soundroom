@@ -1,6 +1,6 @@
 import {Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef} from 'angular2/core';
 
-//import alertify from 'alertify.js';
+var alertify = require('alertify.js');
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs/Observable';
 
@@ -59,7 +59,7 @@ export class PlaylistCreateComponent {
           break;
 
         case PlaylistCreateState.SUCCESS:
-          //alertify.success("Created the \"" + data.playlistCreated.name + "\" room!");
+          alertify.success("Created the \"" + data.playlistCreated.name + "\" room!");
 
           // Immediately transition to reset this component, ready for another playlist
           // TODO: Perhaps in future we open the new playlist's route instead
@@ -67,13 +67,13 @@ export class PlaylistCreateComponent {
           return;
 
         case PlaylistCreateState.ERROR:
-          //alertify.error("Can't create \"" + this.playlistCreate.name + "\". Try again later.");
+          alertify.error("Can't create \"" + this.playlistCreate.name + "\". Try again later.");
           break;
       }
 
       // As our store Observable is via DI, ChangeDetectionStrategy.OnPush won't notice changes. Tell it to check.
       //cdr.markForCheck();   // Calling synchronously causes error within markForCheck(). PlaylistCreate can't return to default as a result on success.
-      setTimeout(() => cdr.markForCheck(), 1 ); // Until the above is fixed (issue with angular2 2.0.0-beta.8), setTimeout fixes by calling asynchronously
+      setTimeout(() => cdr.markForCheck(), 1); // Until the above is fixed (issue with angular2 2.0.0-beta.8), setTimeout fixes by calling asynchronously
     });
   }
 
@@ -90,7 +90,7 @@ export class PlaylistCreateComponent {
         if (!this.name || !this.name.length) {
           console.log('this.$name:', this.nameEl);
           this.nameEl.nativeElement.focus();
-          //alertify.error("You have to give your new room a nice name!");
+          alertify.error("You have to give your new room a nice name!");
           return;
         }
         this.store.dispatch({type: PlaylistCreateAction.ADD_NAME, payload: this.name});
@@ -99,12 +99,10 @@ export class PlaylistCreateComponent {
       case PlaylistCreateState.ADDING_DESCRIPTION:
         if (!this.description) {
           this.descriptionEl.nativeElement.focus();
-          //return alertify.error("Tell people what your room's all about!!");
-          return;
+          return alertify.error("Tell people what your room's all about!!");
         } else if (this.description.length < 5) {
           this.descriptionEl.nativeElement.focus();
-          //return alertify.error("Surely you can come up with a better description than that!");
-          return;
+          return alertify.error("Surely you can come up with a better description than that!");
         }
         this.store.dispatch({type: PlaylistCreateAction.ADD_DESCRIPTION_AND_CREATE, payload: this.description});
         break;
