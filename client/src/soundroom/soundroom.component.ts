@@ -14,7 +14,7 @@ import {PlaylistLayout} from "./layout/playlist-layout/playlist-layout.component
   directives: [ROUTER_DIRECTIVES],
   template: require('./soundroom.html'),
   providers: [HTTP_PROVIDERS, PlaylistService],
-  styles: [require('./soundroom.css')]
+  styles: [require('./soundroom.scss')]
 })
 @RouteConfig([
   {path: '/', name: 'MainLayout', component: MainLayout, useAsDefault: true},

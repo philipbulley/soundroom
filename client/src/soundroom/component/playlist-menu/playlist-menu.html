@@ -8,7 +8,7 @@
 
 <!--The ngFor doesn't work well if wrapped in an *ngIf="playlists | async" — throws exception, likely change detection issues-->
 <section *ngIf="playlistCollection.loadState !== 'PlaylistState.LOADING_ALL'">
-  <ul class="row list-unstyled">
+  <ul>
     <li *ngFor="#playlist of playlistCollection.playlists">
 
       <playlist-menu-item [playlist]="playlist"></playlist-menu-item>

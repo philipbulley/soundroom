@@ -10,7 +10,7 @@ import {Playlist} from "../../model/playlist";
 @Component({
   selector: 'playlist-layout',
   template: require('./playlist-layout.html'),
-  styles: [require('./playlist-layout.css')],
+  styles: [require('./playlist-layout.scss')],
   directives: [PlaylistMenuComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

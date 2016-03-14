@@ -13,7 +13,7 @@ import {PlaylistCreateState} from "../../model/enum/playlist-create-state";
 @Component({
   selector: 'playlist-create',
   template: require('./playlist-create.html'),
-  styles: [require('./playlist-create.css')],
+  styles: [require('./playlist-create.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlaylistCreateComponent {

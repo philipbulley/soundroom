@@ -10,7 +10,7 @@ import {Observable} from 'rxjs/Observable';
 @Component({
   selector: 'playlist-menu-item',
   template: require('./playlist-menu-item.html'),
-  styles: [require('./playlist-menu-item.css')],
+  styles: [require('./playlist-menu-item.scss')],
   directives: [RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -46,11 +46,11 @@ export class PlaylistMenuItemComponent {
         .map(secs => secs);
 
       // Observer for seconds before delete can be clicked
-      this.deleteWaitDisplay = this.deleteWait.map((secs:number) => Math.max(0, this.DELETE_CONFIRM_WAIT_SECS - secs));
+      this.deleteWaitDisplay = this.deleteWait.map(( secs:number ) => Math.max(0, this.DELETE_CONFIRM_WAIT_SECS - secs));
 
       // Observer which will exit the delete confirmation, assuming user is not wanting to delete anymore
-      this.deleteWait.filter((secs:number) => secs === this.DELETE_CONFIRM_WAIT_SECS + this.DELETE_CONFIRM_WAIT_EXIT_SECS)
-        .subscribe((secs:number) => this.isDeleteConfirm = false);
+      this.deleteWait.filter(( secs:number ) => secs === this.DELETE_CONFIRM_WAIT_SECS + this.DELETE_CONFIRM_WAIT_EXIT_SECS)
+        .subscribe(( secs:number ) => this.isDeleteConfirm = false);
 
     } else {
 
