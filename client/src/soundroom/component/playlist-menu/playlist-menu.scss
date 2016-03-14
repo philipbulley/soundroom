@@ -5,15 +5,22 @@ h2 {
 }
 
 ul {
-  list-style-type: none;
   padding: 0;
+
+  list-style-type: none;
+  vertical-align: top;
 }
 
 li {
   display: inline-block;
-  height: 420px;
-  padding: 0;
   width: 100%;
+  height: 420px;
+  padding: 2px;
+
+  vertical-align: top;
+
+  // debug!
+  //outline: 1px crimson solid;
 }
 
 .room-count {

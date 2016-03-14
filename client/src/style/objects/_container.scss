@@ -1,0 +1,16 @@
+.o-container {
+  margin: 0 10px;
+  min-width: 300px;
+}
+
+@include wider-than(medium){
+  .o-container {
+    margin: 0 40px;
+  }
+}
+
+@include wider-than(large){
+  .o-container {
+    margin: 0 80px;
+  }
+}
