@@ -1,6 +1,8 @@
 <pre>playlist menu play: {{playlistCollection.playlists.length}}</pre>
 
-<div *ngIf="playlistCollection.loadState === 'PlaylistState.LOADING_ALL'"><i class="fa fa-circle-o-notch fa-spin"></i> Loading Soundrooms...</div>
+<div *ngIf="playlistCollection.loadState === 'PlaylistState.LOADING_ALL'">
+  <i class="fa fa-circle-o-notch fa-spin"></i> Loading Soundrooms...
+</div>
 <div *ngIf="isSlowConnection"><i class="fa fa-wifi"></i> Slow connection, we'll keep trying...</div>
 
 
