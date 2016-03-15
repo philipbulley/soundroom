@@ -5,4 +5,6 @@ export class PlaylistAction {
   static DELETE = `PlaylistAction.DELETE`;
   static CREATE = `PlaylistAction.CREATE`;
 
+  static LOAD = `PlaylistAction.LOAD`;
+
 }

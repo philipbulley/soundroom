@@ -82,12 +82,37 @@ export class PlaylistService {
   /**
    * Starts load of the full data set.
    */
-  load():void {
+  loadAll():void {
     console.log('PlaylistService.load():', Config.API_BASE_URL + this.API_ENDPOINT);
 
     this.store.dispatch({type: PlaylistAction.LOAD_ALL});
 
     this.http.get(Config.API_BASE_URL + this.API_ENDPOINT)
+      .delay(2000)    // DEBUG: Delay for simulation purposes only
+      .retryWhen(errors => this.retry(errors))
+      .map(res => res.json())
+      .subscribe(( data ) => {
+        this.onSlowConnection.emit(false);
+
+        // Assign initial data to collection
+        //this.playlistsCollection = data;
+        this.store.dispatch({type: PlaylistAction.ADD, payload: data});
+        //this.store.dispatch({type: ADD_PLAYLIST, payload: 1});
+
+        // Push update to Observer
+        //this.playlistsObserver.next(this.playlistsCollection);
+      }, ( error:Response ) => {
+        console.error(error);
+
+        return Observable.throw(error || 'Server error');
+      });
+  }
+
+  load( id:string ):any {
+
+    this.store.dispatch({type: PlaylistAction.LOAD, payload: id});
+
+    this.http.get(Config.API_BASE_URL + this.API_ENDPOINT + '/' + id)
       .delay(2000)    // DEBUG: Delay for simulation purposes only
       .retryWhen(errors => this.retry(errors))
       .map(res => res.json())
@@ -220,7 +245,7 @@ export class PlaylistService {
       this.playlistsObserver = observer;
 
       // Trigger a load of the data set upon the first subscription to this Observable
-      this.load();    // TODO: Consider removing so we can choose which data is loaded (ie. /playlists or /playlists/:id)
+      //this.load();    // TODO: Consider removing so we can choose which data is loaded (ie. /playlists or /playlists/:id)
 
       return () => {
         console.log('%cPlaylistService dispose!', 'background-color:#f00;color:#fff;padding:2px 5px;font-weight:bold');
@@ -235,4 +260,5 @@ export class PlaylistService {
     // being cold (ie. when changing route). Not sure if this is to be expected?
     this.playlists.connect();
   }
+
 }
