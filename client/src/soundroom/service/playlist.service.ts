@@ -14,6 +14,7 @@ import {PlaylistCreate} from "../model/playlist-create";
 import {PlaylistCreateAction} from "../model/enum/playlist-create-action";
 import {PlaylistCreateState} from "../model/enum/playlist-create-state";
 import {PlaylistCollection} from "../model/playlist-collection";
+import {PlaylistFactory} from "../model/factory/playlist.factory";
 
 @Injectable()
 export class PlaylistService {
@@ -115,7 +116,10 @@ export class PlaylistService {
     this.http.get(Config.API_BASE_URL + this.API_ENDPOINT + '/' + id)
       .delay(2000)    // DEBUG: Delay for simulation purposes only
       .retryWhen(errors => this.retry(errors))
-      .map(res => res.json())
+      .map(res => {
+        return res.json()
+          .map(( playlistApiData:any ) => PlaylistFactory.createFromApiResponse(playlistApiData));
+      })
       .subscribe(( data ) => {
         this.onSlowConnection.emit(false);
 
@@ -157,7 +161,7 @@ export class PlaylistService {
       }, error => this.store.dispatch({type: PlaylistCreateAction.ERROR, payload: error}));
   }
 
-  create( name:string, description?:string ):Observable<Playlist> {
+  private create( name:string, description?:string ):Observable<Playlist> {
 
     console.log('PlaylistCreateService.create:', name, description);
 
@@ -172,19 +176,12 @@ export class PlaylistService {
     console.log('PlaylistService.create() call post:', Config.API_BASE_URL + this.API_ENDPOINT, JSON.stringify(body), this.postOptions);
 
     return this.http.post(Config.API_BASE_URL + this.API_ENDPOINT, JSON.stringify(body), this.postOptions)
-      .map(( res ) => {
-        let playlist:Playlist = res.json();
+      .map(( res:any ) => {
+        let playlistApiData:any = res.json(),
+          playlist:Playlist = PlaylistFactory.createFromApiResponse(playlistApiData);
 
         console.log('PlaylistService.create() map: status:', res.headers.get('status'), 'playlist:', playlist);
-
-        //// Add new playlist to collection
-        //this.playlistsCollection = [...this.playlistsCollection, playlist];
-        //
-        //// Push updated collection to the Observer
-        //this.playlistsObserver.next(this.playlistsCollection);
-
-        console.log('status', res.headers.get('status'), 'headers', res.headers);
-
+        console.log(' - status', res.headers.get('status'), 'headers', res.headers);
 
         return playlist;
       }).catch(( error:Response ) => {

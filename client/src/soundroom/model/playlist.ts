@@ -1,18 +1,24 @@
 import {PlaylistState} from "./enum/playlist-state";
 
-export interface Playlist {
+export class Playlist {
+
   /** _id is the MongoDB convention, not intending this to appear as "private" */
-  _id?: string;
+  _id:string;
 
-  name?: string;
+  name:string;
 
-  description?: string;
+  description:string;
 
-  created?: string;
+  created:string;
 
-  modified?: string;
+  modified:string;
 
-  tracks?: any[];
+  tracks:any[];
 
-  loadState?:PlaylistState;
+  loadState:PlaylistState = null;
+
+  constructor() {
+
+  }
+
 }
