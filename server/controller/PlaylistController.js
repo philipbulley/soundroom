@@ -17,7 +17,10 @@ class PlaylistController {
   getAll () {
     console.log('PlaylistController.getAll()');
 
-    return db.Playlist.findPopulateQ();
+    // Return a non-deeply populated object without the `tracks` property.
+    // `tracks` and deeply populated singular playlist instances should be obtained via `PlaylistController.getById()`
+    return db.Playlist.findQ()
+      .then(playlists => playlists.map(playlist => _.omit(playlist.toObject(), 'tracks')));
   }
 
   getById (id) {

@@ -39,7 +39,7 @@ export default function create() {
   _.extend(playlistSchema.methods, {
 
     /**
-     * Use this save method instead of `episode.saveQ()` if you need the returned episode to be populated
+     * Use this save method instead of `playlist.saveQ()` if you need the returned playlist to be populated
      * @returns {Q.Promise}
      */
     savePopulateQ: function () {
@@ -172,7 +172,7 @@ export default function create() {
      * @param id
      * @param fields
      * @param options
-     * @returns {Q.Promise}     Promised resolved with a single Episode or null
+     * @returns {Q.Promise}     Promise resolved with a single Playlist or null
      */
     findByIdPopulateQ: function (id, fields, options) {
       if (!this.isValidId(id))
@@ -184,13 +184,13 @@ export default function create() {
     },
 
     /**
-     * Use this find method instead of `Playlist.find()` if you need the returned episode to be populated
+     * Use this find method instead of `Playlist.find()` if you need the returned playlist to be populated
      * with external documents.
      *
      * @param id
      * @param fields
      * @param options
-     * @returns {Q.Promise}     Promised resolved with an array of Episodes or an empty array if no matches.
+     * @returns {Q.Promise}     Promise resolved with an array of Playlists or an empty array if no matches.
      */
     findPopulateQ: function (conditions, fields, options) {
       //log.debug( 'Playlist.findPopulateQ:', conditions, fields, options );
