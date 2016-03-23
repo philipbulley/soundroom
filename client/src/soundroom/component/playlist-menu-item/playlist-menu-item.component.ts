@@ -69,8 +69,6 @@ export class PlaylistMenuItemComponent {
         .subscribe(secs => {
           this.deleteDisabledSecs = secs;
 
-          console.log('this.deleteDisabledSecs', this.deleteDisabledSecs);
-
           if (secs === 0) {
             this.deleteState = this.DELETE_STATE_CONFIRM_ENABLED;
           }

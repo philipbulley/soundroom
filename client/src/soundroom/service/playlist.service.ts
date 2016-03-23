@@ -53,17 +53,6 @@ export class PlaylistService {
   private SLOW_CONNECTION_RETRIES:number = 2;
 
   /**
-   * A simple array holding all of the `Playlist` model objects. This can be accessed via subscribing to the public
-   * `playlists` Observable on this service.
-   */
-  private playlistsCollection:Playlist[];
-
-  /**
-   * The observer that the `playlistsCollection` is pushed to when `playlistsCollection` has changed.
-   */
-  private playlistsObserver:Observer<Playlist[]>;
-
-  /**
    * Standard options we need to use when sending POST requests to the server
    */
   private postOptions:RequestOptions;
@@ -76,8 +65,7 @@ export class PlaylistService {
 
     this.playlistCreate$ = this.store.select('playlistCreate');
 
-    this.initObservable();
-    this.initCreate();
+    this.observeCreate();
   }
 
   /**
@@ -89,19 +77,14 @@ export class PlaylistService {
     this.store.dispatch({type: PlaylistAction.LOAD_ALL});
 
     this.http.get(Config.API_BASE_URL + this.API_ENDPOINT)
-      .delay(2000)    // DEBUG: Delay for simulation purposes only
+      // .delay(2000)    // DEBUG: Delay for simulation purposes only
       .retryWhen(errors => this.retry(errors))
-      .map(res => res.json())
+      .map(( res:Response ) => res.json())
       .subscribe(( data ) => {
         this.onSlowConnection.emit(false);
 
-        // Assign initial data to collection
-        //this.playlistsCollection = data;
+        // Add initial data to the Store
         this.store.dispatch({type: PlaylistAction.ADD, payload: data});
-        //this.store.dispatch({type: ADD_PLAYLIST, payload: 1});
-
-        // Push update to Observer
-        //this.playlistsObserver.next(this.playlistsCollection);
       }, ( error:Response ) => {
         console.error(error);
 
@@ -109,14 +92,17 @@ export class PlaylistService {
       });
   }
 
+  /**
+   * Loads the full data of a single playlist
+   * @param id
+   */
   load( id:string ):any {
-
     this.store.dispatch({type: PlaylistAction.LOAD, payload: id});
 
     this.http.get(Config.API_BASE_URL + this.API_ENDPOINT + '/' + id)
-      .delay(2000)    // DEBUG: Delay for simulation purposes only
+      // .delay(2000)    // DEBUG: Delay for simulation purposes only
       .retryWhen(errors => this.retry(errors))
-      .map(res => {
+      .map(( res:Response ) => {
         return res.json()
           .map(( playlistApiData:any ) => PlaylistFactory.createFromApiResponse(playlistApiData));
       })
@@ -124,12 +110,7 @@ export class PlaylistService {
         this.onSlowConnection.emit(false);
 
         // Assign initial data to collection
-        //this.playlistsCollection = data;
         this.store.dispatch({type: PlaylistAction.ADD, payload: data});
-        //this.store.dispatch({type: ADD_PLAYLIST, payload: 1});
-
-        // Push update to Observer
-        //this.playlistsObserver.next(this.playlistsCollection);
       }, ( error:Response ) => {
         console.error(error);
 
@@ -137,14 +118,33 @@ export class PlaylistService {
       });
   }
 
-  initCreate() {
-    this.playlistCreate$
-      //.filter(action => action.type === PlaylistCreateAction.CREATE)
-      .filter(( playlistCreate:PlaylistCreate ) => {
-        console.log('PlaylistService.initCreate: filter:', playlistCreate);
 
-        return playlistCreate.state === PlaylistCreateState.CREATING;
-      })
+  deletePlaylist( playlist:Playlist ):Observable<boolean> {
+    return this.http.delete(Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id)
+      .map(( res:Response ) => {
+        console.log('PlaylistService.deletePlaylist() map: status:', res.headers.get('status'), 'splice:', playlist);
+
+        // Delete success - reflect change in local data collection
+        this.store.dispatch({type: PlaylistAction.DELETE, payload: playlist});
+
+        return res.status === 204;
+      }).catch(( error:Response ) => {
+        console.error(error);
+        return Observable.throw(error.json().error || 'Server error');
+      });
+  }
+
+
+  /////////////////////////
+  // PRIVATE METHODS
+  /////////////////////////
+
+  /**
+   * Observe changes to the `playlistCreate` store and react as appropriate.
+   */
+  private observeCreate() {
+    this.playlistCreate$
+      .filter(( playlistCreate:PlaylistCreate ) => playlistCreate.state === PlaylistCreateState.CREATING)
       .mergeMap(( playlistCreate:PlaylistCreate ) => this.create(
         playlistCreate.name,
         playlistCreate.description
@@ -162,7 +162,6 @@ export class PlaylistService {
   }
 
   private create( name:string, description?:string ):Observable<Playlist> {
-
     console.log('PlaylistCreateService.create:', name, description);
 
     var body:PlaylistCreateBody = {
@@ -176,30 +175,8 @@ export class PlaylistService {
     console.log('PlaylistService.create() call post:', Config.API_BASE_URL + this.API_ENDPOINT, JSON.stringify(body), this.postOptions);
 
     return this.http.post(Config.API_BASE_URL + this.API_ENDPOINT, JSON.stringify(body), this.postOptions)
-      .map(( res:any ) => {
-        let playlistApiData:any = res.json(),
-          playlist:Playlist = PlaylistFactory.createFromApiResponse(playlistApiData);
-
-        console.log('PlaylistService.create() map: status:', res.headers.get('status'), 'playlist:', playlist);
-        console.log(' - status', res.headers.get('status'), 'headers', res.headers);
-
-        return playlist;
-      }).catch(( error:Response ) => {
-        console.error(error);
-        return Observable.throw(error.json().error || 'Server error');
-      });
-  }
-
-  deletePlaylist( playlist:Playlist ):Observable<boolean> {
-    return this.http.delete(Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id)
-      .map(( res ) => {
-        console.log('PlaylistService.deletePlaylist() map: status:', res.headers.get('status'), 'splice:', playlist);
-
-        // Delete success - reflect change in local data collection
-        this.store.dispatch({type: PlaylistAction.DELETE, payload: playlist});
-
-        return res.status === 204;
-      }).catch(( error:Response ) => {
+      .map(( res:Response ) => PlaylistFactory.createFromApiResponse(res.json()))
+      .catch(( error:Response ) => {
         console.error(error);
         return Observable.throw(error.json().error || 'Server error');
       });
@@ -232,30 +209,4 @@ export class PlaylistService {
           .delay(retrySecs * 1000);
       });
   }
-
-  /**
-   * Creates the hot playlists Observable that cn be usd throughout the app to subscribe to playlist data and changes.
-   */
-  private initObservable():void {
-    // Create an Observable to wrap our data collection
-    this.playlists = new Observable(( observer:Observer<Playlist[]> ) => {
-      this.playlistsObserver = observer;
-
-      // Trigger a load of the data set upon the first subscription to this Observable
-      //this.load();    // TODO: Consider removing so we can choose which data is loaded (ie. /playlists or /playlists/:id)
-
-      return () => {
-        console.log('%cPlaylistService dispose!', 'background-color:#f00;color:#fff;padding:2px 5px;font-weight:bold');
-      }
-    })
-    // Ensure the 2nd+ subscribers get the most recent data on subscribe (not sure why shareReplay() was removed from RxJS 5 - asked here: http://stackoverflow.com/questions/35246873/sharereplay-in-rxjs-5)
-      .publishReplay(1);
-
-    // Connect to keep this Observable hot, even after all components have unsubscribed
-    // BTW - I like the idea of `.publishReplay(1).refCount()` which makes the Observable cold once all have
-    // unsubscribed, but ng throws "Error: Cannot subscribe to a disposed Subject" when trying to subscribe after
-    // being cold (ie. when changing route). Not sure if this is to be expected?
-    this.playlists.connect();
-  }
-
 }
