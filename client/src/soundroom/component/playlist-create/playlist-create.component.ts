@@ -28,14 +28,14 @@ export class PlaylistCreateComponent {
   private description:string;
   private playlistCreate$:Observable<PlaylistCreate>;
   private playlistCreate:PlaylistCreate;
-  private states:PlaylistCreateState;
+  //private states:PlaylistCreateState;
 
   constructor( private store:Store<PlaylistCreate>, private cdr:ChangeDetectorRef ) {
 
     console.log('PlaylistCreateComponent()');
     this.playlistCreate$ = this.store.select('playlistCreate');
 
-    this.states = PlaylistCreateState;
+    //this.states = PlaylistCreateState;
 
     this.playlistCreate$.subscribe(( data:PlaylistCreate ) => {
       console.log('PlaylistCreateComponent.playlistCreate$: data:', data);
