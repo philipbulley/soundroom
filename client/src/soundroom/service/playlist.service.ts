@@ -100,12 +100,9 @@ export class PlaylistService {
     this.store.dispatch({type: PlaylistAction.LOAD, payload: id});
 
     this.http.get(Config.API_BASE_URL + this.API_ENDPOINT + '/' + id)
-      // .delay(2000)    // DEBUG: Delay for simulation purposes only
+      .delay(2000)    // DEBUG: Delay for simulation purposes only
       .retryWhen(errors => this.retry(errors))
-      .map(( res:Response ) => {
-        return res.json()
-          .map(( playlistApiData:any ) => PlaylistFactory.createFromApiResponse(playlistApiData));
-      })
+      .map(( res:Response ) => PlaylistFactory.createFromApiResponse(res.json()))
       .subscribe(( data ) => {
         this.onSlowConnection.emit(false);
 

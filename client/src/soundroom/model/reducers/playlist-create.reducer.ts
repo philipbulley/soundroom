@@ -1,14 +1,13 @@
 import {Reducer, Action} from '@ngrx/store';
-import {Playlist} from "../playlist";
 import {PlaylistCreateAction} from "../enum/playlist-create-action";
 import {PlaylistCreate} from "../playlist-create";
 import {PlaylistCreateState} from "../enum/playlist-create-state";
 
 export const playlistCreateReducer:Reducer<PlaylistCreate> = ( state:PlaylistCreate = new PlaylistCreate(), action:Action ) => {
 
-  console.log('playlistCreateReducer():', action.type);
-  console.log(' - action:', action);
-  console.log(' - state:', state);
+  // console.log('playlistCreateReducer():', action.type);
+  // console.log(' - action:', action);
+  // console.log(' - state:', state);
 
   let newState:PlaylistCreate;
 

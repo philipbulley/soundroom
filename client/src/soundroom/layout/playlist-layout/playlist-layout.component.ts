@@ -8,6 +8,7 @@ var alertify = require('alertify.js');
 import {PlaylistMenuComponent} from "../../component/playlist-menu/playlist-menu.component";
 import {PlaylistService} from "../../service/playlist.service";
 import {Playlist} from "../../model/playlist";
+import {PlaylistCollection} from "../../model/playlist-collection";
 
 @Component({
   selector: 'playlist-layout',
@@ -19,6 +20,9 @@ import {Playlist} from "../../model/playlist";
 export class PlaylistLayout implements OnInit {
   private playlist:Observable<Playlist>;
   private noPlaylist:boolean;
+  private id:string;
+  private playlistCollection:Observable<PlaylistCollection>;
+  private isLoading:boolean;
 
   constructor( private routeParams:RouteParams, private store:Store<Playlist>, private playlistService:PlaylistService ) {
 
@@ -26,43 +30,28 @@ export class PlaylistLayout implements OnInit {
 
   ngOnInit():any {
 
-    this.playlistService.load(
-      this.routeParams.get('id')
-    );
+    console.log('PlaylistLayout.ngOnInit()');
 
-    // TODO: Get playlist id from route
-    // Create new playlist Store
-    // Dispatch action to load all details for the specified playlist by id
-    //this.playlist = this.store.select('playlist');
-    //this.playlist.subscribe(data => console.log('PlaylistLayout.playlistCollection: data:', data));   // debug!
+    this.id = this.routeParams.get('id');
 
-    //
+    this.playlistCollection = this.store.select('playlistsCollection');
 
+    this.playlist = this.playlistCollection
+      .map(( playlistCollection:PlaylistCollection ) => {
+        console.log('PlaylistLayout.ngOnInit: playlist: map!');
+        console.log(' - playlistCollection:', playlistCollection);
+        console.log(' - playlistCollection.playlists: ', playlistCollection.playlists);
+        
+        this.isLoading = !!playlistCollection.loadState;
 
-    // TODO: Ask playlistService to load playist details endpoint instead of /playlists within observer creation
+        return playlistCollection.playlists
+          .filter(( playlist:Playlist ) => playlist._id === this.id)[0];
+      });
 
-    //this.playlistService.playlists
-    //  .map(( playlists:Playlist[] ) => {
-    //    return playlists.filter(( playlist:Playlist )=> playlist._id === this.routeParams.get('id'))[0];
-    //  })
-    //  .subscribe(
-    //    ( playlist:Playlist ) => {
-    //      console.log('PlaylistLayout.ngOnInit(): subscribe:', playlist);
-    //
-    //      if (!playlist) {
-    //        alertify.error("The Soundroom you've asked for doesn't exist");
-    //        this.noPlaylist = true;
-    //        return;
-    //      }
-    //
-    //      this.playlist = playlist;
-    //    },
-    //    ( error:any ) => {
-    //      alertify.error("We can't find the Soundroom you've asked for");
-    //      //this.errorMessage = <any>error;
-    //    }
-    //  );
+    this.playlist
+      .subscribe(data => console.log('PlaylistLayout: playlistCollection.subscribe: data xxxx:', data));   // debug!
 
 
+    this.playlistService.load(this.id);
   }
 }

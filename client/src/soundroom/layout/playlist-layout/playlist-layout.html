@@ -1,17 +1,20 @@
 <section class="o-container">
 
-  <div *ngIf="!playlist && !noPlaylist">
+  <pre>PlaylistLayout: {{id}}</pre>
+  <pre>{{(playlist | async).name}}</pre>
+
+  <div *ngIf="isLoading">
     <i class="fa fa-circle-o-notch fa-spin"></i> Loading your Soundroom...
   </div>
 
-  <div *ngIf="!playlist && noPlaylist">
-    Can't find your Soundroom!
-  </div>
+  <!--<div *ngIf="!playlist && noPlaylist">-->
+  <!--Can't find your Soundroom!-->
+  <!--</div>-->
 
-  <div *ngIf="playlist">
-    <h2>{{playlist.name}}</h2>
-    {{playlist._id}}
-  </div>
+  <!--<div *ngIf="playlist">-->
+  <!--<h2>{{playlist.name}}</h2>-->
+  <!--{{playlist._id}}-->
+  <!--</div>-->
 
   <!--<now-playing></now-playing>-->
   <!--<add-track></add-track>-->
