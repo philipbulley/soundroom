@@ -9,31 +9,36 @@
   background-color: #fff;
 }
 
-button.playlist-menu-item__close {
-  display: inline-block;
-  float: right;
+.playlist-menu-item {
+  &__close {
+    display: inline-block;
+    float: right;
+
+    &.is-delete-confirm {
+      width: 100%;
+      padding: 10px;
+
+      color: #fff;
+      background-color: crimson;
+      border-radius: 4px;
+
+      &:hover{
+        color: #fff;
+        background-color: red;
+      }
+
+      &[disabled] {
+        cursor: auto;
+        color: #999;
+        background-color: #ccc;
+      }
+    }
+
+  }
 }
 
-button.playlist-menu-item__close.is-delete-confirm {
-  width: 100%;
-  padding: 10px;
 
-  color: #fff;
-  background-color: crimson;
-  border-radius: 4px;
-}
-
-button.playlist-menu-item__close.is-delete-confirm:hover {
-  color: #fff;
-  background-color: red;
-}
-
-button.playlist-menu-item__close.is-delete-confirm[disabled] {
-  cursor: auto;
-  color: #999;
-  background-color: #ccc;
-}
-
+// TODO: Place this in global utils
 button.no-style {
   /* Remove styling of <button> element */
   display: block;
