@@ -1,0 +1,65 @@
+@mixin clearfix-content () {
+  display: table;
+  width: 100%;
+  clear: both;
+  content: "";
+}
+
+@mixin clearfix () {
+  // scss-lint:disable PseudoElement
+  &:after {
+    @include clearfix-content;
+  }
+  // scss-lint:enable PseudoElement
+  &::after {
+    @include clearfix-content;
+  }
+}
+
+
+////////////////////////////
+// Breakpoints
+//////////////////////////
+
+// USAGE: @include breakpoint($breakpoint) {}
+@mixin wider-than($breakpoint, $breakpoint-set: $breakpoints) {
+  @if map-has-key($breakpoint-set, $breakpoint) {
+    @media (min-width: #{map-get($breakpoint-set, $breakpoint)}) {
+      @content;
+    }
+  } @else {
+    @warn "Unfortunately, no value could be retrieved from '#{$breakpoint}'. "
+        + "Please make sure it is defined in '$breakpoints' map.";
+  }
+}
+
+// Writes a media query that limits its contents to that breakpoint only
+// ie. Values within the content won't be inherited by any other breakpoints
+@mixin only-within($breakpoint, $breakpoint-set: $breakpoints) {
+  @if map-has-key($breakpoint-set, $breakpoint) {
+    $width-above: get-breakpoint-sibling-width(above, $breakpoint, $breakpoint-set);
+    $use-min-width: if(get-breakpoint-index($breakpoint, $breakpoint-set) == 1, false, true);
+    @if $width-above > -1 {
+
+      $min-width: "min-width: " + map-get($breakpoint-set, $breakpoint);
+      $max-width: "max-width: " + ($width-above - 1);
+
+      @if $use-min-width {
+        @media ($min-width) and ($max-width) {
+          @content;
+        }
+      } @else {
+        @media ($max-width) {
+          @content;
+        }
+      }
+    } @else {
+      @media (min-width: #{map-get($breakpoint-set, $breakpoint)}) {
+        @content;
+      }
+    }
+  } @else {
+    @warn "Unfortunately, no value could be retrieved from '#{$breakpoint}'. "
+        + "Please make sure it is defined in '$breakpoints' map.";
+  }
+}

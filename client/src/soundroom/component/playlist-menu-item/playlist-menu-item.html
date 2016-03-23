@@ -1,0 +1,19 @@
+<button class="playlist-menu-item__close no-style"
+        [class.is-delete-confirm]="deleteState && deleteState !== DELETE_STATE_NETWORK"
+        *ngIf="!deleteState || (deleteState && deleteState !== DELETE_STATE_NETWORK)"
+        (click)="deleteMe()"
+        [disabled]="deleteState === DELETE_STATE_CONFIRM_DISABLED">
+  <i class="fa fa-close"></i>
+  <span *ngIf="deleteState === DELETE_STATE_CONFIRM_DISABLED || deleteState === DELETE_STATE_CONFIRM_ENABLED">Sure you want to delete playlist?
+    <span *ngIf="deleteDisabledSecs > 0">({{deleteDisabledSecs}})</span>
+  </span>
+</button>
+
+<h3>{{playlist.name}}</h3>
+<code>{{playlist._id}}</code>
+
+<i *ngIf="deleteState === DELETE_STATE_NETWORK" class="fa fa-circle-o-notch fa-spin"></i>
+
+<div>
+  <button [routerLink]="['PlaylistLayout', {id: playlist._id}]" class="btn btn-default">Join Room</button>
+</div>

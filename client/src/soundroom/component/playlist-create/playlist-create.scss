@@ -1,0 +1,14 @@
+@import '../../../style/setup/main';
+
+:host {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  padding: 30px;
+
+  background-color: #45de85;
+}
+
+button.close {
+  float: right;
+}

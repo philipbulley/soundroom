@@ -1,0 +1,41 @@
+@import '../../../style/setup/main';
+
+ul {
+  padding: 0;
+
+  list-style-type: none;
+  vertical-align: top;
+
+  // Prevent spaces between list items
+  font-size: 0;
+}
+
+li {
+  display: inline-block;
+  width: 100%;
+  height: 420px;
+  padding: 2px;
+
+  vertical-align: top;
+  font-size: 16px;
+
+  // debug!
+  //outline: 1px crimson solid;
+}
+
+.room-count {
+  color: #ccc;
+  text-align: center;
+}
+
+@include wider-than(medium) {
+  li {
+    width: 50%;
+  }
+}
+
+@include wider-than(large) {
+  li {
+    width: 33.333%;
+  }
+}
