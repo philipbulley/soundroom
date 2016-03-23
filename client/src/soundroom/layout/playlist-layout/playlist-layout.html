@@ -1,7 +1,8 @@
 <section class="o-container">
 
   <pre>PlaylistLayout: {{id}}</pre>
-  <pre>{{(playlist | async).name}}</pre>
+  <pre>Name: {{(playlist | async).name}}</pre>
+  <pre>Number of tracks: {{(playlist | async).tracks?.length}}</pre>
 
   <div *ngIf="isLoading">
     <i class="fa fa-circle-o-notch fa-spin"></i> Loading your Soundroom...
