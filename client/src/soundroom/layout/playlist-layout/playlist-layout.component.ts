@@ -27,7 +27,7 @@ export class PlaylistLayout implements OnInit {
   ngOnInit():any {
 
     this.playlistService.load(
-      this.routeParams.get('id')[0]
+      this.routeParams.get('id')
     );
 
     // TODO: Get playlist id from route
