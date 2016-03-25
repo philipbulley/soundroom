@@ -16,9 +16,8 @@ export class UserService {
 
     console.log('UserService()', io);
 
-    // TODO: Error when using io() —> TypeError: Cannot read property 'zone' of undefined
-    // this.socket = io(Config.SERVER_BASE_URL);
-    // this.socket.on(SocketEventTypeEnum.CONNECT, this.handleSocketConnect);
+    this.socket = io(Config.SERVER_BASE_URL);
+    this.socket.on(SocketEventTypeEnum.CONNECT, this.handleSocketConnect);
 
   }
 
