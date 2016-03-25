@@ -5,9 +5,9 @@
   "main": "index.js",
   "author": "",
   "license": "ISC",
-  "scripts":{
-    "start": "node index.js",
-    "startDev": "NODE_ENV=dev NO_AUTH=true SKIP_TRACKS=true node index.js",
+  "scripts": {
+    "start": "node_modules/nodemon/bin/nodemon.js index.js",
+    "startDev": "NODE_ENV=dev NO_AUTH=true SKIP_TRACKS=true node_modules/nodemon/bin/nodemon.js index.js",
     "test": "mocha"
   },
   "repository": {
@@ -44,6 +44,7 @@
     "babel-eslint": "^4.1.5",
     "chai": "~2.3.0",
     "mocha": "~2.2.5",
+    "nodemon": "^1.9.1",
     "supertest": "~1.0.1"
   },
   "babel": {
