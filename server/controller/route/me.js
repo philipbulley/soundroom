@@ -10,7 +10,18 @@ const router = express.Router();
 router.route('/')
   .get(verify,
   (req, res) => {
-    res.json(req.user);
+
+    if(req.query && req.query.action){
+      switch(req.query.action){
+        case 'logout':
+          req.logout();
+          res.json({});
+          return;
+      }
+    } else {
+      res.json(req.user);
+    }
+
   })
 
   .post(verify,
