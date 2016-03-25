@@ -101,6 +101,7 @@
 		}
 
 		function playlistId() {
+      console.log('playlistId()', playlist.getAttribute('data-id'));
 			return playlist.getAttribute('data-id');
 		}
 
@@ -117,6 +118,7 @@
 
 			http('/api/users')
 			.then((json) => {
+        console.log('socket connect: then:', json);
 				const userId = json[Math.floor(Math.random() * json.length)].id;
 				socket.emit(EventTypeEnum.USER_ENTER, userId);
 			});

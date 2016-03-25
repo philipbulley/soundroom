@@ -1,0 +1,27 @@
+@import 'setup/all';
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  color: $color-black-shade;
+}
+
+code, pre {
+  background: #ededed;
+  color: darkred;
+  padding: 5px;
+  border-radius: 4px;
+  font-size: 12px;
+  border: 1px solid #ccc;
+}
+
+code {
+  display: inline-block;
+}
+
+h1, h2, h3, h4, h5 {
+  color: $color-black-shade;
+}

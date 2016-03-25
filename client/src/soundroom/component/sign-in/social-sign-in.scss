@@ -1,0 +1,63 @@
+@import '../../../style/setup/all';
+
+p {
+  text-align: center;
+}
+
+ul {
+  text-align: center;
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  display: inline-block;
+}
+
+.social-link {
+  color: $color-grey-grit;
+  text-decoration: none;
+  display: inline-block;
+  background: $color-white;
+  width: 10vw;
+  height: 10vw;
+  min-width: 75px;
+  min-height: 75px;
+  position: relative;
+  text-align: center;
+
+  transition: background .2s linear, color .2s linear;
+
+  i {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    transform: translate3d(0, -50%, 0);
+  }
+
+  &:hover {
+    background: $color-grey-grime;
+    transition: background .1s linear, color .1s linear;
+  }
+
+  &.spotify:hover {
+    color: $color-white;
+    background: $color-green;
+  }
+
+  &.google:hover {
+    color: $color-white;
+    background: $color-red;
+  }
+
+  &.facebook:hover {
+    color: $color-white;
+    background: $color-blue-dirty;
+  }
+
+  &.twitter:hover {
+    color: $color-white;
+    background: $color-blue-clean;
+  }
+}

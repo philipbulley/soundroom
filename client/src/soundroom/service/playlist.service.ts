@@ -3,7 +3,6 @@ import {Http, Response, RequestOptions, Headers} from 'angular2/http';
 
 import {Observable} from 'rxjs/Observable';
 import {ConnectableObservable} from 'rxjs/observable/ConnectableObservable';
-import {Observer} from 'rxjs/Observer';
 import {Store} from '@ngrx/store';
 
 import {Config} from '../model/config';
@@ -13,7 +12,6 @@ import {PlaylistAction} from "../model/enum/playlist-action";
 import {PlaylistCreate} from "../model/playlist-create";
 import {PlaylistCreateAction} from "../model/enum/playlist-create-action";
 import {PlaylistCreateState} from "../model/enum/playlist-create-state";
-import {PlaylistCollection} from "../model/playlist-collection";
 import {PlaylistFactory} from "../model/factory/playlist.factory";
 
 @Injectable()

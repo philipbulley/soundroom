@@ -4,24 +4,19 @@
 //
 // The `/src/style` dir and it's subdirs are for global styles only (ie. reusable objects).
 // Any component specific styling should be added to the SCSS file within the component dir.
+//
 
-* {
-  box-sizing: border-box;
-}
-
-code, pre {
-  background: #ededed;
-  color: darkred;
-  padding: 5px;
-  border-radius: 4px;
-  font-size: 12px;
-  border: 1px solid #ccc;
-}
-
-code {
-  display: inline-block;
-}
+// BEMIT
+//
+// Global styles should use the BEMIT naming convention
+// http://csswizardry.com/2015/08/bemit-taking-the-bem-naming-convention-a-step-further/
+//
+// Typically, you'll only need the following prefixes:
+//
+//   o-    for reusable object classes)     ie. o-foo-object
+//   u-    for utility classes)             ie. u-foo-utility
 
 
-@import 'setup/main';
+@import 'setup/all';
 @import 'objects/all';
+@import 'base';

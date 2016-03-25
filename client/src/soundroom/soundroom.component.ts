@@ -8,16 +8,19 @@ var alertify = require('alertify.js');
 import {MainLayout} from "./layout/main-layout/main-layout.component";
 import {PlaylistService} from "./service/playlist.service";
 import {PlaylistLayout} from "./layout/playlist-layout/playlist-layout.component";
+import {SignInLayout} from "./layout/sign-in-layout/sign-in-layout.component";
+import {UserService} from "./service/user.service";
 
 @Component({
   selector: 'soundroom',
-  directives: [ROUTER_DIRECTIVES],
+  directives: [...ROUTER_DIRECTIVES],
   template: require('./soundroom.html'),
-  providers: [HTTP_PROVIDERS, PlaylistService],
+  providers: [...HTTP_PROVIDERS, PlaylistService, UserService],
   styles: [require('./soundroom.scss')]
 })
 @RouteConfig([
   {path: '/', name: 'MainLayout', component: MainLayout, useAsDefault: true},
+  {path: '/sign-in', name: 'SignInLayout', component: SignInLayout},
   {path: '/playlist/:id', name: 'PlaylistLayout', component: PlaylistLayout},
 ])
 export class SoundroomComponent {
