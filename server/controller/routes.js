@@ -1,5 +1,4 @@
 import express from 'express';
-import cors from 'cors';
 import { join } from 'path';
 import index from './route/index';
 import playlists from './route/playlists';
@@ -19,8 +18,6 @@ export default {
 };
 
 export function initRoutes(app, dirname) {
-  app.use(cors());
-
   // Routes
   app.use('/api', index)
     .use('/api/playlists', playlists)

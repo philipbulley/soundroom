@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import log from './util/LogUtil';
+import cors from 'cors';
 import MongooseService from './service/MongooseService';
 import spotifyService from './service/SpotifyService';
 import {initAuth} from './controller/AuthController';
@@ -32,6 +33,7 @@ MongooseService.connectToAppInstance(process.env.MONGO_CONNECT)
   .then(() => initModels())
   .then(() => {
     return express()
+      .use(cors())
       .use(cookieParser())
       .use(bodyParser.urlencoded({extended: true}))
       .use(bodyParser.json())
