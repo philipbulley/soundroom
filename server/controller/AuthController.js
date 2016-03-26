@@ -1,10 +1,12 @@
 import passport from 'passport';
-import { findOrCreate, findById } from './UserController';
+import { find, findOrCreate, findById } from './UserController';
 import { BasicStrategy } from 'passport-http';
 import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
 import { Strategy as SpotifyStrategy } from 'passport-spotify';
 import { Strategy as TwitterStrategy } from 'passport-twitter';
+import { Strategy as JwtStrategy } from 'passport-jwt';
+import { ExtractJwt } from 'passport-jwt';
 
 
 function enableGoogleLogin() {
@@ -135,6 +137,21 @@ function enableBasicAuthLogin() {
   }));
 }
 
+function enableJwt() {
+  var opts = {}
+  opts.jwtFromRequest = ExtractJwt.fromAuthHeader();
+  opts.secretOrKey = process.env.JWT_TOKEN_SECRET;
+  // opts.issuer = "accounts.examplesoft.com";
+  // opts.audience = "yoursite.net";
+  passport.use(new JwtStrategy(opts, (jwtPayload, done) => {
+    // jwtPayload.iss: we've previously set the user id as `iss` when creating the JWT
+    console.log('AuthController.enableJwt: jwtPayload:', jwtPayload);
+    findById(jwtPayload.iss)
+      .then((user) => done(null, user))
+      .catch((err) => done(err));
+  }));
+}
+
 // Simple route middleware to ensure user is authenticated.
 
 function verify(req, res, next) {
@@ -143,41 +160,20 @@ function verify(req, res, next) {
     return next();
   }
 
-  if (req.isAuthenticated()) {
-    return next();
-  }
-
-  res.status(401).end('Unauthorized');
+  return passport.authenticate('jwt', {session:false})(req, res, next);
 }
 
 function initAuth(app) {
-  // Passport session setup.
-  //   To support persistent login sessions, Passport needs to be able to
-  //   serialize users into and deserialize users out of the session.  Typically,
-  //   this will be as simple as storing the user ID when serializing, and finding
-  //   the user by ID when deserializing.
-  passport.serializeUser((user, done) => {
-    done(null, user.id);
-  });
-
-  passport.deserializeUser((id, done) => {
-    findById(id)
-      .then((user) => done(null, user))
-      .catch((err) => done(err));
-  });
-
   // enable login providers
-
   enableGoogleLogin();
   enableSpotifyLogin();
   enableTwitterLogin();
   enableFacebookLogin();
   enableBasicAuthLogin();
+  enableJwt();
 
   // init passport
-
   app.use(passport.initialize());
-  app.use(passport.session());
 
   return app;
 }

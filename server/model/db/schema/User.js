@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import mongooseQ from 'mongoose-q';
 import DateFields from '../plugin/DateFields';
-
+import * as jwt from 'jwt-simple';
 
 const mongoose = mongooseQ();
 const Schema = mongoose.Schema;
@@ -24,7 +24,22 @@ export default function create() {
 
   userSchema.plugin(DateFields);
 
-  _.extend(userSchema.methods, {});
+  _.extend(userSchema.methods, {
+
+    generateJwt: function () {
+
+      let DAY_IN_SECS = 3600 * 24,
+        nowTimeSecs = Math.floor(new Date().getTime() / 1000),
+        expireSecs = nowTimeSecs + DAY_IN_SECS;
+        // expireSecs = nowTimeSecs + 60;
+
+      return jwt.encode({
+        iss: this._id,
+        exp: expireSecs
+      }, process.env.JWT_TOKEN_SECRET);
+    }
+
+  });
 
   _.extend(userSchema.statics, {});
 

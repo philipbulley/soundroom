@@ -64,16 +64,7 @@ function find(query = null) {
   //   return Q.reject(new Error(PermissionErrorEnum.UNAUTHORIZED));
 
   // return db.User.findQ(query, select)
-  return db.User.findQ(query)
-    .then((users) => {
-      // log.info('UserController.find: then:', users);
-      // return users;
-      return users.map((user) => ({
-        id: user._id,
-        name: user.name,
-        avatar: user.avatar
-      }));
-    });
+  return db.User.findQ(query);
 }
 
 
@@ -88,23 +79,23 @@ function updateUserList() {
  * @returns {Q.Promise}
  */
 function findOrCreate(userParams) {
-  return Q.Promise((resolve, reject) => {
-    find(userParams)
-      .then((user) => {
-        if (user && user.length) {
-          console.log('FOUND EXISTING USER:', user[0].id);
+  return find(userParams)
+    .then((user) => {
+
+      if (user && user.length) {
+        console.log('FOUND EXISTING USER:', user[0].id);
+        updateUserList();
+        return user[0];
+      }
+
+      return create(userParams)
+        .then((newUser) => {
+          console.log('CREATED NEW USER:', newUser.id);
           updateUserList();
-          return resolve(user[0]);
-        }
-        return create(userParams)
-          .then((newUser) => {
-            console.log('CREATED NEW USER:', newUser.id);
-            updateUserList();
-            return resolve(newUser);
-          })
-          .catch((err) => reject(err));
-      });
-  });
+          return newUser;
+        })
+        .catch((err) => reject(err));
+    });
 }
 
 /**
@@ -113,7 +104,9 @@ function findOrCreate(userParams) {
  * @returns {Q.Promise}
  */
 function findById(id) {
+  console.log('UserController.findById():', id);
   return db.User.findByIdQ(id);
 }
+
 
 export {find, findOrCreate, findById, updateUserList};

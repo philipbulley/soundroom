@@ -11,28 +11,26 @@ function setRedirect(req, res, next) {
   next();
 }
 
+
 // http://passportjs.org/docs/authenticate#custom-callback
 
 function customCallback(provider) {
   return (req, res, next) => {
-    // passport.authenticate(provider, (err, user, info) => {
-    passport.authenticate(provider, (err, user) => {
+    passport.authenticate(provider, {session: false}, (err, user) => {
       if (err) {
         return next(err);
       }
-      req.logIn(user, (err) => {
-        if (err) {
-          return next(err);
-        }
-        const {redirect} = req.session;
-        if (redirect) {
-          const url = user ? redirect : `${redirect}?error=denied`;
-          delete req.session.redirect;
-          return res.redirect(url);
-        } else {
-          return res.json(req.user || {message: 'Access denied'});
-        }
-      });
+
+      const {redirect} = req.session;
+      if (redirect) {
+        const url = user
+          ? `${redirect}?jwt=${user.generateJwt()}`
+          : `${redirect}?error=denied`;
+        delete req.session.redirect;
+        return res.redirect(url);
+      } else {
+        return res.json(req.user || {message: 'Access denied'});
+      }
     })(req, res, next);
   };
 }
@@ -82,18 +80,10 @@ router.route('/facebook/callback')
   .get(customCallback('facebook'));
 
 
-// GET /auth/facebook
+// GET /auth/basic
 router.route('/basic')
   .get(setRedirect, passport.authenticate('basic'),
-  (req, res) => res.json(req.user));
+    (req, res) => res.json(req.user));
 
-
-// GET /auth/logout
-router.route('/logout')
-  .get((req, res) => {
-    req.logout();
-    // res.redirect('/');
-    res.json({message: 'The more we know, the less we show.'});
-  });
 
 export default router;
