@@ -1,5 +1,5 @@
 import {Injectable, EventEmitter} from 'angular2/core';
-import {Http, Response, RequestOptions, Headers} from 'angular2/http';
+import {Http, Response} from 'angular2/http';
 
 import {Observable} from 'rxjs/Observable';
 import {ConnectableObservable} from 'rxjs/observable/ConnectableObservable';
@@ -13,6 +13,7 @@ import {PlaylistCreate} from "../model/playlist-create";
 import {PlaylistCreateAction} from "../model/enum/playlist-create-action";
 import {PlaylistCreateState} from "../model/enum/playlist-create-state";
 import {PlaylistFactory} from "../model/factory/playlist.factory";
+import {NetworkService} from "./network.service";
 
 @Injectable()
 export class PlaylistService {
@@ -36,31 +37,9 @@ export class PlaylistService {
    */
   private API_ENDPOINT:string = '/playlists';
 
-  /**
-   * An exponential backoff strategy is used when loading playlist data, but we won't allow that exponential delay
-   * exceed this value.
-   * @type {number}
-   */
-  private MAX_RETRY_INTERVAL:number = 30;
-
-  /**
-   * On this number of retries (within the exponential backoff strategy), we will emit our slow connection. This may be
-   * communicated to the user via UI.
-   * @type {number}
-   */
-  private SLOW_CONNECTION_RETRIES:number = 2;
-
-  /**
-   * Standard options we need to use when sending POST requests to the server
-   */
-  private postOptions:RequestOptions;
   private playlistCreate$:Observable<PlaylistCreate>;
 
-  constructor( private http:Http, public store:Store<PlaylistCreate> ) {
-    this.postOptions = new RequestOptions({
-      headers: new Headers({'Content-Type': 'application/json'})
-    });
-
+  constructor( private http:Http, public store:Store<PlaylistCreate>, public networkService:NetworkService ) {
     this.playlistCreate$ = this.store.select('playlistCreate');
 
     this.observeCreate();
@@ -74,9 +53,9 @@ export class PlaylistService {
 
     this.store.dispatch({type: PlaylistAction.LOAD_ALL});
 
-    this.http.get(Config.API_BASE_URL + this.API_ENDPOINT)
+    this.http.get(Config.API_BASE_URL + this.API_ENDPOINT, this.networkService.requestOptions)
       // .delay(2000)    // DEBUG: Delay for simulation purposes only
-      .retryWhen(errors => this.retry(errors))
+      .retryWhen(errors => this.networkService.retry(errors))
       .map(( res:Response ) => res.json())
       .subscribe(( data ) => {
         this.onSlowConnection.emit(false);
@@ -97,9 +76,9 @@ export class PlaylistService {
   load( id:string ):any {
     this.store.dispatch({type: PlaylistAction.LOAD, payload: id});
 
-    this.http.get(Config.API_BASE_URL + this.API_ENDPOINT + '/' + id)
+    this.http.get(Config.API_BASE_URL + this.API_ENDPOINT + '/' + id, this.networkService.requestOptions)
       .delay(2000)    // DEBUG: Delay for simulation purposes only
-      .retryWhen(errors => this.retry(errors))
+      .retryWhen(errors => this.networkService.retry(errors))
       .map(( res:Response ) => PlaylistFactory.createFromApiResponse(res.json()))
       .subscribe(( data ) => {
         this.onSlowConnection.emit(false);
@@ -115,7 +94,7 @@ export class PlaylistService {
 
 
   deletePlaylist( playlist:Playlist ):Observable<boolean> {
-    return this.http.delete(Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id)
+    return this.http.delete(Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id, this.networkService.requestOptions)
       .map(( res:Response ) => {
         console.log('PlaylistService.deletePlaylist() map: status:', res.headers.get('status'), 'splice:', playlist);
 
@@ -167,9 +146,7 @@ export class PlaylistService {
       body.description = description;
     }
 
-    console.log('PlaylistService.create() call post:', Config.API_BASE_URL + this.API_ENDPOINT, JSON.stringify(body), this.postOptions);
-
-    return this.http.post(Config.API_BASE_URL + this.API_ENDPOINT, JSON.stringify(body), this.postOptions)
+    return this.http.post(Config.API_BASE_URL + this.API_ENDPOINT, JSON.stringify(body), this.networkService.requestOptions)
       .map(( res:Response ) => PlaylistFactory.createFromApiResponse(res.json()))
       .catch(( error:Response ) => {
         console.error(error);
@@ -177,31 +154,4 @@ export class PlaylistService {
       });
   }
 
-  /**
-   * Use with the `retryWhen()` operator for an exponential backoff retry strategy
-   *
-   * @example
-   *
-   *     Observable.retryWhen(errors => this.retry(errors))
-   *
-   * @param errors
-   * @returns {Observable<R>}
-   */
-  private retry( errors:Observable<any> ):Observable<any> {
-    return errors
-      .mergeMap(( err, count ) => {
-        // Emit event if we've retried SLOW_CONNECTION_RETRIES times
-        if (count === this.SLOW_CONNECTION_RETRIES) {
-          this.onSlowConnection.emit(true);
-        }
-
-        // Calc number of seconds we'll retry in using incremental backoff
-        var retrySecs = Math.min(Math.round(Math.pow(++count, 2)), this.MAX_RETRY_INTERVAL);
-        console.warn(`PlaylistService.load(): Retry ${count} in ${retrySecs} seconds`);
-
-        // Set delay
-        return Observable.of(err)
-          .delay(retrySecs * 1000);
-      });
-  }
 }

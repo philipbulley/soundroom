@@ -5,7 +5,7 @@ import {PlaylistState} from "../enum/playlist-state";
 
 export const playlistReducer:Reducer<Playlist> = ( state:Playlist = new Playlist, action:Action ) => {
 
-  //console.log('PlaylistReducer():', action.type);
+  //console.log('playlistReducer():', action.type);
   //console.log(' - action:', action);
   //console.log(' - state:', state);
 
