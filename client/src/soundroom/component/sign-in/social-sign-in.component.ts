@@ -14,7 +14,6 @@ export class SocialSignInComponent {
 
   constructor() {
 
-    this.redirectUrl = `${document.location.protocol}//${document.location.host}/sign-in`;
     this.serverBaseUrl = Config.SERVER_BASE_URL;
 
   }

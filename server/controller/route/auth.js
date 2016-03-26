@@ -21,12 +21,11 @@ function customCallback(provider) {
         return next(err);
       }
 
-      const {redirect} = req.session;
-      if (redirect) {
+      const {AUTH_REDIRECT_URL} = process.env;
+      if (AUTH_REDIRECT_URL) {
         const url = user
-          ? `${redirect}?jwt=${user.generateJwt()}`
-          : `${redirect}?error=denied`;
-        delete req.session.redirect;
+          ? `${AUTH_REDIRECT_URL}?jwt=${user.generateJwt()}`
+          : `${AUTH_REDIRECT_URL}?error=denied`;
         return res.redirect(url);
       } else {
         return res.json(req.user || {message: 'Access denied'});

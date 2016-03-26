@@ -179,9 +179,11 @@ The app requires that you've setup certain environment variables. The best way t
     SPOTIFY_CLIENT_ID = '123456'
     SPOTIFY_CLIENT_SECRET = '123456'
     
+    #NO_AUTH = true;
     AUTH_USER = 'postman'
     AUTH_PASS = 'postman1234567890'
-    NO_AUTH = true;
+    JWT_TOKEN_SECRET = 'fancypantsjwtgoodness'
+    AUTH_REDIRECT_URL = 'http://localhost:8080/sign-in'
 
 
 * `NODE_ENV` is used primarily to determine if the app is in a dev environment, try not to rely on this and instead use env vars specific to the requirement
