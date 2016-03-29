@@ -30,8 +30,9 @@ export default function create() {
 
       let DAY_IN_SECS = 3600 * 24,
         nowTimeSecs = Math.floor(new Date().getTime() / 1000),
-        expireSecs = nowTimeSecs + DAY_IN_SECS;
-        // expireSecs = nowTimeSecs + 60;
+      // expireSecs = nowTimeSecs + 60;   // DEBUG: 1 minute
+      // expireSecs = nowTimeSecs + (DAY_IN_SECS * 31);   // 1 month expiry
+        expireSecs = nowTimeSecs + (DAY_IN_SECS * 365);   // DEBUG: long expiry for debug
 
       return jwt.encode({
         iss: this._id,
