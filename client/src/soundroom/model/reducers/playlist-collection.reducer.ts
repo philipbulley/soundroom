@@ -3,14 +3,13 @@ import {Playlist} from "../playlist";
 import {PlaylistAction} from "../enum/playlist-action";
 import {PlaylistCollection} from "../playlist-collection";
 import {PlaylistState} from "../enum/playlist-state";
-import {playlistReducer} from "./playlist.reducer";
 import {getPlaylistById, getPlaylistsWithoutId} from "../../util/playlist.util";
 
 export const playlistCollectionReducer:Reducer<PlaylistCollection> = ( state:PlaylistCollection = new PlaylistCollection, action:Action ) => {
 
-  console.log('playlistCollectionReducer():', action.type);
-  console.log(' - action:', action);
-  console.log(' - state:', state);
+  // console.log('playlistCollectionReducer():', action.type);
+  // console.log(' - action:', action);
+  // console.log(' - state:', state);
 
   let newState:PlaylistCollection;
 

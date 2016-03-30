@@ -17,6 +17,10 @@ var ENV = process.env.npm_lifecycle_event;
 var isTest = ENV === 'test' || ENV === 'test-watch';
 var isProd = ENV === 'build';
 
+console.log('Webpack ENV:', ENV);
+console.log('Webpack isTest:', isTest);
+console.log('Webpack isProd:', isProd);
+
 module.exports = function makeWebpackConfig() {
   /**
    * Config
@@ -89,6 +93,7 @@ module.exports = function makeWebpackConfig() {
       {
         test: /\.ts$/,
         loader: 'ts',
+        sourceMap: false,
         query: {
           'ignoreDiagnostics': [
             2403, // 2403 -> Subsequent variable declarations

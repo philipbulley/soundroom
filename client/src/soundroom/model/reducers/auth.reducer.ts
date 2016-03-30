@@ -5,9 +5,9 @@ import {AuthState} from "../enum/auth-state";
 
 export const authReducer:Reducer<Auth> = ( state:Auth = new Auth, action:Action ) => {
 
-  console.log('authReducer():', action.type);
-  console.log(' - action:', action);
-  console.log(' - state:', state);
+  // console.log('authReducer():', action.type);
+  // console.log(' - action:', action);
+  // console.log(' - state:', state);
 
   let newState:Auth;
 

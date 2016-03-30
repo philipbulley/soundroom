@@ -1,32 +1,34 @@
 import {Injectable} from 'angular2/core';
-import {Http, Response, RequestOptions, Headers} from 'angular2/http';
+import {Http, Response} from 'angular2/http';
 
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs/Observable';
-import * as io from 'socket.io-client';
 
 import {Config} from "../model/config";
-import {SocketEventTypeEnum} from "../model/enum/socket-event-type";
 import {User} from "../model/user";
 import {AuthAction} from "../model/enum/user-action";
 import {NetworkService} from "./network.service";
 import {UserFactory} from "../model/factory/user.factory";
+import {Auth} from "../model/auth";
 
 @Injectable()
 export class AuthService {
 
-  private socket:SocketIOClient.Socket;
+  private auth$:Observable<Auth>;
+  private auth:Auth;
+  private isInit:boolean;
 
-  constructor( private http:Http, private store:Store<User>, private networkService:NetworkService ) {
+  constructor( private http:Http, private store:Store<Auth>, private networkService:NetworkService ) {
 
     console.log('AuthService()');
-
-    this.socket = io(Config.SERVER_BASE_URL);
-    this.socket.on(SocketEventTypeEnum.CONNECT, this.handleSocketConnect);
 
   }
 
   load() {
+
+    if (!this.isInit) {
+      this.init();
+    }
 
     console.log('AuthService.load()');
 
@@ -47,7 +49,7 @@ export class AuthService {
           console.warn('401 Unauthorized!');
           this.store.dispatch({type: AuthAction.POPULATE, payload: null});
         } else {
-        console.error(error);
+          console.error(error);
           return Observable.throw(error || 'Server error');
         }
       });
@@ -64,8 +66,15 @@ export class AuthService {
   }
 
 
-  private handleSocketConnect( data ) {
-    console.log('AuthService.handleSocketConnect()', data);
+  /////////////////////////
+  // PRIVATE METHODS
+  /////////////////////////
+
+  private init() {
+    this.isInit = true;
+
+    this.auth$ = this.store.select('auth');
+    this.auth$.subscribe(( auth ) => this.auth = auth);
   }
 
 }
