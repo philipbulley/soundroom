@@ -1,12 +1,23 @@
 <section class="o-container">
 
   <pre>PlaylistLayout: {{id}}</pre>
-  <pre>Name: {{(playlist | async).name}}</pre>
-  <pre>Number of tracks: {{(playlist | async).tracks?.length}}</pre>
+  <pre>Name: {{(playlist$ | async).name}}</pre>
+  <pre>Number of tracks: {{(playlist$ | async).tracks?.length}}</pre>
 
   <div *ngIf="isLoading">
     <i class="fa fa-circle-o-notch fa-spin"></i> Loading your Soundroom...
   </div>
+
+  <div *ngIf="!isLoading && (playlist$ | async).tracks?.length">
+    <button (click)="play()">Play</button>
+    <button (click)="pause()">Pause</button>
+  </div>
+
+  <div *ngIf="!isLoading && !(playlist$ | async).tracks?.length">
+    No tracks in this playlist. Add some via the API:
+    <pre>curl -X POST -H "Cache-Control: no-cache" -H "Content-Type: application/x-www-form-urlencoded" -d 'foreignId=spotify:track:3W2ZcrRsInZbjWylOi6KhZ&provider=spotify' "http://localhost:8123/api/playlists/{{(playlist$ | async)._id}}/tracks"</pre>
+  </div>
+
 
   <!--<div *ngIf="!playlist && noPlaylist">-->
   <!--Can't find your Soundroom!-->

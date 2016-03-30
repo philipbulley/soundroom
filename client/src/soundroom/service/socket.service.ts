@@ -40,6 +40,12 @@ export class SocketService {
     });
   }
 
+  emit( event:SocketEventTypeEnum, value:string ) {
+    this.ensureConnected();
+
+    this.socket.emit(<string>event, value);
+  }
+
   get isConnected() {
     return this.socket && this.socket.connected;
   }
@@ -61,5 +67,12 @@ export class SocketService {
 
     this.socket.emit(SocketEventTypeEnum.USER_ENTER, this.auth.user._id);
   }
+
+  private ensureConnected() {
+    if (!this.isConnected) {
+      throw new Error('Please ensure socket is connected before using it.');
+    }
+  }
+
 
 }

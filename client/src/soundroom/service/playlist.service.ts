@@ -14,6 +14,8 @@ import {PlaylistCreateAction} from "../model/enum/playlist-create-action";
 import {PlaylistCreateState} from "../model/enum/playlist-create-state";
 import {PlaylistFactory} from "../model/factory/playlist.factory";
 import {NetworkService} from "./network.service";
+import {SocketService} from "./socket.service";
+import {SocketEventTypeEnum} from "../model/enum/socket-event-type";
 
 @Injectable()
 export class PlaylistService {
@@ -39,7 +41,7 @@ export class PlaylistService {
 
   private playlistCreate$:Observable<PlaylistCreate>;
 
-  constructor( private http:Http, public store:Store<PlaylistCreate>, public networkService:NetworkService ) {
+  constructor( private http:Http, public store:Store<PlaylistCreate>, public networkService:NetworkService, private socketService:SocketService ) {
     this.playlistCreate$ = this.store.select('playlistCreate');
 
     this.observeCreate();
@@ -106,6 +108,14 @@ export class PlaylistService {
         console.error(error);
         return Observable.throw(error.json().error || 'Server error');
       });
+  }
+
+  play( playlistId:string ) {
+    this.socketService.emit(SocketEventTypeEnum.PLAYLIST_PLAY, playlistId);
+  }
+
+  pause( playlistId:string ) {
+    this.socketService.emit(SocketEventTypeEnum.PLAYLIST_PAUSE, playlistId);
   }
 
 

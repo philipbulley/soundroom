@@ -18,7 +18,8 @@ import {PlaylistCollection} from "../../model/playlist-collection";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlaylistLayout implements OnInit {
-  private playlist:Observable<Playlist>;
+  private playlist$:Observable<Playlist>;
+  private playlist:Playlist;
   private noPlaylist:boolean;
   private id:string;
   private playlistCollection:Observable<PlaylistCollection>;
@@ -36,22 +37,38 @@ export class PlaylistLayout implements OnInit {
 
     this.playlistCollection = this.store.select('playlistsCollection');
 
-    this.playlist = this.playlistCollection
+    this.playlist$ = this.playlistCollection
       .map(( playlistCollection:PlaylistCollection ) => {
         console.log('PlaylistLayout.ngOnInit: playlist: map!');
         console.log(' - playlistCollection:', playlistCollection);
         console.log(' - playlistCollection.playlists: ', playlistCollection.playlists);
-        
+
         this.isLoading = !!playlistCollection.loadState;
 
         return playlistCollection.playlists
           .filter(( playlist:Playlist ) => playlist._id === this.id)[0];
       });
 
-    this.playlist
-      .subscribe(data => console.log('PlaylistLayout: playlistCollection.subscribe: data xxxx:', data));   // debug!
+    // DEBUG subscribe!
+    this.playlist$
+      .subscribe(( playlist:Playlist ) => {
+        console.log('PlaylistLayout: playlistCollection.subscribe: data:', playlist);
+
+        this.playlist = playlist;
+      });
 
 
     this.playlistService.load(this.id);
+  }
+
+
+  play() {
+    // TODO: This is debug. Move to component.
+    this.playlistService.play(this.playlist._id);
+  }
+
+  pause() {
+    // TODO: This is debug. Move to component.
+    this.playlistService.pause(this.playlist._id);
   }
 }
