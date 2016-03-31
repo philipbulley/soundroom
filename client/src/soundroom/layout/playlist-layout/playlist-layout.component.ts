@@ -5,16 +5,16 @@ import {Observable} from 'rxjs/Observable';
 import {Store} from '@ngrx/store';
 var alertify = require('alertify.js');
 
-import {PlaylistMenuComponent} from "../../component/playlist-menu/playlist-menu.component";
 import {PlaylistService} from "../../service/playlist.service";
 import {Playlist} from "../../model/playlist";
 import {PlaylistCollection} from "../../model/playlist-collection";
+import {NowPlayingComponent} from "../../component/now-playing/now-playing.component";
 
 @Component({
   selector: 'playlist-layout',
   template: require('./playlist-layout.html'),
   styles: [require('./playlist-layout.scss')],
-  directives: [PlaylistMenuComponent],
+  directives: [NowPlayingComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlaylistLayout implements OnInit {
