@@ -1,4 +1,4 @@
-import {Component, ChangeDetectionStrategy, Input, OnInit} from 'angular2/core';
+import {Component, ChangeDetectionStrategy, Input, OnInit, ChangeDetectorRef} from 'angular2/core';
 
 import {Observable} from 'rxjs/Observable';
 
@@ -17,7 +17,7 @@ export class NowPlayingComponent implements OnInit {
 
   private playlist:Playlist;
 
-  constructor() {
+  constructor(private cdr:ChangeDetectorRef) {
 
   }
 
@@ -27,6 +27,10 @@ export class NowPlayingComponent implements OnInit {
     this.playlist$.subscribe(( playlist:Playlist ) => {
       console.log('NowPlaying: playlist$.subscribe()', playlist);
       this.playlist = playlist;
+
+      // TODO: Investigate playlist.loadState and how to show loading message within this component
+
+      this.cdr.markForCheck();
     });
   }
 

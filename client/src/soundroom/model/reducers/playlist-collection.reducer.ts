@@ -4,6 +4,7 @@ import {PlaylistAction} from "../enum/playlist-action";
 import {PlaylistCollection} from "../playlist-collection";
 import {PlaylistState} from "../enum/playlist-state";
 import {getPlaylistById, getPlaylistsWithoutId} from "../../util/playlist.util";
+import {playlistReducer} from "./playlist.reducer";
 
 export const playlistCollectionReducer:Reducer<PlaylistCollection> = ( state:PlaylistCollection = new PlaylistCollection, action:Action ) => {
 
@@ -16,8 +17,8 @@ export const playlistCollectionReducer:Reducer<PlaylistCollection> = ( state:Pla
   switch (action.type) {
 
     case PlaylistAction.LOAD:
-      // return state.playlists.map(playlist => playlistReducer(playlist, action));
       newState = Object.assign(new PlaylistCollection, state);
+      newState.playlists = newState.playlists.map((playlist:Playlist) => playlistReducer(playlist, action));
       newState.loadState = PlaylistState.LOADING;
       return newState;
 
