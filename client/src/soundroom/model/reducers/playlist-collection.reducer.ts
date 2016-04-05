@@ -18,15 +18,21 @@ export const playlistCollectionReducer:Reducer<PlaylistCollection> = ( state:Pla
   switch (action.type) {
 
     // All PlaylistActions to be caught here and mapped to each playlist
-    case PlaylistAction.LOAD:
+    case PlaylistAction.LOADING:
+    case PlaylistAction.ERROR_LOADING:
       newState = Object.assign(new PlaylistCollection, state);
-      newState.playlists = newState.playlists.map((playlist:Playlist) => playlistReducer(playlist, action));
+      newState.playlists = newState.playlists.map(( playlist:Playlist ) => playlistReducer(playlist, action));
       return newState;
 
-    case PlaylistCollectionAction.LOAD:
+    case PlaylistCollectionAction.LOADING:
       // Update state only
       newState = Object.assign(new PlaylistCollection, state);
       newState.loadState = PlaylistCollectionState.LOADING;
+      return newState;
+
+    case PlaylistCollectionAction.ERROR_LOADING:
+      newState = Object.assign({}, state);
+      newState.loadState = null;
       return newState;
 
     case PlaylistCollectionAction.ADD:
@@ -61,8 +67,20 @@ export const playlistCollectionReducer:Reducer<PlaylistCollection> = ( state:Pla
 
       return newState;
 
+    case PlaylistCollectionAction.DELETING:
+      newState = Object.assign({}, state);
+      newState.loadState = PlaylistCollectionState.DELETING;
+      return newState;
+
+    case PlaylistCollectionAction.ERROR_DELETING:
+      newState = Object.assign({}, state);
+      newState.loadState = null;
+      return newState;
+
     case PlaylistCollectionAction.DELETE:
       newState = Object.assign({}, state);
+      newState.loadState = null;
+
       let playlist:Playlist = action.payload;
 
       const i = newState.playlists.indexOf(playlist);

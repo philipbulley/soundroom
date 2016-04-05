@@ -54,7 +54,7 @@ export class PlaylistService {
   loadCollection():void {
     console.log('PlaylistService.loadCollection():', Config.API_BASE_URL + this.API_ENDPOINT);
 
-    this.store.dispatch({type: PlaylistCollectionAction.LOAD});
+    this.store.dispatch({type: PlaylistCollectionAction.LOADING});
 
     this.http.get(Config.API_BASE_URL + this.API_ENDPOINT, this.networkService.requestOptions)
       // .delay(2000)    // DEBUG: Delay for simulation purposes only
@@ -68,6 +68,8 @@ export class PlaylistService {
       }, ( error:Response ) => {
         console.error(error);
 
+        this.store.dispatch({type: PlaylistCollectionAction.ERROR_LOADING});
+
         return Observable.throw(error || 'Server error');
       });
   }
@@ -77,7 +79,7 @@ export class PlaylistService {
    * @param id
    */
   load( id:string ):any {
-    this.store.dispatch({type: PlaylistAction.LOAD, payload: id});
+    this.store.dispatch({type: PlaylistAction.LOADING, payload: id});
 
     this.http.get(Config.API_BASE_URL + this.API_ENDPOINT + '/' + id, this.networkService.requestOptions)
       .delay(2000)    // DEBUG: Delay for simulation purposes only
@@ -91,12 +93,16 @@ export class PlaylistService {
       }, ( error:Response ) => {
         console.error(error);
 
+        this.store.dispatch({type: PlaylistAction.ERROR_LOADING, payload: id});
+
         return Observable.throw(error || 'Server error');
       });
   }
 
 
   deletePlaylist( playlist:Playlist ):Observable<boolean> {
+    this.store.dispatch({type: PlaylistCollectionAction.DELETING, payload: playlist._id});
+
     return this.http.delete(Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id, this.networkService.requestOptions)
       .map(( res:Response ) => {
         console.log('PlaylistService.deletePlaylist() map: status:', res.headers.get('status'), 'splice:', playlist);
@@ -107,6 +113,9 @@ export class PlaylistService {
         return res.status === 204;
       }).catch(( error:Response ) => {
         console.error(error);
+
+        this.store.dispatch({type: PlaylistCollectionAction.ERROR_DELETING, payload: playlist});
+
         return Observable.throw(error.json().error || 'Server error');
       });
   }

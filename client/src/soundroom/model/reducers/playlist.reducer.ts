@@ -13,13 +13,21 @@ export const playlistReducer:Reducer<Playlist> = ( state:Playlist = new Playlist
 
   switch (action.type) {
 
-    case PlaylistAction.LOAD:
-      if (this.payload === state._id) {
-        newState = Object.assign(new Playlist, state);
-        newState.loadState = PlaylistState.LOADING;
-        return newState;
+    case PlaylistAction.LOADING:
+      if (this.payload !== state._id) {
+        return state;
       }
-      return state;
+      newState = Object.assign(new Playlist, state);
+      newState.loadState = PlaylistState.LOADING;
+      return newState;
+
+    case PlaylistAction.ERROR_LOADING:
+      if (this.payload !== state._id) {
+        return state;
+      }
+      newState = Object.assign(new Playlist, state);
+      newState.loadState = null;
+      return newState;
 
     default:
       return state;
