@@ -16,6 +16,7 @@ import {PlaylistFactory} from "../model/factory/playlist.factory";
 import {NetworkService} from "./network.service";
 import {SocketService} from "./socket.service";
 import {SocketEventTypeEnum} from "../model/enum/socket-event-type";
+import {PlaylistCollectionAction} from "../model/enum/playlist-collection-action";
 
 @Injectable()
 export class PlaylistService {
@@ -50,10 +51,10 @@ export class PlaylistService {
   /**
    * Starts load of the full data set.
    */
-  loadAll():void {
-    console.log('PlaylistService.load():', Config.API_BASE_URL + this.API_ENDPOINT);
+  loadCollection():void {
+    console.log('PlaylistService.loadCollection():', Config.API_BASE_URL + this.API_ENDPOINT);
 
-    this.store.dispatch({type: PlaylistAction.LOAD_ALL});
+    this.store.dispatch({type: PlaylistCollectionAction.LOAD});
 
     this.http.get(Config.API_BASE_URL + this.API_ENDPOINT, this.networkService.requestOptions)
       // .delay(2000)    // DEBUG: Delay for simulation purposes only
@@ -63,7 +64,7 @@ export class PlaylistService {
         this.onSlowConnection.emit(false);
 
         // Add initial data to the Store
-        this.store.dispatch({type: PlaylistAction.ADD, payload: data});
+        this.store.dispatch({type: PlaylistCollectionAction.ADD, payload: data});
       }, ( error:Response ) => {
         console.error(error);
 
@@ -86,7 +87,7 @@ export class PlaylistService {
         this.onSlowConnection.emit(false);
 
         // Assign initial data to collection
-        this.store.dispatch({type: PlaylistAction.ADD, payload: data});
+        this.store.dispatch({type: PlaylistCollectionAction.ADD, payload: data});
       }, ( error:Response ) => {
         console.error(error);
 
@@ -101,7 +102,7 @@ export class PlaylistService {
         console.log('PlaylistService.deletePlaylist() map: status:', res.headers.get('status'), 'splice:', playlist);
 
         // Delete success - reflect change in local data collection
-        this.store.dispatch({type: PlaylistAction.DELETE, payload: playlist});
+        this.store.dispatch({type: PlaylistCollectionAction.DELETE, payload: playlist});
 
         return res.status === 204;
       }).catch(( error:Response ) => {
@@ -141,7 +142,7 @@ export class PlaylistService {
         this.store.dispatch({type: PlaylistCreateAction.SUCCESS, payload: newPlaylist});
 
         // Separate action to actually add new playlist to our collection.
-        this.store.dispatch({type: PlaylistAction.ADD, payload: newPlaylist});
+        this.store.dispatch({type: PlaylistCollectionAction.ADD, payload: newPlaylist});
       }, error => this.store.dispatch({type: PlaylistCreateAction.ERROR, payload: error}));
   }
 

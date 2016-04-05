@@ -23,7 +23,7 @@ export class MainLayout {
     this.playlistCollection = store.select('playlistsCollection');
     this.playlistCollection.subscribe(data => console.log('MainLayout.playlistCollection: data:', data));   // debug!
 
-    this.playlistService.loadAll();
+    this.playlistService.loadCollection();
 
   }
 }

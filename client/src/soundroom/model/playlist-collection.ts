@@ -1,10 +1,9 @@
 import {Playlist} from "./playlist";
-import {PlaylistState} from "./enum/playlist-state";
+import {PlaylistCollectionState} from "./enum/playlist-collection-state";
 
 export class PlaylistCollection {
 
-  // TODO: Change this to PlaylistCollectionState
-  loadState: PlaylistState;
+  loadState: PlaylistCollectionState;
 
   playlists: Playlist[] = [];
 

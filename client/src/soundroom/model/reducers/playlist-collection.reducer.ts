@@ -2,9 +2,10 @@ import {Reducer, Action} from '@ngrx/store';
 import {Playlist} from "../playlist";
 import {PlaylistAction} from "../enum/playlist-action";
 import {PlaylistCollection} from "../playlist-collection";
-import {PlaylistState} from "../enum/playlist-state";
 import {getPlaylistById, getPlaylistsWithoutId} from "../../util/playlist.util";
 import {playlistReducer} from "./playlist.reducer";
+import {PlaylistCollectionState} from "../enum/playlist-collection-state";
+import {PlaylistCollectionAction} from "../enum/playlist-collection-action";
 
 export const playlistCollectionReducer:Reducer<PlaylistCollection> = ( state:PlaylistCollection = new PlaylistCollection, action:Action ) => {
 
@@ -16,19 +17,19 @@ export const playlistCollectionReducer:Reducer<PlaylistCollection> = ( state:Pla
 
   switch (action.type) {
 
+    // All PlaylistActions to be caught here and mapped to each playlist
     case PlaylistAction.LOAD:
       newState = Object.assign(new PlaylistCollection, state);
       newState.playlists = newState.playlists.map((playlist:Playlist) => playlistReducer(playlist, action));
-      newState.loadState = PlaylistState.LOADING;
       return newState;
 
-    case PlaylistAction.LOAD_ALL:
+    case PlaylistCollectionAction.LOAD:
       // Update state only
       newState = Object.assign(new PlaylistCollection, state);
-      newState.loadState = PlaylistState.LOADING_ALL;
+      newState.loadState = PlaylistCollectionState.LOADING;
       return newState;
 
-    case PlaylistAction.ADD:
+    case PlaylistCollectionAction.ADD:
       // Add an array of new Playlists to our PlaylistCollection
 
       let newPlaylists:Playlist[] = Array.isArray(action.payload)
@@ -60,7 +61,7 @@ export const playlistCollectionReducer:Reducer<PlaylistCollection> = ( state:Pla
 
       return newState;
 
-    case PlaylistAction.DELETE:
+    case PlaylistCollectionAction.DELETE:
       newState = Object.assign({}, state);
       let playlist:Playlist = action.payload;
 
