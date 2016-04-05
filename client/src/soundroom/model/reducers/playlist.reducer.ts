@@ -5,16 +5,16 @@ import {PlaylistState} from "../enum/playlist-state";
 
 export const playlistReducer:Reducer<Playlist> = ( state:Playlist = new Playlist, action:Action ) => {
 
-  console.log('playlistReducer():', action.type);
-  console.log(' - action:', action);
-  console.log(' - state:', state);
+  // console.log('playlistReducer():', action.type, state);
+  // console.log(' - action:', action);
+  // console.log(' - state:', state);
 
   let newState:Playlist;
 
   switch (action.type) {
 
     case PlaylistAction.LOADING:
-      if (this.payload !== state._id) {
+      if (action.payload !== state._id) {
         return state;
       }
       newState = Object.assign(new Playlist, state);
@@ -22,7 +22,7 @@ export const playlistReducer:Reducer<Playlist> = ( state:Playlist = new Playlist
       return newState;
 
     case PlaylistAction.ERROR_LOADING:
-      if (this.payload !== state._id) {
+      if (action.payload !== state._id) {
         return state;
       }
       newState = Object.assign(new Playlist, state);
