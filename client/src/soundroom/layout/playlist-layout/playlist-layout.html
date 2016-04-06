@@ -1,8 +1,10 @@
 <section class="o-container">
 
-  <!--<div *ngIf="!isLoading">-->
-    <now-playing [playlist]="playlist$"></now-playing>
-  <!--</div>-->
+  <now-playing [playlist]="playlist$"></now-playing>
+
+  <div *ngIf="!isLoading">
+    <track-search [playlist]="playlist$"></track-search>
+  </div>
 
   <pre>PlaylistLayout: {{id}}</pre>
   <pre>Name: {{(playlist$ | async).name}}</pre>

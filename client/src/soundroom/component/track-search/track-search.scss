@@ -1,0 +1,18 @@
+@import '../../../style/setup/all';
+
+:host {
+  display: block;
+
+  background: $color-blue;
+  color: $color-white;
+  text-align: center;
+}
+
+button.add-a-track {
+  padding: 20px;
+  width: 100%;
+
+  &:hover {
+    background-color: $color-blue-clean;
+  }
+}

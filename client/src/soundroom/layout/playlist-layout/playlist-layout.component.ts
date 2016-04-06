@@ -9,12 +9,13 @@ import {PlaylistService} from "../../service/playlist.service";
 import {Playlist} from "../../model/playlist";
 import {PlaylistCollection} from "../../model/playlist-collection";
 import {NowPlayingComponent} from "../../component/now-playing/now-playing.component";
+import {TrackSearchComponent} from "../../component/track-search/track-search.component";
 
 @Component({
   selector: 'playlist-layout',
   template: require('./playlist-layout.html'),
   styles: [require('./playlist-layout.scss')],
-  directives: [NowPlayingComponent],
+  directives: [NowPlayingComponent, TrackSearchComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlaylistLayout implements OnInit {
@@ -60,5 +61,5 @@ export class PlaylistLayout implements OnInit {
 
     this.playlistService.load(this.id);
   }
-  
+
 }
