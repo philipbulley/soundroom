@@ -3,6 +3,7 @@ import {Component, ChangeDetectionStrategy, Input, OnInit, ChangeDetectorRef} fr
 import {Observable} from 'rxjs/Observable';
 
 import {Playlist} from "../../model/playlist";
+import {PlaylistService} from "../../service/playlist.service";
 
 @Component({
   selector: 'now-playing',
@@ -17,7 +18,7 @@ export class NowPlayingComponent implements OnInit {
 
   private playlist:Playlist;
 
-  constructor(private cdr:ChangeDetectorRef) {
+  constructor(private cdr:ChangeDetectorRef, private playlistService:PlaylistService) {
 
   }
 
@@ -32,6 +33,14 @@ export class NowPlayingComponent implements OnInit {
 
       this.cdr.markForCheck();
     });
+  }
+
+  play() {
+    this.playlistService.play(this.playlist._id);
+  }
+
+  pause() {
+    this.playlistService.pause(this.playlist._id);
   }
 
 

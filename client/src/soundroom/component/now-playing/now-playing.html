@@ -1,3 +1,24 @@
-Now Playing: {{playlist.name}}
-<pre>loadState: {{(playlist$ | async).loadState}}</pre>
-<pre>tracks: {{(playlist$ | async).tracks}}</pre>
+
+<div class="columns" *ngIf="(playlist$ | async).loadState === 'PlaylistState.LOADING'">
+  <div class="artwork">
+
+  </div>
+  <div class="info">
+    Loading...
+  </div>
+</div>
+
+<div class="columns" *ngIf="!(playlist$ | async).loadState">
+  <div class="artwork">
+    <div *ngIf="!isLoading && (playlist$ | async).tracks?.length">
+      <button class="u-no-style" (click)="play()"><i class="fa fa-play fa-2x"></i></button>
+      <button class="u-no-style" (click)="pause()"><i class="fa fa-pause fa-2x"></i></button>
+    </div>
+  </div>
+  <div class="info">
+    <div class="playlist-name">Room: {{playlist.name}}</div>
+  </div>
+</div>
+
+<!--<pre>loadState: {{(playlist$ | async).loadState}}</pre>-->
+<!--<pre>tracks: {{(playlist$ | async).tracks}}</pre>-->

@@ -1,5 +1,26 @@
+@import '../../../style/setup/all';
+
 :host {
   display: block;
 
   background: #fff;
+}
+
+
+@include wider-than(medium) {
+  .columns{
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+  }
+
+  .artwork{
+    display: table-cell;
+    width: 30%;
+  }
+
+  .info{
+    display: table-cell;
+    width: 70%;
+  }
 }

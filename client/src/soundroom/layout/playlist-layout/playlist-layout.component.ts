@@ -60,15 +60,5 @@ export class PlaylistLayout implements OnInit {
 
     this.playlistService.load(this.id);
   }
-
-
-  play() {
-    // TODO: This is debug. Move to component.
-    this.playlistService.play(this.playlist._id);
-  }
-
-  pause() {
-    // TODO: This is debug. Move to component.
-    this.playlistService.pause(this.playlist._id);
-  }
+  
 }
