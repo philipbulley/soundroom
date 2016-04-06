@@ -82,7 +82,7 @@ export class PlaylistService {
     this.store.dispatch({type: PlaylistAction.LOADING, payload: id});
 
     this.http.get(Config.API_BASE_URL + this.API_ENDPOINT + '/' + id, this.networkService.requestOptions)
-      .delay(2000)    // DEBUG: Delay for simulation purposes only
+      // .delay(2000)    // DEBUG: Delay for simulation purposes only
       .retryWhen(errors => this.networkService.retry(errors))
       .map(( res:Response ) => PlaylistFactory.createFromApiResponse(res.json()))
       .subscribe(( data ) => {

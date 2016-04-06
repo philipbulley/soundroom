@@ -4,6 +4,7 @@
 
   <div *ngIf="!isLoading">
     <track-search [playlist]="playlist$"></track-search>
+    <playlist-queue [playlist]="playlist$"></playlist-queue>
   </div>
 
   <pre>PlaylistLayout: {{id}}</pre>
@@ -18,19 +19,5 @@
     No tracks in this playlist. Add some via the API:
     <pre>curl -X POST -H "Cache-Control: no-cache" -H "Content-Type: application/x-www-form-urlencoded" -d 'foreignId=spotify:track:3W2ZcrRsInZbjWylOi6KhZ&provider=spotify' "http://localhost:8123/api/playlists/{{(playlist$ | async)._id}}/tracks"</pre>
   </div>
-
-
-  <!--<div *ngIf="!playlist && noPlaylist">-->
-  <!--Can't find your Soundroom!-->
-  <!--</div>-->
-
-  <!--<div *ngIf="playlist">-->
-  <!--<h2>{{playlist.name}}</h2>-->
-  <!--{{playlist._id}}-->
-  <!--</div>-->
-
-  <!--<now-playing></now-playing>-->
-  <!--<add-track></add-track>-->
-  <!--<playlist></playlist>-->
 
 </section>

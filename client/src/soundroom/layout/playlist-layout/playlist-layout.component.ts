@@ -10,12 +10,13 @@ import {Playlist} from "../../model/playlist";
 import {PlaylistCollection} from "../../model/playlist-collection";
 import {NowPlayingComponent} from "../../component/now-playing/now-playing.component";
 import {TrackSearchComponent} from "../../component/track-search/track-search.component";
+import {PlaylistQueueComponent} from "../../component/playlist-queue/playlist-queue.component";
 
 @Component({
   selector: 'playlist-layout',
   template: require('./playlist-layout.html'),
   styles: [require('./playlist-layout.scss')],
-  directives: [NowPlayingComponent, TrackSearchComponent],
+  directives: [NowPlayingComponent, TrackSearchComponent, PlaylistQueueComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlaylistLayout implements OnInit {

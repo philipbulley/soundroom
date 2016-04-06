@@ -1,0 +1,5 @@
+<ol>
+  <li *ngFor="#playlistTrack of (playlist$ | async).tracks">
+    <div>{{playlistTrack.track.name}}</div>
+  </li>
+</ol>
