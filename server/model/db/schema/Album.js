@@ -11,7 +11,8 @@ export default function create() {
   const albumSchema = new Schema({
     name: {type: String, required: true},
     provider: {type: String, enum: _.values(ProviderEnum), index: true, required: true},
-    foreignId: {type: String, required: true, unique: true}
+    foreignId: {type: String, required: true, unique: true},
+    created: {type: Date}
   });
 
   albumSchema.plugin(DateFields);
