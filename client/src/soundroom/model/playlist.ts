@@ -1,4 +1,5 @@
 import {PlaylistState} from "./enum/playlist-state";
+import {PlaylistTrack} from "./playlist-track";
 
 export class Playlist {
 
@@ -13,7 +14,7 @@ export class Playlist {
 
   modified:string;
 
-  tracks:any[];
+  tracks:PlaylistTrack[];
 
   loadState:PlaylistState = null;
 
