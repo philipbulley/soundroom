@@ -1,5 +1,5 @@
 import {Injectable} from 'angular2/core';
-import {SocketEventTypeEnum} from "../model/enum/socket-event-type";
+import {SocketEventTypeEnum} from "../model/enum/socket-event-type.enum";
 
 import * as io from 'socket.io-client';
 import {Store} from '@ngrx/store';
@@ -7,8 +7,8 @@ import {Observable} from 'rxjs/Observable';
 
 import {Config} from "../model/config";
 import {Auth} from "../model/auth";
-import {SocketEventTypeEnum} from "../model/enum/socket-event-type";
-import {AuthState} from "../model/enum/auth-state";
+import {SocketEventTypeEnum} from "../model/enum/socket-event-type.enum";
+import {AuthState} from "../model/state/auth.state.ts";
 
 @Injectable()
 export class SocketService {

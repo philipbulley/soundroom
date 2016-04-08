@@ -1,7 +1,7 @@
 import {Reducer, Action} from '@ngrx/store';
 import {Playlist} from "../playlist";
-import {PlaylistAction} from "../enum/playlist-action";
-import {PlaylistState} from "../enum/playlist-state";
+import {PlaylistAction} from "../action/playlist.action.ts";
+import {PlaylistState} from "../state/playlist.state.ts";
 
 export const playlistReducer:Reducer<Playlist> = ( state:Playlist = new Playlist, action:Action ) => {
 

@@ -1,7 +1,7 @@
 import {Reducer, Action} from '@ngrx/store';
-import {AuthAction} from "../enum/user-action";
+import {AuthAction} from "../action/auth.action.ts";
 import {Auth} from "../auth";
-import {AuthState} from "../enum/auth-state";
+import {AuthState} from "../state/auth.state.ts";
 
 export const authReducer:Reducer<Auth> = ( state:Auth = new Auth, action:Action ) => {
 

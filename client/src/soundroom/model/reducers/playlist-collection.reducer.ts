@@ -1,11 +1,11 @@
 import {Reducer, Action} from '@ngrx/store';
 import {Playlist} from "../playlist";
-import {PlaylistAction} from "../enum/playlist-action";
+import {PlaylistAction} from "../action/playlist.action.ts";
 import {PlaylistCollection} from "../playlist-collection";
 import {getPlaylistById, getPlaylistsWithoutId} from "../../util/playlist.util";
 import {playlistReducer} from "./playlist.reducer";
-import {PlaylistCollectionState} from "../enum/playlist-collection-state";
-import {PlaylistCollectionAction} from "../enum/playlist-collection-action";
+import {PlaylistCollectionState} from "../state/playlist-collection.state.ts";
+import {PlaylistCollectionAction} from "../action/playlist-collection.action.ts";
 
 export const playlistCollectionReducer:Reducer<PlaylistCollection> = ( state:PlaylistCollection = new PlaylistCollection, action:Action ) => {
 

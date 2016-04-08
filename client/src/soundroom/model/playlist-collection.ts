@@ -1,5 +1,5 @@
 import {Playlist} from "./playlist";
-import {PlaylistCollectionState} from "./enum/playlist-collection-state";
+import {PlaylistCollectionState} from "./state/playlist-collection.state.ts";
 
 export class PlaylistCollection {
 

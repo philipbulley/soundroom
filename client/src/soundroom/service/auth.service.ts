@@ -6,7 +6,7 @@ import {Observable} from 'rxjs/Observable';
 
 import {Config} from "../model/config";
 import {User} from "../model/user";
-import {AuthAction} from "../model/enum/user-action";
+import {AuthAction} from "../model/action/auth.action.ts";
 import {NetworkService} from "./network.service";
 import {UserFactory} from "../model/factory/user.factory";
 import {Auth} from "../model/auth";

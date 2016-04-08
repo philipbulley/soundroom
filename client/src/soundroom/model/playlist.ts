@@ -1,4 +1,4 @@
-import {PlaylistState} from "./enum/playlist-state";
+import {PlaylistState} from "./state/playlist.state.ts";
 import {PlaylistTrack} from "./playlist-track";
 
 export class Playlist {

@@ -8,15 +8,15 @@ import {Store} from '@ngrx/store';
 import {Config} from '../model/config';
 import {Playlist} from '../model/playlist';
 import {PlaylistCreateBody} from "./playlist-create-body";
-import {PlaylistAction} from "../model/enum/playlist-action";
+import {PlaylistAction} from "../model/action/playlist.action.ts";
 import {PlaylistCreate} from "../model/playlist-create";
-import {PlaylistCreateAction} from "../model/enum/playlist-create-action";
-import {PlaylistCreateState} from "../model/enum/playlist-create-state";
+import {PlaylistCreateAction} from "../model/action/playlist-create.action.ts";
+import {PlaylistCreateState} from "../model/state/playlist-create.state.ts";
 import {PlaylistFactory} from "../model/factory/playlist.factory";
 import {NetworkService} from "./network.service";
 import {SocketService} from "./socket.service";
-import {SocketEventTypeEnum} from "../model/enum/socket-event-type";
-import {PlaylistCollectionAction} from "../model/enum/playlist-collection-action";
+import {SocketEventTypeEnum} from "../model/enum/socket-event-type.enum";
+import {PlaylistCollectionAction} from "../model/action/playlist-collection.action.ts";
 
 @Injectable()
 export class PlaylistService {

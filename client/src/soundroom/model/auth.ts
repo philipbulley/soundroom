@@ -1,4 +1,4 @@
-import {AuthState} from "./enum/auth-state";
+import {AuthState} from "./state/auth.state.ts";
 import {User} from "./user";
 
 export class Auth {

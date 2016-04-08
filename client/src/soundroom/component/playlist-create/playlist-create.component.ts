@@ -6,9 +6,9 @@ import {Observable} from 'rxjs/Observable';
 
 import {Playlist} from "../../model/playlist";
 import {PlaylistCreate} from "../../model/playlist-create";
-import {PlaylistCreateAction} from "../../model/enum/playlist-create-action";
-import {PlaylistState} from "../../model/enum/playlist-state";
-import {PlaylistCreateState} from "../../model/enum/playlist-create-state";
+import {PlaylistCreateAction} from "../../model/action/playlist-create.action.ts";
+import {PlaylistState} from "../../model/state/playlist.state.ts";
+import {PlaylistCreateState} from "../../model/state/playlist-create.state.ts";
 
 @Component({
   selector: 'playlist-create',
