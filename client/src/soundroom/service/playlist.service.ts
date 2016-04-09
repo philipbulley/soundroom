@@ -15,8 +15,9 @@ import {PlaylistCreateState} from "../model/state/playlist-create.state.ts";
 import {PlaylistFactory} from "../model/factory/playlist.factory";
 import {NetworkService} from "./network.service";
 import {SocketService} from "./socket.service";
-import {SocketEventTypeEnum} from "../model/enum/socket-event-type.enum";
+import {SocketEventTypeEnum} from "../model/socket/socket-event-type.enum.ts";
 import {PlaylistCollectionAction} from "../model/action/playlist-collection.action.ts";
+import {PlaylistProgressSocketEvent} from "../model/socket/playlist-progress-socket-event";
 
 @Injectable()
 export class PlaylistService {
@@ -46,6 +47,7 @@ export class PlaylistService {
     this.playlistCreate$ = this.store.select('playlistCreate');
 
     this.observeCreate();
+    this.observeSocket();
   }
 
   /**
@@ -172,6 +174,25 @@ export class PlaylistService {
         console.error(error);
         return Observable.throw(error.json().error || 'Server error');
       });
+  }
+
+  private observeSocket() {
+    this.socketService.stream$.subscribe(( event ) => {
+
+      console.log('PlaylistService.observeSocket: subscribe():', event);
+
+      switch (event.type) {
+
+        case SocketEventTypeEnum.PLAYLIST_TRACK_PROGRESS:
+
+          let data:PlaylistProgressSocketEvent = event.data;
+          // TODO: Send action to playlistCollection reducer to ensure the correct playlist+track is marked as 'now playing'.
+
+          break;
+
+      }
+
+    });
   }
 
 }
