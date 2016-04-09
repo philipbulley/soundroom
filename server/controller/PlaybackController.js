@@ -38,6 +38,7 @@ const play = (playlistId, previousTrack = null) => {
 
       spotifyService.on('progress', (progressData) => {
         socketService.emitTrackProgress({
+          playlistId: playlistId,
           trackId: playlistTrack.track._id,
           currentTime: progressData.currentTime,
           duration: progressData.duration,
