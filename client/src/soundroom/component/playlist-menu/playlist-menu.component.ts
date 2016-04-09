@@ -1,9 +1,8 @@
-import {Component, ViewEncapsulation, OnInit, OnDestroy, ChangeDetectionStrategy, Input} from 'angular2/core';
+import {Component, OnInit, OnDestroy, ChangeDetectionStrategy, Input} from 'angular2/core';
 
 import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 var alertify = require('alertify.js');
-import {Store} from '@ngrx/store';
 
 import {PlaylistService} from "../../service/playlist.service";
 import {PlaylistMenuItemComponent} from "../../component/playlist-menu-item/playlist-menu-item.component";

@@ -7,6 +7,10 @@
 }
 
 
+////////////////////////////
+// Breakpoints
+////////////////////////////
+
 @include wider-than(medium) {
   .columns{
     display: table;

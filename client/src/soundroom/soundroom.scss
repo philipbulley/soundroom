@@ -1,7 +1,5 @@
 @import '../style/setup/all';
 
-$height: 60px;
-
 :host {
   display: block;
   width: 100%;
@@ -10,22 +8,4 @@ $height: 60px;
   padding-bottom: 100px;
 
   background-color: $color-white-dusty;
-}
-
-nav {
-  height: $height;
-
-  background-color: $color-white;
-  border-bottom: $color-grey-dust 1px solid;
-}
-
-.inner {
-  height: $height;
-  line-height: $height;
-}
-
-.logo {
-  color: $color-black-shade;
-  text-decoration: none;
-  font-weight: bold;
 }

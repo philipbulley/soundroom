@@ -1,14 +1,37 @@
 @import '../../../style/setup/all';
 
 :host {
+  position: relative;
   display: inline-block;
   width: 100%;
   height: 100%;
   padding: 30px;
 
-  background-color: #45de85;
+  background-color: $color-green;
+}
+
+.inner {
+  position: absolute;
+  top: 50%;
+  transform: translate3d(0, -50%, 0);
+
 }
 
 button.close {
   float: right;
+  color: darken($color-green, 20%);
+
+  &:hover {
+
+  color: darken($color-green, 33%);
+  }
+}
+
+.button {
+  color: $color-green;
+  background-color: $color-white;
+
+  &:hover {
+    background-color: $color-yellow;
+  }
 }

@@ -23,7 +23,7 @@ export class PlaylistMenuItemComponent {
   private DELETE_CONFIRM_DISABLED_SECS:number = 3;
 
   /** Button will allow a click to execute delete for this length of time following the disabled period */
-  private DELETE_CONFIRM_ENABLED_SECS:number = 5;
+  private DELETE_CONFIRM_ENABLED_SECS:number = 2;
 
   /** A delete network request is in progress */
   private DELETE_STATE_NETWORK = 'DELETE_STATE_NETWORK';

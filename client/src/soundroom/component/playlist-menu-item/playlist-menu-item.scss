@@ -6,33 +6,40 @@
   height: 100%;
   padding: 30px;
 
+  text-align: center;
   background-color: #fff;
 }
 
-.playlist-menu-item {
-  &__close {
-    display: inline-block;
-    float: right;
+.close {
+  display: inline-block;
+  float: right;
+  padding: 3px;
 
-    &.is-delete-confirm {
-      width: 100%;
-      padding: 10px;
+  font-weight: bold;
+  color: $color-grey-dust;
 
+  &:hover {
+    color: $color-grey-grime;
+  }
+
+  &.is-delete-confirm {
+    width: 100%;
+    margin: 0 0 10px 0;
+    padding: 10px;
+
+    color: #fff;
+    background-color: $color-red;
+    border-radius: 4px;
+
+    &:hover {
       color: #fff;
-      background-color: crimson;
-      border-radius: 4px;
-
-      &:hover{
-        color: #fff;
-        background-color: red;
-      }
-
-      &[disabled] {
-        cursor: auto;
-        color: #999;
-        background-color: #ccc;
-      }
+      background-color: darken($color-red, 5%);
     }
 
+    &[disabled] {
+      cursor: auto;
+      color: #999;
+      background-color: #ccc;
+    }
   }
 }

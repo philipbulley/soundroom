@@ -1,0 +1,47 @@
+@import '../../../style/setup/all';
+
+$height: 60px;
+
+nav {
+  height: $height;
+
+  background-color: $color-white;
+  border-bottom: $color-grey-dust 1px solid;
+}
+
+.inner {
+  display: flex;
+
+  height: $height;
+  line-height: $height;
+}
+
+.main {
+  flex: 1 1 auto;
+}
+
+.meta {
+  flex: 1 1 auto;
+  text-align: right;
+}
+
+.logo {
+  margin: 0 40px 0 0;
+  color: $color-black-shade;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.user {
+  color: $color-grey-grit;
+  font-size: 13px;
+}
+
+.avatar {
+  $size: 25px;
+  width: $size;
+  height: $size;
+  border-radius: $size/2;
+
+  vertical-align: middle;
+}

@@ -1,9 +1,3 @@
-<nav>
-  <div class="inner o-container">
-    <a class="logo" [routerLink]="['MainLayout']">Soundroom</a>
-    <a [routerLink]="['PlaylistLayout', {id: '56f2b7df14bf81dac34bc950'}]">Test Playlist</a>
-    <a [routerLink]="['SignInLayout']">Sign In</a>
-  </div>
-</nav>
+<app-toolbar [auth]="auth$"></app-toolbar>
 
 <router-outlet></router-outlet>
