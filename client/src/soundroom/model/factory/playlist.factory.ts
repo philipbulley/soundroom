@@ -1,4 +1,5 @@
 import {Playlist} from "../playlist";
+import {PlaylistTrackFactory} from "./playlist-track.factory";
 
 export class PlaylistFactory {
 
@@ -16,8 +17,7 @@ export class PlaylistFactory {
 
     playlist.modified = apiData.modified;
 
-    // TODO: Create individual track objects
-    playlist.tracks = apiData.tracks;
+    playlist.tracks = apiData.tracks.map( playlistTrackData => PlaylistTrackFactory.createFromApiResponse( playlistTrackData ) );
 
     return playlist;
 
