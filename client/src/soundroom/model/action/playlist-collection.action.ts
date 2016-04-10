@@ -8,5 +8,5 @@ export class PlaylistCollectionAction {
 
   static ADD = `PlaylistCollectionAction.ADD`;
   static DELETE = `PlaylistCollectionAction.DELETE`;
-
+  
 }

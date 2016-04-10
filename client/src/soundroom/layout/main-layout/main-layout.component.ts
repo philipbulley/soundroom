@@ -16,12 +16,12 @@ import {PlaylistService} from "../../service/playlist.service";
 })
 export class MainLayout {
 
-  private playlistCollection:Observable<PlaylistCollection>;
+  private playlistCollection$:Observable<PlaylistCollection>;
 
   constructor( private store:Store<PlaylistCollection>, private playlistService:PlaylistService ) {
 
-    this.playlistCollection = store.select('playlistsCollection');
-    this.playlistCollection.subscribe(data => console.log('MainLayout.playlistCollection: data:', data));   // debug!
+    this.playlistCollection$ = store.select('playlistsCollection');
+    this.playlistCollection$.subscribe(data => console.log('MainLayout.playlistCollection: data:', data));   // debug!
 
     this.playlistService.loadCollection();
 

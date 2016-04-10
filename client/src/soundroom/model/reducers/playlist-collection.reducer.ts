@@ -6,6 +6,7 @@ import {getPlaylistById, getPlaylistsWithoutId} from "../../util/playlist.util";
 import {playlistReducer} from "./playlist.reducer";
 import {PlaylistCollectionState} from "../state/playlist-collection.state.ts";
 import {PlaylistCollectionAction} from "../action/playlist-collection.action.ts";
+import {PlaylistProgressSocketEvent} from "../socket/playlist-progress-socket-event";
 
 export const playlistCollectionReducer:Reducer<PlaylistCollection> = ( state:PlaylistCollection = new PlaylistCollection, action:Action ) => {
 
@@ -22,6 +23,26 @@ export const playlistCollectionReducer:Reducer<PlaylistCollection> = ( state:Pla
     case PlaylistAction.ERROR_LOADING:
       newState = Object.assign(new PlaylistCollection, state);
       newState.playlists = newState.playlists.map(( playlist:Playlist ) => playlistReducer(playlist, action));
+      return newState;
+
+    case PlaylistAction.PROGRESS:
+      const payload:PlaylistProgressSocketEvent = action.payload;
+
+      newState = Object.assign(new PlaylistCollection, state);
+      newState.playlists = newState.playlists.map(( playlist:Playlist ) => {
+        const newPlaylist = playlistReducer(playlist, action);
+        // newPlaylist may/may not be a new instance — this is for `playlistReducer` to decide
+        if (newPlaylist._id === payload.playlistId) {
+          newState.nowPlaying = newPlaylist;
+        }
+        return newPlaylist;
+      });
+      return newState;
+
+    case PlaylistAction.PAUSE:
+      newState = Object.assign(new PlaylistCollection, state);
+      newState.playlists = newState.playlists.map(( playlist:Playlist ) => playlistReducer(playlist, action));
+      newState.nowPlaying = null;
       return newState;
 
     case PlaylistCollectionAction.LOADING:
@@ -49,6 +70,11 @@ export const playlistCollectionReducer:Reducer<PlaylistCollection> = ( state:Pla
         .map(( playlist:Playlist ) => {
           // Is this playlist being replaced?
           let replacementPlaylist = getPlaylistById(playlist._id, newPlaylists);
+
+          // If no tracks in replacement playlist, but we have tracks in old, copy them across
+          if (replacementPlaylist && playlist.tracks && !replacementPlaylist.tracks) {
+            replacementPlaylist.tracks = playlist.tracks;
+          }
 
           // Only keep those playlists in `newPlaylists` that aren't replacing existing playlists
           newPlaylists = getPlaylistsWithoutId(playlist._id, newPlaylists);

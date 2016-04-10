@@ -187,6 +187,7 @@ export class PlaylistService {
 
           let data:PlaylistProgressSocketEvent = event.data;
           // TODO: Send action to playlistCollection reducer to ensure the correct playlist+track is marked as 'now playing'.
+          this.store.dispatch({type: PlaylistAction.PROGRESS, payload: data});
 
           break;
 

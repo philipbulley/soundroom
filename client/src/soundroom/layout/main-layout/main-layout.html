@@ -2,8 +2,11 @@
 
   <h2>Join a room!</h2>
 
-  <playlist-menu [playlistCollection]="playlistCollection | async"></playlist-menu>
+  <pre>Room Now Playing: {{(playlistCollection$ | async).nowPlaying?.name}}</pre>
+  <pre>Track Now Playing (only available if room previously joined): {{(playlistCollection$ | async).nowPlaying?.nowPlaying?.track?.name}}</pre>
 
-  <pre>playlistCollection: {{(playlistCollection | async).playlists.length}}</pre>
+  <playlist-menu [playlistCollection]="playlistCollection$ | async"></playlist-menu>
+
+  <pre>playlistCollection: {{(playlistCollection$ | async).playlists.length}}</pre>
 
 </section>

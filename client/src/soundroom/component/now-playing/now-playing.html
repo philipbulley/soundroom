@@ -17,6 +17,12 @@
   </div>
   <div class="info">
     <div class="playlist-name">Room: {{playlist.name}}</div>
+
+    <pre>
+      nowPlaying
+      Progress: {{(playlist$ | async).nowPlaying?.progress}}
+      Track Name: {{(playlist$ | async).nowPlaying?.track?.name}}
+    </pre>
   </div>
 </div>
 

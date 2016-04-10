@@ -18,8 +18,12 @@ export class Playlist {
 
   loadState:PlaylistState = null;
 
-  constructor() {
-
-  }
+  /**
+   * The track currently playing.
+   * 
+   * This is only populated with the track if Playlist.tracks has been populated.
+   * If you only want to know which playlist is playing, look at `PlaylistCollection.nowPlaying`.
+   */
+  nowPlaying:PlaylistTrack = null;
 
 }

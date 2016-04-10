@@ -12,5 +12,10 @@ export class PlaylistTrack {
   created:Date;
 
   modified:Date;
+  
+  isPlaying:boolean;
+  
+  currentTime:number;
+  progress:number;
 
 }

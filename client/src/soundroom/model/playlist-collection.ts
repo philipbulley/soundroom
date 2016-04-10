@@ -3,8 +3,13 @@ import {PlaylistCollectionState} from "./state/playlist-collection.state.ts";
 
 export class PlaylistCollection {
 
-  loadState: PlaylistCollectionState;
+  loadState:PlaylistCollectionState;
 
-  playlists: Playlist[] = [];
+  playlists:Playlist[] = [];
+
+  /**
+   * The playlist currently playing.
+   */
+  nowPlaying:Playlist = null;
 
 }
