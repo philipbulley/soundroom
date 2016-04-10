@@ -52,12 +52,11 @@ class SocketService extends EventEmitter {
 
   /**
    * Update progress of current track
-   * @param track
-   * @param progress
+   * @param payload
    * @returns void
    */
-  emitTrackProgress (track, progress) {
-    this.io.emit(EventTypeEnum.PLAYLIST_TRACK_PROGRESS, track, progress);
+  emitTrackProgress (payload) {
+    this.io.emit(EventTypeEnum.PLAYLIST_TRACK_PROGRESS, payload);
   }
 
   /**
