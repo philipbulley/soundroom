@@ -4,11 +4,13 @@ import {Observable} from 'rxjs/Observable';
 
 import {Playlist} from "../../model/playlist";
 import {PlaylistService} from "../../service/playlist.service";
+import {ArtistsNamesPipe} from "../../pipe/ArtistsNamesPipe";
 
 @Component({
   selector: 'now-playing',
   template: require('./now-playing.html'),
   styles: [require('./now-playing.scss')],
+  pipes: [ArtistsNamesPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NowPlayingComponent implements OnInit {

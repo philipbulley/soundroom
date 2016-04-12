@@ -6,24 +6,34 @@
   background: #fff;
 }
 
+.track-name {
+  color: $color-red;
+  font-size: 42px;
+  font-weight: bold;
+}
+
+.artist-name {
+  color: $color-grey-grime;
+  font-size: 24px;
+}
 
 ////////////////////////////
 // Breakpoints
 ////////////////////////////
 
 @include wider-than(medium) {
-  .columns{
+  .columns {
     display: table;
     table-layout: fixed;
     width: 100%;
   }
 
-  .artwork{
+  .artwork {
     display: table-cell;
     width: 30%;
   }
 
-  .info{
+  .info {
     display: table-cell;
     width: 70%;
   }
