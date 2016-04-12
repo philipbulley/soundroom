@@ -4,11 +4,13 @@ import {Observable} from 'rxjs/Observable';
 
 import {Playlist} from "../../model/playlist";
 import {PlaylistService} from "../../service/playlist.service";
+import {ArtistsNamesPipe} from "../../pipe/artists-names.pipe";
 
 @Component({
   selector: 'playlist-queue',
   template: require('./playlist-queue.html'),
   styles: [require('./playlist-queue.scss')],
+  pipes: [ArtistsNamesPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlaylistQueueComponent implements OnInit {

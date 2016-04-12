@@ -2,12 +2,71 @@
 
 :host {
   display: block;
+  padding: 35px 0 0;
 
   background: $color-white;
+}
+
+.inner {
+  padding: 0 100px;
+}
+
+.heading {
+  padding: 0 0 25px;
+  color: $color-grey-grit;
+  font-size: 13px;
+  font-weight: normal;
+  border-bottom: 1px solid $color-grey-grit;
 }
 
 ol {
   margin: 0;
   padding: 0;
   list-style-type: none;
+}
+
+.queue-list {
+  display: table;
+  width: 100%;
+}
+
+.track {
+  display: table-row;
+  padding: 20px 0;
+  font-size: 13px;
+
+  &__data {
+    display: table-cell;
+    padding: 20px;
+
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+
+  &__up-vote-count {
+    font-size: 20px;
+    color: $color-grey-grit;
+  }
+
+  &__info {
+    color: $color-grey-grime;
+  }
+
+  &__info-name {
+    font-size: 16px;
+  }
+
+  &__user {
+    font-size: 13px;
+    color: $color-grey-grit;
+  }
+
+  &__avatars {
+    text-align: right;
+  }
 }

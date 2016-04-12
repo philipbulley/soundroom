@@ -1,5 +1,19 @@
-<ol>
-  <li *ngFor="#playlistTrack of (playlist$ | async).tracks">
-    <div>{{playlistTrack.track.name}}</div>
-  </li>
-</ol>
+<div class="inner">
+  <h3 class="heading">Up next</h3>
+
+  <ol class="queue-list">
+    <li class="track" *ngFor="#playlistTrack of (playlist$ | async).tracks">
+      <div class="track__data track__up-vote-count">10</div>
+      <div class="track__data track__up-vote">
+        <button class="u-no-style"><i class="fa fa-arrow-up"></i></button>
+      </div>
+      <div class="track__data track__album-art">Art</div>
+      <div class="track__data track__info">
+        <div class="track__info-name">{{playlistTrack.track.name}}</div>
+        <div class="track__info-artists">{{playlistTrack.track.artists | artistsNames}}</div>
+      </div>
+      <div class="track__data track__user">User</div>
+      <div class="track__data track__avatars">Avatars</div>
+    </li>
+  </ol>
+</div>

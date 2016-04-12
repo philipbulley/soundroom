@@ -7,13 +7,13 @@
     <playlist-queue [playlist]="playlist$"></playlist-queue>
   </div>
 
-  <pre>PlaylistLayout: {{id}}</pre>
-  <pre>Name: {{(playlist$ | async).name}}</pre>
-  <pre>Number of tracks: {{(playlist$ | async).tracks?.length}}</pre>
+  <!--<pre>PlaylistLayout: {{id}}</pre>-->
+  <!--<pre>Name: {{(playlist$ | async).name}}</pre>-->
+  <!--<pre>Number of tracks: {{(playlist$ | async).tracks?.length}}</pre>-->
 
-  <div *ngIf="isLoading">
-    <i class="fa fa-circle-o-notch fa-spin"></i> Loading your Soundroom...
-  </div>
+  <!--<div *ngIf="isLoading">-->
+    <!--<i class="fa fa-circle-o-notch fa-spin"></i> Loading your Soundroom...-->
+  <!--</div>-->
 
   <div *ngIf="!isLoading && !(playlist$ | async).tracks?.length">
     No tracks in this playlist. Add some via the API:

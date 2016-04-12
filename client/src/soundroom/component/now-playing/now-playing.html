@@ -19,7 +19,7 @@
     <div class="playlist-name">Room: {{(playlist$ | async).name}}</div>
 
     <div class="track-name">{{(playlist$ | async).nowPlaying?.track?.name}}</div>
-    <div class="artist-name">{{(playlist$ | async).nowPlaying?.track?.artists | artistNames}}</div>
+    <div class="artist-name">{{(playlist$ | async).nowPlaying?.track?.artists | artistsNames}}</div>
     <pre>
       nowPlaying
       Progress: {{(playlist$ | async).nowPlaying?.progress}}
