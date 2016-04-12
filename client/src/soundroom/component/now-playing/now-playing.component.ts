@@ -4,7 +4,7 @@ import {Observable} from 'rxjs/Observable';
 
 import {Playlist} from "../../model/playlist";
 import {PlaylistService} from "../../service/playlist.service";
-import {ArtistsNamesPipe} from "../../pipe/ArtistsNamesPipe";
+import {ArtistsNamesPipe} from "../../pipe/artists-names.pipe";
 
 @Component({
   selector: 'now-playing',

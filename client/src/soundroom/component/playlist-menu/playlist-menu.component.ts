@@ -6,7 +6,7 @@ var alertify = require('alertify.js');
 
 import {PlaylistService} from "../../service/playlist.service";
 import {PlaylistMenuItemComponent} from "../../component/playlist-menu-item/playlist-menu-item.component";
-import {CountPipe} from "../../pipe/CountPipe";
+import {CountPipe} from "../../pipe/count.pipe";
 import {PlaylistCreateComponent} from "../playlist-create/playlist-create.component";
 import {PlaylistCollection} from "../../model/playlist-collection";
 import {PlaylistCreate} from "../../model/playlist-create";
