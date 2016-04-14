@@ -1,0 +1,16 @@
+@import '../../../style/setup/all';
+
+svg {
+  fill: none;
+  stroke-miterlimit: 10;
+
+  transform: rotate3d(0, 0, 1, -90deg);
+}
+
+.main {
+  stroke: $color-red;
+}
+
+.guide {
+  stroke: $color-grey-dust;
+}

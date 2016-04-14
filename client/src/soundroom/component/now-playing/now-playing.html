@@ -1,4 +1,3 @@
-
 <div class="columns" *ngIf="(playlist$ | async).loadState === 'PlaylistState.LOADING'">
   <div class="artwork">
 
@@ -10,6 +9,9 @@
 
 <div class="columns" *ngIf="!(playlist$ | async).loadState">
   <div class="artwork">
+
+    <timeline [percentage]="progress$"></timeline>
+
     <div *ngIf="!isLoading && (playlist$ | async).tracks?.length">
       <button class="u-no-style" (click)="play()"><i class="fa fa-play fa-2x"></i></button>
       <button class="u-no-style" (click)="pause()"><i class="fa fa-pause fa-2x"></i></button>
@@ -20,11 +22,11 @@
 
     <div class="track-name">{{(playlist$ | async).nowPlaying?.track?.name}}</div>
     <div class="artist-name">{{(playlist$ | async).nowPlaying?.track?.artists | artistsNames}}</div>
-    <pre>
-      nowPlaying
-      Progress: {{(playlist$ | async).nowPlaying?.progress}}
-      Track Name: {{(playlist$ | async).nowPlaying?.track?.name}}
-    </pre>
+    <!--<pre>-->
+      <!--nowPlaying-->
+      <!--Progress: {{(playlist$ | async).nowPlaying?.progress}}-->
+      <!--Track Name: {{(playlist$ | async).nowPlaying?.track?.name}}-->
+    <!--</pre>-->
   </div>
 </div>
 

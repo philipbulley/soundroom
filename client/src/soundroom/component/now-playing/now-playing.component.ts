@@ -5,11 +5,13 @@ import {Observable} from 'rxjs/Observable';
 import {Playlist} from "../../model/playlist";
 import {PlaylistService} from "../../service/playlist.service";
 import {ArtistsNamesPipe} from "../../pipe/artists-names.pipe";
+import {TimelineComponent} from "../timeline/timeline.component";
 
 @Component({
   selector: 'now-playing',
   template: require('./now-playing.html'),
   styles: [require('./now-playing.scss')],
+  directives: [TimelineComponent],
   pipes: [ArtistsNamesPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -19,8 +21,9 @@ export class NowPlayingComponent implements OnInit {
   playlist$:Observable<Playlist>;
 
   private playlist:Playlist;
+  private progress$:Observable<number>;
 
-  constructor(private cdr:ChangeDetectorRef, private playlistService:PlaylistService) {
+  constructor( private cdr:ChangeDetectorRef, private playlistService:PlaylistService ) {
 
   }
 
@@ -28,11 +31,13 @@ export class NowPlayingComponent implements OnInit {
     console.log('NowPlaying.ngOnInit()', this.playlist$);
 
     this.playlist$.subscribe(( playlist:Playlist ) => {
-      console.log('NowPlaying: playlist$.subscribe()', playlist);
+      // console.log('NowPlaying: playlist$.subscribe()', playlist);
       this.playlist = playlist;
 
       this.cdr.markForCheck();
     });
+
+    this.progress$ = this.playlist$.map(( playlist:Playlist ) => playlist.nowPlaying ? playlist.nowPlaying.progress : 0);
   }
 
   play() {
@@ -42,6 +47,4 @@ export class NowPlayingComponent implements OnInit {
   pause() {
     this.playlistService.pause(this.playlist._id);
   }
-
-
 }
