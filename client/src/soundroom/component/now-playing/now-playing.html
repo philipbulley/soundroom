@@ -9,19 +9,20 @@
 
 <div class="columns" *ngIf="!(playlist$ | async).loadState">
   <div class="artwork">
-
     <timeline [percentage]="progress$"></timeline>
 
-    <div *ngIf="!isLoading && (playlist$ | async).tracks?.length">
-      <button class="u-no-style" (click)="play()"><i class="fa fa-play fa-2x"></i></button>
-      <button class="u-no-style" (click)="pause()"><i class="fa fa-pause fa-2x"></i></button>
+    <div class="play-pause" *ngIf="!isLoading && (playlist$ | async).tracks?.length">
+      <!--<button class="u-no-style" (click)="play()" *ngIf="!(playlist$ | async).nowPlaying"><i class="fa fa-play fa-2x"></i></button>-->
+      <button class="u-no-style" (click)="play()" *ngIf="(playlist$ | async).nowPlaying"><i class="fa fa-play fa-2x"></i></button>
+      <button class="u-no-style" (click)="pause()" *ngIf="(playlist$ | async).nowPlaying"><i class="fa fa-pause fa-2x"></i></button>
     </div>
   </div>
   <div class="info">
-    <div class="playlist-name">Room: {{(playlist$ | async).name}}</div>
+    <div class="playlist-name">Now playing in {{(playlist$ | async).name}}</div>
 
     <div class="track-name">{{(playlist$ | async).nowPlaying?.track?.name}}</div>
     <div class="artist-name">{{(playlist$ | async).nowPlaying?.track?.artists | artistsNames}}</div>
+    <div class="user-name-added">Added by [username placeholder]</div>
     <!--<pre>-->
       <!--nowPlaying-->
       <!--Progress: {{(playlist$ | async).nowPlaying?.progress}}-->

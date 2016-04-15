@@ -8,7 +8,7 @@
 }
 
 .inner {
-  padding: 0 100px;
+  padding: 0 10px;
 }
 
 .heading {
@@ -68,5 +68,15 @@ ol {
 
   &__avatars {
     text-align: right;
+  }
+}
+
+////////////////////////////
+// Breakpoints
+////////////////////////////
+
+@include wider-than(medium) {
+  .inner {
+    padding: 0 100px;
   }
 }
