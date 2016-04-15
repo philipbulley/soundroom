@@ -11,6 +11,8 @@ const spotify = nodeSpotify({appkeyFile: SPOTIFY_APP_KEY});
 const spotifyService = Object.create(EventEmitter.prototype);
 const emit = spotifyService.emit.bind(spotifyService);
 
+let progressTimeout = null;
+
 
 const login = () => {
 
@@ -48,9 +50,17 @@ const getTrack = (id) => spotify.createFromLink(id);
 
 const endOfTrack = () => spotifyService.emit('end');
 
-const pause = () => spotify.player.pause();
+const pause = () => {
+  clearTimeout(progressTimeout);
+  spotify.player.pause();
+};
 
-const resume = () => spotify.player.resume();
+const resume = () => {
+  spotify.player.resume();
+
+  // Start progress shortly after, so that any play/resume events have dispatched first
+  startProgressInterval(50);
+};
 
 const seek = (second) => spotify.player.seek(second);
 
@@ -64,6 +74,8 @@ const getDuration = () => {
 const getProgress = () => getCurrentTime() / getDuration();
 
 const onProgress = () => {
+  clearTimeout(progressTimeout);
+
   const currentTime = getCurrentTime();
   const progress = getProgress();
   const duration = getDuration();
@@ -71,8 +83,12 @@ const onProgress = () => {
   emit('progress', {currentTime, duration, progress});
 
   if (progress < 1) {
-    setTimeout(() => onProgress(), 900);
+    startProgressInterval();
   }
+};
+
+const startProgressInterval = (ms) => {
+  progressTimeout = setTimeout(() => onProgress(), _.isUndefined(ms) ? 900 : ms);
 };
 
 const play = (id) => {
@@ -83,7 +99,8 @@ const play = (id) => {
     setTimeout(() => seek(getDuration() - 20), 1000);
   }
 
-  onProgress();
+  // Start progress shortly after, so that any play/resume events have dispatched first
+  startProgressInterval(50);
 };
 
 const search = (terms = '') => {
