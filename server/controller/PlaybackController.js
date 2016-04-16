@@ -44,7 +44,7 @@ const resume = () => {
 const play = (playlistId, previousTrack = null) => {
   console.log('playbackState Track Playing', !!playbackState.currentPlaylistTrack);
 
-  if (playbackState.currentPlaylistTrack) {
+  if (playbackState.currentPlaylistTrack && playbackState.currentPlaylistId === playlistId) {
     return resume();
   }
 
