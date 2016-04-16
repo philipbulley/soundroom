@@ -1,5 +1,8 @@
 import {Track} from "./track";
 
+/**
+ * Represents a Track in the context of a Playlist
+ */
 export class PlaylistTrack {
 
   _id:string;
@@ -12,10 +15,11 @@ export class PlaylistTrack {
   created:Date;
 
   modified:Date;
-  
+
   isPlaying:boolean;
-  
+
   currentTime:number;
+
   progress:number;
 
 }

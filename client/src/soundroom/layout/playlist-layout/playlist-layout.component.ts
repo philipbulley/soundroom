@@ -11,6 +11,7 @@ import {PlaylistCollection} from "../../model/playlist-collection";
 import {NowPlayingComponent} from "../../component/now-playing/now-playing.component";
 import {TrackSearchComponent} from "../../component/track-search/track-search.component";
 import {PlaylistQueueComponent} from "../../component/playlist-queue/playlist-queue.component";
+import {AuthService} from "../../service/auth.service";
 
 @Component({
   selector: 'playlist-layout',
@@ -26,9 +27,10 @@ export class PlaylistLayout implements OnInit {
   private id:string;
   private playlistCollection:Observable<PlaylistCollection>;
   private isLoading:boolean;
+  private jwt:string;
 
-  constructor( private routeParams:RouteParams, private store:Store<Playlist>, private playlistService:PlaylistService ) {
-
+  constructor( private routeParams:RouteParams, private store:Store<Playlist>, private playlistService:PlaylistService, private authService:AuthService ) {
+    this.jwt = authService.jwt;
   }
 
   ngOnInit():any {

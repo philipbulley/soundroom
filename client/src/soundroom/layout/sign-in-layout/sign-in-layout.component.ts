@@ -36,7 +36,7 @@ export class SignInLayout implements OnInit {
     let jwt = this.routeParams.get('jwt');
 
     if (jwt) {
-      this.authService.setJwt(jwt);
+      this.authService.jwt = jwt;
     }
 
     // TODO: Handle `error=denied` query string keypair?

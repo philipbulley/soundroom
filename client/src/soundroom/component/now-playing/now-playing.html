@@ -13,8 +13,12 @@
 
     <div class="play-pause" *ngIf="!isLoading && (playlist$ | async).tracks?.length">
       <!--<button class="u-no-style" (click)="play()" *ngIf="!(playlist$ | async).nowPlaying"><i class="fa fa-play fa-2x"></i></button>-->
-      <button class="u-no-style" (click)="play()" *ngIf="(playlist$ | async).nowPlaying"><i class="fa fa-play fa-2x"></i></button>
-      <button class="u-no-style" (click)="pause()" *ngIf="(playlist$ | async).nowPlaying"><i class="fa fa-pause fa-2x"></i></button>
+      <button
+        class="u-no-style"
+        (click)="play()"><i class="fa fa-play fa-2x"></i></button>
+      <button
+        class="u-no-style"
+        (click)="pause()"><i class="fa fa-pause fa-2x"></i></button>
     </div>
   </div>
   <div class="info">

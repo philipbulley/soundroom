@@ -61,8 +61,12 @@ export class AuthService {
    *
    * @param jwt
    */
-  setJwt( jwt:string ) {
+  set jwt( jwt:string ) {
     localStorage.setItem('jwt', jwt);
+  }
+
+  get jwt() {
+    return localStorage.getItem('jwt');
   }
 
 

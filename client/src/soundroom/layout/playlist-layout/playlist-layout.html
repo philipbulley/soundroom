@@ -15,9 +15,10 @@
     <!--<i class="fa fa-circle-o-notch fa-spin"></i> Loading your Soundroom...-->
   <!--</div>-->
 
-  <div *ngIf="!isLoading && !(playlist$ | async).tracks?.length">
-    No tracks in this playlist. Add some via the API:
-    <pre>curl -X POST -H "Cache-Control: no-cache" -H "Content-Type: application/x-www-form-urlencoded" -d 'foreignId=spotify:track:3W2ZcrRsInZbjWylOi6KhZ&provider=spotify' "http://localhost:8123/api/playlists/{{(playlist$ | async)._id}}/tracks"</pre>
+  <div>
+    <span *ngIf="!isLoading && !(playlist$ | async).tracks?.length">No tracks in this playlist.</span>
+    Add tracks via the API:
+    <pre>curl -X POST -H "Authorization: JWT {{jwt}}" -H "Cache-Control: no-cache" -H "Content-Type: application/x-www-form-urlencoded" -d 'foreignId=spotify:track:XXXXXXXXXXXXXXXX&provider=spotify' "http://localhost:8123/api/playlists/{{(playlist$ | async)._id}}/tracks"</pre>
   </div>
 
 </section>
