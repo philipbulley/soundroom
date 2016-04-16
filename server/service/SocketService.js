@@ -46,8 +46,8 @@ class SocketService extends EventEmitter {
    * @param track
    * @returns void
    */
-  emitTrackStart (track) {
-    this.io.emit(EventTypeEnum.PLAYLIST_TRACK_START, track);
+  emitTrackStart (payload) {
+    this.io.emit(EventTypeEnum.PLAYLIST_TRACK_START, payload);
   }
 
   /**
@@ -75,12 +75,12 @@ class SocketService extends EventEmitter {
     this.io.emit(EventTypeEnum.USER_UPDATE, connectedUsers);
   }
 
-  emitPause () {
-    this.io.emit(EventTypeEnum.PLAYLIST_PAUSE);
+  emitPause (payload) {
+    this.io.emit(EventTypeEnum.PLAYLIST_PAUSE, payload);
   }
 
-  emitPlay () {
-    this.io.emit(EventTypeEnum.PLAYLIST_PLAY);
+  emitPlay (payload) {
+    this.io.emit(EventTypeEnum.PLAYLIST_PLAY, payload);
   }
 
   emitUpVote (track) {
