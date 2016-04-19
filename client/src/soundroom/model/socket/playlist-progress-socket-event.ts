@@ -1,10 +1,6 @@
-export interface PlaylistProgressSocketEvent {
+import {PlaylistSocketEvent} from "./playlist-socket-event";
 
-  playlistId:string;
-
-  playlistTrackId:string;
-
-  trackId:string;
+export interface PlaylistProgressSocketEvent extends PlaylistSocketEvent {
 
   currentTime:number;
 

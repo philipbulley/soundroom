@@ -18,6 +18,7 @@ import {SocketService} from "./socket.service";
 import {SocketEventTypeEnum} from "../model/socket/socket-event-type.enum.ts";
 import {PlaylistCollectionAction} from "../model/action/playlist-collection.action.ts";
 import {PlaylistProgressSocketEvent} from "../model/socket/playlist-progress-socket-event";
+import {PlaylistSocketEvent} from "../model/socket/playlist-socket-event";
 
 @Injectable()
 export class PlaylistService {
@@ -184,18 +185,17 @@ export class PlaylistService {
       switch (event.type) {
 
         case SocketEventTypeEnum.PLAYLIST_TRACK_PROGRESS:
-
-          let data:PlaylistProgressSocketEvent = event.data;
-          // TODO: Send action to playlistCollection reducer to ensure the correct playlist+track is marked as 'now playing'.
-          this.store.dispatch({type: PlaylistAction.PROGRESS, payload: data});
+          this.store.dispatch({type: PlaylistAction.PROGRESS, payload: <PlaylistProgressSocketEvent>event.data});
           break;
 
+        // NOTE: Don't really need to use PLAYLIST_PLAY as PROGRESS does the same job + more
         // case SocketEventTypeEnum.PLAYLIST_PLAY:
         //   this.store.dispatch({type: PlaylistAction.PLAY, payload: data});
         //   break;
-        // case SocketEventTypeEnum.PLAYLIST_PAUSE:
-        //   this.store.dispatch({type: PlaylistAction.PAUSE, payload: data});
-        //   break;
+
+        case SocketEventTypeEnum.PLAYLIST_PAUSE:
+          this.store.dispatch({type: PlaylistAction.PAUSE, payload: <PlaylistSocketEvent>event.data});
+          break;
 
       }
 

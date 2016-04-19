@@ -8,8 +8,8 @@ export class PlaylistCollection {
   playlists:Playlist[] = [];
 
   /**
-   * The playlist currently playing.
+   * The currently active playlist.
    */
-  nowPlaying:Playlist = null;
+  active:Playlist = null;
 
 }

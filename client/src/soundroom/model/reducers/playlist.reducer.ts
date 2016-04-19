@@ -35,10 +35,10 @@ export const playlistReducer:Reducer<Playlist> = ( state:Playlist = new Playlist
 
       let payload:PlaylistProgressSocketEvent = action.payload;
 
-      if (state.nowPlaying && payload.playlistId !== state._id) {
+      if (state.current && payload.playlistId !== state._id) {
         // This playlist is no longer playing
         newState = Object.assign(new Playlist, state);
-        newState.nowPlaying = null;
+        newState.current = null;
         newState.tracks = newState.tracks.map(( playlistTrack:PlaylistTrack ) => {
           if (playlistTrack.isPlaying) {
             // This is the track that WAS playing
@@ -51,7 +51,7 @@ export const playlistReducer:Reducer<Playlist> = ( state:Playlist = new Playlist
           return playlistTrack;
         });
         return newState;
-      } else if (state.nowPlaying || (!state.nowPlaying && payload.playlistId == state._id)) {
+      } else if (state.current || (!state.current && payload.playlistId == state._id)) {
         // This playlist is playing
 
         if (!state.tracks) {
@@ -79,10 +79,9 @@ export const playlistReducer:Reducer<Playlist> = ( state:Playlist = new Playlist
             newTrack.progress = payload.progress;
 
             // Keep Playlist.nowPlaying up to date with latest instance of currently playing PlaylistTrack
-            newState.nowPlaying = newTrack;
+            newState.current = newTrack;
             return newTrack;
           }
-
           return playlistTrack;
         });
 
@@ -92,18 +91,22 @@ export const playlistReducer:Reducer<Playlist> = ( state:Playlist = new Playlist
 
 
     case PlaylistAction.PAUSE:
-      if (state.nowPlaying) {
+      if (state.current) {
         newState = Object.assign(new Playlist, state);
-        newState.nowPlaying = null;
 
         newState.tracks = newState.tracks.map(( track:PlaylistTrack ) => {
+          console.log('playlistReducer: PlaylistAction.PAUSE: track:', track.isPlaying, track);
           if (track.isPlaying) {
             let newTrack:PlaylistTrack = Object.assign(new PlaylistTrack, track);
             newTrack.isPlaying = false;
+
+            // Assign reference of newly created PlaylistTrack to Playlist
+            newState.current = newTrack;
             return newTrack;
           }
           return track;
         });
+        console.log('playlistReducer: PlaylistAction.PAUSE: current playlist after:', newState);
         return newState;
       }
 

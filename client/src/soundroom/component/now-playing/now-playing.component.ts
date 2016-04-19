@@ -37,7 +37,7 @@ export class NowPlayingComponent implements OnInit {
       this.cdr.markForCheck();
     });
 
-    this.progress$ = this.playlist$.map(( playlist:Playlist ) => playlist.nowPlaying ? playlist.nowPlaying.progress : 0);
+    this.progress$ = this.playlist$.map(( playlist:Playlist ) => playlist.current ? playlist.current.progress : 0);
   }
 
   play() {

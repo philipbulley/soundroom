@@ -33,16 +33,21 @@ export const playlistCollectionReducer:Reducer<PlaylistCollection> = ( state:Pla
         const newPlaylist = playlistReducer(playlist, action);
         // newPlaylist may/may not be a new instance — this is for `playlistReducer` to decide
         if (newPlaylist._id === payload.playlistId) {
-          newState.nowPlaying = newPlaylist;
+          newState.active = newPlaylist;
         }
         return newPlaylist;
       });
       return newState;
 
     case PlaylistAction.PAUSE:
+      if (!state.active) {
+        // No playlist playing
+        return state;
+      }
+
       newState = Object.assign(new PlaylistCollection, state);
       newState.playlists = newState.playlists.map(( playlist:Playlist ) => playlistReducer(playlist, action));
-      newState.nowPlaying = null;
+      newState.active = null;
       return newState;
 
     case PlaylistCollectionAction.LOADING:

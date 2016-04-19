@@ -20,10 +20,19 @@ export class Playlist {
 
   /**
    * The track currently playing.
-   * 
+   *
    * This is only populated with the track if Playlist.tracks has been populated.
    * If you only want to know which playlist is playing, look at `PlaylistCollection.nowPlaying`.
    */
-  nowPlaying:PlaylistTrack = null;
+  current:PlaylistTrack = null;
+
+  /**
+   * Read-only convenience property to determine whether this playlist is playing.
+   */
+  get isPlaying():boolean {
+    return !this.current
+      ? false
+      : this.current.isPlaying;
+  }
 
 }
