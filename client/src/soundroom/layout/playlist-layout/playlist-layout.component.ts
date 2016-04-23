@@ -12,12 +12,13 @@ import {NowPlayingComponent} from "../../component/now-playing/now-playing.compo
 import {TrackSearchComponent} from "../../component/track-search/track-search.component";
 import {PlaylistQueueComponent} from "../../component/playlist-queue/playlist-queue.component";
 import {AuthService} from "../../service/auth.service";
+import {DropUrlDirective} from "../../directive/drop-url/drop-url.directive";
 
 @Component({
   selector: 'playlist-layout',
   template: require('./playlist-layout.html'),
   styles: [require('./playlist-layout.scss')],
-  directives: [NowPlayingComponent, TrackSearchComponent, PlaylistQueueComponent],
+  directives: [NowPlayingComponent, TrackSearchComponent, PlaylistQueueComponent, DropUrlDirective],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlaylistLayout implements OnInit {

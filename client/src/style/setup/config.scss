@@ -6,3 +6,10 @@ $breakpoints: (
 );
 
 $color-test: crimson;
+
+$global-z: (
+  playlist-layout__main-before: 1,
+  playlist-layout__inner: 2,
+  playlist-layout__drop-url-overlay: 3,
+  app-toolbar-layout: 4
+);

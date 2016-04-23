@@ -2,7 +2,20 @@
 
 $height: 60px;
 
+:host {
+  &:before {
+    display: block;
+    height: $height;
+    content: '';
+  }
+}
+
 nav {
+  position: fixed;
+  top: 0;
+  display: block;
+  z-index: map-get($global-z, app-toolbar-layout);
+  width: 100%;
   height: $height;
 
   background-color: $color-white;

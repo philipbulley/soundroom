@@ -1,24 +1,36 @@
-<section class="o-container">
-
-  <now-playing [playlist]="playlist$"></now-playing>
-
-  <div *ngIf="!isLoading">
-    <track-search [playlist]="playlist$"></track-search>
-    <playlist-queue [playlist]="playlist$"></playlist-queue>
+<div drop-url>
+  <div class="drop-url-overlay">
+    <div class="drop-url-overlay__message">
+      <i class="fa fa-add fa-4x"></i> Drop your track to add!
+    </div>
   </div>
 
-  <!--<pre>PlaylistLayout: {{id}}</pre>-->
-  <!--<pre>Name: {{(playlist$ | async).name}}</pre>-->
-  <!--<pre>Number of tracks: {{(playlist$ | async).tracks?.length}}</pre>-->
+  <div class="main">
+    <section class="inner">
+      <div class="o-container">
 
-  <!--<div *ngIf="isLoading">-->
-    <!--<i class="fa fa-circle-o-notch fa-spin"></i> Loading your Soundroom...-->
-  <!--</div>-->
+        <now-playing [playlist]="playlist$"></now-playing>
 
-  <div>
-    <span *ngIf="!isLoading && !(playlist$ | async).tracks?.length">No tracks in this playlist.</span>
-    Add tracks via the API:
-    <pre>curl -X POST -H "Authorization: JWT {{jwt}}" -H "Cache-Control: no-cache" -H "Content-Type: application/x-www-form-urlencoded" -d 'foreignId=spotify:track:XXXXXXXXXXXXXXXX&provider=spotify' "http://localhost:8123/api/playlists/{{(playlist$ | async)._id}}/tracks"</pre>
+        <div *ngIf="!isLoading">
+          <track-search [playlist]="playlist$"></track-search>
+          <playlist-queue [playlist]="playlist$"></playlist-queue>
+        </div>
+
+        <!--<pre>PlaylistLayout: {{id}}</pre>-->
+        <!--<pre>Name: {{(playlist$ | async).name}}</pre>-->
+        <!--<pre>Number of tracks: {{(playlist$ | async).tracks?.length}}</pre>-->
+
+        <!--<div *ngIf="isLoading">-->
+        <!--<i class="fa fa-circle-o-notch fa-spin"></i> Loading your Soundroom...-->
+        <!--</div>-->
+
+        <div>
+          <span *ngIf="!isLoading && !(playlist$ | async).tracks?.length">No tracks in this playlist.</span>
+          Add tracks via the API:
+          <pre>curl -X POST -H "Authorization: JWT {{jwt}}" -H "Cache-Control: no-cache" -H "Content-Type: application/x-www-form-urlencoded" -d 'foreignId=spotify:track:XXXXXXXXXXXXXXXX&provider=spotify' "http://localhost:8123/api/playlists/{{(playlist$ | async)._id}}/tracks"</pre>
+        </div>
+
+      </div>
+    </section>
   </div>
-
-</section>
+</div>
