@@ -5,5 +5,9 @@ export class PlaylistAction {
 
   static PROGRESS = `PlaylistAction.PROGRESS`;
   static PAUSE = `PlaylistAction.PAUSE`;
+  
+  static ADDING_TRACK = `PlaylistAction.ADDING_TRACK`;
+  static ADD_TRACK = `PlaylistAction.ADD_TRACK`;
+  static ERROR_ADDING_TRACK = `PlaylistAction.ERROR_ADDING_TRACK`;
 
 }

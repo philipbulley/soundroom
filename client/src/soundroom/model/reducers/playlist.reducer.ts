@@ -7,9 +7,9 @@ import {PlaylistTrack} from "../playlist-track";
 
 export const playlistReducer:Reducer<Playlist> = ( state:Playlist = new Playlist, action:Action ) => {
 
-  // console.log('playlistReducer():', action.type, state);
-  // console.log(' - action:', action);
-  // console.log(' - state:', state);
+  console.log('playlistReducer():', action.type, state);
+  console.log(' - action:', action);
+  console.log(' - state:', state);
 
   let newState:Playlist;
 
@@ -112,6 +112,37 @@ export const playlistReducer:Reducer<Playlist> = ( state:Playlist = new Playlist
 
       // No change to this playlist
       return state;
+
+    // TODO: Implement the following with payload:{playlist, track}
+    case PlaylistAction.ADDING_TRACK:
+      if (action.payload.playlist._id !== state._id) {
+        return state;
+      }
+
+      newState = Object.assign(new Playlist, state);
+      newState.loadState = PlaylistState.ADDING_TRACK;
+      return newState;
+
+    case PlaylistAction.ADD_TRACK:
+      if (action.payload.playlist._id !== state._id) {
+        return state;
+      }
+
+      newState = Object.assign(new Playlist, state);
+      newState.loadState = null;
+
+      newState.tracks = Object.assign([], state.tracks);
+      newState.tracks.push(action.payload.track);
+      return newState;
+
+    case PlaylistAction.ERROR_ADDING_TRACK:
+      if (action.payload.playlist._id !== state._id) {
+        return state;
+      }
+
+      newState = Object.assign(new Playlist, state);
+      newState.loadState = null;
+      return newState;
 
     default:
       return state;

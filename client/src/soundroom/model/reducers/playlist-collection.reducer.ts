@@ -21,6 +21,9 @@ export const playlistCollectionReducer:Reducer<PlaylistCollection> = ( state:Pla
     // All PlaylistActions to be caught here and mapped to each playlist
     case PlaylistAction.LOADING:
     case PlaylistAction.ERROR_LOADING:
+    case PlaylistAction.ADDING_TRACK:
+    case PlaylistAction.ADD_TRACK:
+    case PlaylistAction.ERROR_ADDING_TRACK:
       newState = Object.assign(new PlaylistCollection, state);
       newState.playlists = newState.playlists.map(( playlist:Playlist ) => playlistReducer(playlist, action));
       return newState;

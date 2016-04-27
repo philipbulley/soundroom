@@ -6,7 +6,7 @@
 
 <div class="inner" *ngIf="playlistCreate">
 
-  <button class="o-button button" *ngIf="playlistCreate.state  === 'PlaylistCreateState.DEFAULT'" (click)="next()">Create a room +</button>
+  <button class="button" *ngIf="playlistCreate.state  === 'PlaylistCreateState.DEFAULT'" (click)="next()">Create a room +</button>
 
   <!-- Assign state enums in a component property `PlaylistCreateState`? -->
   <div *ngIf="playlistCreate.state === 'PlaylistCreateState.ADDING_NAME' || playlistCreate.state === 'PlaylistCreateState.ADDING_DESCRIPTION' || playlistCreate.state === 'PlaylistCreateState.ERROR'">
@@ -16,7 +16,7 @@
 
     <input #descriptionEl *ngIf="playlistCreate.state === 'PlaylistCreateState.ADDING_DESCRIPTION'" type="text" placeholder="What's the music policy?" class="form-control" [(ngModel)]="description">
 
-    <button class="o-button button" (click)="next()">
+    <button class="button" (click)="next()">
       {{getButtonLabel(playlistCreate.state)}}
     </button>
   </div>

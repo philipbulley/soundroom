@@ -27,10 +27,5 @@ button.close {
 }
 
 .button {
-  color: $color-green;
-  background-color: $color-white;
-
-  &:hover {
-    background-color: $color-yellow;
-  }
+  @include button($color-green, $color-white);
 }

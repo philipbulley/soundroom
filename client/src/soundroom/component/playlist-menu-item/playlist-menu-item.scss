@@ -11,6 +11,8 @@
 }
 
 .close {
+  @include button-no-style;
+
   display: inline-block;
   float: right;
   padding: 3px;
@@ -42,4 +44,8 @@
       background-color: #ccc;
     }
   }
+}
+
+button.join {
+  @include button();
 }

@@ -7,7 +7,7 @@ import {Store} from '@ngrx/store';
 
 import {Config} from '../model/config';
 import {Playlist} from '../model/playlist';
-import {PlaylistCreateBody} from "./playlist-create-body";
+import {PlaylistCreateBody} from "./vo/playlist-create-body";
 import {PlaylistAction} from "../model/action/playlist.action.ts";
 import {PlaylistCreate} from "../model/playlist-create";
 import {PlaylistCreateAction} from "../model/action/playlist-create.action.ts";
@@ -19,6 +19,10 @@ import {SocketEventTypeEnum} from "../model/socket/socket-event-type.enum.ts";
 import {PlaylistCollectionAction} from "../model/action/playlist-collection.action.ts";
 import {PlaylistProgressSocketEvent} from "../model/socket/playlist-progress-socket-event";
 import {PlaylistSocketEvent} from "../model/socket/playlist-socket-event";
+import {ProviderEnum} from "../model/enum/provider.enum";
+import {PlaylistAddTrackBody} from "./vo/playlist-add-track-body";
+import {TrackFactory} from "../model/factory/track.factory";
+import {Track} from "../model/track";
 
 @Injectable()
 export class PlaylistService {
@@ -129,6 +133,35 @@ export class PlaylistService {
 
   pause( playlistId:string ) {
     this.socketService.emit(SocketEventTypeEnum.PLAYLIST_PAUSE, playlistId);
+  }
+
+  addTrack( playlist:Playlist, provider:ProviderEnum, foreignId:string ) {
+    this.store.dispatch({type: PlaylistAction.ADDING_TRACK, payload: playlist});
+
+    var body:PlaylistAddTrackBody = {
+      provider: <string><any>provider,
+      foreignId
+    };
+
+    return this.http.post(Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id + '/tracks',
+      JSON.stringify(body),
+      this.networkService.requestOptions)
+      .map(( res:Response ) => {
+        console.log('PlaylistService.addTrack() map: status:', res.headers.get('status'));
+
+        const track = TrackFactory.createFromApiResponse(res.json());
+
+        // Add track success success - reflect change in local data collection
+        this.store.dispatch({type: PlaylistAction.ADD_TRACK, payload: {playlist: playlist, track: track}});
+
+        return res.status === 204;
+      }).catch(( error:Response ) => {
+        console.error(error);
+
+        this.store.dispatch({type: PlaylistAction.ERROR_ADDING_TRACK, payload: playlist});
+
+        return Observable.throw(error.json().error || 'Server error');
+      });
   }
 
 

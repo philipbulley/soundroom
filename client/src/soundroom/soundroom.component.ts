@@ -16,12 +16,13 @@ import {NetworkService} from "./service/network.service";
 import {SocketService} from "./service/socket.service";
 import {Auth} from "./model/auth";
 import {AppToolbarLayout} from "./layout/app-toolbar-layout/app-toolbar-layout.component";
+import {SpotifyService} from "./service/spotify.service";
 
 @Component({
   selector: 'soundroom',
   directives: [...ROUTER_DIRECTIVES, AppToolbarLayout],
   template: require('./soundroom.html'),
-  providers: [...HTTP_PROVIDERS, PlaylistService, AuthService, NetworkService, SocketService],
+  providers: [...HTTP_PROVIDERS, PlaylistService, AuthService, NetworkService, SocketService, SpotifyService],
   styles: [require('./soundroom.scss')]
 })
 @RouteConfig([

@@ -35,7 +35,7 @@ export class AuthService {
     this.store.dispatch({type: AuthAction.LOAD});
 
     this.http.get(Config.API_BASE_URL + '/me', this.networkService.requestOptions)
-      .delay(2000)    // DEBUG: Delay for simulation purposes only
+      // .delay(2000)    // DEBUG: Delay for simulation purposes only
       .map(( res:Response ) => UserFactory.createFromApiResponse(res.json()))
       .subscribe(( user:User ) => {
         this.networkService.ok();
