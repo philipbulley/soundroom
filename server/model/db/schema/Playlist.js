@@ -102,7 +102,7 @@ export default function create() {
      *
      * @param trackId
      * @param user
-     * @returns {Promise<PlaylistTrack>}
+     * @returns {Promise<Playlist>}
      */
     upVoteTrack: function (trackId, user) {
       console.log('upVoteTrack()', trackId, user);
@@ -123,8 +123,7 @@ export default function create() {
           this.tracks.sort(playlistTrackSortCompare);
           console.log('Playlist.upVoteTrack: tracks after sort:', this.tracks);
           return this.savePopulateQ();
-        })
-        .then(playlist => this.getPlaylistTrackByIdOrTrackId(trackId));
+        });
     },
 
     /**

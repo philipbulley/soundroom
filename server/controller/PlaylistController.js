@@ -105,7 +105,6 @@ class PlaylistController {
       })
       .then(_track => {
         track = _track;
-        // TODO: ADD TRACK TO PLAYLIST
         // TODO: Ensure track doesn't exist in Playlist.tracks, if not in, create PlaylistTrack
 
         console.log('PlaylistController.addTrackToPlaylist: Found track:', track);
@@ -113,8 +112,10 @@ class PlaylistController {
         return playlist.addPlaylistTrack(track/*, user*/);
       })
       .then(playlistTrack => this.upVoteTrack(playlist.id, track.id, false))
-      .then(playlistTrack => {
-        // TODO: Add SocketService emit playlist.tracks.change here?
+      .then(playlist => {
+
+        const playlistTrack = playlist.getPlaylistTrackByIdOrTrackId(track.id);
+
         SocketService.emitTracksChange(
           PlaylistTracksChangeActionEnum.ADD,
           playlistTrack,
@@ -126,11 +127,12 @@ class PlaylistController {
   }
 
   /**
+   * UpVote a PlaylistTrack and return a playlist with correctly sorted tracks.
    *
    * @param {string} playlistId
    * @param {string} trackId
    * @param {boolean} [emitSocketEvent=true]   Should this action emit a socket event notifying clients about the upvote?
-   * @returns {Promise<PlaylistTrack>}   Promise resolved with playlistTrack
+   * @returns {Promise<Playlist>}   Promise resolved with playlist whose tracks are freshly sorted taking this upVote in to account
    */
   upVoteTrack(playlistId, trackId, emitSocketEvent = true) {
     return this.getById(playlistId)
