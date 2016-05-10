@@ -6,6 +6,7 @@ const EventTypeEnum = {
   PLAYLIST_PAUSE: 'playlist.pause',
   PLAYLIST_TRACK_UPVOTE: 'playlist.track.upvote',
   PLAYLIST_TRACK_VETO: 'playlist.track.veto',
+  PLAYLIST_TRACKS_CHANGE: 'playlist.tracks.change',
   DISCONNECT: 'disconnect',
   PLAYLIST_TRACK_START: 'playlist.track.start',
   PLAYLIST_TRACK_PROGRESS: 'playlist.track.progress',

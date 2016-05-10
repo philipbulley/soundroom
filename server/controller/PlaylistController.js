@@ -6,7 +6,8 @@ import PlaylistErrorEnum from './../model/enum/PlaylistErrorEnum';
 import Q from 'q';
 import trackController from './TrackController';
 import TrackErrorEnum from './../model/enum/TrackErrorEnum';
-
+import SocketService from './../service/SocketService';
+import PlaylistTracksChangeActionEnum from './../model/enum/PlaylistTracksChangeActionEnum';
 
 class PlaylistController {
 
@@ -111,23 +112,32 @@ class PlaylistController {
 
         return playlist.addPlaylistTrack(track/*, user*/);
       })
+      .then(playlistTrack => this.upVoteTrack(playlist.id, track.id, false))
       .then(playlistTrack => {
-        console.log('PlaylistController.addTrackToPlaylist: Found playlistTrack:', playlistTrack);
+        // TODO: Add SocketService emit playlist.tracks.change here?
+        SocketService.emitTracksChange(
+          PlaylistTracksChangeActionEnum.ADD,
+          playlistTrack,
+          playlist.getPlaylistTrackIds()
+        );
 
-        return this.upVoteTrack(playlist.id, track.id);
+        return playlistTrack;
       });
   }
 
   /**
    *
-   * @param playlistId
-   * @param trackId
-   * @returns {*}   Promise resolved with playlistTrack
+   * @param {string} playlistId
+   * @param {string} trackId
+   * @param {boolean} [emitSocketEvent=true]   Should this action emit a socket event notifying clients about the upvote?
+   * @returns {Promise<PlaylistTrack>}   Promise resolved with playlistTrack
    */
-  upVoteTrack(playlistId, trackId) {
+  upVoteTrack(playlistId, trackId, emitSocketEvent = true) {
     return this.getById(playlistId)
       .then(playlist => {
-        // TODO: send change via socket
+        if (emitSocketEvent) {
+          // TODO: send change via socket
+        }
         return playlist.upVoteTrack(trackId);
       });
   }

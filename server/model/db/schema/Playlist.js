@@ -88,21 +88,22 @@ export default function create() {
 
       console.log('Playlist.addPlaylistTrack:', this.id);
 
-      // TODO: track seems to have track.album ...
       this.tracks.addToSet(playlistTrack);
 
-      console.log('Playlist.addPlaylistTrack: playlistTrack before savePopulateQ:', playlistTrack);
-
       return this.savePopulateQ()
-        .then((playlist) => {
-          console.log('Playlist.addPlaylistTrack: playlist after savePopulateQ:', playlist);
+        .then(playlist => {
           playlistTrack = this.getPlaylistTrackByIdOrTrackId(track.id);
-          // TODO: ... BUT has the track has lost it's playlistTrack.track.album by this point? after the savePopulate?
-          console.log('Playlist.addPlaylistTrack: playlistTrack after savePopulateQ:', playlistTrack);
+          console.log('Playlist.addPlaylistTrack: playlist after savePopulateQ:', playlist, playlistTrack);
           return playlistTrack;
         });
     },
 
+    /**
+     *
+     * @param trackId
+     * @param user
+     * @returns {Promise<PlaylistTrack>}
+     */
     upVoteTrack: function (trackId, user) {
       console.log('upVoteTrack()', trackId, user);
 
@@ -115,9 +116,10 @@ export default function create() {
 
       console.log('Playlist.upVoteTrack:', playlistTrack);
 
-
       return this.savePopulateQ()
         .then(playlist => {
+          // Need to have saved upvote before performing sort so upvote dates can be compared
+          // TODO: May be able to add the sort into the playlistSchema presave hook, but as long as we can ensure upvote has had it's DateFields presave hook execute first
           this.tracks.sort(playlistTrackSortCompare);
           console.log('Playlist.upVoteTrack: tracks after sort:', this.tracks);
           return this.savePopulateQ();
@@ -135,6 +137,14 @@ export default function create() {
       return _.find(this.tracks, (playlistTrack) => {
         return playlistTrack.id == trackIdOrPlaylistTrackId || playlistTrack.track.toObject()._id == trackIdOrPlaylistTrackId;
       });
+    },
+
+    /**
+     * Gets an array of PlaylistTrack IDs based on their ordering within the playlist
+     * @returns {string[]}
+     */
+    getPlaylistTrackIds: function () {
+      return this.tracks.map(playlistTrack => playlistTrack._id);
     }
 
   });

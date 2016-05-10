@@ -5,11 +5,11 @@ import socketUsers from '../model/state/SocketUsers';
 
 class SocketService extends EventEmitter {
 
-  constructor () {
+  constructor() {
     super();
   }
 
-  init (server) {
+  init(server) {
     this.io = socketIO(server);
     this.io.on(EventTypeEnum.CONNECTION, (socket) => {
       // console.log('--> new socket connection', socket);
@@ -46,7 +46,7 @@ class SocketService extends EventEmitter {
    * @param track
    * @returns void
    */
-  emitTrackStart (payload) {
+  emitTrackStart(payload) {
     this.io.emit(EventTypeEnum.PLAYLIST_TRACK_START, payload);
   }
 
@@ -55,7 +55,7 @@ class SocketService extends EventEmitter {
    * @param payload
    * @returns void
    */
-  emitTrackProgress (payload) {
+  emitTrackProgress(payload) {
     this.io.emit(EventTypeEnum.PLAYLIST_TRACK_PROGRESS, payload);
   }
 
@@ -64,27 +64,43 @@ class SocketService extends EventEmitter {
    * @param playlistId
    * @returns void
    */
-  emitPlaylistEnd (playlistId) {
+  emitPlaylistEnd(playlistId) {
     this.io.emit(EventTypeEnum.PLAYLIST_END, playlistId);
   }
 
-  updateConnectedUsers (users) {
+  updateConnectedUsers(users) {
     console.log(users.map((user) => user.id).join(','));
     const connectedUsers = users.filter((user) => socketUsers.contains(user.id));
     console.log('connectedUsers', connectedUsers.length);
     this.io.emit(EventTypeEnum.USER_UPDATE, connectedUsers);
   }
 
-  emitPause (payload) {
+  emitPause(payload) {
     this.io.emit(EventTypeEnum.PLAYLIST_PAUSE, payload);
   }
 
-  emitPlay (payload) {
+  emitPlay(payload) {
     this.io.emit(EventTypeEnum.PLAYLIST_PLAY, payload);
   }
 
-  emitUpVote (track) {
+  /**
+   * This should be handled by emitting change events along with playlistTrack ordering
+   *
+   * @deprecated
+   * @param track
+   */
+  emitUpVote(track) {
     this.io.emit(EventTypeEnum.PLAYLIST_TRACK_UPVOTE, track);
+  }
+
+  /**
+   *
+   * @param {string} action                 A string describing reason for update. Use property within `PlaylistTracksChangeActionEnum`
+   * @param {PlaylistTrack} playlistTrack   The PlaylistTrack the action has been performed upon
+   * @param {string[]} playlistTrackIds     Array of IDs in the correctly sorted order
+   */
+  emitTracksChange(action, playlistTrack, playlistTrackIds) {
+    this.io.emit(EventTypeEnum.PLAYLIST_TRACKS_CHANGE, {action, playlistTrack, playlistTrackIds});
   }
 
   // TODO:

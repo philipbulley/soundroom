@@ -7,9 +7,9 @@ import {PlaylistTrack} from "../playlist-track";
 
 export const playlistReducer:Reducer<Playlist> = ( state:Playlist = new Playlist, action:Action ) => {
 
-  console.log('playlistReducer():', action.type, state);
-  console.log(' - action:', action);
-  console.log(' - state:', state);
+  // console.log('playlistReducer():', action.type, state);
+  // console.log(' - action:', action);
+  // console.log(' - state:', state);
 
   let newState:Playlist;
 

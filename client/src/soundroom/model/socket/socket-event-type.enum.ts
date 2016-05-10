@@ -7,6 +7,7 @@ export class SocketEventTypeEnum {
   static PLAYLIST_PAUSE = 'playlist.pause';
   static PLAYLIST_TRACK_UPVOTE = 'playlist.track.upvote';
   static PLAYLIST_TRACK_VETO = 'playlist.track.veto';
+  static PLAYLIST_TRACKS_CHANGE = 'playlist.tracks.change';
   static DISCONNECT = 'disconnect';
   static PLAYLIST_TRACK_START = 'playlist.track.start';
   static PLAYLIST_TRACK_PROGRESS = 'playlist.track.progress';
