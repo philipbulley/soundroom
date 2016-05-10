@@ -44,9 +44,7 @@ export default function create() {
      */
     savePopulateQ: function () {
       return this.saveQ()
-        .then((playlist) => {
-          return playlist.populateQ(playlistSchema.statics.POPULATE_FIELDS);
-        });
+        .then(playlist => playlist.deepPopulate(playlistSchema.statics.POPULATE_FIELDS));
     },
 
     ///**
@@ -90,15 +88,24 @@ export default function create() {
 
       console.log('Playlist.addPlaylistTrack:', this.id);
 
+      // TODO: track seems to have track.album ...
       this.tracks.addToSet(playlistTrack);
+
+      console.log('Playlist.addPlaylistTrack: playlistTrack before savePopulateQ:', playlistTrack);
 
       return this.savePopulateQ()
         .then((playlist) => {
-          return this.getPlaylistTrackByIdOrTrackId(track.id);
+          console.log('Playlist.addPlaylistTrack: playlist after savePopulateQ:', playlist);
+          playlistTrack = this.getPlaylistTrackByIdOrTrackId(track.id);
+          // TODO: ... BUT has the track has lost it's playlistTrack.track.album by this point? after the savePopulate?
+          console.log('Playlist.addPlaylistTrack: playlistTrack after savePopulateQ:', playlistTrack);
+          return playlistTrack;
         });
     },
 
     upVoteTrack: function (trackId, user) {
+      console.log('upVoteTrack()', trackId, user);
+
       const playlistTrack = this.getPlaylistTrackByIdOrTrackId(trackId);
 
       if (!playlistTrack)
@@ -108,14 +115,14 @@ export default function create() {
 
       console.log('Playlist.upVoteTrack:', playlistTrack);
 
-      this.tracks.sort(playlistTrackSortCompare);
-
-      console.log('Playlist.upVoteTrack: tracks after sort:', this.tracks);
 
       return this.savePopulateQ()
-        .then((playlist) => {
-          return this.getPlaylistTrackByIdOrTrackId(trackId);
-        });
+        .then(playlist => {
+          this.tracks.sort(playlistTrackSortCompare);
+          console.log('Playlist.upVoteTrack: tracks after sort:', this.tracks);
+          return this.savePopulateQ();
+        })
+        .then(playlist => this.getPlaylistTrackByIdOrTrackId(trackId));
     },
 
     /**
@@ -139,7 +146,9 @@ export default function create() {
     } else if (a.upVotes.length < b.upVotes.length) {
       return 1;
     } else {
-      if (a.upVotes[a.upVotes.length - 1].created < b.upVotes[b.upVotes.length - 1].created) {
+      if (!a.upVotes.length && !b.upVotes.length) {
+        return 0;
+      } else if (a.upVotes[a.upVotes.length - 1].created < b.upVotes[b.upVotes.length - 1].created) {
         return -1;
       } else if (a.upVotes[a.upVotes.length - 1].created > b.upVotes[b.upVotes.length - 1].created) {
         return 1;

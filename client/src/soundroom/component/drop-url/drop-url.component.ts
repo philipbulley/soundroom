@@ -1,8 +1,10 @@
 import {Component, ElementRef, OnInit, Input, ChangeDetectionStrategy} from 'angular2/core';
+import {Observable} from 'rxjs/Observable';
+var alertify = require('alertify.js');
+
 import {PlaylistService} from "../../service/playlist.service.ts";
 import {Playlist} from "../../model/playlist";
 
-import {Observable} from 'rxjs/Observable';
 import {ProviderEnum} from "../../model/enum/provider.enum.ts";
 import {SpotifyService} from "../../service/spotify.service.ts";
 
@@ -39,10 +41,7 @@ export class DropUrlComponent implements OnInit {
 
   ngOnInit() {
     this.el.nativeElement.classList.add(this.CSS_CLASS);
-    this.playlist$.subscribe(playlist => {
-      this.playlist = playlist;
-      console.log('DropUrlComponent: Playlist:', this.playlist);
-    });
+    this.playlist$.subscribe(playlist => this.playlist = playlist);
   }
 
   handleDragOver( event ) {
@@ -58,15 +57,10 @@ export class DropUrlComponent implements OnInit {
   }
 
   handleDrop( event ) {
-    console.log('DropUrlComponent.handleDrop()', event, event.dataTransfer.getData("URL"));
+    // console.log('DropUrlComponent.handleDrop()', event, event.dataTransfer.getData("URL"));
     event.preventDefault();
 
     this.isDrag = false;
-    // this.el.nativeElement.classList.remove(
-    //   this.CSS_CLASS_ACTIVE,
-    //   this.CSS_CLASS_ACCEPTED,
-    //   this.CSS_CLASS_REJECTED
-    // );
 
     const url = event.dataTransfer.getData("URL");
 
@@ -83,26 +77,38 @@ export class DropUrlComponent implements OnInit {
     }
 
     const spotifyUri = this.spotifyService.linkToSpotifyUri(url);
-    console.info('DropUrlComponent.drop: ACCEPTED', spotifyUri);
-    // this.playlistService.addTrack(this.playlist, ProviderEnum.SPOTIFY, spotifyUri);
+    console.info('DropUrlComponent.drop: ACCEPTED', spotifyUri, this.playlist);
+    this.playlistService.addTrack(this.playlist, ProviderEnum.SPOTIFY, spotifyUri)
+      .subscribe(
+        ( status:number ) => {
+          console.log('DropUrlComponent.subscribe(): status:', status);
+          // TODO: Not showing in ui
+          this.hideOverlay();
+        },
+        ( error:any ) => {
+          console.error('DropUrlComponent.subscribe(): error:', error);
+          alertify.error('Sorry, there was a problem adding your track.');
+        }
+      );
+
+    // TODO: Show error notification if error
   }
 
   handleDragEnd( event ) {
-    console.log('DropUrlComponent.handleDragEnd()', event);
+    // console.log('DropUrlComponent.handleDragEnd()', event);
     event.preventDefault();
 
-    this.isDrag = false;
-    this.el.nativeElement.classList.remove(
-      this.CSS_CLASS_ACTIVE,
-      this.CSS_CLASS_ACCEPTED,
-      this.CSS_CLASS_REJECTED
-    );
+    this.hideOverlay();
   }
 
   handleDragLeave( event ) {
-    console.log('DropUrlComponent.dragLeave()', event);
+    // console.log('DropUrlComponent.dragLeave()', event);
     event.preventDefault();
 
+    this.hideOverlay();
+  }
+
+  hideOverlay() {
     this.isDrag = false;
     this.el.nativeElement.classList.remove(
       this.CSS_CLASS_ACTIVE,

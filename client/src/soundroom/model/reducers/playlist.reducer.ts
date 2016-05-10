@@ -131,8 +131,14 @@ export const playlistReducer:Reducer<Playlist> = ( state:Playlist = new Playlist
       newState = Object.assign(new Playlist, state);
       newState.loadState = null;
 
-      newState.tracks = Object.assign([], state.tracks);
-      newState.tracks.push(action.payload.track);
+      newState.tracks = state.tracks.filter(( playlistTrack:PlaylistTrack ) => {
+        return playlistTrack._id !== action.payload.playlistTrack._id;
+      });
+
+      newState.tracks.push(action.payload.playlistTrack);
+
+      console.log('playlistReducer: PlaylistAction.ADD_TRACK: newState:', newState);
+
       return newState;
 
     case PlaylistAction.ERROR_ADDING_TRACK:

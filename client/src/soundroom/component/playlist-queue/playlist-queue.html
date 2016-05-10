@@ -3,7 +3,7 @@
 
   <ol class="queue-list">
     <li class="track" *ngFor="#playlistTrack of (playlist$ | async).tracks">
-      <div class="track__data track__up-vote-count">10</div>
+      <div class="track__data track__up-vote-count">{{playlistTrack.upVotes.length}}</div>
       <div class="track__data track__up-vote">
         <button class="u-no-style"><i class="fa fa-arrow-up"></i></button>
       </div>

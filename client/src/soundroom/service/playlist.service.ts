@@ -21,8 +21,7 @@ import {PlaylistProgressSocketEvent} from "../model/socket/playlist-progress-soc
 import {PlaylistSocketEvent} from "../model/socket/playlist-socket-event";
 import {ProviderEnum} from "../model/enum/provider.enum";
 import {PlaylistAddTrackBody} from "./vo/playlist-add-track-body";
-import {TrackFactory} from "../model/factory/track.factory";
-import {Track} from "../model/track";
+import {PlaylistTrackFactory} from "../model/factory/playlist-track.factory";
 
 @Injectable()
 export class PlaylistService {
@@ -135,33 +134,51 @@ export class PlaylistService {
     this.socketService.emit(SocketEventTypeEnum.PLAYLIST_PAUSE, playlistId);
   }
 
-  addTrack( playlist:Playlist, provider:ProviderEnum, foreignId:string ) {
-    this.store.dispatch({type: PlaylistAction.ADDING_TRACK, payload: playlist});
+  /**
+   * Makes request to add a track on the server. Notifies the redux state tree at the relevant points.
+   *
+   * @param playlist      The `Playlist` being added to.
+   * @param provider      The provider of the track.
+   * @param foreignId     The ID of the track according to the provider.
+   * @returns {Observable<number>}  Observable with HTTP status of the request if successful.
+   */
+  addTrack( playlist:Playlist, provider:ProviderEnum, foreignId:string ):Observable<number> {
+    this.store.dispatch({type: PlaylistAction.ADDING_TRACK, payload: {playlist}});
 
     var body:PlaylistAddTrackBody = {
       provider: <string><any>provider,
       foreignId
     };
 
-    return this.http.post(Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id + '/tracks',
+    console.log('PlaylistService.addTrack: call POST:',
+      Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id + '/tracks',
+      body,
+      this.networkService.requestOptions);
+
+    const observable = this.http.post(Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id + '/tracks',
       JSON.stringify(body),
       this.networkService.requestOptions)
-      .map(( res:Response ) => {
-        console.log('PlaylistService.addTrack() map: status:', res.headers.get('status'));
+      .publishReplay(1)
+      .refCount();
 
-        const track = TrackFactory.createFromApiResponse(res.json());
+    observable.subscribe(( res:Response ) => {
+      console.log('PlaylistService.addTrack() subscribe: status:', res.json());
 
-        // Add track success success - reflect change in local data collection
-        this.store.dispatch({type: PlaylistAction.ADD_TRACK, payload: {playlist: playlist, track: track}});
+      const playlistTrack = PlaylistTrackFactory.createFromApiResponse(res.json());
 
-        return res.status === 204;
-      }).catch(( error:Response ) => {
-        console.error(error);
+      // Add track success success - reflect change in local data collection
+      this.store.dispatch({type: PlaylistAction.ADD_TRACK, payload: {playlist, playlistTrack}});
+      // return res.status === 204;
+    }, ( error:Response ) => {
+      console.error(error);
 
-        this.store.dispatch({type: PlaylistAction.ERROR_ADDING_TRACK, payload: playlist});
+      this.store.dispatch({type: PlaylistAction.ERROR_ADDING_TRACK, payload: {playlist}});
 
-        return Observable.throw(error.json().error || 'Server error');
-      });
+      return Observable.throw(error.json().error || 'Server error');
+    });
+
+    return observable
+      .map(( res:Response ) => res.status);
   }
 
 

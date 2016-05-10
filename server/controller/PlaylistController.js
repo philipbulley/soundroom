@@ -10,11 +10,11 @@ import TrackErrorEnum from './../model/enum/TrackErrorEnum';
 
 class PlaylistController {
 
-  constructor () {
+  constructor() {
     FunctionUtil.bindAllMethods(this);
   }
 
-  getAll () {
+  getAll() {
     console.log('PlaylistController.getAll()');
 
     // Return a non-deeply populated object without the `tracks` property.
@@ -23,7 +23,7 @@ class PlaylistController {
       .then(playlists => playlists.map(playlist => _.omit(playlist.toObject(), 'tracks')));
   }
 
-  getById (id) {
+  getById(id) {
     console.log('PlaylistController.getById()', id);
 
     return db.Playlist.findByIdPopulateQ(id)
@@ -42,7 +42,7 @@ class PlaylistController {
       });
   }
 
-  create (name, description, user) {
+  create(name, description, user) {
     const playlist = db.Playlist();
     playlist.name = name;
     playlist.description = description;
@@ -56,7 +56,7 @@ class PlaylistController {
    * @param {string} provider     Use a value that exists in ProviderEnum
    * @param {string} foreignId    The ID on the provider's platform
    */
-  addTrackByForeignId (playlistId, provider, foreignId) {
+  addTrackByForeignId(playlistId, provider, foreignId) {
     console.log('PlaylistController.addTrackByForeignId:', provider, foreignId);
 
     // Check if track already exists as a Track model in the DB (ie. a user has added it before)
@@ -87,22 +87,22 @@ class PlaylistController {
    *
    * @param playlistId
    * @param trackId
-   * @returns {Promise<TResult>}
+   * @returns {Promise<PlaylistTrack>}
    */
-  addTrackToPlaylist (playlistId, trackId/*, user*/) {
+  addTrackToPlaylist(playlistId, trackId/*, user*/) {
     console.log('PlaylistController.addTrackToPlaylist:', playlistId, trackId);
 
     let playlist, track;
 
     return this.getById(playlistId)
-      .then((_playlist) => {
+      .then(_playlist => {
         playlist = _playlist;
 
         console.log('PlaylistController.addTrackToPlaylist: Found playlist:', playlist);
 
         return trackController.getById(trackId);
       })
-      .then((_track) => {
+      .then(_track => {
         track = _track;
         // TODO: ADD TRACK TO PLAYLIST
         // TODO: Ensure track doesn't exist in Playlist.tracks, if not in, create PlaylistTrack
@@ -111,16 +111,10 @@ class PlaylistController {
 
         return playlist.addPlaylistTrack(track/*, user*/);
       })
-      .then((playlistTrack) => {
+      .then(playlistTrack => {
         console.log('PlaylistController.addTrackToPlaylist: Found playlistTrack:', playlistTrack);
 
         return this.upVoteTrack(playlist.id, track.id);
-      })
-      .then((playlistTrack) => {
-        console.log('PlaylistController.addTrackToPlaylist: Found playlistTrack:', playlistTrack);
-
-        // Return fresh playlist
-        return this.getById(playlist.id);
       });
   }
 
@@ -130,9 +124,9 @@ class PlaylistController {
    * @param trackId
    * @returns {*}   Promise resolved with playlistTrack
    */
-  upVoteTrack (playlistId, trackId) {
+  upVoteTrack(playlistId, trackId) {
     return this.getById(playlistId)
-      .then((playlist) => {
+      .then(playlist => {
         // TODO: send change via socket
         return playlist.upVoteTrack(trackId);
       });
@@ -144,7 +138,7 @@ class PlaylistController {
    * @param id            The id of the playlist
    * @param updateObj     These should be pre-sanitized before passing
    */
-  updateById (id, updateObj) {
+  updateById(id, updateObj) {
     return db.Playlist.findByIdPopulateQ(id)
       .then((playlist) => {
         if (!playlist)
@@ -168,7 +162,7 @@ class PlaylistController {
       });
   }
 
-  deleteById (id) {
+  deleteById(id) {
     log.debug('PlaylistController.deleteByIdParam', id);
 
     if (!db.Playlist.isValidId(id))
@@ -190,7 +184,7 @@ class PlaylistController {
       });
   }
 
-  getNextTrackForPlayback (playlistId, previousTrack) {
+  getNextTrackForPlayback(playlistId, previousTrack) {
     return this.getById(playlistId)
       .then((playlist) => {
         const previousTrackId = previousTrack && previousTrack._id;

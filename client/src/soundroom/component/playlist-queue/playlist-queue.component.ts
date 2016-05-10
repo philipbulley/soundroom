@@ -27,12 +27,12 @@ export class PlaylistQueueComponent implements OnInit {
   ngOnInit():any {
     console.log('PlaylistQueue.ngOnInit()', this.playlist$);
 
-    this.playlist$.subscribe(( playlist:Playlist ) => {
-      console.log('PlaylistQueue: playlist$.subscribe()', playlist);
-      this.playlist = playlist;
-
-      this.cdr.markForCheck();
-    });
+    // this.playlist$.subscribe(( playlist:Playlist ) => {
+    //   console.log('PlaylistQueue: playlist$.subscribe()', playlist);
+    //   this.playlist = playlist;
+    //
+    //   this.cdr.markForCheck();
+    // });
   }
 
 

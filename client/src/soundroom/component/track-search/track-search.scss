@@ -8,11 +8,16 @@
   text-align: center;
 }
 
-button.add-a-track {
+button.add-track {
   padding: 20px;
   width: 100%;
 
   &:hover {
     background-color: $color-blue-clean;
   }
+}
+
+.add-track-temporary {
+  padding: 20px;
+  width: 100%;
 }

@@ -7,6 +7,7 @@
   "license": "ISC",
   "scripts": {
     "start": "node_modules/nodemon/bin/nodemon.js index.js",
+    "startDebug": "babel-node-debug -p 8081 --no-preload index.js",
     "startDev": "NODE_ENV=dev NO_AUTH=true SKIP_TRACKS=true node_modules/nodemon/bin/nodemon.js index.js",
     "test": "mocha"
   },
@@ -28,7 +29,7 @@
     "jwt-simple": "^0.5.0",
     "lodash": "~3.8.0",
     "mongoose": "~4.1.3",
-    "mongoose-deep-populate": "^2.0.1",
+    "mongoose-deep-populate": "^3.0.0",
     "mongoose-q": "0.0.17",
     "node-spotify": "~0.7.1",
     "passport": "~0.3.0",
