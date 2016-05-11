@@ -118,6 +118,7 @@ class PlaylistController {
 
         SocketService.emitTracksChange(
           PlaylistTracksChangeActionEnum.ADD,
+          playlist._id,
           playlistTrack,
           playlist.getPlaylistTrackIds()
         );

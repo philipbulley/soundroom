@@ -95,7 +95,7 @@ export const playlistReducer:Reducer<Playlist> = ( state:Playlist = new Playlist
         newState = Object.assign(new Playlist, state);
 
         newState.tracks = newState.tracks.map(( track:PlaylistTrack ) => {
-          console.log('playlistReducer: PlaylistAction.PAUSE: track:', track.isPlaying, track);
+          // console.log('playlistReducer: PlaylistAction.PAUSE: track:', track.isPlaying, track);
           if (track.isPlaying) {
             let newTrack:PlaylistTrack = Object.assign(new PlaylistTrack, track);
             newTrack.isPlaying = false;
@@ -106,7 +106,7 @@ export const playlistReducer:Reducer<Playlist> = ( state:Playlist = new Playlist
           }
           return track;
         });
-        console.log('playlistReducer: PlaylistAction.PAUSE: current playlist after:', newState);
+        // console.log('playlistReducer: PlaylistAction.PAUSE: current playlist after:', newState);
         return newState;
       }
 
@@ -124,7 +124,7 @@ export const playlistReducer:Reducer<Playlist> = ( state:Playlist = new Playlist
       return newState;
 
     case PlaylistAction.ADD_TRACK:
-      if (action.payload.playlist._id !== state._id) {
+      if (action.payload.playlistId !== state._id) {
         return state;
       }
 

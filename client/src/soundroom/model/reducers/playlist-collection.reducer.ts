@@ -97,7 +97,7 @@ export const playlistCollectionReducer:Reducer<PlaylistCollection> = ( state:Pla
 
       newState.loadState = null;
 
-      console.log('playlistCollectionReducer: PlaylistAction.ADD: newState:', newState);
+      // console.log('playlistCollectionReducer: PlaylistAction.ADD: newState:', newState);
 
       return newState;
 

@@ -96,11 +96,12 @@ class SocketService extends EventEmitter {
   /**
    *
    * @param {string} action                 A string describing reason for update. Use property within `PlaylistTracksChangeActionEnum`
+   * @param {string} playlistId             The ID of the affected playlist
    * @param {PlaylistTrack} playlistTrack   The PlaylistTrack the action has been performed upon
-   * @param {string[]} playlistTrackIds     Array of IDs in the correctly sorted order
+   * @param {string[]} playlistTrackIds     Array of PlaylistTrack IDs in the correctly sorted order
    */
-  emitTracksChange(action, playlistTrack, playlistTrackIds) {
-    this.io.emit(EventTypeEnum.PLAYLIST_TRACKS_CHANGE, {action, playlistTrack, playlistTrackIds});
+  emitTracksChange(action, playlistId, playlistTrack, playlistTrackIds) {
+    this.io.emit(EventTypeEnum.PLAYLIST_TRACKS_CHANGE, {action, playlistId, playlistTrack, playlistTrackIds});
   }
 
   // TODO:

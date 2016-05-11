@@ -22,6 +22,8 @@ import {PlaylistSocketEvent} from "../model/socket/playlist-socket-event";
 import {ProviderEnum} from "../model/enum/provider.enum";
 import {PlaylistAddTrackBody} from "./vo/playlist-add-track-body";
 import {PlaylistTrackFactory} from "../model/factory/playlist-track.factory";
+import {PlaylistTracksChangeActionEnum} from "../model/socket/playlist-tracks-change-action.enum";
+import {PlaylistTracksChangeSocketEvent} from "../model/socket/playlist-tracks-change-socket-event";
 
 @Injectable()
 export class PlaylistService {
@@ -164,11 +166,8 @@ export class PlaylistService {
     observable.subscribe(( res:Response ) => {
       console.log('PlaylistService.addTrack() subscribe: status:', res.json());
 
-      const playlistTrack = PlaylistTrackFactory.createFromApiResponse(res.json());
+      // NOTE: Track is added to state tree via socket event handler, as all clients will receive that event.
 
-      // Add track success success - reflect change in local data collection
-      this.store.dispatch({type: PlaylistAction.ADD_TRACK, payload: {playlist, playlistTrack}});
-      // return res.status === 204;
     }, ( error:Response ) => {
       console.error(error);
 
@@ -247,6 +246,25 @@ export class PlaylistService {
           this.store.dispatch({type: PlaylistAction.PAUSE, payload: <PlaylistSocketEvent>event.data});
           break;
 
+        case SocketEventTypeEnum.PLAYLIST_TRACKS_CHANGE:
+          const eventData:PlaylistTracksChangeSocketEvent = event.data;
+
+          console.log('PlaylistService.observeSocket: SocketEventTypeEnum.PLAYLIST_TRACKS_CHANGE', event, eventData);
+
+          switch (eventData.action) {
+            case PlaylistTracksChangeActionEnum.ADD:
+              console.log('PlaylistService.observeSocket: PlaylistTracksChangeActionEnum.ADD', eventData);
+              const playlistTrack = PlaylistTrackFactory.createFromApiResponse(eventData.playlistTrack);
+
+              // A track has been successfully added - reflect change in local data collection
+              this.store.dispatch({
+                type: PlaylistAction.ADD_TRACK,
+                payload: {playlistId: eventData.playlistId, playlistTrack}
+              });
+              // TODO: WOrk out way to sort playlist to match eventData.playlistTrackIds§
+              break;
+          }
+          break;
       }
 
     });
