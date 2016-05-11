@@ -259,9 +259,12 @@ export class PlaylistService {
               // A track has been successfully added - reflect change in local data collection
               this.store.dispatch({
                 type: PlaylistAction.ADD_TRACK,
-                payload: {playlistId: eventData.playlistId, playlistTrack}
+                payload: {
+                  playlistId: eventData.playlistId, 
+                  playlistTrack, 
+                  playlistTrackIds: eventData.playlistTrackIds
+                }
               });
-              // TODO: WOrk out way to sort playlist to match eventData.playlistTrackIds§
               break;
           }
           break;
