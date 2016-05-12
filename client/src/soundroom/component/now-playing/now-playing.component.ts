@@ -6,6 +6,7 @@ import {Playlist} from "../../model/playlist";
 import {PlaylistService} from "../../service/playlist.service";
 import {ArtistsNamesPipe} from "../../pipe/artists-names.pipe";
 import {TimelineComponent} from "../timeline/timeline.component";
+import {PlaylistTrack} from "../../model/playlist-track";
 
 @Component({
   selector: 'now-playing',
@@ -21,6 +22,7 @@ export class NowPlayingComponent implements OnInit {
   playlist$:Observable<Playlist>;
 
   private playlist:Playlist;
+  private playlistTrack:PlaylistTrack;
   private progress$:Observable<number>;
 
   constructor( private cdr:ChangeDetectorRef, private playlistService:PlaylistService ) {
@@ -31,8 +33,12 @@ export class NowPlayingComponent implements OnInit {
     console.log('NowPlaying.ngOnInit()', this.playlist$);
 
     this.playlist$.subscribe(( playlist:Playlist ) => {
-      // console.log('NowPlaying: playlist$.subscribe()', playlist);
       this.playlist = playlist;
+
+      this.playlistTrack = playlist.current ||
+        (playlist.tracks.length ? playlist.tracks[0] : null);
+
+      console.log('NowPlaying: playlist$.subscribe:', this.playlistTrack, playlist.current, playlist.tracks);
 
       this.cdr.markForCheck();
     });
