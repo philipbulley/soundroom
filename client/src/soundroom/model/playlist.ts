@@ -14,7 +14,7 @@ export class Playlist {
 
   modified:string;
 
-  tracks:PlaylistTrack[];
+  tracks:PlaylistTrack[] = [];
 
   loadState:PlaylistState = null;
 

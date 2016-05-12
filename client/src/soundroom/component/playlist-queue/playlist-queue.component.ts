@@ -3,8 +3,8 @@ import {Component, ChangeDetectionStrategy, Input, OnInit, ChangeDetectorRef} fr
 import {Observable} from 'rxjs/Observable';
 
 import {Playlist} from "../../model/playlist";
-import {PlaylistService} from "../../service/playlist.service";
 import {ArtistsNamesPipe} from "../../pipe/artists-names.pipe";
+import {PlaylistTrack} from "../../model/playlist-track";
 
 @Component({
   selector: 'playlist-queue',
@@ -18,22 +18,20 @@ export class PlaylistQueueComponent implements OnInit {
   @Input('playlist')
   playlist$:Observable<Playlist>;
 
-  private playlist:Playlist;
+  /**
+   * List of tracks in queue (not including first track ink playlist)
+   */
+  private playlistTracks:PlaylistTrack[];
 
-  constructor( private cdr:ChangeDetectorRef, private playlistService:PlaylistService ) {
+  constructor( private cdr:ChangeDetectorRef ) {
 
   }
 
   ngOnInit():any {
-    console.log('PlaylistQueue.ngOnInit()', this.playlist$);
+    this.playlist$.subscribe(( playlist:Playlist ) => {
+      this.playlistTracks = playlist.tracks.filter((playlistTrack, index) => index > 0);
 
-    // this.playlist$.subscribe(( playlist:Playlist ) => {
-    //   console.log('PlaylistQueue: playlist$.subscribe()', playlist);
-    //   this.playlist = playlist;
-    //
-    //   this.cdr.markForCheck();
-    // });
+      this.cdr.markForCheck();
+    });
   }
-
-
 }

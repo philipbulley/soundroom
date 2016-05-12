@@ -2,7 +2,7 @@
   <h3 class="heading">Up next</h3>
 
   <ol class="queue-list">
-    <li class="track" *ngFor="#playlistTrack of (playlist$ | async).tracks">
+    <li class="track" *ngFor="#playlistTrack of playlistTracks">
       <div class="track__data track__up-vote-count">{{playlistTrack.upVotes.length}}</div>
       <div class="track__data track__up-vote">
         <button class="u-no-style"><i class="fa fa-arrow-up"></i></button>
