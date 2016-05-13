@@ -116,11 +116,17 @@ export default function create() {
 
       console.log('Playlist.upVoteTrack:', playlistTrack);
 
+      // Save first before sorting so timestamps are up-to-date
       return this.savePopulateQ()
         .then(playlist => {
-          // Need to have saved upvote before performing sort so upvote dates can be compared
-          // TODO: May be able to add the sort into the playlistSchema presave hook, but as long as we can ensure upvote has had it's DateFields presave hook execute first
+          // Ensure that even after sorting, the track at [0] remains at [0]. It's the current track and no power
+          // in the world can move it.
+          const first = this.tracks[0];
+
           this.tracks.sort(playlistTrackSortCompare);
+          this.tracks = _.without(this.tracks, first);
+          this.tracks.unshift(first);
+
           console.log('Playlist.upVoteTrack: tracks after sort:', this.tracks);
           return this.savePopulateQ();
         });
@@ -129,7 +135,7 @@ export default function create() {
     resetCurrentPlaylistTrack: function () {
       this.tracks[0].upVotes = [];
 
-      // TODO: May be able to add the sort into the playlistSchema presave hook, but as long as we can ensure upvote has had it's DateFields presave hook execute first
+      // Save first before sorting so timestamps are up-to-date
       return this.savePopulateQ()
         .then(playlist => {
           this.tracks.sort(playlistTrackSortCompare);
