@@ -1,5 +1,5 @@
 <drop-url [playlist]="playlist$">
-  <div class="main">
+  <div class="main" [class.is-empty]="!(playlist$ | async).tracks?.length">
     <section class="inner">
       <div class="o-container">
 
@@ -7,22 +7,18 @@
 
         <div *ngIf="!isLoading">
           <track-search [playlist]="playlist$"></track-search>
-          <playlist-queue [playlist]="playlist$"></playlist-queue>
+          <playlist-queue [playlist]="playlist$" *ngIf="(playlist$ | async).tracks?.length"></playlist-queue>
         </div>
 
         <!--<pre>PlaylistLayout: {{id}}</pre>-->
         <!--<pre>Name: {{(playlist$ | async).name}}</pre>-->
         <!--<pre>Number of tracks: {{(playlist$ | async).tracks?.length}}</pre>-->
 
-        <!--<div *ngIf="isLoading">-->
-        <!--<i class="fa fa-circle-o-notch fa-spin"></i> Loading your Soundroom...-->
+        <!--<div>-->
+          <!--<span *ngIf="!isLoading && !(playlist$ | async).tracks?.length">No tracks in this playlist.</span>-->
+          <!--Add tracks via the API:-->
+          <!--<pre>curl -X POST -H "Authorization: JWT {{jwt}}" -H "Cache-Control: no-cache" -H "Content-Type: application/x-www-form-urlencoded" -d 'foreignId=spotify:track:XXXXXXXXXXXXXXXX&provider=spotify' "http://localhost:8123/api/playlists/{{(playlist$ | async)._id}}/tracks"</pre>-->
         <!--</div>-->
-
-        <div>
-          <span *ngIf="!isLoading && !(playlist$ | async).tracks?.length">No tracks in this playlist.</span>
-          Add tracks via the API:
-          <pre>curl -X POST -H "Authorization: JWT {{jwt}}" -H "Cache-Control: no-cache" -H "Content-Type: application/x-www-form-urlencoded" -d 'foreignId=spotify:track:XXXXXXXXXXXXXXXX&provider=spotify' "http://localhost:8123/api/playlists/{{(playlist$ | async)._id}}/tracks"</pre>
-        </div>
 
       </div>
     </section>

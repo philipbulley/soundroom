@@ -1,7 +1,9 @@
 <div class="inner">
   <h3 class="heading">Up next</h3>
 
-  <ol class="queue-list">
+  <div class="empty-queue" *ngIf="!playlistTracks.length">Add more tracks to keep the music pumpin'!</div>
+
+  <ol class="queue-list" *ngIf="playlistTracks.length > 0">
     <li class="track" *ngFor="#playlistTrack of playlistTracks">
       <div class="track__data track__up-vote-count">{{playlistTrack.upVotes.length}}</div>
       <div class="track__data track__up-vote">

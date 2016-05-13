@@ -1,17 +1,32 @@
 <div class="columns" *ngIf="(playlist$ | async).loadState === 'PlaylistState.LOADING'">
+  <!-- LOADING -->
   <div class="artwork">
 
   </div>
+
   <div class="info">
     Loading...
   </div>
 </div>
 
-<div class="columns" *ngIf="!(playlist$ | async).loadState">
+<div class="columns" *ngIf="!(playlist$ | async).loadState && !(playlist$ | async).tracks?.length">
+  <!-- EMPTY PLAYLIST -->
+  <div class="artwork is-empty">
+
+  </div>
+
+  <div class="info is-empty">
+    <h2 class="info__title">This room is empty!</h2>
+    <p class="info__text">Drag and drop tracks from your Spotify desktop app to start jammin'!</p>
+  </div>
+</div>
+
+<div class="columns" *ngIf="!(playlist$ | async).loadState && (playlist$ | async).tracks?.length">
+  <!-- POPULATED PLAYLIST -->
   <div class="artwork">
     <timeline [percentage]="progress$"></timeline>
 
-    <div class="play-pause" *ngIf="!isLoading && (playlist$ | async).tracks?.length">
+    <div class="play-pause">
       <button
         class="u-no-style"
         *ngIf="!(playlist$ | async).isPlaying"
@@ -22,16 +37,18 @@
         (click)="pause()"><i class="fa fa-pause fa-2x"></i></button>
     </div>
   </div>
-  <div class="info">
-    <div class="playlist-name">Now playing in {{(playlist$ | async).name}}</div>
 
-    <div class="track-name">{{playlistTrack?.track?.name}}</div>
-    <div class="artist-name">{{playlistTrack?.track?.artists | artistsNames}}</div>
-    <div class="user-name-added">Added by [username placeholder]</div>
-    <!--<pre>-->
-      <!--Progress: {{(playlist$ | async).current?.progress}}-->
-      <!--Track Name: {{(playlist$ | async).current?.track?.name}}-->
-    <!--</pre>-->
+  <div class="info">
+    <div class="info__playlist-name">
+      {{(playlist$ | async).isPlaying
+      ? 'Now playing in'
+      : 'Ready to play in'}}
+      {{(playlist$ | async).name}}
+    </div>
+
+    <div class="info__track-name">{{playlistTrack?.track?.name}}</div>
+    <div class="info__artist-name">{{playlistTrack?.track?.artists | artistsNames}}</div>
+    <div class="info__user-name-added">Added by [username placeholder]</div>
   </div>
 </div>
 

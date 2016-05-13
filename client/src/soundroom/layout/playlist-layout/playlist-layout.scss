@@ -16,6 +16,10 @@
     content: '';
   }
 
+  &.is-empty:before {
+    background: $color-grey-grit;
+  }
+
   transition: filter .5s $ease-out-expo;
 
   [drop-url].is-active & {
