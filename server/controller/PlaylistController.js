@@ -131,17 +131,24 @@ class PlaylistController {
    * UpVote a PlaylistTrack and return a playlist with correctly sorted tracks.
    *
    * @param {string} playlistId
-   * @param {string} trackId
+   * @param {string} trackId      A trackId or a playlistTrackId
    * @param {boolean} [emitSocketEvent=true]   Should this action emit a socket event notifying clients about the upvote?
    * @returns {Promise<Playlist>}   Promise resolved with playlist whose tracks are freshly sorted taking this upVote in to account
    */
   upVoteTrack(playlistId, trackId, emitSocketEvent = true) {
     return this.getById(playlistId)
+      .then(playlist => playlist.upVoteTrack(trackId))
       .then(playlist => {
         if (emitSocketEvent) {
-          // TODO: send change via socket
+          SocketService.emitTracksChange(
+            PlaylistTracksChangeActionEnum.UP_VOTE,
+            playlist._id,
+            playlist.getPlaylistTrackByIdOrTrackId(trackId),
+            playlist.getPlaylistTrackIds()
+          );
         }
-        return playlist.upVoteTrack(trackId);
+
+        return playlist;
       });
   }
 

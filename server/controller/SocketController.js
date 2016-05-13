@@ -7,11 +7,12 @@ import EventTypeEnum from '../model/enum/EventTypeEnum';
 import log from './../util/LogUtil';
 
 
-const upVote = (client, playlistId, trackId) => {
-  return playlistController.upVoteTrack(playlistId, trackId)
-    .then((track) => {
-      socketService.emitUpVote(track);
-    })
+const upVote = (client, payload) => {
+  const {playlistId} = payload;
+  const {trackId} = payload;
+  const {playlistTrackId} = payload;
+
+  return playlistController.upVoteTrack(playlistId, playlistTrackId || trackId)
     .catch((err) => {
       client.emit(EventTypeEnum.ERROR_PLAYLIST_TRACK_UPVOTE, err.message, playlistId, trackId);
       // HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
