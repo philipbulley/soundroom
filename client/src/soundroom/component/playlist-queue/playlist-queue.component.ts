@@ -5,6 +5,7 @@ import {Observable} from 'rxjs/Observable';
 import {Playlist} from "../../model/playlist";
 import {ArtistsNamesPipe} from "../../pipe/artists-names.pipe";
 import {PlaylistTrack} from "../../model/playlist-track";
+import {PlaylistService} from "../../service/playlist.service";
 
 @Component({
   selector: 'playlist-queue',
@@ -23,15 +24,22 @@ export class PlaylistQueueComponent implements OnInit {
    */
   private playlistTracks:PlaylistTrack[];
 
-  constructor( private cdr:ChangeDetectorRef ) {
+  private playlist:Playlist;
+
+  constructor( private cdr:ChangeDetectorRef, private playlistService:PlaylistService ) {
 
   }
 
   ngOnInit():any {
     this.playlist$.subscribe(( playlist:Playlist ) => {
-      this.playlistTracks = playlist.tracks.filter((playlistTrack, index) => index > 0);
+      this.playlist = playlist;
+      this.playlistTracks = playlist.tracks.filter(( playlistTrack, index ) => index > 0);
 
       this.cdr.markForCheck();
     });
+  }
+
+  upVote( playlistTrack:PlaylistTrack ) {
+    this.playlistService.upVote(this.playlist, playlistTrack);
   }
 }

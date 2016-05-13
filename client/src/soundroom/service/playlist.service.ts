@@ -24,6 +24,7 @@ import {PlaylistAddTrackBody} from "./vo/playlist-add-track-body";
 import {PlaylistTrackFactory} from "../model/factory/playlist-track.factory";
 import {PlaylistTracksChangeActionEnum} from "../model/socket/playlist-tracks-change-action.enum";
 import {PlaylistTracksChangeSocketEvent} from "../model/socket/playlist-tracks-change-socket-event";
+import {PlaylistTrack} from "../model/playlist-track";
 
 @Injectable()
 export class PlaylistService {
@@ -134,6 +135,15 @@ export class PlaylistService {
 
   pause( playlistId:string ) {
     this.socketService.emit(SocketEventTypeEnum.PLAYLIST_PAUSE, playlistId);
+  }
+
+  upVote( playlist:Playlist, playlistTrack:PlaylistTrack ) {
+    console.log('PlaylistService.upVote:', playlist, playlistTrack);
+    
+    this.socketService.emit(SocketEventTypeEnum.PLAYLIST_TRACK_UPVOTE, {
+      playlistId: playlist._id,
+      playlistTrackId: playlistTrack._id
+    });
   }
 
   /**
@@ -254,14 +264,16 @@ export class PlaylistService {
           switch (eventData.action) {
             case PlaylistTracksChangeActionEnum.ADD:
             case PlaylistTracksChangeActionEnum.COMPLETE:
+            case PlaylistTracksChangeActionEnum.UP_VOTE:
               console.log('PlaylistService.observeSocket: ', eventData.action, eventData);
               const playlistTrack = PlaylistTrackFactory.createFromApiResponse(eventData.playlistTrack);
 
               // A track has been successfully added - reflect change in local data collection
               this.store.dispatch({
-                type: eventData.action === PlaylistTracksChangeActionEnum.ADD
-                  ? PlaylistAction.ADD_TRACK
-                  : PlaylistAction.UPDATE_TRACK,
+                type: eventData.action === PlaylistTracksChangeActionEnum.COMPLETE ||
+                eventData.action === PlaylistTracksChangeActionEnum.UP_VOTE
+                  ? PlaylistAction.UPDATE_TRACK
+                  : PlaylistAction.ADD_TRACK,
                 payload: {
                   playlistId: eventData.playlistId,
                   playlistTrack,

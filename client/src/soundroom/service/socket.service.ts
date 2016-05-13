@@ -58,7 +58,7 @@ export class SocketService {
     });
   }
 
-  emit( event:SocketEventTypeEnum, value:string ) {
+  emit( event:SocketEventTypeEnum, value:any ) {
     this.ensureConnected();
 
     this.socket.emit(<string>event, value);
