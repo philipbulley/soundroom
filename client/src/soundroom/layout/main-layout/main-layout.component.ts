@@ -21,7 +21,7 @@ export class MainLayout {
   constructor( private store:Store<PlaylistCollection>, private playlistService:PlaylistService ) {
 
     this.playlistCollection$ = store.select('playlistsCollection');
-    this.playlistCollection$.subscribe(data => console.log('MainLayout.playlistCollection: data:', data));   // debug!
+    // this.playlistCollection$.subscribe(data => console.log('MainLayout.playlistCollection: data:', data));   // debug!
 
     this.playlistService.loadCollection();
 

@@ -26,7 +26,7 @@ export class TrackSearchComponent implements OnInit {
     console.log('TrackSearch.ngOnInit()', this.playlist$);
 
     this.playlist$.subscribe(( playlist:Playlist ) => {
-      console.log('TrackSearch: playlist$.subscribe()', playlist);
+      // console.log('TrackSearch: playlist$.subscribe()', playlist);
       this.playlist = playlist;
 
       this.cdr.markForCheck();

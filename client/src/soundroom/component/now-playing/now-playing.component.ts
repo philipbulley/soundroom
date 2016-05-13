@@ -38,8 +38,6 @@ export class NowPlayingComponent implements OnInit {
       this.playlistTrack = playlist.current ||
         (playlist.tracks.length ? playlist.tracks[0] : null);
 
-      console.log('NowPlaying: playlist$.subscribe:', this.playlistTrack, playlist.current, playlist.tracks);
-
       this.cdr.markForCheck();
     });
 

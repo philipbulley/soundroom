@@ -44,9 +44,9 @@ export class PlaylistLayout implements OnInit {
 
     this.playlist$ = this.playlistCollection
       .map(( playlistCollection:PlaylistCollection ) => {
-        console.log('PlaylistLayout.ngOnInit: playlist: map!');
-        console.log(' - playlistCollection:', playlistCollection);
-        console.log(' - playlistCollection.playlists: ', playlistCollection.playlists);
+        // console.log('PlaylistLayout.ngOnInit: playlist: map!');
+        // console.log(' - playlistCollection:', playlistCollection);
+        // console.log(' - playlistCollection.playlists: ', playlistCollection.playlists);
 
         this.isLoading = !!playlistCollection.loadState;
 
@@ -55,12 +55,12 @@ export class PlaylistLayout implements OnInit {
       });
 
     // DEBUG subscribe!
-    this.playlist$
-      .subscribe(( playlist:Playlist ) => {
-        console.log('PlaylistLayout: playlistCollection.subscribe: data:', playlist);
-
-        this.playlist = playlist;
-      });
+    // this.playlist$
+    //   .subscribe(( playlist:Playlist ) => {
+    //     console.log('PlaylistLayout: playlistCollection.subscribe: data:', playlist);
+    //
+    //     this.playlist = playlist;
+    //   });
 
 
     this.playlistService.load(this.id);
