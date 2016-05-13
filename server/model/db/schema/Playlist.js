@@ -126,6 +126,17 @@ export default function create() {
         });
     },
 
+    resetCurrentPlaylistTrack: function () {
+      this.tracks[0].upVotes = [];
+
+      // TODO: May be able to add the sort into the playlistSchema presave hook, but as long as we can ensure upvote has had it's DateFields presave hook execute first
+      return this.savePopulateQ()
+        .then(playlist => {
+          this.tracks.sort(playlistTrackSortCompare);
+          return this.savePopulateQ();
+        });
+    },
+
     /**
      * Gets a Playlist Track by it's id or the id of it's actual track.
      *
@@ -148,20 +159,41 @@ export default function create() {
 
   });
 
-
+  /**
+   * Use with `Array.prototype.sort` to sort playlist tracks by up votes.
+   *
+   * @param {PlaylistTrack} a
+   * @param {PlaylistTrack} b
+   * @returns {number}
+   */
   function playlistTrackSortCompare(a, b) {
     if (a.upVotes.length > b.upVotes.length) {
+      // a has more upvotes, so should appear before b in the playlist
       return -1;
     } else if (a.upVotes.length < b.upVotes.length) {
+      // a has fewer upvotes, so should appear after b in the playlist
       return 1;
     } else {
       if (!a.upVotes.length && !b.upVotes.length) {
-        return 0;
+        // Neither track has any upvotes, so compare on when tracks were last updated
+        if (a.modified < b.modified) {
+          // a was last saved before b, so should appear before b in the playlist
+          return -1;
+        } else if (a.modified > b.modified) {
+          // a was last saved after b, so should appear after b in the playlist
+          return 1;
+        } else {
+          // Unlikely unless a batch operation updated all 0 upvoted tracks at the same time :)
+          return 0;
+        }
       } else if (a.upVotes[a.upVotes.length - 1].created < b.upVotes[b.upVotes.length - 1].created) {
+        // a was upvoted before b, so should appear before b in the playlist
         return -1;
       } else if (a.upVotes[a.upVotes.length - 1].created > b.upVotes[b.upVotes.length - 1].created) {
+        // a was upvoted after b, so should appear after b in the playlist
         return 1;
       } else {
+        // Unlikely unless two tracks were upvoted at the same time :/
         return 0;
       }
     }

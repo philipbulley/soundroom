@@ -197,21 +197,38 @@ class PlaylistController {
       });
   }
 
-  getNextTrackForPlayback(playlistId, previousTrack) {
+  /**
+   * Gets the PlaylistTrack that is/will/should be playing.
+   *
+   * @param playlistId
+   * @returns {Promise<TResult>|PromiseLike<TResult>|Promise.<null>}
+   */
+  getCurrentPlaylistTrack(playlistId) {
     return this.getById(playlistId)
-      .then((playlist) => {
-        const previousTrackId = previousTrack && previousTrack._id;
-        const track = _.find(playlist.tracks, {_id: previousTrackId});
-        const index = playlist.tracks.indexOf(track);
-        const playlistTrackIds = playlist.tracks.map((t) => t._id).join(', ');
-        console.log('playlistTrackId', previousTrackId, 'playlist tracks', playlistTrackIds);
-        console.log('index of current track', index, 'playlist length', playlist.tracks.length);
-        if (index === playlist.tracks.length - 1) {
-          return null;
-        }
-        return playlist.tracks[index + 1];
+      .then(playlist => playlist.tracks && playlist.tracks.length ? playlist.tracks[0] : null);
+  }
+
+  /**
+   * Sends the track that is/will/should be playing back to the bottom of the playlist.
+   *
+   * @param playlistId
+   * @returns {Promise<Playlist>}
+   */
+  resetCurrentPlaylistTrack(playlistId) {
+    return this.getById(playlistId)
+      .then(playlist => playlist.resetCurrentPlaylistTrack())
+      .then(playlist => {
+        SocketService.emitTracksChange(
+          PlaylistTracksChangeActionEnum.COMPLETE,
+          playlist._id,
+          playlist.tracks[playlist.tracks.length - 1],
+          playlist.getPlaylistTrackIds()
+        );
+
+        return playlist;
       });
   }
+
 }
 
 export default new PlaylistController();

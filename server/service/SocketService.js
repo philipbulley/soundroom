@@ -59,15 +59,6 @@ class SocketService extends EventEmitter {
     this.io.emit(EventTypeEnum.PLAYLIST_TRACK_PROGRESS, payload);
   }
 
-  /**
-   * End of playlist
-   * @param playlistId
-   * @returns void
-   */
-  emitPlaylistEnd(playlistId) {
-    this.io.emit(EventTypeEnum.PLAYLIST_END, playlistId);
-  }
-
   updateConnectedUsers(users) {
     console.log(users.map((user) => user.id).join(','));
     const connectedUsers = users.filter((user) => socketUsers.contains(user.id));

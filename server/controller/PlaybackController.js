@@ -38,19 +38,19 @@ const resume = () => {
  * To be called when wanting to start playback of a specific playlist.
  *
  * @param {string} playlistId
- * @param {playlistTrack} previousTrack
+ * @param {boolean} isRecursiveCall
  * @returns {Promise<playlistTrack>}
  */
-const play = (playlistId, previousTrack = null) => {
-  console.log('playbackState Track Playing', !!playbackState.currentPlaylistTrack);
+const play = (playlistId, isRecursiveCall) => {
+  console.log('PlaybackController.play(): playlistId: ', playlistId, 'isCurrentTrack:', !!playbackState.currentPlaylistTrack);
 
   if (playbackState.currentPlaylistTrack && playbackState.currentPlaylistId === playlistId) {
     return resume();
   }
 
-  return playlistController.getNextTrackForPlayback(playlistId, previousTrack)
-    .then((playlistTrack) => {
-      // console.log(`PlaybackController.play: Next track: ${playlistTrack}`);
+  return playlistController.getCurrentPlaylistTrack(playlistId)
+    .then(playlistTrack => {
+      // console.log('PlaybackController.play: Next track:', playlistTrack);
 
       spotifyService.removeAllListeners('progress');
       spotifyService.removeAllListeners('end');
@@ -58,11 +58,7 @@ const play = (playlistId, previousTrack = null) => {
       playbackState.currentPlaylistId = playlistId;
       playbackState.currentPlaylistTrack = playlistTrack;
 
-      if (!playlistTrack) {
-        return socketService.emitPlaylistEnd(playlistId);
-      }
-
-      if (!previousTrack) {
+      if (!isRecursiveCall) {
         // This is not an automatic continuation of the playlist, so notify that playlist is now playing
         socketService.emitPlay({
           playlistId: playlistId,
@@ -78,6 +74,7 @@ const play = (playlistId, previousTrack = null) => {
         trackId: playlistTrack.track._id
       });
 
+      // Create a progress listener for this track
       spotifyService.on('progress', (progressData) => {
         socketService.emitTrackProgress({
           playlistId: playlistId,
@@ -89,12 +86,13 @@ const play = (playlistId, previousTrack = null) => {
         });
       });
 
+      // Respond by starting next song when this one ends
       spotifyService.on('end', () => {
-        const {currentPlaylistTrack} = playbackState;
         playbackState.currentPlaylistTrack = null;
 
-        // Auto-continue by asking the next track in the playlist to start playbakc
-        play(playlistId, currentPlaylistTrack);
+        playlistController.resetCurrentPlaylistTrack(playlistId)
+          // Auto-continue by asking the next track in the playlist to start playback
+          .then(() => play(playlistId, true));
       });
 
       spotifyService.play(playlistTrack.track.foreignId);
