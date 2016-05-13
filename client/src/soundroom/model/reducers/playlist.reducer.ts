@@ -124,6 +124,7 @@ export const playlistReducer:Reducer<Playlist> = ( state:Playlist = new Playlist
       return newState;
 
     case PlaylistAction.ADD_TRACK:
+    case PlaylistAction.UPDATE_TRACK:
       if (action.payload.playlistId !== state._id) {
         return state;
       }
@@ -131,7 +132,7 @@ export const playlistReducer:Reducer<Playlist> = ( state:Playlist = new Playlist
       newState = Object.assign(new Playlist, state);
       newState.loadState = null;
 
-      // Create new array of tracks OTHER than the track we're adding (in case it's a track update)
+      // Create new array of tracks OTHER than the track we're adding (in case it's an UPDATE_TRACK)
       newState.tracks = state.tracks.filter(( playlistTrack:PlaylistTrack ) => {
         return playlistTrack._id !== action.payload.playlistTrack._id;
       });

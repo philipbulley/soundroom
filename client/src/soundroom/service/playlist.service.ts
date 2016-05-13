@@ -253,15 +253,18 @@ export class PlaylistService {
 
           switch (eventData.action) {
             case PlaylistTracksChangeActionEnum.ADD:
-              console.log('PlaylistService.observeSocket: PlaylistTracksChangeActionEnum.ADD', eventData);
+            case PlaylistTracksChangeActionEnum.COMPLETE:
+              console.log('PlaylistService.observeSocket: ', eventData.action, eventData);
               const playlistTrack = PlaylistTrackFactory.createFromApiResponse(eventData.playlistTrack);
 
               // A track has been successfully added - reflect change in local data collection
               this.store.dispatch({
-                type: PlaylistAction.ADD_TRACK,
+                type: eventData.action === PlaylistTracksChangeActionEnum.ADD
+                  ? PlaylistAction.ADD_TRACK
+                  : PlaylistAction.UPDATE_TRACK,
                 payload: {
-                  playlistId: eventData.playlistId, 
-                  playlistTrack, 
+                  playlistId: eventData.playlistId,
+                  playlistTrack,
                   playlistTrackIds: eventData.playlistTrackIds
                 }
               });
