@@ -8,6 +8,8 @@ import log from './../util/LogUtil';
 
 
 const upVote = (client, payload) => {
+  console.log('SocketController.upVote: client:', client, 'payload:', payload);
+
   const {playlistId} = payload;
   const {trackId} = payload;
   const {playlistTrackId} = payload;

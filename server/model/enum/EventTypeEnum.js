@@ -1,7 +1,8 @@
 const EventTypeEnum = {
   CONNECTION: 'connection',
   CONNECT: 'connect',
-  USER_ENTER: 'user.enter',
+  AUTHENTICATE: 'authenticate',
+  AUTHENTICATED: 'authenticated',
   PLAYLIST_PLAY: 'playlist.play',
   PLAYLIST_PAUSE: 'playlist.pause',
   PLAYLIST_TRACK_UPVOTE: 'playlist.track.upvote',

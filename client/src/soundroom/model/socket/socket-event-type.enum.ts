@@ -2,7 +2,8 @@ export class SocketEventTypeEnum {
 
   static CONNECTION = 'connection';
   static CONNECT = 'connect';
-  static USER_ENTER = 'user.enter';
+  static AUTHENTICATE = 'authenticate';
+  static AUTHENTICATED = 'authenticated';
   static PLAYLIST_PLAY = 'playlist.play';
   static PLAYLIST_PAUSE = 'playlist.pause';
   static PLAYLIST_TRACK_UPVOTE = 'playlist.track.upvote';

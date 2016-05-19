@@ -53,7 +53,6 @@ export class AuthService {
           return Observable.throw(error || 'Server error');
         }
       });
-
   }
 
   /**

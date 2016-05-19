@@ -45,7 +45,7 @@ export class NetworkService {
         }
 
         // Calc number of seconds we'll retry in using incremental backoff
-        var retrySecs = Math.min(Math.round(Math.pow(++count, 2)), this.MAX_RETRY_INTERVAL);
+        const retrySecs = Math.min(Math.round(Math.pow(++count, 2)), this.MAX_RETRY_INTERVAL);
         console.warn(`NetworkService.retry: Retry ${count} in ${retrySecs} seconds`);
 
         // Set delay
@@ -67,11 +67,11 @@ export class NetworkService {
    */
   get requestOptions() {
 
-    let headers = {
+    const headers = {
       'Content-Type': 'application/json',
     };
 
-    let jwt = localStorage.getItem('jwt');
+    const jwt = localStorage.getItem('jwt');
     if (jwt) {
       headers['Authorization'] = `JWT ${jwt}`
     }

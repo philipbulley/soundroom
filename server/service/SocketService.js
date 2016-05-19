@@ -3,6 +3,8 @@ import socketIO from 'socket.io';
 import EventTypeEnum from '../model/enum/EventTypeEnum';
 import socketUsers from '../model/state/SocketUsers';
 
+const jwt = require('jsonwebtoken');
+
 class SocketService extends EventEmitter {
 
   constructor() {
@@ -11,34 +13,76 @@ class SocketService extends EventEmitter {
 
   init(server) {
     this.io = socketIO(server);
-    this.io.on(EventTypeEnum.CONNECTION, (socket) => {
-      // console.log('--> new socket connection', socket);
-      // TODO: send current state when user connects: current track, playing or paused
-      // alternatively send with progress updates?
-      const currentState = {};
-      socket.emit(EventTypeEnum.CONNECT, currentState)
-        .on(EventTypeEnum.USER_ENTER, (userId) => {
-          socketUsers.add(socket.client.id, userId);
-          this.emit(EventTypeEnum.USER_UPDATE);
+    this.io.on(EventTypeEnum.CONNECTION, socket => {
+      // console.log('SocketService.init: CONNECTION');
+
+      // Temporarily delete socket from namespace connected map
+      delete this.io.sockets.connected[socket.id];
+
+      const options = {
+        secret: process.env.JWT_TOKEN_SECRET,
+        timeout: 5000 // 5 seconds to send the authentication message
+      };
+
+      const authTimeout = setTimeout(() => socket.disconnect('unauthorized'), options.timeout || 5000);
+
+      var handleAuthenticate = data => {
+        clearTimeout(authTimeout);
+        // console.log('SocketService.init: handleAuthenticate():', data.jwt);
+
+        jwt.verify(data.jwt, options.secret, options, (err, decoded) => {
+          // console.log('SocketService.init: handleAuthenticate: jwt.verify(): decoded:', decoded);
+          if (err) {
+            socket.disconnect('unauthorized');
+            return;
+          }
+
+          if (decoded) {
+            // Restore temporarily disabled connection
+            this.io.sockets.connected[socket.id] = socket;
+
+            // Store the user ID on the socket for easy retrieval within subsequent socket event handlers
+            socket.userId = decoded.iss;
+            socket.expiresAt = new Date(decoded.exp * 1000);
+            socket.connectedAt = new Date();
+
+            console.log('SocketService.init: Auth Success:\n\tuserId:', socket.userId,
+              '\n\texpiresAt:', socket.expiresAt,
+              '\n\tconnectedAt:', socket.connectedAt,
+              '\n\tsocket.client.id:', socket.client.id
+            );
+
+            this.initListeners(socket);
+
+            socket.emit(EventTypeEnum.AUTHENTICATED);
+
+            // Add to global user list and inform clients
+            socketUsers.add(socket.client.id, socket.userId);
+            this.emit(EventTypeEnum.USER_UPDATE);
+          }
         })
-        .on(EventTypeEnum.PLAYLIST_PLAY, (id) => (
-          this.emit(EventTypeEnum.PLAYLIST_PLAY, id)
-        ))
-        .on(EventTypeEnum.PLAYLIST_PAUSE, (id) => (
-          this.emit(EventTypeEnum.PLAYLIST_PAUSE, id)
-        ))
-        .on(EventTypeEnum.PLAYLIST_TRACK_UPVOTE, (playlistId, trackId) => (
-          this.emit(EventTypeEnum.PLAYLIST_TRACK_UPVOTE, socket, playlistId, trackId)
-        ))
-        .on(EventTypeEnum.PLAYLIST_TRACK_VETO, (playlistId, trackId) => (
-          this.emit(EventTypeEnum.PLAYLIST_TRACK_VETO, socket, playlistId, trackId)
-        ))
-        .on(EventTypeEnum.DISCONNECT, () => {
-          socket.removeAllListeners();
-          socketUsers.remove(socket.client.id);
-          this.emit(EventTypeEnum.USER_UPDATE);
-        });
+      };
+
+      socket.on(EventTypeEnum.AUTHENTICATE, handleAuthenticate);
     });
+  }
+
+  /**
+   * Once user is connected and authenticated, we can attach app listeners
+   * @param socket
+   */
+  initListeners(socket) {
+    const currentState = {};
+    socket.emit(EventTypeEnum.CONNECT, currentState)
+      .on(EventTypeEnum.PLAYLIST_PLAY, id => this.emit(EventTypeEnum.PLAYLIST_PLAY, id))
+      .on(EventTypeEnum.PLAYLIST_PAUSE, id => this.emit(EventTypeEnum.PLAYLIST_PAUSE, id))
+      .on(EventTypeEnum.PLAYLIST_TRACK_UPVOTE, (playlistId, trackId) => this.emit(EventTypeEnum.PLAYLIST_TRACK_UPVOTE, socket, playlistId, trackId))
+      .on(EventTypeEnum.PLAYLIST_TRACK_VETO, (playlistId, trackId) => this.emit(EventTypeEnum.PLAYLIST_TRACK_VETO, socket, playlistId, trackId))
+      .on(EventTypeEnum.DISCONNECT, () => {
+        socket.removeAllListeners();
+        socketUsers.remove(socket.client.id);
+        this.emit(EventTypeEnum.USER_UPDATE);
+      });
   }
 
   /**
@@ -60,9 +104,10 @@ class SocketService extends EventEmitter {
   }
 
   updateConnectedUsers(users) {
-    console.log(users.map((user) => user.id).join(','));
-    const connectedUsers = users.filter((user) => socketUsers.contains(user.id));
-    console.log('connectedUsers', connectedUsers.length);
+    console.log('SocketService.updateConnectedUsers(): users:', users.map(user => user.id).join(', '));
+
+    const connectedUsers = users.filter(user => socketUsers.contains(user.id));
+    console.log('SocketService.updateConnectedUsers:', connectedUsers.length);
     this.io.emit(EventTypeEnum.USER_UPDATE, connectedUsers);
   }
 
