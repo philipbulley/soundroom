@@ -99,22 +99,35 @@ export default function create() {
     },
 
     /**
+     * Creates a new up vote on an existing track.
      *
-     * @param trackId
-     * @param user
+     * @param {User} user
+     * @param {string} trackId
      * @returns {Promise<Playlist>}
      */
-    upVoteTrack: function (trackId, user) {
-      console.log('upVoteTrack()', trackId, user);
+    upVoteTrack: function (user, trackId) {
+      // console.log('Playlist.upVoteTrack()', userId, trackId);
 
       const playlistTrack = this.getPlaylistTrackByIdOrTrackId(trackId);
 
-      if (!playlistTrack)
+      if (!playlistTrack) {
         throw new Error(PlaylistErrorEnum.TRACK_NOT_IN_PLAYLIST);
+      }
 
-      playlistTrack.upVotes.addToSet({}); // TODO: Add user
+      const userAlreadyVoted = _.find(playlistTrack.upVotes, upVote => upVote.createdBy._id.toString() === user._id.toString());
 
-      console.log('Playlist.upVoteTrack:', playlistTrack);
+      if (userAlreadyVoted) {
+        throw new Error(PlaylistErrorEnum.DUPLICATE_USER_UP_VOTE);
+      }
+
+      // DEBUG!! KILL ALL UP VOTES IN PLAYLIST!
+      // this.tracks.forEach(track => track.upVotes = []);
+
+      playlistTrack.upVotes.addToSet({
+        createdBy: user._id
+      });
+
+      // console.log('Playlist.upVoteTrack:', playlistTrack);
 
       // Save first before sorting so timestamps are up-to-date
       return this.savePopulateQ()
@@ -127,7 +140,7 @@ export default function create() {
           this.tracks = _.without(this.tracks, first);
           this.tracks.unshift(first);
 
-          console.log('Playlist.upVoteTrack: tracks after sort:', this.tracks);
+          // console.log('Playlist.upVoteTrack: tracks after sort:', this.tracks);
           return this.savePopulateQ();
         });
     },
@@ -210,7 +223,7 @@ export default function create() {
     /**
      * These fields need to be populated by a document from another database model. String of fields names, separated by spaces.
      */
-    POPULATE_FIELDS: 'createdBy tracks.track tracks.createdBy tracks.upVotes tracks.track.artists tracks.track.album',
+    POPULATE_FIELDS: 'createdBy tracks.track tracks.createdBy tracks.upVotes tracks.upVotes.createdBy tracks.track.artists tracks.track.album',
 
     /**
      * Checks if the format of the ID is valid

@@ -8,13 +8,13 @@ import log from './../util/LogUtil';
 
 
 const upVote = (client, payload) => {
-  console.log('SocketController.upVote: client:', client, 'payload:', payload);
+  // console.log('SocketController.upVote: payload:', payload, 'userId:', client.userId);
 
   const {playlistId} = payload;
   const {trackId} = payload;
   const {playlistTrackId} = payload;
 
-  return playlistController.upVoteTrack(playlistId, playlistTrackId || trackId)
+  return playlistController.upVoteTrack(client.user, playlistId, playlistTrackId || trackId)
     .catch((err) => {
       client.emit(EventTypeEnum.ERROR_PLAYLIST_TRACK_UPVOTE, err.message, playlistId, trackId);
       // HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);

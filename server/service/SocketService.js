@@ -2,6 +2,7 @@ import {EventEmitter} from 'events';
 import socketIO from 'socket.io';
 import EventTypeEnum from '../model/enum/EventTypeEnum';
 import socketUsers from '../model/state/SocketUsers';
+import {findById} from './../controller/UserController';
 
 const jwt = require('jsonwebtoken');
 
@@ -38,28 +39,34 @@ class SocketService extends EventEmitter {
           }
 
           if (decoded) {
-            // Restore temporarily disabled connection
-            this.io.sockets.connected[socket.id] = socket;
+            findById(decoded.iss)
+              .then(user => {
+                // Restore temporarily disabled connection
+                this.io.sockets.connected[socket.id] = socket;
 
-            // Store the user ID on the socket for easy retrieval within subsequent socket event handlers
-            socket.userId = decoded.iss;
-            socket.expiresAt = new Date(decoded.exp * 1000);
-            socket.connectedAt = new Date();
+                // Store the user ID on the socket for easy retrieval within subsequent socket event handlers
+                socket.user = user;
+                socket.expiresAt = new Date(decoded.exp * 1000);
+                socket.connectedAt = new Date();
 
-            console.log('SocketService.init: Auth Success:\n\tuserId:', socket.userId,
-              '\n\texpiresAt:', socket.expiresAt,
-              '\n\tconnectedAt:', socket.connectedAt,
-              '\n\tsocket.client.id:', socket.client.id
-            );
+                console.log(`SocketService.init: Auth Success:\n\tuser: ${socket.user.name} (${socket.user._id})`,
+                  '\n\texpiresAt:', socket.expiresAt,
+                  '\n\tconnectedAt:', socket.connectedAt,
+                  '\n\tsocket.client.id:', socket.client.id
+                );
 
-            this.initListeners(socket);
+                this.initListeners(socket);
 
-            socket.emit(EventTypeEnum.AUTHENTICATED);
+                socket.emit(EventTypeEnum.AUTHENTICATED);
 
-            // Add to global user list and inform clients
-            socketUsers.add(socket.client.id, socket.userId);
-            this.emit(EventTypeEnum.USER_UPDATE);
+                // Add to global user list and inform clients
+                socketUsers.add(socket.client.id, socket.userId);
+                this.emit(EventTypeEnum.USER_UPDATE);
+              });
+          } else {
+            socket.disconnect('jwt_decode_error');
           }
+
         })
       };
 

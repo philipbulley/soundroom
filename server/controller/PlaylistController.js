@@ -53,11 +53,11 @@ class PlaylistController {
   }
 
   /**
-   *
+   * @param {User} user
    * @param {string} provider     Use a value that exists in ProviderEnum
    * @param {string} foreignId    The ID on the provider's platform
    */
-  addTrackByForeignId(playlistId, provider, foreignId) {
+  addTrackByForeignId(user, playlistId, provider, foreignId) {
     console.log('PlaylistController.addTrackByForeignId:', provider, foreignId);
 
     // Check if track already exists as a Track model in the DB (ie. a user has added it before)
@@ -68,8 +68,9 @@ class PlaylistController {
       })
       .catch((err) => {
         // The track isn't yet stored in our DB, time to create it
-        if (err.message === TrackErrorEnum.NOT_FOUND)
+        if (err.message === TrackErrorEnum.NOT_FOUND){
           return trackController.createByForeignId(provider, foreignId);
+        }
 
         log.formatError(err, 'PlaylistController.addTrackByForeignId');
 
@@ -79,18 +80,19 @@ class PlaylistController {
       .then((track) => {
         log.debug('PlaylistController.addTrackByForeignId: READY TO ADD TRACK TO PLAYLIST!');
 
-        return this.addTrackToPlaylist(playlistId, track.id);
+        return this.addTrackToPlaylist(user, playlistId, track.id);
       });
   }
 
   /**
    * Adds a track to a playlist and upvotes it.
    *
-   * @param playlistId
-   * @param trackId
+   * @param {User} user
+   * @param {string} playlistId
+   * @param {string} trackId
    * @returns {Promise<PlaylistTrack>}
    */
-  addTrackToPlaylist(playlistId, trackId/*, user*/) {
+  addTrackToPlaylist(user, playlistId, trackId) {
     console.log('PlaylistController.addTrackToPlaylist:', playlistId, trackId);
 
     let playlist, track;
@@ -109,9 +111,10 @@ class PlaylistController {
 
         console.log('PlaylistController.addTrackToPlaylist: Found track:', track);
 
+        // TODO: Add user to addPlaylistTrack
         return playlist.addPlaylistTrack(track/*, user*/);
       })
-      .then(playlistTrack => this.upVoteTrack(playlist.id, track.id, false))
+      .then(playlistTrack => this.upVoteTrack(user, playlist.id, track.id, false))
       .then(playlist => {
 
         const playlistTrack = playlist.getPlaylistTrackByIdOrTrackId(track.id);
@@ -130,14 +133,15 @@ class PlaylistController {
   /**
    * UpVote a PlaylistTrack and return a playlist with correctly sorted tracks.
    *
+   * @param {User} user
    * @param {string} playlistId
    * @param {string} trackId      A trackId or a playlistTrackId
    * @param {boolean} [emitSocketEvent=true]   Should this action emit a socket event notifying clients about the upvote?
    * @returns {Promise<Playlist>}   Promise resolved with playlist whose tracks are freshly sorted taking this upVote in to account
    */
-  upVoteTrack(playlistId, trackId, emitSocketEvent = true) {
+  upVoteTrack(user, playlistId, trackId, emitSocketEvent = true) {
     return this.getById(playlistId)
-      .then(playlist => playlist.upVoteTrack(trackId))
+      .then(playlist => playlist.upVoteTrack(user, trackId))
       .then(playlist => {
         if (emitSocketEvent) {
           SocketService.emitTracksChange(

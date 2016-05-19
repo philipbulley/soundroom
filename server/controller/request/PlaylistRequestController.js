@@ -29,9 +29,7 @@ class PlaylistRequestController {
     console.log('PlaylistRequestController.getByIdParam()', req.params.playlist_id);
 
     return playlistController.getById(req.params.playlist_id)
-      .then((playlist) => {
-        res.json(playlist);
-      })
+      .then((playlist) => res.json(playlist))
       .catch((err) => {
         switch (err.message) {
           case PlaylistErrorEnum.INVALID_ID:
@@ -63,7 +61,7 @@ class PlaylistRequestController {
   }
 
   addTrackByForeignId (req, res) {
-    return playlistController.addTrackByForeignId(req.params.playlist_id, req.body.provider, req.body.foreignId)
+    return playlistController.addTrackByForeignId(req.user, req.params.playlist_id, req.body.provider, req.body.foreignId)
       .then((playlist) => {
         res.json(playlist);
       })
