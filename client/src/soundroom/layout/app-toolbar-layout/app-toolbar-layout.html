@@ -4,7 +4,7 @@
       <a class="logo" [routerLink]="['MainLayout']">Soundroom</a>
       <a [routerLink]="['SignInLayout']" *ngIf="(auth$ | async).state !== 'AuthState.LOGGED_IN'">Sign In</a>
       <span class="user" *ngIf="(auth$ | async).state === 'AuthState.LOGGED_IN'">
-        <img class="avatar" [src]="(auth$ | async).user.avatar">
+        <img class="o-avatar" [src]="(auth$ | async).user.avatar">
         {{(auth$ | async).user.name}}
       </span>
     </div>

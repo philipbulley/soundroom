@@ -1,0 +1,11 @@
+@import '../../../style/setup/all';
+
+.avatar-list {
+  list-style-type: none;
+  padding: 0;
+
+  &__item {
+    display: inline-block;
+    margin: 0 0 8px 8px;
+  }
+}

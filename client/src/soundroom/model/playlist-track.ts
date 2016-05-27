@@ -1,4 +1,5 @@
 import {Track} from "./track";
+import {UpVote} from "./up-vote";
 
 /**
  * Represents a Track in the context of a Playlist
@@ -9,8 +10,7 @@ export class PlaylistTrack {
 
   track:Track;
 
-  // TODO: Change to UpVote[]
-  upVotes:any[];
+  upVotes:UpVote[];
 
   created:Date;
 
