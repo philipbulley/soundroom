@@ -48,7 +48,7 @@
 
     <div class="info__track-name">{{playlistTrack?.track?.name}}</div>
     <div class="info__artist-name">{{playlistTrack?.track?.artists | artistsNames}}</div>
-    <div class="info__user-name-added">Added by [username placeholder]</div>
+    <div class="info__user-name-added">Added by {{playlistTrack?.createdBy?.name}}</div>
   </div>
 </div>
 

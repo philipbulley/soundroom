@@ -62,14 +62,14 @@ class PlaylistController {
 
     // Check if track already exists as a Track model in the DB (ie. a user has added it before)
     return trackController.getByForeignId(provider, foreignId)
-      .then((track) => {
+      .then(track => {
         log.debug('PlaylistController.addTrackByForeignId: track already exists');
         return track;
       })
-      .catch((err) => {
+      .catch(err => {
         // The track isn't yet stored in our DB, time to create it
-        if (err.message === TrackErrorEnum.NOT_FOUND){
-          return trackController.createByForeignId(provider, foreignId);
+        if (err.message === TrackErrorEnum.NOT_FOUND) {
+          return trackController.createByForeignId(user, provider, foreignId);
         }
 
         log.formatError(err, 'PlaylistController.addTrackByForeignId');
@@ -77,7 +77,7 @@ class PlaylistController {
         // Rethrow
         throw err;
       })
-      .then((track) => {
+      .then(track => {
         log.debug('PlaylistController.addTrackByForeignId: READY TO ADD TRACK TO PLAYLIST!');
 
         return this.addTrackToPlaylist(user, playlistId, track.id);
@@ -111,8 +111,7 @@ class PlaylistController {
 
         console.log('PlaylistController.addTrackToPlaylist: Found track:', track);
 
-        // TODO: Add user to addPlaylistTrack
-        return playlist.addPlaylistTrack(track/*, user*/);
+        return playlist.addPlaylistTrack(user, track);
       })
       .then(playlistTrack => this.upVoteTrack(user, playlist.id, track.id, false))
       .then(playlist => {

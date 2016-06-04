@@ -15,7 +15,7 @@
         <div class="track__info-artists">{{playlistTrack.track.artists | artistsNames}}</div>
         <!--<div>{{playlistTrack._id}} / {{playlistTrack.track._id}}</div>-->
       </div>
-      <div class="track__data track__user">User</div>
+      <div class="track__data track__user">{{playlistTrack.createdBy?.name}}</div>
       <div class="track__data track__avatars">
         <up-vote-avatars [upVotes]="playlistTrack.upVotes"></up-vote-avatars>
       </div>

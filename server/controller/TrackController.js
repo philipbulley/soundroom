@@ -8,18 +8,18 @@ import TrackErrorEnum from './../model/enum/TrackErrorEnum';
 
 class TrackController {
 
-  constructor () {
+  constructor() {
     FunctionUtil.bindAllMethods(this);
 
     this.spotifyDataService = new SpotifyDataService();
   }
 
-  getAll () {
+  getAll() {
     console.log('TrackController.getAll()');
     return db.Track.findPopulateQ();
   }
 
-  getById (id) {
+  getById(id) {
     console.log('TrackController.getById()', id);
 
     return db.Track.findByIdPopulateQ(id)
@@ -37,7 +37,7 @@ class TrackController {
    * @param {string} provider     Use a value that exists in ProviderEnum
    * @param {string} foreignId    The ID on the provider's platform
    */
-  getByForeignId (provider, foreignId) {
+  getByForeignId(provider, foreignId) {
     return db.Track.findPopulateQ({provider: provider, foreignId: foreignId})
       .then((tracks) => {
         if (!tracks || !tracks.length)
@@ -50,11 +50,12 @@ class TrackController {
   /**
    * Creates a track based on the foreignId then saves it to the database.
    *
-   * @param provider
-   * @param foreignId
+   * @param {User} user
+   * @param {string} provider
+   * @param {string} foreignId
    * @returns {Q.Promise<Track>}
    */
-  createByForeignId (provider, foreignId) {
+  createByForeignId(user, provider, foreignId) {
     provider = provider.toLowerCase();
 
     let trackObj;
@@ -68,34 +69,36 @@ class TrackController {
     log.debug('TrackController.createByForeignId: Got track:', trackObj);
     // Now we have a track, ensure the individual Models are saved to the DB
     let promise = db.Album.findOneAndUpdateQ({foreignId: trackObj.album.foreignId}, trackObj.album, {
-      upsert: true,
-      'new': true
-    })
-    .then((album) => {
-      log.debug('Got Album:', album);
-      trackObj.album = album._id;
-    });
+        upsert: true,
+        'new': true
+      })
+      .then(album => {
+        log.debug('Got Album:', album);
+        trackObj.album = album._id;
+      });
 
     trackObj.artists.forEach((artistObj, i, arr) => {
       promise = promise.then(() => {
-        console.log('About to call Artist.findOneAndUpdateQ:', artistObj);
-        return db.Artist.findOneAndUpdateQ({foreignId: artistObj.foreignId}, artistObj, {upsert: true, 'new': true});
-      })
-        .then((artist) => {
+          console.log('About to call Artist.findOneAndUpdateQ:', artistObj);
+          return db.Artist.findOneAndUpdateQ({foreignId: artistObj.foreignId}, artistObj, {upsert: true, 'new': true});
+        })
+        .then(artist => {
           log.debug('Saved Artist:', artist);
           arr[i] = artist._id;
         });
     });
 
     promise = promise.then(() => {
-      log.debug('Call save track:', trackObj);
-      const track = db.Track(trackObj);
-      return track.saveQ();
-    })
-      .then((track) => {
+        log.debug('Call save track:', trackObj);
+        trackObj.createdBy = user._id;
+
+        const track = db.Track(trackObj);
+        return track.saveQ();
+      })
+      .then(track => {
         return track.populateQ(db.Track.POPULATE_FIELDS);
       })
-      .then((track) => {
+      .then(track => {
         log.debug('Got saved track:', track);
         log.debug('Got saved track.album:', track.album);
         log.debug('Got saved track.artists:', track.artists);
@@ -112,7 +115,7 @@ class TrackController {
    * @param id
    * @returns {Q.Promise<String>}
    */
-  getArtwork (id) {
+  getArtwork(id) {
     return this.getById(id)
       .then((track) => {
         switch (track.provider) {

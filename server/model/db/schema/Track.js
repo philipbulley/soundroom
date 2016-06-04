@@ -16,7 +16,7 @@ export default function create() {
     foreignId: {type: String, required: true, unique: true},
     album: {type: Schema.Types.ObjectId, ref: 'Album'},
     artists: [{type: Schema.Types.ObjectId, ref: 'Artist'}],
-    createdBy: {type: Schema.Types.ObjectId, ref: 'User'},
+    createdBy: {type: Schema.Types.ObjectId, ref: 'User', required: true},
     created: {type: Date}
   });
 

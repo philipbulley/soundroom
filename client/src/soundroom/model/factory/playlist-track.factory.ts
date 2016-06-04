@@ -1,6 +1,7 @@
 import {TrackFactory} from "./track.factory";
 import {UpVoteFactory} from "./up-vote.factory";
 import {PlaylistTrack} from "../playlist-track";
+import {UserFactory} from "./user.factory";
 
 export class PlaylistTrackFactory {
 
@@ -13,6 +14,8 @@ export class PlaylistTrackFactory {
     playlistTrack.track = TrackFactory.createFromApiResponse(apiData.track);
 
     playlistTrack.upVotes = apiData.upVotes.map(upVote => UpVoteFactory.createFromApiResponse(upVote));
+
+    playlistTrack.createdBy = UserFactory.createFromApiResponse(apiData.createdBy);
 
     playlistTrack.created = new Date(apiData.created);
 

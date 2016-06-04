@@ -12,14 +12,14 @@ const Schema = mongoose.Schema;
 
 export default function create() {
   const upVoteSchema = new Schema({
-    createdBy: {type: Schema.Types.ObjectId, ref: 'User'}   // TODO: required: true when implemented users
+    createdBy: {type: Schema.Types.ObjectId, ref: 'User', required: true}
   });
 
   upVoteSchema.plugin(DateFields);
 
   const playlistTrackSchema = new Schema({
     track: {type: Schema.Types.ObjectId, ref: 'Track'},
-    createdBy: {type: Schema.Types.ObjectId, ref: 'User'},    // TODO: required: true when implemented users
+    createdBy: {type: Schema.Types.ObjectId, ref: 'User', required: true},
     upVotes: [upVoteSchema]
   });
 
@@ -68,11 +68,11 @@ export default function create() {
     /**
      * Adds track to playlist if it's not in there already
      *
-     * @param track
-     * @param user
+     * @param {User} user
+     * @param {Track} track
      * @returns {Q.Promise}   The added or existing track
      */
-    addPlaylistTrack: function (track, user) {
+    addPlaylistTrack: function (user, track) {
 
       let playlistTrack = this.getPlaylistTrackByIdOrTrackId(track.id);
 
@@ -83,7 +83,7 @@ export default function create() {
       playlistTrack = {};
       playlistTrack.trackId = track.id;
       playlistTrack.track = track;
-      //playlistTrack.createdBy = null;   // TODO: Add user
+      playlistTrack.createdBy = user._id;
       // Add upvotes in a separate step
 
       console.log('Playlist.addPlaylistTrack:', this.id);
@@ -223,7 +223,7 @@ export default function create() {
     /**
      * These fields need to be populated by a document from another database model. String of fields names, separated by spaces.
      */
-    POPULATE_FIELDS: 'createdBy tracks.track tracks.createdBy tracks.upVotes tracks.upVotes.createdBy tracks.track.artists tracks.track.album',
+    POPULATE_FIELDS: 'createdBy tracks.track tracks.track.createdBy tracks.createdBy tracks.upVotes tracks.upVotes.createdBy tracks.track.artists tracks.track.album',
 
     /**
      * Checks if the format of the ID is valid

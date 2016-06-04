@@ -2,6 +2,7 @@ import {Track} from "../track";
 import {AlbumFactory} from "./album.factory";
 import {ArtistFactory} from "./artist.factory";
 import {ProviderFactory} from "./provider.factory";
+import {UserFactory} from "./user.factory";
 
 export class TrackFactory {
 
@@ -22,6 +23,8 @@ export class TrackFactory {
     track.album = AlbumFactory.createFromApiResponse( apiData.album );
 
     track.artists = apiData.artists.map( artistsData => ArtistFactory.createFromApiResponse( artistsData ) );
+
+    track.createdBy = UserFactory.createFromApiResponse(apiData.createdBy);
 
     track.created = new Date( apiData.created );
 

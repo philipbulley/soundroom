@@ -1,6 +1,7 @@
 import {ProviderEnum} from "./enum/provider.enum";
 import {Album} from "./album";
 import {Artist} from "./artist";
+import {User} from "./user";
 
 export class Track {
 
@@ -21,5 +22,7 @@ export class Track {
   album:Album;
 
   artists:Artist[];
+
+  createdBy:User;
 
 }
