@@ -2,7 +2,7 @@
 
 Democratic playlist server for Spotify.
 
-Requires node `0.12.x` due to dependency on [node-spotify](https://www.npmjs.com/package/node-spotify). You can use [n](https://www.npmjs.com/package/n) to interactively manage node versions on your development machine.
+Tested with node `6.2.1` (note: `node-spotify` finally works with newer node versions as of `0.7.2`).
 
 ## Setting up on Mac OSX
 
@@ -10,15 +10,17 @@ Requires node `0.12.x` due to dependency on [node-spotify](https://www.npmjs.com
 
         $ brew install homebrew/binary/libspotify
 
-1. For the homebrew installation to work with node-spotify, you'll need to remove the file extension from the alias
+1. For the homebrew installation to work with node-spotify, create an alias to the lib without file extension:
 
-    $ cd /usr/local/Cellar/libspotify/12.1.51/lib/
-    $ mv libspotify.dylib libspotify
+        $ sudo ln -s /usr/local/opt/libspotify/lib/libspotify.12.1.51.dylib /usr/local/opt/libspotify/lib/libspotify
 
 1. Assuming you have node.js already installed:
 
-    $ cd ./server
-    $ npm install
+        $ cd ./server
+        $ npm install -g node-gyp
+        $ npm install
+
+**Troubleshoot:** If you encounter an error where `#include <libspotify/api.h>` can't be found, run `xcode-select --install` as described [here](https://github.com/FrontierPsychiatrist/node-spotify/issues/97#issuecomment-222293866).
 
 Now you've installed, see "Running the node app" later on in this document.
 
