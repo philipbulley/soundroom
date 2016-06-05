@@ -7,8 +7,7 @@
   "license": "ISC",
   "scripts": {
     "start": "node_modules/nodemon/bin/nodemon.js index.js",
-    "startDebug": "babel-node-debug -p 8081 --no-preload index.js",
-    "startDev": "NODE_ENV=dev NO_AUTH=true SKIP_TRACKS=true node_modules/nodemon/bin/nodemon.js index.js",
+    "debug": "node_modules/iron-node/bin/run.js index.js",
     "test": "mocha"
   },
   "repository": {
@@ -47,6 +46,7 @@
   "devDependencies": {
     "babel-eslint": "^4.1.5",
     "chai": "~2.3.0",
+    "iron-node": "^3.0.5",
     "mocha": "~2.2.5",
     "nodemon": "^1.9.1",
     "supertest": "~1.0.1"

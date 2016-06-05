@@ -197,6 +197,10 @@ The app requires that you've setup certain environment variables. The best way t
 Start the app like so
 
     $ npm start
+    
+or to debug with Chrome Dev Tools (via [iron-node](https://github.com/s-a/iron-node))
+
+    $ npm run debug
 
 ### Can't hear any audio?
 
