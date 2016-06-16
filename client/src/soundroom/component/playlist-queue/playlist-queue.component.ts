@@ -7,6 +7,10 @@ import {ArtistsNamesPipe} from "../../pipe/artists-names.pipe";
 import {PlaylistTrack} from "../../model/playlist-track";
 import {PlaylistService} from "../../service/playlist.service";
 import {UpVoteAvatarsComponent} from "../up-vote-avatars/up-vote-avatars.component";
+import {UpVote} from "../../model/up-vote";
+import {Auth} from "../../model/auth";
+import {Store} from '@ngrx/store';
+import {AuthState} from "../../model/state/auth.state";
 
 @Component({
   selector: 'playlist-queue',
@@ -28,8 +32,13 @@ export class PlaylistQueueComponent implements OnInit {
 
   private playlist:Playlist;
 
-  constructor( private cdr:ChangeDetectorRef, private playlistService:PlaylistService ) {
+  private auth$:Observable<Auth>;
+  private auth:Auth;
 
+  private isLoggedIn:boolean = false;
+
+  constructor( private cdr:ChangeDetectorRef, private playlistService:PlaylistService, private authStore:Store<Auth> ) {
+    this.auth$ = this.authStore.select('auth');
   }
 
   ngOnInit():any {
@@ -41,9 +50,24 @@ export class PlaylistQueueComponent implements OnInit {
 
       this.cdr.markForCheck();
     });
+
+
+    this.auth$.subscribe(( auth:Auth ) => {
+      this.auth = auth;
+      this.isLoggedIn = this.auth.state === AuthState.LOGGED_IN;
+      this.cdr.markForCheck();
+    });
   }
 
-  upVote( playlistTrack:PlaylistTrack ) {
+  upVote( playlistTrack:PlaylistTrack ):void {
     this.playlistService.upVote(this.playlist, playlistTrack);
+  }
+
+  hasUserUpVote( playlistTrack:PlaylistTrack ):boolean {
+    console.log('PlaylistQueueComponent.hasUserUpVote(): auth:', this.auth.user);
+
+    return playlistTrack.upVotes.reduce(( previous:boolean, upVote:UpVote ) => {
+      return previous || upVote.createdBy._id === this.auth.user._id
+    }, false);
   }
 }

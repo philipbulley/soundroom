@@ -7,7 +7,8 @@
     <li class="track" *ngFor="#playlistTrack of playlistTracks">
       <div class="track__data track__up-vote-count">{{playlistTrack.upVotes.length}}</div>
       <div class="track__data track__up-vote">
-        <button class="u-no-style" (click)="upVote(playlistTrack)"><i class="fa fa-arrow-up"></i></button>
+        <button class="u-no-style" (click)="upVote(playlistTrack)" *ngIf="isLoggedIn && !hasUserUpVote(playlistTrack)"><i class="fa fa-arrow-up"></i></button>
+        <i class="fa fa-smile-o fa-2x" *ngIf="isLoggedIn && hasUserUpVote(playlistTrack)"></i>
       </div>
       <div class="track__data track__album-art">Art</div>
       <div class="track__data track__info">
