@@ -20,8 +20,9 @@ _.extend(SpotifyTrackFactory, {
    * @returns {Track[]|Track}       An array of tracks or a single track, corresponding to the trackData input.
    */
   create: function (trackData) {
-    if (_.isArray(trackData))
+    if (_.isArray(trackData)) {
       return trackData.map((value) => SpotifyTrackFactory.create(value));
+    }
 
     const track = {
       name: trackData.name,
@@ -29,7 +30,8 @@ _.extend(SpotifyTrackFactory, {
       foreignId: trackData.link,
       provider: ProviderEnum.SPOTIFY,
       album: SpotifyAlbumFactory.create(trackData.album),
-      artists: SpotifyArtistFactory.create(trackData.artists)
+      artists: SpotifyArtistFactory.create(trackData.artists),
+      images: trackData.images
     };
 
     //log.debug( 'SpotifyArtistFactory.create: track:', track );

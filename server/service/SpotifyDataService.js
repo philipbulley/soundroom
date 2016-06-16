@@ -6,24 +6,30 @@ import spotifyService from './SpotifyService';
 
 class SpotifyDataService {
 
-  constructor () {
+  constructor() {
     FunctionUtil.bindAllMethods(this);
   }
 
-  getTrack (id) {
+  getTrack(spotifyTrackUri) {
     //console.log('SpotifyDataService.getTrack():', id, 'spotifyService:', this.spotifyService);
 
     if (process.env.MOCK_SPOTIFY === 'true') {
-      return MockSpotifyDataService.getTrack(id);
+      return MockSpotifyDataService.getTrack(spotifyTrackUri);
     }
 
-    const trackResponse = spotifyService.getTrack(id);
+    let trackResponse = spotifyService.getTrack(spotifyTrackUri);
     console.log('SpotifyDataService.getTrack: trackResponse:', trackResponse);
-    return SpotifyTrackFactory.create(trackResponse);
+
+    return spotifyService.getImageData(spotifyTrackUri)
+      .then(images => {
+        trackResponse = Object.assign(trackResponse, {images});
+        console.log('trackResponse', trackResponse);
+        return SpotifyTrackFactory.create(trackResponse);
+      });
   }
 
-  getTrackArtwork (albumId) {
-    return spotifyService.getImage(albumId);
+  getTrackArtwork(spotifyTrackUri) {
+    return spotifyService.getImageData(spotifyTrackUri);
   }
 
 }

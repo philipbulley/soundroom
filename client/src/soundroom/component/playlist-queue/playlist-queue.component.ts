@@ -65,8 +65,6 @@ export class PlaylistQueueComponent implements OnInit {
   }
 
   hasUserUpVote( playlistTrack:PlaylistTrack ):boolean {
-    console.log('PlaylistQueueComponent.hasUserUpVote(): auth:', this.auth.user);
-
     return playlistTrack.upVotes.reduce(( previous:boolean, upVote:UpVote ) => {
       return previous || upVote.createdBy._id === this.auth.user._id
     }, false);

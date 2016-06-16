@@ -1,6 +1,7 @@
 import db from './../model/db';
 import FunctionUtil from './../util/FunctionUtil';
 import log from './../util/LogUtil';
+import Q from 'q';
 import ProviderEnum from './../model/enum/ProviderEnum';
 import SpotifyDataService from './../service/SpotifyDataService';
 import TrackErrorEnum from './../model/enum/TrackErrorEnum';
@@ -58,37 +59,52 @@ class TrackController {
   createByForeignId(user, provider, foreignId) {
     provider = provider.toLowerCase();
 
-    let trackObj;
+    let trackObj, promise;
 
     switch (provider) {
       case ProviderEnum.SPOTIFY:
-        trackObj = this.spotifyDataService.getTrack(foreignId);
+        promise = this.spotifyDataService.getTrack(foreignId);
         break;
+
+      default:
+        throw new Error('Provider not supported: ', provider);
     }
 
-    log.debug('TrackController.createByForeignId: Got track:', trackObj);
     // Now we have a track, ensure the individual Models are saved to the DB
-    let promise = db.Album.findOneAndUpdateQ({foreignId: trackObj.album.foreignId}, trackObj.album, {
+    promise = promise.then(_trackObj => {
+      trackObj = _trackObj;
+
+      log.debug('TrackController.createByForeignId: Got track:', trackObj);
+
+      return db.Album.findOneAndUpdateQ({foreignId: trackObj.album.foreignId}, trackObj.album, {
         upsert: true,
         'new': true
       })
+    })
       .then(album => {
         log.debug('Got Album:', album);
         trackObj.album = album._id;
-      });
 
-    trackObj.artists.forEach((artistObj, i, arr) => {
-      promise = promise.then(() => {
-          console.log('About to call Artist.findOneAndUpdateQ:', artistObj);
-          return db.Artist.findOneAndUpdateQ({foreignId: artistObj.foreignId}, artistObj, {upsert: true, 'new': true});
-        })
-        .then(artist => {
-          log.debug('Saved Artist:', artist);
-          arr[i] = artist._id;
+        // Get/upsert all artists
+        let artistsPromise = Q.resolve();
+
+        trackObj.artists.forEach((artistObj, i, arr) => {
+            console.log('About to call Artist.findOneAndUpdateQ:', artistObj);
+          artistsPromise = artistsPromise.then(() => {
+            return db.Artist.findOneAndUpdateQ({foreignId: artistObj.foreignId}, artistObj, {
+              upsert: true,
+              'new': true
+            });
+          })
+            .then(artist => {
+              log.debug('Saved Artist:', artist);
+              arr[i] = artist._id;
+            });
         });
-    });
 
-    promise = promise.then(() => {
+        return artistsPromise;
+      })
+      .then(() => {
         log.debug('Call save track:', trackObj);
         trackObj.createdBy = user._id;
 
@@ -120,7 +136,7 @@ class TrackController {
       .then((track) => {
         switch (track.provider) {
           case ProviderEnum.SPOTIFY:
-            return this.spotifyDataService.getTrackArtwork(track);
+            return this.spotifyDataService.getTrackArtwork(track.foreignId);
             break;
           default:
             return null;

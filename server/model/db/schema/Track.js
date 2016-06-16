@@ -9,6 +9,12 @@ const mongoose = mongooseQ();
 const Schema = mongoose.Schema;
 
 export default function create() {
+  const imageSchema = new Schema({
+    width: {type: Schema.Types.Number, required: true},
+    height: {type: Schema.Types.Number, required: true},
+    url: {type: Schema.Types.String, required: true}
+  });
+
   const trackSchema = new Schema({
     name: {type: String, required: true},
     duration: {type: Number, required: true},
@@ -16,6 +22,7 @@ export default function create() {
     foreignId: {type: String, required: true, unique: true},
     album: {type: Schema.Types.ObjectId, ref: 'Album'},
     artists: [{type: Schema.Types.ObjectId, ref: 'Artist'}],
+    images: [imageSchema],
     createdBy: {type: Schema.Types.ObjectId, ref: 'User', required: true},
     created: {type: Date}
   });

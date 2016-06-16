@@ -3,6 +3,7 @@ import {AlbumFactory} from "./album.factory";
 import {ArtistFactory} from "./artist.factory";
 import {ProviderFactory} from "./provider.factory";
 import {UserFactory} from "./user.factory";
+import {ImageFactory} from "./image.factory";
 
 export class TrackFactory {
 
@@ -23,6 +24,8 @@ export class TrackFactory {
     track.album = AlbumFactory.createFromApiResponse( apiData.album );
 
     track.artists = apiData.artists.map( artistsData => ArtistFactory.createFromApiResponse( artistsData ) );
+
+    track.images = apiData.images.map( imageData => ImageFactory.createFromApiResponse( imageData ) );
 
     track.createdBy = UserFactory.createFromApiResponse(apiData.createdBy);
 

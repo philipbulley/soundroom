@@ -108,11 +108,17 @@ const search = (terms = '') => {
   return getJSON(`${webAPI}/search?type=track&q=${terms}`);
 };
 
-const getImage = (track) => {
-  const {foreignId} = track;
-  const trackId = foreignId.split(':').pop();
+/**
+ * Returns a promise that will be resolved with an array of image data objects (ie. `[{width, height, url}]`).
+ *
+ * @param spotifyTrackUri
+ * @returns {*}
+ */
+const getImageData = (spotifyTrackUri) => {
+  const trackId = spotifyTrackUri.split(':').pop();
   const url = `${webAPI}/tracks/${trackId}`;
   const deferred = Q.defer();
+
   getJSON(url)
     .then((json) => deferred.resolve(json.album.images))
     .catch((err) => deferred.reject(err));
@@ -122,7 +128,7 @@ const getImage = (track) => {
 
 export default _.assign(spotifyService, {
   login,
-  getImage,
+  getImageData,
   getTrack,
   play,
   pause,

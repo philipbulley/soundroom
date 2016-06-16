@@ -2,6 +2,7 @@ import {ProviderEnum} from "./enum/provider.enum";
 import {Album} from "./album";
 import {Artist} from "./artist";
 import {User} from "./user";
+import {Image} from "./image";
 
 export class Track {
 
@@ -24,5 +25,7 @@ export class Track {
   artists:Artist[];
 
   createdBy:User;
+  
+  images:Image;
 
 }
