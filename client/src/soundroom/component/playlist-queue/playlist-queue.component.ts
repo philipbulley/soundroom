@@ -11,12 +11,13 @@ import {UpVote} from "../../model/up-vote";
 import {Auth} from "../../model/auth";
 import {Store} from '@ngrx/store';
 import {AuthState} from "../../model/state/auth.state";
+import {MomentPipe} from "../../pipe/moment.pipe";
 
 @Component({
   selector: 'playlist-queue',
   template: require('./playlist-queue.html'),
   styles: [require('./playlist-queue.scss')],
-  pipes: [ArtistsNamesPipe],
+  pipes: [ArtistsNamesPipe, MomentPipe],
   directives: [UpVoteAvatarsComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
