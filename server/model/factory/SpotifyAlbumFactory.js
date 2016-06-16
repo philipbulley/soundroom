@@ -19,8 +19,9 @@ _.extend(SpotifyAlbumFactory, {
    * @returns {Album[]|Album}       An array of albums or a single album, corresponding to the albumData input.
    */
   create: function (albumData) {
-    if (_.isArray(albumData))
-      return albumData.map((value) => SpotifyAlbumFactory.create(value));
+    if (_.isArray(albumData)) {
+      return albumData.map(value => SpotifyAlbumFactory.create(value));
+    }
 
     const album = {
       name: albumData.name,

@@ -22,7 +22,9 @@ export class PlaylistTrack {
   currentTime:number;
 
   progress:number;
-  
+
   createdBy:User;
+
+  playCompleted:Date;
 
 }

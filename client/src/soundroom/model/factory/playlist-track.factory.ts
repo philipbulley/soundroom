@@ -17,6 +17,8 @@ export class PlaylistTrackFactory {
 
     playlistTrack.createdBy = UserFactory.createFromApiResponse(apiData.createdBy);
 
+    playlistTrack.playCompleted = apiData.playCompleted ? new Date(apiData.playCompleted) : null;
+    
     playlistTrack.created = new Date(apiData.created);
 
     playlistTrack.modified = new Date(apiData.modified);

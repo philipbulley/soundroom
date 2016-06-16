@@ -20,7 +20,8 @@ export default function create() {
   const playlistTrackSchema = new Schema({
     track: {type: Schema.Types.ObjectId, ref: 'Track'},
     createdBy: {type: Schema.Types.ObjectId, ref: 'User', required: true},
-    upVotes: [upVoteSchema]
+    upVotes: [upVoteSchema],
+    playCompleted: {type: Schema.Types.Date, default: null}
   });
 
   playlistTrackSchema.plugin(DateFields);
@@ -84,7 +85,7 @@ export default function create() {
       playlistTrack.trackId = track.id;
       playlistTrack.track = track;
       playlistTrack.createdBy = user._id;
-      // Add upvotes in a separate step
+      // Add up votes in a separate step
 
       console.log('Playlist.addPlaylistTrack:', this.id);
 
@@ -93,7 +94,7 @@ export default function create() {
       return this.savePopulateQ()
         .then(playlist => {
           playlistTrack = this.getPlaylistTrackByIdOrTrackId(track.id);
-          console.log('Playlist.addPlaylistTrack: playlist after savePopulateQ:', playlist, playlistTrack);
+          console.log('Playlist.addPlaylistTrack: playlist after savePopulateQ:', playlist.toObject(), playlistTrack.toObject());
           return playlistTrack;
         });
     },
@@ -145,13 +146,25 @@ export default function create() {
         });
     },
 
+    /**
+     * Sends the track that is/will/should be playing back to the bottom of the playlist.
+     *
+     * @returns {*}
+     */
     resetCurrentPlaylistTrack: function () {
+      // console.log('Playlist.resetCurrentPlaylistTrack(): Before:', this.tracks.toObject());
+
+      // Remove all up votes from current track
       this.tracks[0].upVotes = [];
+      this.tracks[0].playCompleted = new Date();
 
       // Save first before sorting so timestamps are up-to-date
       return this.savePopulateQ()
         .then(playlist => {
           this.tracks.sort(playlistTrackSortCompare);
+
+          // console.log('Playlist.resetCurrentPlaylistTrack: After:', this.tracks.toObject());
+
           return this.savePopulateQ();
         });
     },
@@ -181,25 +194,30 @@ export default function create() {
   /**
    * Use with `Array.prototype.sort` to sort playlist tracks by up votes.
    *
+   * TODO: Unit test required!
+   *
    * @param {PlaylistTrack} a
    * @param {PlaylistTrack} b
    * @returns {number}
    */
   function playlistTrackSortCompare(a, b) {
     if (a.upVotes.length > b.upVotes.length) {
-      // a has more upvotes, so should appear before b in the playlist
+      // a has more up votes, so should appear before b in the playlist
       return -1;
     } else if (a.upVotes.length < b.upVotes.length) {
-      // a has fewer upvotes, so should appear after b in the playlist
+      // a has fewer up votes, so should appear after b in the playlist
       return 1;
     } else {
       if (!a.upVotes.length && !b.upVotes.length) {
-        // Neither track has any upvotes, so compare on when tracks were last updated
-        if (a.modified < b.modified) {
-          // a was last saved before b, so should appear before b in the playlist
+        const timestampA = a.playCompleted || a.created,
+          timestampB = b.playCompleted || b.created;
+
+        // Neither track has any up votes, so compare on create/completed timestamp
+        if (timestampA < timestampB) {
+          // a was create/completed before b, so should appear before b in the playlist
           return -1;
-        } else if (a.modified > b.modified) {
-          // a was last saved after b, so should appear after b in the playlist
+        } else if (timestampA > timestampB) {
+          // a was create/completed after b, so should appear after b in the playlist
           return 1;
         } else {
           // Unlikely unless a batch operation updated all 0 upvoted tracks at the same time :)
