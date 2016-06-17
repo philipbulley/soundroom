@@ -2,10 +2,10 @@ export class Image {
 
   _id:string;
 
-  width:string;
+  width:number;
 
-  height:Date;
+  height:number;
 
-  url:Date;
+  url:string;
 
 }

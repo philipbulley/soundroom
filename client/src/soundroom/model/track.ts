@@ -26,6 +26,6 @@ export class Track {
 
   createdBy:User;
   
-  images:Image;
+  images:Image[];
 
 }

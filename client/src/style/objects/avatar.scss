@@ -1,8 +1,16 @@
 .o-avatar {
-  $size: 25px;
+  $size: 30px;
   width: $size;
   height: $size;
   border-radius: $size/2;
 
   vertical-align: middle;
+  border: 1px solid #eee;
+
+  &--medium {
+    $size: 40px;
+    width: $size;
+    height: $size;
+    border-radius: $size/2;
+  }
 }

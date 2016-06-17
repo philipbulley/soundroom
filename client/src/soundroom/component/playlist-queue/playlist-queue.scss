@@ -14,7 +14,7 @@
 .heading {
   padding: 0 0 25px;
   color: $color-grey-grit;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: normal;
   border-bottom: 1px solid $color-grey-grit;
 }
@@ -22,7 +22,7 @@
 .empty-queue {
   padding: 20px 0;
   text-align: center;
-}O
+}
 
 .queue-list {
   margin: 0;
@@ -32,6 +32,7 @@
 
 .queue-list {
   display: table;
+  //table-layout: fixed;
   width: 100%;
 }
 
@@ -43,6 +44,7 @@
   &__data {
     display: table-cell;
     padding: 20px;
+    vertical-align: middle;
 
     &:first-child {
       padding-left: 0;
@@ -54,8 +56,19 @@
   }
 
   &__up-vote-count {
+    width: 20px;
     font-size: 20px;
     color: $color-grey-grit;
+  }
+
+  &__up-vote {
+    width: 20px;
+    text-align: center;
+  }
+
+  &__album-art {
+    width: 30px;
+    text-align: right;
   }
 
   &__info {
