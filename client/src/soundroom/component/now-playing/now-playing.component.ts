@@ -51,4 +51,12 @@ export class NowPlayingComponent implements OnInit {
   pause() {
     this.playlistService.pause(this.playlist._id);
   }
+
+  togglePlay() {
+    if (this.playlist.isPlaying) {
+      this.pause();
+    } else {
+      this.play();
+    }
+  }
 }

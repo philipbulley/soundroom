@@ -26,15 +26,13 @@
   <div class="artwork">
     <timeline [percentage]="progress$"></timeline>
 
+    <button class="artwork__image-wrap u-no-style" (click)="togglePlay()">
+      <img class="artwork__image" [src]="playlistTrack?.track?.images[2].url">
+    </button>
+
     <div class="play-pause">
-      <button
-        class="u-no-style"
-        *ngIf="!(playlist$ | async).isPlaying"
-        (click)="play()"><i class="fa fa-play fa-2x"></i></button>
-      <button
-        class="u-no-style"
-        *ngIf="(playlist$ | async).isPlaying"
-        (click)="pause()"><i class="fa fa-pause fa-2x"></i></button>
+      <i class="artwork__play-icon fa fa-play fa-2x" *ngIf="!(playlist$ | async).isPlaying"></i>
+      <i class="artwork__pause-icon fa fa-pause fa-2x" *ngIf="(playlist$ | async).isPlaying"></i>
     </div>
   </div>
 

@@ -40,8 +40,37 @@
 }
 
 .artwork {
+  $size: 148px;
+
   position: relative;
   min-height: 240px;
+
+  &__image-wrap {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate3d(-50%, -50%, 0);
+
+    width: $size;
+    height: $size;
+    border-radius: $size / 2;
+    overflow: hidden;
+    outline: 0;
+  }
+
+  &__image {
+    width: $size;
+    height: $size;
+    filter: blur(2px) brightness(.9);
+    transform: scale3d(1.1, 1.1, 1);
+    transition: filter .5s $ease-out-circ, transform .5s $ease-out-back;
+
+    &:hover {
+      transition: filter 2s $ease-out-circ, transform 10s $ease-out-circ;
+      filter: blur(4px) brightness(.85);
+      transform: scale3d(1.5, 1.5, 1) rotate3d(0, 0, 1, -15deg);
+    }
+  }
 }
 
 timeline, .play-pause {
@@ -49,6 +78,12 @@ timeline, .play-pause {
   top: 50%;
   left: 50%;
   transform: translate3d(-50%, -50%, 0);
+}
+
+.play-pause {
+  color: #fff;
+  font-size: 0.7em;
+  pointer-events: none;
 }
 
 ////////////////////////////
