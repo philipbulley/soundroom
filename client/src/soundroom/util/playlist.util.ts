@@ -1,7 +1,7 @@
 import {Playlist} from "../model/playlist";
 
 export function getPlaylistById( id:string, playlists:Playlist[] ) {
-  let playlists = playlists.filter(( playlist:Playlist ) => {
+  playlists = playlists.filter(( playlist:Playlist ) => {
     return playlist._id === id;
   });
 

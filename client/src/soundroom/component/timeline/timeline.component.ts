@@ -1,4 +1,4 @@
-import {Component, ChangeDetectionStrategy, Input, OnInit, ChangeDetectorRef} from 'angular2/core';
+import {Component, ChangeDetectionStrategy, Input, OnInit, ChangeDetectorRef} from '@angular/core';
 
 import {Observable} from 'rxjs/Observable';
 

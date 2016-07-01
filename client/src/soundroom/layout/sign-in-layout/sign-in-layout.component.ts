@@ -1,18 +1,18 @@
-import {Component, ChangeDetectionStrategy, OnInit} from 'angular2/core';
-import {CanActivate, ComponentInstruction, RouteParams, RouterLink} from 'angular2/router';
+import {Component, ChangeDetectionStrategy, OnInit} from '@angular/core';
+import {ActivatedRoute, ROUTER_DIRECTIVES} from '@angular/router';
 
 import {Observable} from 'rxjs/Observable';
 import {Store} from '@ngrx/store';
 import {SocialSignInComponent} from "../../component/sign-in/social-sign-in.component";
 import {Auth} from "../../model/auth";
 import {AuthService} from "../../service/auth.service";
-
+import {AppState} from "../../../boot";
 
 @Component({
   selector: 'main-layout',
   template: require('./sign-in-layout.html'),
   styles: [require('./sign-in-layout.scss')],
-  directives: [SocialSignInComponent, RouterLink],
+  directives: [SocialSignInComponent, ROUTER_DIRECTIVES],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 // @CanActivate((next: ComponentInstruction, previous: ComponentInstruction) => {
@@ -23,9 +23,9 @@ export class SignInLayout implements OnInit {
 
   private auth:Observable<Auth>;
 
-  constructor( private store:Store<Auth>, private routeParams:RouteParams, private authService:AuthService ) {
+  constructor( private store:Store<AppState>, private route:ActivatedRoute, private authService:AuthService ) {
 
-    this.auth = store.select('auth');
+    this.auth = <Observable<Auth>>store.select('auth');
     this.auth.subscribe(( auth:Auth ) => console.log('SignInLayout.auth: Auth:', auth));
 
   }
@@ -33,7 +33,7 @@ export class SignInLayout implements OnInit {
   ngOnInit():any {
 
     // Check whether we've been passed a new JWT via the query string
-    let jwt = this.routeParams.get('jwt');
+    let jwt = this.route.snapshot.params['jwt'];
 
     if (jwt) {
       this.authService.jwt = jwt;

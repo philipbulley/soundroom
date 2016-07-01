@@ -1,4 +1,4 @@
-import {Component, ChangeDetectionStrategy, Input} from 'angular2/core';
+import {Component, ChangeDetectionStrategy, Input} from '@angular/core';
 import {UpVote} from "../../model/up-vote";
 import {MomentPipe} from "../../pipe/moment.pipe";
 

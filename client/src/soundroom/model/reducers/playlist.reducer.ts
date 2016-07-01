@@ -1,11 +1,11 @@
-import {Reducer, Action} from '@ngrx/store';
+import {ActionReducer, Action} from '@ngrx/store';
 import {Playlist} from "../playlist";
 import {PlaylistAction} from "../action/playlist.action.ts";
 import {PlaylistState} from "../state/playlist.state.ts";
 import {PlaylistProgressSocketEvent} from "../socket/playlist-progress-socket-event";
 import {PlaylistTrack} from "../playlist-track";
 
-export const playlistReducer:Reducer<Playlist> = ( state:Playlist = new Playlist, action:Action ) => {
+export const playlistReducer:ActionReducer<Playlist> = ( state:Playlist = new Playlist, action:Action ) => {
 
   // console.log('playlistReducer():', action.type, state);
   // console.log(' - action:', action);
@@ -51,7 +51,7 @@ export const playlistReducer:Reducer<Playlist> = ( state:Playlist = new Playlist
           return playlistTrack;
         });
         return newState;
-      } else if (state.current || (!state.current && payload.playlistId == state._id)) {
+      } else if (state.current || (!state.current && payload.playlistId === state._id)) {
         // This playlist is playing
 
         if (!state.tracks) {
@@ -115,7 +115,7 @@ export const playlistReducer:Reducer<Playlist> = ( state:Playlist = new Playlist
 
     // TODO: Implement the following with payload:{playlist, track}
     case PlaylistAction.ADDING_TRACK:
-      if (action.payload.playlist._id !== state._id) {
+      if (action.payload.observablePlaylist._id !== state._id) {
         return state;
       }
 
@@ -148,7 +148,7 @@ export const playlistReducer:Reducer<Playlist> = ( state:Playlist = new Playlist
       return newState;
 
     case PlaylistAction.ERROR_ADDING_TRACK:
-      if (action.payload.playlist._id !== state._id) {
+      if (action.payload.observablePlaylist._id !== state._id) {
         return state;
       }
 

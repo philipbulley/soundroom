@@ -1,9 +1,9 @@
-import {Reducer, Action} from '@ngrx/store';
+import {ActionReducer, Action} from '@ngrx/store';
 import {AuthAction} from "../action/auth.action.ts";
 import {Auth} from "../auth";
 import {AuthState} from "../state/auth.state.ts";
 
-export const authReducer:Reducer<Auth> = ( state:Auth = new Auth, action:Action ) => {
+export const authReducer:ActionReducer<Auth> = ( state:Auth = new Auth, action:Action ) => {
 
   // console.log('authReducer():', action.type);
   // console.log(' - action:', action);

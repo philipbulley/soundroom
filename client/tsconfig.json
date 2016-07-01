@@ -5,11 +5,8 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
-    "moduleResolution": "node"
+    "noEmitHelpers": true
   },
-  "exclude": [
-    "node_modules"
-  ],
   "compileOnSave": false,
   "buildOnSave": false
 }

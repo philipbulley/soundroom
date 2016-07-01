@@ -1,5 +1,5 @@
-import {Injectable} from 'angular2/core';
-import {Http, Response} from 'angular2/http';
+import {Injectable} from '@angular/core';
+import {Http, Response} from '@angular/http';
 
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs/Observable';
@@ -10,15 +10,15 @@ import {AuthAction} from "../model/action/auth.action.ts";
 import {NetworkService} from "./network.service";
 import {UserFactory} from "../model/factory/user.factory";
 import {Auth} from "../model/auth";
+import {AppState} from "../../boot";
 
 @Injectable()
 export class AuthService {
 
-  private auth$:Observable<Auth>;
-  private auth:Auth;
+  private auth:Observable<Auth>;
   private isInit:boolean;
 
-  constructor( private http:Http, private store:Store<Auth>, private networkService:NetworkService ) {
+  constructor( private http:Http, private store:Store<AppState>, private networkService:NetworkService ) {
 
     console.log('AuthService()');
 
@@ -76,8 +76,7 @@ export class AuthService {
   private init() {
     this.isInit = true;
 
-    this.auth$ = this.store.select('auth');
-    this.auth$.subscribe(( auth ) => this.auth = auth);
+    this.auth = <Observable<Auth>>this.store.select('auth');
   }
 
 }

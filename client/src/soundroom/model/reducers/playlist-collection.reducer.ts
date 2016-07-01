@@ -1,4 +1,4 @@
-import {Reducer, Action} from '@ngrx/store';
+import {ActionReducer, Action} from '@ngrx/store';
 import {Playlist} from "../playlist";
 import {PlaylistAction} from "../action/playlist.action.ts";
 import {PlaylistCollection} from "../playlist-collection";
@@ -8,7 +8,7 @@ import {PlaylistCollectionState} from "../state/playlist-collection.state.ts";
 import {PlaylistCollectionAction} from "../action/playlist-collection.action.ts";
 import {PlaylistProgressSocketEvent} from "../socket/playlist-progress-socket-event";
 
-export const playlistCollectionReducer:Reducer<PlaylistCollection> = ( state:PlaylistCollection = new PlaylistCollection, action:Action ) => {
+export const playlistCollectionReducer:ActionReducer<PlaylistCollection> = ( state:PlaylistCollection = new PlaylistCollection, action:Action ) => {
 
   // console.log('playlistCollectionReducer():', action.type);
   // console.log(' - action:', action);

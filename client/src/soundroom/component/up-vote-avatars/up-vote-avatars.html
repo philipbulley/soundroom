@@ -1,7 +1,7 @@
 <!-- TODO: Test with lots of upvotes and see how avatars wrap -->
 
 <ul class="avatar-list">
-  <li class="avatar-list__item" *ngFor="#upVote of upVotes">
+  <li class="avatar-list__item" *ngFor="let upVote of upVotes">
     <img class="o-avatar" title="{{upVote.createdBy.name}} up voted this track {{upVote.created | moment:'fromNow'}}!" [src]="upVote.createdBy.avatar">
   </li>
 </ul>

@@ -34,9 +34,7 @@ module.exports = function makeWebpackConfig() {
    * Reference: http://webpack.github.io/docs/configuration.html#devtool
    * Type of sourcemap to use per build type
    */
-  if (isTest) {
-    config.devtool = 'inline-source-map';
-  } else if (isProd) {
+  if (isProd) {
     config.devtool = 'source-map';
   } else {
     config.devtool = 'eval-source-map';
@@ -50,6 +48,7 @@ module.exports = function makeWebpackConfig() {
    * Reference: http://webpack.github.io/docs/configuration.html#entry
    */
   config.entry = isTest ? {} : {
+    'polyfills': './src/polyfills.ts',
     'vendor': './src/vendor.ts',
     'soundroom': './src/boot.ts' // our angular app
   };
@@ -60,7 +59,7 @@ module.exports = function makeWebpackConfig() {
    */
   config.output = isTest ? {} : {
     path: root('dist'),
-    publicPath: '/',
+    publicPath: isProd ? '/' : 'http://localhost:8080/',
     filename: isProd ? 'js/[name].[hash].js' : 'js/[name].js',
     chunkFilename: isProd ? '[id].[hash].chunk.js' : '[id].chunk.js'
   };
@@ -92,22 +91,12 @@ module.exports = function makeWebpackConfig() {
       // Support for .ts files.
       {
         test: /\.ts$/,
-        loader: 'ts',
-        sourceMap: false,
-        query: {
-          'ignoreDiagnostics': [
-            2403, // 2403 -> Subsequent variable declarations
-            2300, // 2300 -> Duplicate identifier
-            2374, // 2374 -> Duplicate number index signature
-            2375, // 2375 -> Duplicate string index signature
-            2502  // 2502 -> Referenced directly or indirectly
-          ]
-        },
+        loaders: ['ts', 'angular2-template-loader'],
         exclude: [isTest ? /\.(e2e)\.ts$/ : /\.(spec|e2e)\.ts$/, /node_modules\/(?!(ng2-.+))/]
       },
 
       // copy those assets to output
-      {test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)$/, loader: 'file?name=[path][name].[ext]?[hash]'},
+      {test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)$/, loader: 'file?name=fonts/[name].[hash].[ext]?'},
 
       // Support for *.json files.
       {test: /\.json$/, loader: 'json'},
@@ -149,13 +138,22 @@ module.exports = function makeWebpackConfig() {
   };
 
   if (isTest) {
-    // instrument only testing sources with Istanbul, covers js compiled files for now :-/
+    // instrument only testing sources with Istanbul, covers ts files
     config.module.postLoaders.push({
-      test: /\.(js|ts)$/,
+      test: /\.ts$/,
       include: path.resolve('src'),
       loader: 'istanbul-instrumenter-loader',
       exclude: [/\.spec\.ts$/, /\.e2e\.ts$/, /node_modules/]
-    })
+    });
+
+    // needed for remap-instanbul
+    config.ts = {
+      compilerOptions: {
+        sourceMap: false,
+        sourceRoot: './src',
+        inlineSourceMap: true
+      }
+    };
   }
 
   /**
@@ -174,47 +172,20 @@ module.exports = function makeWebpackConfig() {
     })
   ];
 
-
   if (!isTest) {
     config.plugins.push(
       // Generate common chunks if necessary
       // Reference: https://webpack.github.io/docs/code-splitting.html
       // Reference: https://webpack.github.io/docs/list-of-plugins.html#commonschunkplugin
       new CommonsChunkPlugin({
-        name: 'vendor',
-        filename: isProd ? 'js/[name].[hash].js' : 'js/[name].js',
-        minChunks: Infinity
-      }),
-      new CommonsChunkPlugin({
-        name: 'common',
-        filename: isProd ? 'js/[name].[hash].js' : 'js/[name].js',
-        minChunks: 2,
-        chunks: ['soundroom', 'vendor']
+        name: ['vendor', 'polyfills']
       }),
 
       // Inject script and link tags into html files
       // Reference: https://github.com/ampedandwired/html-webpack-plugin
       new HtmlWebpackPlugin({
         template: './src/public/index.html',
-        inject: 'body',
-        chunksSortMode: function compare(a, b) {
-          // common always first
-          if (a.names[0] === 'common') {
-            return -1;
-          }
-          // soundroom always last
-          if (a.names[0] === 'soundroom') {
-            return 1;
-          }
-          // vendor before soundroom
-          if (a.names[0] === 'vendor' && b.names[0] === 'soundroom') {
-            return -1;
-          } else {
-            return 1;
-          }
-          // a must be equal to b
-          return 0;
-        }
+        chunksSortMode: 'dependency'
       }),
 
       // Extract css files
@@ -237,11 +208,7 @@ module.exports = function makeWebpackConfig() {
 
       // Reference: http://webpack.github.io/docs/list-of-plugins.html#uglifyjsplugin
       // Minify all javascript, switch loaders to minimizing mode
-      new webpack.optimize.UglifyJsPlugin({
-        // Angular 2 is broken again, disabling mangle until beta 6 that should fix the thing
-        // Todo: remove this with beta 6
-        mangle: false
-      }),
+      new webpack.optimize.UglifyJsPlugin(),
 
       // Copy assets from the public folder
       // Reference: https://github.com/kevlened/copy-webpack-plugin
@@ -298,9 +265,4 @@ module.exports = function makeWebpackConfig() {
 function root(args) {
   args = Array.prototype.slice.call(arguments, 0);
   return path.join.apply(path, [__dirname].concat(args));
-}
-
-function rootNode(args) {
-  args = Array.prototype.slice.call(arguments, 0);
-  return root.apply(path, ['node_modules'].concat(args));
 }

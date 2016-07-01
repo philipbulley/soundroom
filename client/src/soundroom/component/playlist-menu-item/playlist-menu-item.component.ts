@@ -1,5 +1,5 @@
-import {Component, Input, ChangeDetectionStrategy, ChangeDetectorRef} from 'angular2/core';
-import {RouterLink} from 'angular2/router';
+import {Component, Input, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import {ROUTER_DIRECTIVES, Router} from '@angular/router';
 
 var alertify = require('alertify.js');
 
@@ -11,7 +11,7 @@ import {Observable} from 'rxjs/Observable';
   selector: 'playlist-menu-item',
   template: require('./playlist-menu-item.html'),
   styles: [require('./playlist-menu-item.scss')],
-  directives: [RouterLink],
+  directives: [ROUTER_DIRECTIVES],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlaylistMenuItemComponent {
@@ -44,8 +44,8 @@ export class PlaylistMenuItemComponent {
   private deleteDisabledSecs:number;
 
 
-  constructor( private playlistService:PlaylistService, private cdr:ChangeDetectorRef ) {
-
+  constructor( private playlistService:PlaylistService, private cdr:ChangeDetectorRef, private router:Router ) {
+    console.log('PlaylistMenuItemComponent()', router);
   }
 
   deleteMe() {
@@ -102,7 +102,10 @@ export class PlaylistMenuItemComponent {
             this.deleteState = null;
           });
     }
+  }
 
-
+  joinRoom() {
+    console.log('PlaylistMenuItemComponent.joinRoom():', ['playlist', this.playlist._id]);
+    this.router.navigate(['playlist', this.playlist._id]);
   }
 }

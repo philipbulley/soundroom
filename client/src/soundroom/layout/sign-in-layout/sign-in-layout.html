@@ -8,7 +8,7 @@
 
   <div *ngIf="(auth | async ).state === 'AuthState.LOGGED_IN'">
     <h2>{{(auth | async).user.name}} in da house!</h2>
-    <a [routerLink]="['MainLayout']">Let's get started!</a>
+    <a [routerLink]="['']">Let's get started!</a>
   </div>
 
   <div *ngIf="(auth | async ).state === 'AuthState.LOGGED_OUT'">

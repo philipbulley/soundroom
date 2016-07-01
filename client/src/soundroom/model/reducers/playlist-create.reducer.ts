@@ -1,9 +1,9 @@
-import {Reducer, Action} from '@ngrx/store';
+import {ActionReducer, Action} from '@ngrx/store';
 import {PlaylistCreateAction} from "../action/playlist-create.action.ts";
 import {PlaylistCreate} from "../playlist-create";
 import {PlaylistCreateState} from "../state/playlist-create.state.ts";
 
-export const playlistCreateReducer:Reducer<PlaylistCreate> = ( state:PlaylistCreate = new PlaylistCreate(), action:Action ) => {
+export const playlistCreateReducer:ActionReducer<PlaylistCreate> = ( state:PlaylistCreate = new PlaylistCreate(), action:Action ) => {
 
   // console.log('playlistCreateReducer():', action.type);
   // console.log(' - action:', action);

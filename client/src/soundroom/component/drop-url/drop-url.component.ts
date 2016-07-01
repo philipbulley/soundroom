@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, Input, ChangeDetectionStrategy} from 'angular2/core';
+import {Component, ElementRef, OnInit, Input, ChangeDetectionStrategy} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 var alertify = require('alertify.js');
 
@@ -24,7 +24,7 @@ import {SpotifyService} from "../../service/spotify.service.ts";
 export class DropUrlComponent implements OnInit {
 
   @Input('playlist')
-  private playlist$:Observable<Playlist>;
+  private observablePlaylist:Observable<Playlist>;
 
   private playlist:Playlist;
 
@@ -41,7 +41,7 @@ export class DropUrlComponent implements OnInit {
 
   ngOnInit() {
     this.el.nativeElement.classList.add(this.CSS_CLASS);
-    this.playlist$.subscribe(playlist => this.playlist = playlist);
+    this.observablePlaylist.subscribe(playlist => this.playlist = playlist);
   }
 
   handleDragOver( event ) {

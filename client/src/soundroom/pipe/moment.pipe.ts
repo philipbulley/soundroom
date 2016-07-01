@@ -1,4 +1,4 @@
-import {Pipe, PipeTransform} from 'angular2/core';
+import {Pipe, PipeTransform} from '@angular/core';
 import * as moment from 'moment';
 
 /**
@@ -37,11 +37,12 @@ export class MomentPipe implements PipeTransform {
       return momentified;
     }
 
-    if (typeof args === 'undefined') {
+    if (typeof args === 'string') {
       return momentified[args]();
     }
 
     if (args.length > 0) {
+      console.log('MomentPipe.applyArgs: args:', args);
       const fnName = args.shift();
 
       return momentified[fnName].apply(momentified, args);

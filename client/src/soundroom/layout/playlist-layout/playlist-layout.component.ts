@@ -1,5 +1,5 @@
-import {Component, OnInit, OnDestroy, ChangeDetectionStrategy} from 'angular2/core';
-import {RouteParams} from 'angular2/router';
+import {Component, OnInit, OnDestroy, ChangeDetectionStrategy} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 
 import {Observable} from 'rxjs/Observable';
 import {Store} from '@ngrx/store';
@@ -13,6 +13,7 @@ import {TrackSearchComponent} from "../../component/track-search/track-search.co
 import {PlaylistQueueComponent} from "../../component/playlist-queue/playlist-queue.component";
 import {AuthService} from "../../service/auth.service";
 import {DropUrlComponent} from "../../component/drop-url/drop-url.component";
+import {AppState} from "../../../boot";
 
 @Component({
   selector: 'playlist-layout',
@@ -22,15 +23,14 @@ import {DropUrlComponent} from "../../component/drop-url/drop-url.component";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlaylistLayout implements OnInit {
-  private playlist$:Observable<Playlist>;
-  private playlist:Playlist;
-  private noPlaylist:boolean;
+  private playlist:Observable<Playlist>;
   private id:string;
   private playlistCollection:Observable<PlaylistCollection>;
   private isLoading:boolean;
   private jwt:string;
 
-  constructor( private routeParams:RouteParams, private store:Store<Playlist>, private playlistService:PlaylistService, private authService:AuthService ) {
+  constructor( private route:ActivatedRoute, private store:Store<AppState>, private playlistService:PlaylistService, private authService:AuthService ) {
+    console.log('PlaylistLayout(): route:', route);
     this.jwt = authService.jwt;
   }
 
@@ -38,30 +38,18 @@ export class PlaylistLayout implements OnInit {
 
     console.log('PlaylistLayout.ngOnInit()');
 
-    this.id = this.routeParams.get('id');
+    this.id = this.route.snapshot.params['id'];
 
-    this.playlistCollection = this.store.select('playlistsCollection');
+    this.playlistCollection = <Observable<PlaylistCollection>>this.store.select('playlistsCollection');
 
-    this.playlist$ = this.playlistCollection
+    this.playlist = this.playlistCollection
       .map(( playlistCollection:PlaylistCollection ) => {
-        // console.log('PlaylistLayout.ngOnInit: playlist: map!');
-        // console.log(' - playlistCollection:', playlistCollection);
-        // console.log(' - playlistCollection.playlists: ', playlistCollection.playlists);
 
         this.isLoading = !!playlistCollection.loadState;
 
         return playlistCollection.playlists
           .filter(( playlist:Playlist ) => playlist._id === this.id)[0];
       });
-
-    // DEBUG subscribe!
-    // this.playlist$
-    //   .subscribe(( playlist:Playlist ) => {
-    //     console.log('PlaylistLayout: playlistCollection.subscribe: data:', playlist);
-    //
-    //     this.playlist = playlist;
-    //   });
-
 
     this.playlistService.load(this.id);
   }

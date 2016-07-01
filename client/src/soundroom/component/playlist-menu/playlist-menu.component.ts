@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, ChangeDetectionStrategy, Input} from 'angular2/core';
+import {Component, OnInit, OnDestroy, ChangeDetectionStrategy, Input} from '@angular/core';
 
 import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';

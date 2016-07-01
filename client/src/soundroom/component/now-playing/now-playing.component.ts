@@ -1,4 +1,4 @@
-import {Component, ChangeDetectionStrategy, Input, OnInit, ChangeDetectorRef} from 'angular2/core';
+import {Component, ChangeDetectionStrategy, Input, OnInit, ChangeDetectorRef} from '@angular/core';
 
 import {Observable} from 'rxjs/Observable';
 
@@ -19,7 +19,7 @@ import {PlaylistTrack} from "../../model/playlist-track";
 export class NowPlayingComponent implements OnInit {
 
   @Input('playlist')
-  playlist$:Observable<Playlist>;
+  observablePlaylist:Observable<Playlist>;
 
   private playlist:Playlist;
   private playlistTrack:PlaylistTrack;
@@ -30,9 +30,9 @@ export class NowPlayingComponent implements OnInit {
   }
 
   ngOnInit():any {
-    console.log('NowPlaying.ngOnInit()', this.playlist$);
+    console.log('NowPlaying.ngOnInit()', this.observablePlaylist);
 
-    this.playlist$.subscribe(( playlist:Playlist ) => {
+    this.observablePlaylist.subscribe(( playlist:Playlist ) => {
       this.playlist = playlist;
 
       this.playlistTrack = playlist.current ||
@@ -41,7 +41,7 @@ export class NowPlayingComponent implements OnInit {
       this.cdr.markForCheck();
     });
 
-    this.progress$ = this.playlist$.map(( playlist:Playlist ) => playlist.current ? playlist.current.progress : 0);
+    this.progress$ = this.observablePlaylist.map(( playlist:Playlist ) => playlist.current ? playlist.current.progress : 0);
   }
 
   play() {

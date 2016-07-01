@@ -1,5 +1,5 @@
-import {Injectable, EventEmitter} from 'angular2/core';
-import {Http, Response} from 'angular2/http';
+import {Injectable, EventEmitter} from '@angular/core';
+import {Http, Response} from '@angular/http';
 
 import {Observable} from 'rxjs/Observable';
 import {ConnectableObservable} from 'rxjs/observable/ConnectableObservable';
@@ -25,6 +25,7 @@ import {PlaylistTrackFactory} from "../model/factory/playlist-track.factory";
 import {PlaylistTracksChangeActionEnum} from "../model/socket/playlist-tracks-change-action.enum";
 import {PlaylistTracksChangeSocketEvent} from "../model/socket/playlist-tracks-change-socket-event";
 import {PlaylistTrack} from "../model/playlist-track";
+import {AppState} from "../../boot";
 
 @Injectable()
 export class PlaylistService {
@@ -40,7 +41,7 @@ export class PlaylistService {
    * TODO refactor into it's own connection service?
    * @type {EventEmitter}
    */
-  onSlowConnection:EventEmitter<boolean> = new EventEmitter();
+  onSlowConnection:EventEmitter<boolean> = new EventEmitter<boolean>();
 
   /**
    * Location of RESTful resource on server
@@ -50,8 +51,8 @@ export class PlaylistService {
 
   private playlistCreate$:Observable<PlaylistCreate>;
 
-  constructor( private http:Http, public store:Store<PlaylistCreate>, public networkService:NetworkService, private socketService:SocketService ) {
-    this.playlistCreate$ = this.store.select('playlistCreate');
+  constructor( private http:Http, public store:Store<AppState>, public networkService:NetworkService, private socketService:SocketService ) {
+    this.playlistCreate$ = <Observable<PlaylistCreate>>this.store.select('playlistCreate');
 
     this.observeCreate();
     this.observeSocket();
@@ -139,7 +140,7 @@ export class PlaylistService {
 
   upVote( playlist:Playlist, playlistTrack:PlaylistTrack ) {
     console.log('PlaylistService.upVote:', playlist, playlistTrack);
-    
+
     this.socketService.emit(SocketEventTypeEnum.PLAYLIST_TRACK_UPVOTE, {
       playlistId: playlist._id,
       playlistTrackId: playlistTrack._id

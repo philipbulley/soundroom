@@ -1,5 +1,4 @@
-import {Injectable} from 'angular2/core';
-import {SocketEventTypeEnum} from "../model/socket/socket-event-type.enum.ts";
+import {Injectable} from '@angular/core';
 
 import * as io from 'socket.io-client';
 import {Store} from '@ngrx/store';
@@ -10,6 +9,7 @@ import {Config} from "../model/config";
 import {Auth} from "../model/auth";
 import {SocketEventTypeEnum} from "../model/socket/socket-event-type.enum.ts";
 import {AuthState} from "../model/state/auth.state.ts";
+import {AppState} from "../../boot";
 
 @Injectable()
 export class SocketService {
@@ -17,8 +17,7 @@ export class SocketService {
 
   private socket:SocketIOClient.Socket;
   private isInit:boolean;
-  private auth$:Observable<Auth>;
-  private auth:Auth;
+  private auth:Observable<Auth>;
 
   private serverToClient:any = [
     SocketEventTypeEnum.PLAYLIST_PLAY,
@@ -33,7 +32,7 @@ export class SocketService {
   ];
   private streamObserver:Observer<any>;
 
-  constructor( private store:Store<Auth> ) {
+  constructor( private store:Store<AppState> ) {
 
     console.log('SocketService()');
 
@@ -44,12 +43,10 @@ export class SocketService {
 
     this.stream$ = new Observable(observer => this.streamObserver = observer);
 
-    this.auth$ = this.store.select('auth');
-    this.auth$.subscribe( auth => {
+    this.auth = <Observable<Auth>>this.store.select('auth');
+    this.auth.subscribe( auth => {
 
       console.log('SocketService.init: subscribe()', auth);
-
-      this.auth = auth;
 
       if (auth && auth.state === AuthState.LOGGED_IN && !this.isConnected) {
         this.connect();
@@ -74,8 +71,6 @@ export class SocketService {
   /////////////////////////
 
   private connect() {
-    console.log('SocketService.connect()', this.auth.user._id);
-
     this.socket = io(Config.SERVER_BASE_URL);
     this.socket.on(SocketEventTypeEnum.CONNECT, data => {
       this.socket.on(SocketEventTypeEnum.AUTHENTICATED, () => {

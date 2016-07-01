@@ -1,4 +1,4 @@
-import {Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef} from 'angular2/core';
+import {Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef} from '@angular/core';
 
 var alertify = require('alertify.js');
 import {Store} from '@ngrx/store';
@@ -9,6 +9,7 @@ import {PlaylistCreate} from "../../model/playlist-create";
 import {PlaylistCreateAction} from "../../model/action/playlist-create.action.ts";
 import {PlaylistState} from "../../model/state/playlist.state.ts";
 import {PlaylistCreateState} from "../../model/state/playlist-create.state.ts";
+import {AppState} from "../../../boot";
 
 @Component({
   selector: 'playlist-create',
@@ -30,10 +31,10 @@ export class PlaylistCreateComponent {
   private playlistCreate:PlaylistCreate;
   //private states:PlaylistCreateState;
 
-  constructor( private store:Store<PlaylistCreate>, private cdr:ChangeDetectorRef ) {
+  constructor( private store:Store<AppState>, private cdr:ChangeDetectorRef ) {
 
     console.log('PlaylistCreateComponent()');
-    this.playlistCreate$ = this.store.select('playlistCreate');
+    this.playlistCreate$ = <Observable<PlaylistCreate>>this.store.select('playlistCreate');
 
     //this.states = PlaylistCreateState;
 

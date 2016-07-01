@@ -4,7 +4,7 @@
   <div class="empty-queue" *ngIf="!playlistTracks.length">Add more tracks to keep the music pumpin'!</div>
 
   <ol class="queue-list" *ngIf="playlistTracks.length > 0">
-    <li class="track" *ngFor="#playlistTrack of playlistTracks; #index = index">
+    <li class="track" *ngFor="let playlistTrack of playlistTracks; let index = index">
       <div class="track__data track__up-vote-count">{{playlistTrack.upVotes.length}}</div>
       <div class="track__data track__up-vote">
         <button class="u-no-style" (click)="upVote(playlistTrack)" *ngIf="isLoggedIn && !hasUserUpVote(playlistTrack)"><i class="fa fa-arrow-up"></i></button>

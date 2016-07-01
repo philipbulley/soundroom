@@ -15,5 +15,6 @@
 <i *ngIf="deleteState === DELETE_STATE_NETWORK" class="fa fa-circle-o-notch fa-spin"></i>
 
 <div>
-  <button class="join" [routerLink]="['PlaylistLayout', {id: playlist._id}]">Join Room</button>
+  <!-- Use [routerLink]="['playlist', playlist._id]" when https://github.com/angular/angular/issues/9471 fixed -->
+  <button class="join" (click)="joinRoom()">Join Room</button>
 </div>

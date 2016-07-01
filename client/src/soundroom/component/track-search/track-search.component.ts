@@ -1,4 +1,4 @@
-import {Component, ChangeDetectionStrategy, Input, OnInit, ChangeDetectorRef} from 'angular2/core';
+import {Component, ChangeDetectionStrategy, Input, OnInit, ChangeDetectorRef} from '@angular/core';
 
 import {Observable} from 'rxjs/Observable';
 
@@ -14,7 +14,7 @@ import {PlaylistService} from "../../service/playlist.service";
 export class TrackSearchComponent implements OnInit {
 
   @Input('playlist')
-  playlist$:Observable<Playlist>;
+  observablePlaylist:Observable<Playlist>;
 
   private playlist:Playlist;
 
@@ -23,10 +23,10 @@ export class TrackSearchComponent implements OnInit {
   }
 
   ngOnInit():any {
-    console.log('TrackSearch.ngOnInit()', this.playlist$);
+    console.log('TrackSearch.ngOnInit()', this.observablePlaylist);
 
-    this.playlist$.subscribe(( playlist:Playlist ) => {
-      // console.log('TrackSearch: playlist$.subscribe()', playlist);
+    this.observablePlaylist.subscribe(( playlist:Playlist ) => {
+      // console.log('TrackSearch: observablePlaylist.subscribe()', playlist);
       this.playlist = playlist;
 
       this.cdr.markForCheck();
