@@ -115,7 +115,7 @@ export const playlistReducer:ActionReducer<Playlist> = ( state:Playlist = new Pl
 
     // TODO: Implement the following with payload:{playlist, track}
     case PlaylistAction.ADDING_TRACK:
-      if (action.payload.observablePlaylist._id !== state._id) {
+      if (action.payload.playlist._id !== state._id) {
         return state;
       }
 
@@ -148,7 +148,7 @@ export const playlistReducer:ActionReducer<Playlist> = ( state:Playlist = new Pl
       return newState;
 
     case PlaylistAction.ERROR_ADDING_TRACK:
-      if (action.payload.observablePlaylist._id !== state._id) {
+      if (action.payload.playlist._id !== state._id) {
         return state;
       }
 
