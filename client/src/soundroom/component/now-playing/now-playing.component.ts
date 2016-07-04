@@ -30,9 +30,10 @@ export class NowPlayingComponent implements OnInit {
   }
 
   ngOnInit():any {
-    console.log('NowPlaying.ngOnInit()', this.observablePlaylist);
+    console.log('NowPlaying.ngOnInit():', this.observablePlaylist);
 
     this.observablePlaylist.subscribe(( playlist:Playlist ) => {
+      console.log('NowPlaying.ngOnInit: subscribe:', playlist);
       this.playlist = playlist;
 
       this.playlistTrack = playlist.current ||
