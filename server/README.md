@@ -13,6 +13,9 @@ Tested with node `6.2.1` (note: `node-spotify` finally works with newer node ver
 1. For the homebrew installation to work with node-spotify, create an alias to the lib without file extension:
 
         $ sudo ln -s /usr/local/opt/libspotify/lib/libspotify.12.1.51.dylib /usr/local/opt/libspotify/lib/libspotify
+        $ xcode-select --install
+
+    `xcode-select --install` is required to resolve the [`#include <libspotify/api.h>` can't be found issue](https://github.com/FrontierPsychiatrist/node-spotify/issues/97#issuecomment-222293866).
 
 1. Assuming you have node.js already installed:
 
@@ -20,9 +23,7 @@ Tested with node `6.2.1` (note: `node-spotify` finally works with newer node ver
         $ npm install -g node-gyp
         $ npm install
 
-**Troubleshoot:** If you encounter an error where `#include <libspotify/api.h>` can't be found, run `xcode-select --install` as described [here](https://github.com/FrontierPsychiatrist/node-spotify/issues/97#issuecomment-222293866).
-
-Now you've installed, see "Running the node app" later on in this document.
+1. Now you've installed, see "Running the node app" later on in this document for guidance on setting up the environment including OAuth and obtaining a Spotify App Key.
 
 ### Running MongoDB
 
@@ -33,7 +34,7 @@ You can either create a free db on [mongolab.com](http://www.mongolab.com) or in
     $ sudo mkdir -p /data/db
     $ whoami
     mkyong
-    $ sudo chown philip /data/db
+    $ sudo chown YOUR_MACOS_USERNAME_HERE /data/db
     $ mongod
 
 
@@ -153,6 +154,7 @@ You can either create a free db on [mongolab.com](http://www.mongolab.com) or in
         you $ ssh pi@IP_ADDRESS_OF_PI
         pi@IP_ADDRESS_OF_PI's password: raspberry
 
+1. Now you've installed, see "Running the node app" later on in this document for guidance on setting up the environment including OAuth and obtaining a Spotify App Key.
 
 ## Running the node app
 
@@ -166,9 +168,10 @@ The app requires that you've setup certain environment variables. The best way t
     SPOTIFY_PASSWORD = 'your_spotify_premium_password'
     MOCK_SPOTIFY='false'
     
+    
     MONGO_CONNECT = 'mongodb://your_mongo_username:your_mongo_password@ds123456.mongolab.com:12345/soundroom'
     
-    # auth
+    # Auth - You must create your own apps on each provider as required and specify it's details below!
     GOOGLE_CLIENT_ID = '123456.apps.googleusercontent.com'
     GOOGLE_CLIENT_SECRET = '123456'
     
@@ -190,7 +193,7 @@ The app requires that you've setup certain environment variables. The best way t
 
 * `NODE_ENV` is used primarily to determine if the app is in a dev environment, try not to rely on this and instead use env vars specific to the requirement
 * `PORT` is used by the express http server
-* `SPOTIFY_APP_KEY` Points to your Spotify binary key. This links libspotify with a Spotify developer account.
+* `SPOTIFY_APP_KEY` Points to your Spotify binary key. This links libspotify with a Spotify developer account (create one via the [Spotify Website](https://devaccount.spotify.com/my-account/keys/)).
 * `SPOTIFY_USERNAME` and `SPOTIFY_PASSWORD` specify the user account that libspotify will login using. This must be a paid for Spotify Premium account.
 * `MONGO_CONNECT` is the connection string pointing to your mongo instance, ie. `mongodb://username:password@hostname.foo.bar:27017/spotidrop-xxxx`
 
