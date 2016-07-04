@@ -35,7 +35,6 @@ export class PlaylistLayout implements OnInit {
   }
 
   ngOnInit():any {
-
     console.log('PlaylistLayout.ngOnInit()');
 
     this.id = this.route.snapshot.params['id'];
