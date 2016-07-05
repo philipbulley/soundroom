@@ -10,14 +10,16 @@ import {Auth} from "./model/auth";
 @Injectable()
 export class AuthGuard implements CanActivate {
 
-  constructor( private authService:AuthService, private store:Store<Auth>, private router:Router ) {
+  constructor( /*private authService:AuthService,*/ private store:Store<Auth>, private router:Router ) {
+
+    // TODO: Implement properly when we don't have an issue with injecting AuthService — currently this complains about it's http service dependency
 
   }
 
   canActivate( next:ActivatedRouteSnapshot, state:RouterStateSnapshot ):boolean | Observable<boolean> {
-    const auth = <Observable<Auth>>this.store.select('auth');
+    // const auth = <Observable<Auth>>this.store.select('auth');
 
-    console.log('AuthGuard.canActivate:', auth);
+    // console.log('AuthGuard.canActivate:', auth);
 
 
     return true;
