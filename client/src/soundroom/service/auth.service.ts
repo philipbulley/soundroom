@@ -24,35 +24,48 @@ export class AuthService {
 
   }
 
-  load() {
+  load():Observable<Response> {
+    console.log('AuthService.load()');
 
     if (!this.isInit) {
       this.init();
     }
 
-    console.log('AuthService.load()');
+    if (!this.jwt) {
+      return Observable.throw(new Error('No cached JWT'));
+    }
 
     this.store.dispatch({type: AuthAction.LOAD});
 
-    this.http.get(Config.API_BASE_URL + '/me', this.networkService.requestOptions)
-      // .delay(2000)    // DEBUG: Delay for simulation purposes only
+    const httpStream = this.http.get(Config.API_BASE_URL + '/me', this.networkService.requestOptions)
+    // .delay(2000)    // DEBUG: Delay for simulation purposes only
+      .map(( res:Response ) => {
+        console.log('AuthService.load: res:', res);
+        return res;
+      })
       .map(( res:Response ) => UserFactory.createFromApiResponse(res.json()))
-      .subscribe(( user:User ) => {
+      .map(( user:User ) => {
         this.networkService.ok();
 
         // Assign initial data to collection
         console.log('AuthService.load: subscribe: user:', user);
         this.store.dispatch({type: AuthAction.POPULATE, payload: user});
-      }, ( error:Response ) => {
-
+        return true;
+      })
+      .catch(( error:Response ) => {
         if (error.status === 401) {
           console.warn('401 Unauthorized!');
-          this.store.dispatch({type: AuthAction.POPULATE, payload: null});
         } else {
           console.error(error);
-          return Observable.throw(error || 'Server error');
         }
+        this.store.dispatch({type: AuthAction.POPULATE, payload: null});
+        return Observable.throw(error || 'Server error');
       });
+
+    // Make the request
+    httpStream.subscribe((success:boolean) => {});
+
+    return httpStream;
   }
 
   /**

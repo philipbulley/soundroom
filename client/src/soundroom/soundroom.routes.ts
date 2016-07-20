@@ -5,6 +5,7 @@ import {SignInLayout} from "./layout/sign-in-layout/sign-in-layout.component";
 import {PlaylistLayout} from "./layout/playlist-layout/playlist-layout.component";
 import {AuthGuard} from "./auth.guard";
 import {AuthService} from "./service/auth.service";
+import {NoAuthGuard} from "./no-auth.guard";
 
 export const routes:RouterConfig = [
   {
@@ -14,7 +15,8 @@ export const routes:RouterConfig = [
   },
   {
     path: 'sign-in',
-    component: SignInLayout
+    component: SignInLayout,
+    canActivate: [NoAuthGuard]
   },
   {
     path: 'playlist/:id',
@@ -26,5 +28,6 @@ export const routes:RouterConfig = [
 export const APP_ROUTER_PROVIDERS = [
   provideRouter(routes),
   AuthGuard,
+  NoAuthGuard,
   AuthService
 ];

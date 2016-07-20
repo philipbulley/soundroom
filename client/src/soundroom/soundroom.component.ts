@@ -15,12 +15,13 @@ import {Auth} from "./model/auth";
 import {AppToolbarLayout} from "./layout/app-toolbar-layout/app-toolbar-layout.component";
 import {SpotifyService} from "./service/spotify.service";
 import {AppState} from "../boot";
+import {APP_ROUTER_PROVIDERS} from "./soundroom.routes";
 
 @Component({
   selector: 'soundroom',
   directives: [...ROUTER_DIRECTIVES, AppToolbarLayout],
   template: require('./soundroom.html'),
-  providers: [...HTTP_PROVIDERS, PlaylistService, AuthService, NetworkService, SocketService, SpotifyService],
+  providers: [PlaylistService, SpotifyService],
   styles: [require('./soundroom.scss')]
 })
 export class SoundroomComponent implements OnInit {

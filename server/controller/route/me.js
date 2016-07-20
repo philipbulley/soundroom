@@ -12,6 +12,7 @@ router.route('/')
     (req, res) => {
 
       res.json(req.user);
+      // res.status(401).send();    // DEBUG: force unauthorized response
 
     })
 

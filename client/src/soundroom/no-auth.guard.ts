@@ -5,13 +5,13 @@ import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
 
-import {AuthService} from "./service/auth.service";
 import {Auth} from "./model/auth";
 import {AppState} from "../boot";
 import {AuthState} from "./model/state/auth.state";
+import {AuthService} from "./service/auth.service";
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class NoAuthGuard implements CanActivate {
   private auth:Observable<Auth>;
 
   constructor( private authService:AuthService, private store:Store<AppState>, private router:Router ) {
@@ -21,27 +21,20 @@ export class AuthGuard implements CanActivate {
   }
 
   canActivate( next:ActivatedRouteSnapshot, state:RouterStateSnapshot ):boolean | Observable<boolean> {
-    console.log('AuthGuard.canActivate():', next.url);
+    console.log('NoAuthGuard.canActivate():', next.url);
 
     const result = new Subject<boolean>();
     let isInit = true;
-
-    /**
-     * Track whether
-     * 1) the auth subscription was executed synchronously AND
-     * 2) we need to immediately unsubscribe
-     * @type {boolean}
-     */
     let unsubscribeSync = false;
 
     const sub = this.auth
       .subscribe(( auth:Auth ) => {
-        // console.log('AuthGuard.canActivate: subscribe():  isInit:', isInit, auth.state);
+        // console.log('NoAuthGuard.canActivate: subscribe():', isInit, auth.state);
 
         if (auth.state === AuthState.LOGGED_IN) {
-          // console.log('AuthGuard: LOGGED_IN!! NEXT:true', sub);
+          // console.log('NoAuthGuard: LOGGED_IN!! NEXT:false');
 
-          console.warn('AuthGuard success: You are logged in and can continue...');
+          console.warn('NoAuthGuard denied: You are logged in! Redirecting to a permitted logged in route...');
 
           if (sub) {
             sub.unsubscribe();
@@ -51,23 +44,23 @@ export class AuthGuard implements CanActivate {
             unsubscribeSync = true;
           }
 
-          result.next(true);
+          result.next(false);
           result.complete();
-        } else if (auth.state === AuthState.LOGGED_OUT && isInit) {
+
+          // TODO: How do we replace the current path in history?
+          this.router.navigate(['']);
+        } else if(auth.state === AuthState.LOGGED_OUT && isInit) {
           isInit = false;
-          // console.log('AuthGuard: CALL LOAD!!');
+          // console.log('NoAuthGuard: CALL LOAD!!');
           this.authService.load()
             .subscribe(null, ( error ) => {
-              // console.log('AuthGuard: CATCH!! NEXT:false', sub);
+              // console.log('NoAuthGuard: CATCH!! NEXT:true', error);
+              console.warn('NoAuthGuard success: You are NOT logged in and can continue...');
               // Observable.throw(error);
-              console.warn('AuthGuard denied: You are NOT logged in! Redirecting to sign-in...');
+
               sub.unsubscribe();
-
-              result.next(false);
+              result.next(true);
               result.complete();
-
-              // TODO: How do we replace the current path in history?
-              this.router.navigate(['/sign-in']);
             });
         }
       });
@@ -75,7 +68,6 @@ export class AuthGuard implements CanActivate {
     if (unsubscribeSync && sub) {
       sub.unsubscribe();
     }
-
 
     return result;
   }

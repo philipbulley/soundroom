@@ -20,21 +20,22 @@ export class SignInLayout implements OnInit {
 
   private auth:Observable<Auth>;
 
-  constructor(private store:Store<AppState>, private route:ActivatedRoute, private router:Router, private authService:AuthService) {
+  constructor( private store:Store<AppState>, private route:ActivatedRoute, private router:Router, private authService:AuthService ) {
 
     this.auth = <Observable<Auth>>store.select('auth');
 
   }
 
   ngOnInit():any {
-    this.auth.subscribe((auth:Auth) => {
+    this.auth.subscribe(( auth:Auth ) => {
       console.log('SignInLayout.auth: Auth:', auth);
 
 
       switch (auth.state) {
         case AuthState.LOGGED_IN:
           // TODO: Implement AuthGuard that will never allow us to reach this. SignInLayout should only be accessible if AuthState.LOGGED_OUT or AuthState.LOADING
-          this.router.navigate(['']);
+          // this.router.navigate(['']);
+          console.warn('SignInLayout: LOGGED_IN: NOT ALLOWED!');
           break;
 
         case AuthState.LOGGED_OUT:
@@ -56,15 +57,18 @@ export class SignInLayout implements OnInit {
     this.router
       .routerState
       .queryParams
-      .subscribe((params:any) => {
+      .subscribe(( params:any ) => {
 
         if (params.jwt) {
+          console.log('SignInLayout: FOUND JWT – attempt to auth...');
           this.authService.jwt = params.jwt;
+          this.authService.load();
+        } else {
+          console.log('SignInLayout: No JWT passed in, user to click a sign-in provider icon');
         }
 
         // TODO: Handle `error=denied` query string keypair?
 
-        this.authService.load();
       });
   }
 }
