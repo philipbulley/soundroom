@@ -1,11 +1,9 @@
 @import '../../../style/setup/all';
 
-$height: 60px;
-
 :host {
   &:before {
     display: block;
-    height: $height;
+    height: $app-toolbar-layout__height;
     content: '';
   }
 }
@@ -16,7 +14,7 @@ nav {
   display: block;
   z-index: map-get($global-z, app-toolbar-layout);
   width: 100%;
-  height: $height;
+  height: $app-toolbar-layout__height;
 
   background-color: $color-white;
   border-bottom: $color-grey-dust 1px solid;
@@ -25,8 +23,8 @@ nav {
 .inner {
   display: flex;
 
-  height: $height;
-  line-height: $height;
+  height: $app-toolbar-layout__height;
+  line-height: $app-toolbar-layout__height;
 }
 
 .main {

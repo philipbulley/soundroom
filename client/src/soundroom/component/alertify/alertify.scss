@@ -1,0 +1,11 @@
+@import '../../../style/setup/all';
+
+:host {
+  position: absolute;
+  z-index: map-get($global-z, alertify);
+}
+
+.alertify-logs.top {
+  // Override alterify CSS forcing the top keyword to place element below nav toolbar
+  top: $app-toolbar-layout__height !important;
+}

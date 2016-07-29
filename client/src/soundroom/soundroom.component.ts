@@ -1,25 +1,22 @@
 import {Component, OnInit} from '@angular/core';
 import {ROUTER_DIRECTIVES} from '@angular/router';
-import {HTTP_PROVIDERS} from '@angular/http';
 
 import 'rxjs/Rx';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs/Observable';
-var alertify = require('alertify.js');
+
 
 import {PlaylistService} from "./service/playlist.service";
-import {AuthService} from "./service/auth.service";
-import {NetworkService} from "./service/network.service";
 import {SocketService} from "./service/socket.service";
 import {Auth} from "./model/auth";
 import {AppToolbarLayout} from "./layout/app-toolbar-layout/app-toolbar-layout.component";
 import {SpotifyService} from "./service/spotify.service";
 import {AppState} from "../boot";
-import {APP_ROUTER_PROVIDERS} from "./soundroom.routes";
+import {AlertifyComponent} from "./component/alertify/alertify.component";
 
 @Component({
   selector: 'soundroom',
-  directives: [...ROUTER_DIRECTIVES, AppToolbarLayout],
+  directives: [...ROUTER_DIRECTIVES, AppToolbarLayout, AlertifyComponent],
   template: require('./soundroom.html'),
   providers: [PlaylistService, SpotifyService],
   styles: [require('./soundroom.scss')]
@@ -44,10 +41,6 @@ export class SoundroomComponent implements OnInit {
     this.store.select('auth').subscribe(auth => {
       console.log('SoundroomComponent.ngOnInit: subscribe(): auth:', auth);
     });
-
-    // Global config for alertify
-    alertify.logPosition("top right");
-    alertify.delay(8000);
 
     this.auth = <Observable<Auth>>this.store.select('auth');
 
