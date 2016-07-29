@@ -26,6 +26,7 @@ import {PlaylistTracksChangeActionEnum} from "../model/socket/playlist-tracks-ch
 import {PlaylistTracksChangeSocketEvent} from "../model/socket/playlist-tracks-change-socket-event";
 import {PlaylistTrack} from "../model/playlist-track";
 import {AppState} from "../../boot";
+import {PlaylistError} from "../model/error/PlaylistError";
 
 @Injectable()
 export class PlaylistService {
@@ -67,7 +68,7 @@ export class PlaylistService {
     this.store.dispatch({type: PlaylistCollectionAction.LOADING});
 
     this.http.get(Config.API_BASE_URL + this.API_ENDPOINT, this.networkService.requestOptions)
-      // .delay(2000)    // DEBUG: Delay for simulation purposes only
+    // .delay(2000)    // DEBUG: Delay for simulation purposes only
       .retryWhen(errors => this.networkService.retry(errors))
       .map(( res:Response ) => res.json())
       .subscribe(( data ) => {
@@ -92,7 +93,7 @@ export class PlaylistService {
     this.store.dispatch({type: PlaylistAction.LOADING, payload: id});
 
     this.http.get(Config.API_BASE_URL + this.API_ENDPOINT + '/' + id, this.networkService.requestOptions)
-      // .delay(2000)    // DEBUG: Delay for simulation purposes only
+    // .delay(2000)    // DEBUG: Delay for simulation purposes only
       .retryWhen(errors => this.networkService.retry(errors))
       .map(( res:Response ) => PlaylistFactory.createFromApiResponse(res.json()))
       .subscribe(( data ) => {
@@ -155,7 +156,7 @@ export class PlaylistService {
    * @param foreignId     The ID of the track according to the provider.
    * @returns {Observable<number>}  Observable with HTTP status of the request if successful.
    */
-  addTrack( playlist:Playlist, provider:ProviderEnum, foreignId:string ):Observable<number> {
+  addTrack( playlist:Playlist, provider:ProviderEnum, foreignId:string ):Observable<any> {
     this.store.dispatch({type: PlaylistAction.ADDING_TRACK, payload: {playlist}});
 
     var body:PlaylistAddTrackBody = {
@@ -168,27 +169,37 @@ export class PlaylistService {
       body,
       this.networkService.requestOptions);
 
-    const observable = this.http.post(Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id + '/tracks',
+    const observable = this.http.post(
+      Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id + '/tracks',
       JSON.stringify(body),
-      this.networkService.requestOptions)
-      .publishReplay(1)
-      .refCount();
+      this.networkService.requestOptions
+    );
 
     observable.subscribe(( res:Response ) => {
-      console.log('PlaylistService.addTrack() subscribe: status:', res.json());
-
       // NOTE: Track is added to state tree via socket event handler, as all clients will receive that event.
-
     }, ( error:Response ) => {
-      console.error(error);
-
+      // Dispatch redux action
       this.store.dispatch({type: PlaylistAction.ERROR_ADDING_TRACK, payload: {playlist}});
-
-      return Observable.throw(error.json().error || 'Server error');
     });
 
     return observable
-      .map(( res:Response ) => res.status);
+      .map(( res:Response ) => res.status)
+      .catch(( error:Response ) => {
+        // console.error(error);
+        // Re-throw actual error so the requesting method can act on it
+        const errorJson = error.json();
+        let errorThrow;
+
+        if (errorJson.hasOwnProperty('message') && ~errorJson.message.indexOf('getaddrinfo ENOTFOUND')) {
+          errorThrow = new PlaylistError(PlaylistError.PROVIDER_CONNECTION, null, playlist, error);
+        } else if (error.status === 500) {
+          errorThrow = new PlaylistError(PlaylistError.SERVER, null, playlist, error);
+        } else {
+          errorThrow = new PlaylistError(PlaylistError.UNKNOWN, null, playlist, error);
+        }
+
+        return Observable.throw(errorThrow);
+      });
   }
 
 

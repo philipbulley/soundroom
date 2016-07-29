@@ -11,7 +11,7 @@ class PlaylistRequestController {
    */
   static ALLOW_UPDATE_FIELDS = ['name', 'description'];
 
-  getAll (req, res) {
+  getAll(req, res) {
     console.log('PlaylistRequestController.getAll()');
 
     return playlistController.getAll()
@@ -25,7 +25,7 @@ class PlaylistRequestController {
       });
   }
 
-  getByIdParam (req, res) {
+  getByIdParam(req, res) {
     console.log('PlaylistRequestController.getByIdParam()', req.params.playlist_id);
 
     return playlistController.getById(req.params.playlist_id)
@@ -47,7 +47,7 @@ class PlaylistRequestController {
       });
   }
 
-  create (req, res) {
+  create(req, res) {
     log.debug('PlaylistRequestController.create: req.body', req.body);
 
     return playlistController.create(req.body.name, req.body.description, req.body.user)
@@ -60,13 +60,13 @@ class PlaylistRequestController {
       });
   }
 
-  addTrackByForeignId (req, res) {
+  addTrackByForeignId(req, res) {
     return playlistController.addTrackByForeignId(req.user, req.params.playlist_id, req.body.provider, req.body.foreignId)
       .then((playlist) => {
         res.json(playlist);
       })
       .catch((err) => {
-        HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
+        HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR, {message: err.message});
         log.formatError(err, 'PlaylistRequestController.addTrackByForeignId');
       });
   }
@@ -78,7 +78,7 @@ class PlaylistRequestController {
    *
    * @returns {Q.Promise}
    */
-  updateByIdParam (req, res) {
+  updateByIdParam(req, res) {
     console.log('PlaylistRequestController.updateByIdParam()', req.params.playlist_id, req.body);
 
     const updateObject = _.pick(req.body, PlaylistRequestController.ALLOW_UPDATE_FIELDS);
@@ -107,7 +107,7 @@ class PlaylistRequestController {
       });
   }
 
-  deleteByIdParam (req, res) {
+  deleteByIdParam(req, res) {
     console.log('PlaylistRequestController.deleteByIdParam()', req.params.playlist_id, req.body);
 
     return playlistController.deleteById(req.params.playlist_id)

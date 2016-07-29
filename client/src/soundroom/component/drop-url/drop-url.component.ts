@@ -1,4 +1,5 @@
 import {Component, ElementRef, OnInit, Input, ChangeDetectionStrategy} from '@angular/core';
+import {Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 var alertify = require('alertify.js');
 
@@ -7,6 +8,7 @@ import {Playlist} from "../../model/playlist";
 
 import {ProviderEnum} from "../../model/enum/provider.enum.ts";
 import {SpotifyService} from "../../service/spotify.service.ts";
+import {PlaylistError} from "../../model/error/PlaylistError";
 
 // Change to Component and transclude drop-url-overlay
 @Component({
@@ -81,17 +83,28 @@ export class DropUrlComponent implements OnInit {
     this.playlistService.addTrack(this.playlist, ProviderEnum.SPOTIFY, spotifyUri)
       .subscribe(
         ( status:number ) => {
-          console.log('DropUrlComponent.subscribe(): status:', status);
-          // TODO: Not showing in ui
+          // console.log('DropUrlComponent.subscribe(): status:', status);
           this.hideOverlay();
         },
-        ( error:any ) => {
-          console.error('DropUrlComponent.subscribe(): error:', error);
-          alertify.error('Sorry, there was a problem adding your track.');
+        ( error:PlaylistError ) => {
+
+          // console.log('DropUrlComponent.subscribe(): ERROR:', error);
+
+          switch (error.type) {
+            case PlaylistError.PROVIDER_CONNECTION:
+              alertify.error(`Sorry! The Soundroom server can't reach Spotify — your track hasn't been added.`);
+              break;
+            case PlaylistError.SERVER:
+              alertify.error(`Sorry! The Soundroom server is having a bad day — your track hasn't been added.`);
+              break;
+            case PlaylistError.UNKNOWN:
+              alertify.error(`Sorry! We haven't been able to add your track.`);
+              break;
+          }
+
+          this.hideOverlay();
         }
       );
-
-    // TODO: Show error notification if error
   }
 
   handleDragEnd( event ) {
