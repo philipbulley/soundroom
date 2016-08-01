@@ -173,7 +173,9 @@ export class PlaylistService {
       Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id + '/tracks',
       JSON.stringify(body),
       this.networkService.requestOptions
-    );
+    )
+    .publishReplay(1) // Use publishReplay to allow multiple subscriptions, but only one request/result
+    .refCount();
 
     observable.subscribe(( res:Response ) => {
       // NOTE: Track is added to state tree via socket event handler, as all clients will receive that event.
@@ -192,6 +194,8 @@ export class PlaylistService {
 
         if (errorJson.hasOwnProperty('message') && ~errorJson.message.indexOf('getaddrinfo ENOTFOUND')) {
           errorThrow = new PlaylistError(PlaylistError.PROVIDER_CONNECTION, null, playlist, error);
+        } else if (errorJson.hasOwnProperty('message') && errorJson.message === 'DUPLICATE_USER_UP_VOTE') {
+          errorThrow = new PlaylistError(PlaylistError.DUPLICATE_USER_UP_VOTE, null, playlist, error);
         } else if (error.status === 500) {
           errorThrow = new PlaylistError(PlaylistError.SERVER, null, playlist, error);
         } else {

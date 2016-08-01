@@ -94,6 +94,9 @@ export class DropUrlComponent implements OnInit {
             case PlaylistError.PROVIDER_CONNECTION:
               alertify.error(`Sorry! The Soundroom server can't reach Spotify — your track hasn't been added.`);
               break;
+            case PlaylistError.DUPLICATE_USER_UP_VOTE:
+              alertify.error(`You've already up voted that track.`);
+              break;
             case PlaylistError.SERVER:
               alertify.error(`Sorry! The Soundroom server is having a bad day — your track hasn't been added.`);
               break;
