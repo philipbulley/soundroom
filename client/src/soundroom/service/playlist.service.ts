@@ -27,6 +27,7 @@ import {PlaylistTracksChangeSocketEvent} from "../model/socket/playlist-tracks-c
 import {PlaylistTrack} from "../model/playlist-track";
 import {AppState} from "../../boot";
 import {PlaylistError} from "../model/error/PlaylistError";
+import {User} from "../model/user";
 
 @Injectable()
 export class PlaylistService {
@@ -174,8 +175,8 @@ export class PlaylistService {
       JSON.stringify(body),
       this.networkService.requestOptions
     )
-    .publishReplay(1) // Use publishReplay to allow multiple subscriptions, but only one request/result
-    .refCount();
+      .publishReplay(1) // Use publishReplay to allow multiple subscriptions, but only one request/result
+      .refCount();
 
     observable.subscribe(( res:Response ) => {
       // NOTE: Track is added to state tree via socket event handler, as all clients will receive that event.
@@ -304,4 +305,19 @@ export class PlaylistService {
     });
   }
 
+  /**
+   * Determines whether the user specified can delete the track specified.
+   *
+   * @param playlistTrack
+   * @param user
+   * @returns {boolean}
+   */
+  canUserDeleteTrack( playlistTrack:PlaylistTrack, user:User ) {
+    // TODO: Allow admins (when implemented) to delete tracks
+    return playlistTrack.createdBy._id === user._id;
+  }
+
+  deleteTrack( playlistTrack:PlaylistTrack ) {
+    console.log('TODO: Implement delete track:', playlistTrack.track.name);
+  }
 }

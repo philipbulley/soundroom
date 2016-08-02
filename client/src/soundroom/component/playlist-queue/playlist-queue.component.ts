@@ -15,6 +15,8 @@ import {MomentPipe} from "../../pipe/moment.pipe";
 import {AppState} from "../../../boot";
 import {User} from "../../model/user";
 
+var alertify = require('alertify.js');
+
 @Component({
   selector: 'playlist-queue',
   template: require('./playlist-queue.html'),
@@ -70,5 +72,26 @@ export class PlaylistQueueComponent implements OnInit {
     return playlistTrack.upVotes.reduce(( previous:boolean, upVote:UpVote ) => {
       return previous || upVote.createdBy._id === this.user._id
     }, false);
+  }
+
+  deleteTrack( playlistTrack:PlaylistTrack ) {
+    // confirm dialog
+    const ending = Math.random() > .5
+      ? `<strong>${playlistTrack.track.artists[0].name}</strong> might be offended!`
+      : `<strong>${playlistTrack.track.artists[0].name}</strong> will never speak to you again!`;
+    const message = `Permanently delete <strong>'${playlistTrack.track.name}'</strong> from this playlist?
+      <br><br>
+      ${ending}`;
+
+    alertify.confirm(message, () => {
+      // user clicked "ok"
+      this.playlistService.deleteTrack(playlistTrack);
+    }, () => {
+      // user clicked "cancel"
+    });
+  }
+
+  canCurrentUserDeleteTrack( playlistTrack:PlaylistTrack ) {
+    return this.playlistService.canUserDeleteTrack(playlistTrack, this.user)
   }
 }

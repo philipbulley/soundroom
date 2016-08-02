@@ -4,8 +4,11 @@
   <div class="empty-queue" *ngIf="!playlistTracks.length">Add more tracks to keep the music pumpin'!</div>
 
   <ol class="queue-list" *ngIf="playlistTracks.length > 0">
-    <li class="track" *ngFor="let playlistTrack of playlistTracks; let index = index">
-      <div class="track__data track__up-vote-count">{{playlistTrack.upVotes.length}}</div>
+    <li class="track" *ngFor="let playlistTrack of playlistTracks; let index = index" [class.allow-delete]="canCurrentUserDeleteTrack(playlistTrack)">
+      <div class="track__data">
+        <span class="track__up-vote-count">{{playlistTrack.upVotes.length}}</span>
+        <button class="track__delete u-no-style" (click)="deleteTrack(playlistTrack)"><i class="fa fa-close"></i></button>
+      </div>
       <div class="track__data track__up-vote">
         <button class="u-no-style" (click)="upVote(playlistTrack)" *ngIf="isLoggedIn && !hasUserUpVote(playlistTrack)"><i class="fa fa-arrow-up"></i></button>
         <i class="fa fa-smile-o fa-2x" *ngIf="isLoggedIn && hasUserUpVote(playlistTrack)"></i>
