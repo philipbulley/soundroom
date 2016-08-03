@@ -207,6 +207,39 @@ export class PlaylistService {
       });
   }
 
+  /**
+   * Determines whether the user specified can delete the track specified.
+   *
+   * @param playlistTrack
+   * @param user
+   * @returns {boolean}
+   */
+  canUserDeleteTrack( playlistTrack:PlaylistTrack, user:User ) {
+    // TODO: Allow admins (when implemented) to delete tracks  (also in back-end Playlist.canUserDeleteTrack())
+    return playlistTrack.createdBy._id === user._id;
+  }
+
+  deleteTrack( playlist:Playlist, playlistTrack:PlaylistTrack ) {
+    console.log('TODO: Implement delete track:', playlistTrack.track.name);
+
+    // TODO: Dispatch redux action
+    // this.store.dispatch({type: PlaylistAction.DELETING_TRACK, payload: {playlist}});
+
+    const observable = this.http.delete(Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id + '/tracks/' + playlistTrack._id, this.networkService.requestOptions);
+
+    observable.subscribe(( res:Response ) => {
+      // TODO: Dispatch redux action
+    }, ( error:Response ) => {
+      // Dispatch redux action
+      // TODO: Dispatch redux action
+      // this.store.dispatch({type: PlaylistAction.ERROR_DELETING_TRACK, payload: {playlist}});
+    });
+
+    // TODO: Handle error and conver to PlaylistError
+
+    return observable;
+  }
+
 
   /////////////////////////
   // PRIVATE METHODS
@@ -303,21 +336,5 @@ export class PlaylistService {
       }
 
     });
-  }
-
-  /**
-   * Determines whether the user specified can delete the track specified.
-   *
-   * @param playlistTrack
-   * @param user
-   * @returns {boolean}
-   */
-  canUserDeleteTrack( playlistTrack:PlaylistTrack, user:User ) {
-    // TODO: Allow admins (when implemented) to delete tracks
-    return playlistTrack.createdBy._id === user._id;
-  }
-
-  deleteTrack( playlistTrack:PlaylistTrack ) {
-    console.log('TODO: Implement delete track:', playlistTrack.track.name);
   }
 }

@@ -130,6 +130,9 @@ export const playlistReducer:ActionReducer<Playlist> = ( state:Playlist = new Pl
       }
 
       newState = Object.assign(new Playlist, state);
+
+      // TODO: ADD_TRACK is dispatched from socket, perhaps it shouldn't alter loadState. New action of ADDING_TRACK_SUCCESS (and rename ADDING_TRACK_ERROR) should change loadState.
+      // TODO: If we do the above, check other uses of this pattern
       newState.loadState = null;
 
       // Create new array of tracks OTHER than the track we're adding (in case it's an UPDATE_TRACK)

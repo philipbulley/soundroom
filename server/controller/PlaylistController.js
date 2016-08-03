@@ -198,9 +198,26 @@ class PlaylistController {
         else
           return playlist;
       })
-      .catch((err) => {
+      .catch(err => {
         if (err.message !== PlaylistErrorEnum.NOT_FOUND)
           log.formatError(err, 'PlaylistController.updateById');
+
+        // Rethrow
+        throw err;
+      });
+  }
+
+  deleteTrackFromPlaylist(user, playlistId, trackId) {
+    log.debug('PlaylistController.deleteTrackFromPlaylist:', user, playlistId, trackId);
+
+    if (!db.Playlist.isValidId(playlistId))
+      return Q.reject(new Error(PlaylistErrorEnum.INVALID_ID));
+
+    // Find and remove playlist track from correct playlist
+    return this.getById(playlistId)
+      .then(playlist => playlist.deleteTrack(user, trackId))
+      .catch(err => {
+        log.formatError(err, 'PlaylistController.deleteTrackFromPlaylist');
 
         // Rethrow
         throw err;

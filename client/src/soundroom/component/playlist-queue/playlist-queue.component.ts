@@ -85,7 +85,7 @@ export class PlaylistQueueComponent implements OnInit {
 
     alertify.confirm(message, () => {
       // user clicked "ok"
-      this.playlistService.deleteTrack(playlistTrack);
+      this.playlistService.deleteTrack(this.playlist, playlistTrack);
     }, () => {
       // user clicked "cancel"
     });

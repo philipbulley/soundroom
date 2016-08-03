@@ -3,6 +3,7 @@ import mongooseQ from 'mongoose-q';
 import Q from 'q';
 import DateFields from '../plugin/DateFields';
 import PlaylistErrorEnum from '../../enum/PlaylistErrorEnum';
+import UserErrorEnum from '../../enum/UserErrorEnum';
 import mongooseDeepPopulate from 'mongoose-deep-populate';
 
 
@@ -167,6 +168,27 @@ export default function create() {
 
           return this.savePopulateQ();
         });
+    },
+
+    deleteTrack: function (user, trackId) {
+      const playlistTrack = this.getPlaylistTrackByIdOrTrackId(trackId);
+
+      if (!playlistTrack) {
+        throw new Error(PlaylistErrorEnum.TRACK_NOT_IN_PLAYLIST);
+      }
+
+      if (!this.canUserDeleteTrack(user, playlistTrack)) {
+        throw new Error(UserErrorEnum.NOT_ALLOWED);
+      }
+
+      this.tracks = _.without(this.tracks, playlistTrack);
+
+      return this.savePopulateQ();
+    },
+
+    canUserDeleteTrack: function (user, playlistTrack) {
+      // TODO: Allow admins (when implemented) to delete tracks (also in front-end PlaylistService.canUserDeleteTrack())
+      return playlistTrack.createdBy.id === user.id;
     },
 
     /**

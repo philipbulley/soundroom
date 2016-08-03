@@ -69,6 +69,14 @@ router.route('/:playlist_id/tracks')
       .done();
   });
 
-// TODO: DELETE /:playlist_id/tracks/:track_id/upvote
+router.route('/:playlist_id/tracks/:track_id')
+  .delete(verify,
+    (req, res) => {
+      console.log('DELETE /playlists/' + req.params.playlist_id + '/tracks/' + req.params.track_id );
+
+      playlistRequestController
+        .deleteTrackFromPlaylist(req, res)
+        .done();
+    });
 
 export default router;

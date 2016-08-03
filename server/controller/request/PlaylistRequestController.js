@@ -131,6 +131,28 @@ class PlaylistRequestController {
       });
   }
 
+  deleteTrackFromPlaylist(req, res) {
+    return playlistController.deleteTrackFromPlaylist(req.user, req.params.playlist_id, req.params.track_id)
+      .then((playlist) => {
+        res.sendStatus(HttpUtil.status.NO_CONTENT);
+      })
+      .catch((err) => {
+        switch (err.message) {
+          case PlaylistErrorEnum.INVALID_ID:
+            HttpUtil.sendJsonError(res, HttpUtil.status.BAD_REQUEST);
+            break;
+
+          case PlaylistErrorEnum.NOT_FOUND:
+            HttpUtil.sendJsonError(res, HttpUtil.status.NOT_FOUND);
+            break;
+
+          default:
+            HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
+            log.formatError(err, 'PlaylistRequestController.deleteTrackFromPlaylist');
+        }
+      });
+  }
+
 };
 
 // getAll, create, getByIdParam, updateByIdParam, deleteByIdParam, addTrackByForeignId
