@@ -180,9 +180,10 @@ export class PlaylistService {
 
     observable.subscribe(( res:Response ) => {
       // NOTE: Track is added to state tree via socket event handler, as all clients will receive that event.
+      this.store.dispatch({type: PlaylistAction.ADDING_TRACK_SUCCESS, payload: {playlist}});
     }, ( error:Response ) => {
       // Dispatch redux action
-      this.store.dispatch({type: PlaylistAction.ERROR_ADDING_TRACK, payload: {playlist}});
+      this.store.dispatch({type: PlaylistAction.ADDING_TRACK_ERROR, payload: {playlist}});
     });
 
     return observable

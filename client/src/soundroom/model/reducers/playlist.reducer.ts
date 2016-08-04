@@ -131,10 +131,6 @@ export const playlistReducer:ActionReducer<Playlist> = ( state:Playlist = new Pl
 
       newState = Object.assign(new Playlist, state);
 
-      // TODO: ADD_TRACK is dispatched from socket, perhaps it shouldn't alter loadState. New action of ADDING_TRACK_SUCCESS (and rename ADDING_TRACK_ERROR) should change loadState.
-      // TODO: If we do the above, check other uses of this pattern
-      newState.loadState = null;
-
       // Create new array of tracks OTHER than the track we're adding (in case it's an UPDATE_TRACK)
       newState.tracks = state.tracks.filter(( playlistTrack:PlaylistTrack ) => {
         return playlistTrack._id !== action.payload.playlistTrack._id;
@@ -150,7 +146,20 @@ export const playlistReducer:ActionReducer<Playlist> = ( state:Playlist = new Pl
 
       return newState;
 
-    case PlaylistAction.ERROR_ADDING_TRACK:
+    case PlaylistAction.ADDING_TRACK_SUCCESS:
+      // ADDING_TRACK_SUCCESS is separate from ADD_TRACK as it's specific to this client.
+      // ADD_TRACK will occur across all connected clients
+
+      if (action.payload.playlistId !== state._id) {
+        return state;
+      }
+
+      newState = Object.assign(new Playlist, state);
+      newState.loadState = null;
+
+      return newState;
+
+    case PlaylistAction.ADDING_TRACK_ERROR:
       if (action.payload.playlist._id !== state._id) {
         return state;
       }
