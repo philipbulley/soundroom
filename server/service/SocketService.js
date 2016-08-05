@@ -144,14 +144,12 @@ class SocketService extends EventEmitter {
    * @param {string[]} playlistTrackIds     Array of PlaylistTrack IDs in the correctly sorted order
    */
   emitTracksChange(action, playlistId, playlistTrack, playlistTrackIds) {
+    // console.log('SocketService.emitTracksChange():', {action, playlistId, playlistTrack, playlistTrackIds});
     this.io.emit(EventTypeEnum.PLAYLIST_TRACKS_CHANGE, {action, playlistId, playlistTrack, playlistTrackIds});
   }
 
   // TODO:
-  // new playlist order
-  // new track added
-  // user diconnect
-  // track remove
+  // user disconnect
 }
 
 export default new SocketService();

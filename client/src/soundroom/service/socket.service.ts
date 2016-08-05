@@ -81,6 +81,7 @@ export class SocketService {
           this.socket.on(eventType, data => {
             // console.log('socket.on():', eventType, data, this.streamObserver);
             if (this.streamObserver) {
+              // TODO: Create a type for this event object
               this.streamObserver.next({type: eventType, data: data});
             }
           });

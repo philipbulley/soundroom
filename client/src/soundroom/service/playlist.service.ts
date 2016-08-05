@@ -221,22 +221,17 @@ export class PlaylistService {
   }
 
   deleteTrack( playlist:Playlist, playlistTrack:PlaylistTrack ) {
-    console.log('TODO: Implement delete track:', playlistTrack.track.name);
-
-    // TODO: Dispatch redux action
-    // this.store.dispatch({type: PlaylistAction.DELETING_TRACK, payload: {playlist}});
+    this.store.dispatch({type: PlaylistAction.DELETING_TRACK, payload: {playlist, playlistTrack}});
 
     const observable = this.http.delete(Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id + '/tracks/' + playlistTrack._id, this.networkService.requestOptions);
 
     observable.subscribe(( res:Response ) => {
-      // TODO: Dispatch redux action
+      this.store.dispatch({type: PlaylistAction.DELETING_TRACK_SUCCESS, payload: {playlist, playlistTrack}});
     }, ( error:Response ) => {
-      // Dispatch redux action
-      // TODO: Dispatch redux action
-      // this.store.dispatch({type: PlaylistAction.ERROR_DELETING_TRACK, payload: {playlist}});
+      this.store.dispatch({type: PlaylistAction.DELETING_TRACK_ERROR, payload: {playlist, playlistTrack}});
     });
 
-    // TODO: Handle error and conver to PlaylistError
+    // TODO: Handle error and convert to PlaylistError
 
     return observable;
   }
@@ -309,6 +304,7 @@ export class PlaylistService {
 
         case SocketEventTypeEnum.PLAYLIST_TRACKS_CHANGE:
           const eventData:PlaylistTracksChangeSocketEvent = event.data;
+          const playlistTrack = PlaylistTrackFactory.createFromApiResponse(eventData.playlistTrack);
 
           console.log('PlaylistService.observeSocket: SocketEventTypeEnum.PLAYLIST_TRACKS_CHANGE', event, eventData);
 
@@ -317,7 +313,7 @@ export class PlaylistService {
             case PlaylistTracksChangeActionEnum.COMPLETE:
             case PlaylistTracksChangeActionEnum.UP_VOTE:
               console.log('PlaylistService.observeSocket: ', eventData.action, eventData);
-              const playlistTrack = PlaylistTrackFactory.createFromApiResponse(eventData.playlistTrack);
+
 
               // A track has been successfully added - reflect change in local data collection
               this.store.dispatch({
@@ -325,6 +321,19 @@ export class PlaylistService {
                 eventData.action === PlaylistTracksChangeActionEnum.UP_VOTE
                   ? PlaylistAction.UPDATE_TRACK
                   : PlaylistAction.ADD_TRACK,
+                payload: {
+                  playlistId: eventData.playlistId,
+                  playlistTrack,
+                  playlistTrackIds: eventData.playlistTrackIds
+                }
+              });
+              break;
+
+            case PlaylistTracksChangeActionEnum.DELETE:
+              console.log('PlaylistService.observeSocket: DELETE:', eventData.action, eventData);
+
+              this.store.dispatch({
+                type: PlaylistAction.DELETE_TRACK,
                 payload: {
                   playlistId: eventData.playlistId,
                   playlistTrack,

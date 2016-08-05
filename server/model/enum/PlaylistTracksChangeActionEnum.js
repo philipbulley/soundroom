@@ -3,7 +3,7 @@ const PlaylistTracksChangeActionEnum = {
   UP_VOTE: 'upVote',
   VETO: 'veto',
   ADD: 'add',
-  REMOVE: 'remove'
+  DELETE: 'delete'
 };
 
 export default PlaylistTracksChangeActionEnum;

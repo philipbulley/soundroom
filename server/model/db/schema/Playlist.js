@@ -170,6 +170,13 @@ export default function create() {
         });
     },
 
+    /**
+     * Deletes a track already in the playlist
+     *
+     * @param user
+     * @param trackId
+     * @returns {Promise<PlaylistTrack>}
+     */
     deleteTrack: function (user, trackId) {
       const playlistTrack = this.getPlaylistTrackByIdOrTrackId(trackId);
 
@@ -183,7 +190,8 @@ export default function create() {
 
       this.tracks = _.without(this.tracks, playlistTrack);
 
-      return this.savePopulateQ();
+      return this.savePopulateQ()
+        .then(playlist => playlistTrack);
     },
 
     canUserDeleteTrack: function (user, playlistTrack) {
@@ -192,7 +200,7 @@ export default function create() {
     },
 
     /**
-     * Gets a Playlist Track by it's id or the id of it's actual track.
+     * Gets a Playlist Track by its id or the id of it's actual track.
      *
      * @param trackId
      * @returns {*}

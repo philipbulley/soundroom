@@ -193,10 +193,11 @@ class PlaylistController {
 
     return db.Playlist.findByIdAndRemoveQ(id)
       .then((playlist) => {
-        if (!playlist)
+        if (!playlist) {
           throw new Error(PlaylistErrorEnum.NOT_FOUND);
-        else
+        } else {
           return playlist;
+        }
       })
       .catch(err => {
         if (err.message !== PlaylistErrorEnum.NOT_FOUND)
@@ -210,12 +211,27 @@ class PlaylistController {
   deleteTrackFromPlaylist(user, playlistId, trackId) {
     log.debug('PlaylistController.deleteTrackFromPlaylist:', user, playlistId, trackId);
 
-    if (!db.Playlist.isValidId(playlistId))
+    if (!db.Playlist.isValidId(playlistId)) {
       return Q.reject(new Error(PlaylistErrorEnum.INVALID_ID));
+    }
+
+    let playlist;
 
     // Find and remove playlist track from correct playlist
     return this.getById(playlistId)
-      .then(playlist => playlist.deleteTrack(user, trackId))
+      .then(_playlist => {
+        playlist = _playlist;
+        return playlist.deleteTrack(user, trackId);
+      })
+      .then(playlistTrack => {
+        // console.log('PlaylistController.deleteTrackFromPlaylist: Success: playlist:', playlist, playlistTrack, playlist.tracks.map(playlistTrack => playlistTrack.track.name));
+        SocketService.emitTracksChange(
+          PlaylistTracksChangeActionEnum.DELETE,
+          playlist._id,
+          playlistTrack,
+          playlist.getPlaylistTrackIds()
+        );
+      })
       .catch(err => {
         log.formatError(err, 'PlaylistController.deleteTrackFromPlaylist');
 

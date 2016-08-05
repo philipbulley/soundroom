@@ -4,6 +4,6 @@ export enum PlaylistTracksChangeActionEnum {
   UP_VOTE = <PlaylistTracksChangeActionEnum><any>'upVote',
   VETO = <PlaylistTracksChangeActionEnum><any>'veto',
   ADD = <PlaylistTracksChangeActionEnum><any>'add',
-  REMOVE = <PlaylistTracksChangeActionEnum><any>'remove'
+  DELETE = <PlaylistTracksChangeActionEnum><any>'delete'
 
 }

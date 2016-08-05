@@ -22,10 +22,14 @@ export const playlistCollectionReducer:ActionReducer<PlaylistCollection> = ( sta
     case PlaylistAction.LOADING:
     case PlaylistAction.ERROR_LOADING:
     case PlaylistAction.ADDING_TRACK:
-    case PlaylistAction.ADD_TRACK:
-    case PlaylistAction.UPDATE_TRACK:
     case PlaylistAction.ADDING_TRACK_SUCCESS:
     case PlaylistAction.ADDING_TRACK_ERROR:
+    case PlaylistAction.DELETING_TRACK:
+    case PlaylistAction.DELETING_TRACK_SUCCESS:
+    case PlaylistAction.DELETING_TRACK_ERROR:
+    case PlaylistAction.ADD_TRACK:
+    case PlaylistAction.UPDATE_TRACK:
+    case PlaylistAction.DELETE_TRACK:
       newState = Object.assign(new PlaylistCollection, state);
       newState.playlists = newState.playlists.map(( playlist:Playlist ) => playlistReducer(playlist, action));
       return newState;
