@@ -14,6 +14,7 @@ import {AuthState} from "../../model/state/auth.state";
 import {MomentPipe} from "../../pipe/moment.pipe";
 import {AppState} from "../../../boot";
 import {User} from "../../model/user";
+import {PlaylistError} from "../../model/error/PlaylistError";
 
 var alertify = require('alertify.js');
 
@@ -85,8 +86,13 @@ export class PlaylistQueueComponent implements OnInit {
 
     alertify.confirm(message, () => {
       // user clicked "ok"
-      this.playlistService.deleteTrack(this.playlist, playlistTrack);
-      // TODO: Show notification on error
+      this.playlistService.deleteTrack(this.playlist, playlistTrack)
+        .subscribe(( status:number ) => {
+          alertify.success(`Your track has been deleted.`);
+        }, ( error:PlaylistError ) => {
+          console.error('PlaylistQueueComponent.deleteTrack:', error);
+          alertify.error(`Sorry, we weren\'t able to delete your track, please try again.`);
+        });
     });
   }
 

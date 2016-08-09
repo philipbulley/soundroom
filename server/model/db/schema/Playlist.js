@@ -188,7 +188,7 @@ export default function create() {
         throw new Error(UserErrorEnum.NOT_ALLOWED);
       }
 
-      this.tracks = _.without(this.tracks, playlistTrack);
+      playlistTrack.remove();
 
       return this.savePopulateQ()
         .then(playlist => playlistTrack);
@@ -196,6 +196,7 @@ export default function create() {
 
     canUserDeleteTrack: function (user, playlistTrack) {
       // TODO: Allow admins (when implemented) to delete tracks (also in front-end PlaylistService.canUserDeleteTrack())
+      // console.log('Playlist.canUserDeleteTrack():', playlistTrack);
       return playlistTrack.createdBy.id === user.id;
     },
 
@@ -206,6 +207,7 @@ export default function create() {
      * @returns {*}
      */
     getPlaylistTrackByIdOrTrackId: function (trackIdOrPlaylistTrackId) {
+      // console.log('Playlist.getPlaylistTrackByIdOrTrackId():', trackIdOrPlaylistTrackId);
       return _.find(this.tracks, (playlistTrack) => {
         return playlistTrack.id == trackIdOrPlaylistTrackId || playlistTrack.track.toObject()._id == trackIdOrPlaylistTrackId;
       });

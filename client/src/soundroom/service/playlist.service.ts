@@ -223,7 +223,12 @@ export class PlaylistService {
   deleteTrack( playlist:Playlist, playlistTrack:PlaylistTrack ) {
     this.store.dispatch({type: PlaylistAction.DELETING_TRACK, payload: {playlist, playlistTrack}});
 
-    const observable = this.http.delete(Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id + '/tracks/' + playlistTrack._id, this.networkService.requestOptions);
+    const observable = this.http.delete(
+      Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id + '/tracks/' + playlistTrack._id,
+      this.networkService.requestOptions
+    )
+      .publishReplay(1) // Use publishReplay to allow multiple subscriptions, but only one request/result
+      .refCount();
 
     observable.subscribe(( res:Response ) => {
       this.store.dispatch({type: PlaylistAction.DELETING_TRACK_SUCCESS, payload: {playlist, playlistTrack}});
@@ -231,9 +236,22 @@ export class PlaylistService {
       this.store.dispatch({type: PlaylistAction.DELETING_TRACK_ERROR, payload: {playlist, playlistTrack}});
     });
 
-    // TODO: Handle error and convert to PlaylistError
+    return observable
+      .map(( res:Response ) => res.status)
+      .catch(( error:Response ) => {
+        // console.error(error);
+        // Re-throw actual error so the requesting method can act on it
+        const errorJson = error.json();
+        let errorThrow;
 
-    return observable;
+        if (error.status === 500) {
+          errorThrow = new PlaylistError(PlaylistError.SERVER, null, playlist, error);
+        } else {
+          errorThrow = new PlaylistError(PlaylistError.UNKNOWN, null, playlist, error);
+        }
+
+        return Observable.throw(errorThrow);
+      });
   }
 
 
@@ -313,7 +331,6 @@ export class PlaylistService {
             case PlaylistTracksChangeActionEnum.COMPLETE:
             case PlaylistTracksChangeActionEnum.UP_VOTE:
               console.log('PlaylistService.observeSocket: ', eventData.action, eventData);
-
 
               // A track has been successfully added - reflect change in local data collection
               this.store.dispatch({

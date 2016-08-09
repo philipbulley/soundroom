@@ -200,14 +200,23 @@ class PlaylistController {
         }
       })
       .catch(err => {
-        if (err.message !== PlaylistErrorEnum.NOT_FOUND)
+        if (err.message !== PlaylistErrorEnum.NOT_FOUND) {
           log.formatError(err, 'PlaylistController.updateById');
+        }
 
         // Rethrow
         throw err;
       });
   }
 
+  /**
+   * Deletes a track that already exists within the playlist
+   *
+   * @param {User} user
+   * @param {string} playlistId
+   * @param {string} trackId
+   * @returns {Promise<Playlist>}
+   */
   deleteTrackFromPlaylist(user, playlistId, trackId) {
     log.debug('PlaylistController.deleteTrackFromPlaylist:', user, playlistId, trackId);
 
@@ -231,12 +240,8 @@ class PlaylistController {
           playlistTrack,
           playlist.getPlaylistTrackIds()
         );
-      })
-      .catch(err => {
-        log.formatError(err, 'PlaylistController.deleteTrackFromPlaylist');
 
-        // Rethrow
-        throw err;
+        return playlist;
       });
   }
 
