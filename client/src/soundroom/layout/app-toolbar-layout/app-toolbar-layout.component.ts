@@ -17,10 +17,6 @@ export class AppToolbarLayout implements OnInit {
   @Input('auth')
   auth:Observable<Auth>;
 
-  constructor() {
-
-  }
-
   ngOnInit():any {
     // console.log('AppToolbarLayoutComponent.ngOnInit()', this.auth$);
   }

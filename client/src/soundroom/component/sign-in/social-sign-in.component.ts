@@ -9,7 +9,6 @@ import {Config} from "../../model/config";
 })
 export class SocialSignInComponent {
 
-  private redirectUrl:string;
   private serverBaseUrl:string;
 
   constructor() {

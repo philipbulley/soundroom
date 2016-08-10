@@ -25,7 +25,7 @@ export class Track {
   artists:Artist[];
 
   createdBy:User;
-  
+
   images:Image[];
 
 }

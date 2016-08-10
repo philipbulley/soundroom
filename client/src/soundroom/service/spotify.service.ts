@@ -5,10 +5,6 @@ export class SpotifyService {
 
   private ACCEPT_REGEX:RegExp = /^https?:\/\/open.spotify\.com\/track\/(.*)/;
 
-  constructor() {
-
-  }
-
   linkToSpotifyUri( url:string ) {
     if (url.charAt(url.length - 1) === '/') {
       // Trim trailing slash

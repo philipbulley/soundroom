@@ -88,7 +88,7 @@ export class SocketService {
         });
       });
 
-      this.socket.emit( SocketEventTypeEnum.AUTHENTICATE, {jwt: localStorage.getItem('jwt')} )
+      this.socket.emit( SocketEventTypeEnum.AUTHENTICATE, {jwt: localStorage.getItem('jwt')} );
     });
   }
 

@@ -15,6 +15,6 @@ export class SocketEventTypeEnum {
   static PLAYLIST_END = 'playlist.end';
   static USER_UPDATE = 'user.update';
   static ERROR_PLAYLIST_TRACK_UPVOTE = 'error.playlist.track.upvote';
-  static ERROR_PLAYLIST_TRACK_VETO = 'error.playlist.track.veto'
+  static ERROR_PLAYLIST_TRACK_VETO = 'error.playlist.track.veto';
 
 }

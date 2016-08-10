@@ -9,7 +9,6 @@ import {PlaylistMenuItemComponent} from "../../component/playlist-menu-item/play
 import {CountPipe} from "../../pipe/count.pipe";
 import {PlaylistCreateComponent} from "../playlist-create/playlist-create.component";
 import {PlaylistCollection} from "../../model/playlist-collection";
-import {PlaylistCreate} from "../../model/playlist-create";
 
 @Component({
   selector: 'playlist-menu',
@@ -21,15 +20,16 @@ import {PlaylistCreate} from "../../model/playlist-create";
 })
 export class PlaylistMenuComponent implements OnInit, OnDestroy {
 
+  /* tslint:disable:no-unused-variable */
   @Input()
   private playlistCollection:Observable<PlaylistCollection>;
+  /* tslint:enable:no-unused-variable */
 
   private isSlowConnection:boolean = false;
   private onSlowConnectionSubscription:Subscription;
-  private playlistCreate$:Observable<PlaylistCreate>;
 
   constructor( private playlistService:PlaylistService ) {
-
+    //
   }
 
   ngOnInit():any {

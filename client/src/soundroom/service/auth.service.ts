@@ -63,7 +63,9 @@ export class AuthService {
       });
 
     // Make the request
-    httpStream.subscribe((success:boolean) => {});
+    httpStream.subscribe((success:boolean) => {
+      //
+    });
 
     return httpStream;
   }

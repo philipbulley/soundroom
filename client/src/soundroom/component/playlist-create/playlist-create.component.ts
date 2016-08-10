@@ -1,13 +1,11 @@
-import {Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef} from '@angular/core';
+import {Component, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef} from '@angular/core';
 
 var alertify = require('alertify.js');
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs/Observable';
 
-import {Playlist} from "../../model/playlist";
 import {PlaylistCreate} from "../../model/playlist-create";
 import {PlaylistCreateAction} from "../../model/action/playlist-create.action.ts";
-import {PlaylistState} from "../../model/state/playlist.state.ts";
 import {PlaylistCreateState} from "../../model/state/playlist-create.state.ts";
 import {AppState} from "../../../boot";
 

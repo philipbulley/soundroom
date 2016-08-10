@@ -1,5 +1,4 @@
 import {Component, ElementRef, OnInit, Input, ChangeDetectionStrategy} from '@angular/core';
-import {Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 var alertify = require('alertify.js');
 

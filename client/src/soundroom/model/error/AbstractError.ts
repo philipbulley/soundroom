@@ -36,6 +36,7 @@ module soundroomError {
 
     constructor( message?:string );
   }
+  /* tslint:disable-next-line:no-eval */
   eval('soundroomError.CustomError = Error');
 }
 

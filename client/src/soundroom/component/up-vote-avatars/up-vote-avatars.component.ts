@@ -14,10 +14,6 @@ export class UpVoteAvatarsComponent {
   @Input()
   private upVotes:UpVote[];
 
-  constructor() {
-
-  }
-
   ngOnInit() {
     console.log('ngOnInit.upVotes:', this.upVotes);
   }

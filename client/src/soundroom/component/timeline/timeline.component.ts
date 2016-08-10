@@ -14,10 +14,13 @@ export class TimelineComponent implements OnInit {
   percentage:Observable<number>;
 
   private radius:number = 98;
+
+  /* tslint:disable:no-unused-variable */
   private centerY:number = 100;
   private centerX:number = 100;
   private strokeDashoffset:number;
   private strokeDasharray:number = 2 * Math.PI * this.radius;
+  /* tslint:enable:no-unused-variable */
 
   constructor( private cdr:ChangeDetectorRef ) {
 

@@ -239,9 +239,8 @@ export class PlaylistService {
     return observable
       .map(( res:Response ) => res.status)
       .catch(( error:Response ) => {
-        // console.error(error);
         // Re-throw actual error so the requesting method can act on it
-        const errorJson = error.json();
+        // const errorJson = error.json();
         let errorThrow;
 
         if (error.status === 500) {

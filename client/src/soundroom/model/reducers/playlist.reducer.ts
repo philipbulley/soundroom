@@ -190,7 +190,7 @@ export const playlistReducer:ActionReducer<Playlist> = ( state:Playlist = new Pl
  * @param playlistTrackIds
  * @returns New instance of PlaylistTrack[] with freshly sorted tracks
  */
-const sortPlaylistTracks = ( tracks:PlaylistTrack[], playlistTrackIds:string[] ):PlaylistTrack[] => {
+function sortPlaylistTracks( tracks:PlaylistTrack[], playlistTrackIds:string[] ):PlaylistTrack[] {
   const sortOrder = {};
   playlistTrackIds.forEach(( id, index ) => sortOrder[id] = index);
 

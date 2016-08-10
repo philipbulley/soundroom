@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {RequestOptions, Headers} from '@angular/http';
 
-import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs/Observable';
 
 @Injectable()
@@ -20,10 +19,6 @@ export class NetworkService {
    * @type {number}
    */
   private SLOW_CONNECTION_RETRIES:number = 2;
-
-  constructor() {
-
-  }
 
   /**
    * Use with the `retryWhen()` operator for an exponential backoff retry strategy
@@ -73,7 +68,7 @@ export class NetworkService {
 
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
-      headers['Authorization'] = `JWT ${jwt}`
+      headers['Authorization'] = `JWT ${jwt}`;
     }
 
     return new RequestOptions({

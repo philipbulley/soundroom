@@ -1,9 +1,8 @@
-import {Component, OnInit, OnDestroy, ChangeDetectionStrategy} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 
 import {Observable} from 'rxjs/Observable';
 import {Store} from '@ngrx/store';
-var alertify = require('alertify.js');
 
 import {PlaylistService} from "../../service/playlist.service";
 import {Playlist} from "../../model/playlist";

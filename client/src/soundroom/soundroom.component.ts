@@ -25,7 +25,7 @@ export class SoundroomComponent implements OnInit {
 
   private auth:Observable<Auth>;
 
-  constructor( private store:Store<AppState>, private socketService:SocketService) {
+  constructor( private store:Store<AppState>, private socketService:SocketService ) {
 
     console.log('SoundroomComponent()');
 

@@ -1,4 +1,4 @@
-import {Component, ChangeDetectionStrategy, Input, OnInit, ChangeDetectorRef, ElementRef} from '@angular/core';
+import {Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, ElementRef} from '@angular/core';
 
 var alertify = require('alertify.js');
 
@@ -17,8 +17,5 @@ export class AlertifyComponent implements OnInit {
     alertify.logPosition("top right");
     alertify.delay(15 * 1000);
     alertify.parent(this.elRef.nativeElement);
-  }
-
-  updatePercentage( value:number ) {
   }
 }

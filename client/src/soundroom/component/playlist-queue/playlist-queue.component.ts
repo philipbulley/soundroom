@@ -71,7 +71,7 @@ export class PlaylistQueueComponent implements OnInit {
 
   hasUserUpVote( playlistTrack:PlaylistTrack ):boolean {
     return playlistTrack.upVotes.reduce(( previous:boolean, upVote:UpVote ) => {
-      return previous || upVote.createdBy._id === this.user._id
+      return previous || upVote.createdBy._id === this.user._id;
     }, false);
   }
 
@@ -97,6 +97,6 @@ export class PlaylistQueueComponent implements OnInit {
   }
 
   canCurrentUserDeleteTrack( playlistTrack:PlaylistTrack ) {
-    return this.playlistService.canUserDeleteTrack(playlistTrack, this.user)
+    return this.playlistService.canUserDeleteTrack(playlistTrack, this.user);
   }
 }

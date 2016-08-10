@@ -1,5 +1,4 @@
 import {Playlist} from "./playlist";
-import {PlaylistState} from "./state/playlist.state.ts";
 import {PlaylistCreateState} from "./state/playlist-create.state.ts";
 
 export class PlaylistCreate {
