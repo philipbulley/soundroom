@@ -1,5 +1,5 @@
 <drop-url [playlist]="playlist">
-  <div class="main" [class.is-empty]="!(playlist | async).tracks?.length">
+  <div class="main" *ngIf="playlist | async" [class.is-empty]="!(playlist | async).tracks?.length">
     <section class="inner">
       <div class="o-container">
 
