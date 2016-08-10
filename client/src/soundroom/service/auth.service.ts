@@ -20,12 +20,12 @@ export class AuthService {
 
   constructor( private http:Http, private store:Store<AppState>, private networkService:NetworkService ) {
 
-    console.log('AuthService()');
+    // console.log('AuthService()');
 
   }
 
   load():Observable<Response> {
-    console.log('AuthService.load()');
+    // console.log('AuthService.load()');
 
     if (!this.isInit) {
       this.init();
@@ -39,16 +39,11 @@ export class AuthService {
 
     const httpStream = this.http.get(Config.API_BASE_URL + '/me', this.networkService.requestOptions)
     // .delay(2000)    // DEBUG: Delay for simulation purposes only
-      .map(( res:Response ) => {
-        console.log('AuthService.load: res:', res);
-        return res;
-      })
       .map(( res:Response ) => UserFactory.createFromApiResponse(res.json()))
       .map(( user:User ) => {
         this.networkService.ok();
 
         // Assign initial data to collection
-        console.log('AuthService.load: subscribe: user:', user);
         this.store.dispatch({type: AuthAction.POPULATE, payload: user});
         return true;
       })

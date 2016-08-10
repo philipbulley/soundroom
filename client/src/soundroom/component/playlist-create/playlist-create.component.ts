@@ -31,13 +31,13 @@ export class PlaylistCreateComponent {
 
   constructor( private store:Store<AppState>, private cdr:ChangeDetectorRef ) {
 
-    console.log('PlaylistCreateComponent()');
+    // console.log('PlaylistCreateComponent()');
     this.playlistCreate$ = <Observable<PlaylistCreate>>this.store.select('playlistCreate');
 
     //this.states = PlaylistCreateState;
 
     this.playlistCreate$.subscribe(( data:PlaylistCreate ) => {
-      console.log('PlaylistCreateComponent.playlistCreate$: data:', data);
+      // console.log('PlaylistCreateComponent.playlistCreate$: data:', data);
 
       // The immutible store
       this.playlistCreate = data;
@@ -77,7 +77,7 @@ export class PlaylistCreateComponent {
   }
 
   next() {
-    console.log('PlaylistCreateComponent.next()', this.playlistCreate.state);
+    // console.log('PlaylistCreateComponent.next()', this.playlistCreate.state);
 
     switch (this.playlistCreate.state) {
 

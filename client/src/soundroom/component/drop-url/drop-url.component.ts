@@ -37,7 +37,7 @@ export class DropUrlComponent implements OnInit {
   private isDrag:boolean = false;
 
   constructor( private el:ElementRef, private playlistService:PlaylistService, private spotifyService:SpotifyService ) {
-    console.log('DropUrlComponent()');
+    // console.log('DropUrlComponent()');
   }
 
   ngOnInit() {

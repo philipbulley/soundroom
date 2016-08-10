@@ -45,11 +45,11 @@ export class PlaylistMenuItemComponent {
 
 
   constructor( private playlistService:PlaylistService, private cdr:ChangeDetectorRef, private router:Router ) {
-    console.log('PlaylistMenuItemComponent()', router);
+    // console.log('PlaylistMenuItemComponent()', router);
   }
 
   deleteMe() {
-    console.log('PlaylistMenuItemComponent.deleteMe()', this.playlist);
+    // console.log('PlaylistMenuItemComponent.deleteMe()', this.playlist);
 
     if (!this.deleteState) {
 
@@ -95,7 +95,7 @@ export class PlaylistMenuItemComponent {
             //console.log('PlaylistMenuComponent.deletePlaylist() subscribe: removing', playlist);
             //this.playlists.splice(this.playlists.indexOf(playlist), 1);
             alertify.success("Successfully deleted \"" + this.playlist.name + "\".");
-            console.log('PlaylistMenuItemComponent.deletePlaylist() subscribe: success', success);
+            // console.log('PlaylistMenuItemComponent.deletePlaylist() subscribe: success', success);
           },
           error => {
             alertify.error("Can't delete \"" + this.playlist.name + "\". Try again later.");
@@ -105,7 +105,7 @@ export class PlaylistMenuItemComponent {
   }
 
   joinRoom() {
-    console.log('PlaylistMenuItemComponent.joinRoom():', ['playlist', this.playlist._id]);
+    // console.log('PlaylistMenuItemComponent.joinRoom():', ['playlist', this.playlist._id]);
     this.router.navigate(['playlist', this.playlist._id]);
   }
 }

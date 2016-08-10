@@ -29,12 +29,12 @@ export class PlaylistLayout implements OnInit {
   private jwt:string;
 
   constructor( private route:ActivatedRoute, private store:Store<AppState>, private playlistService:PlaylistService, private authService:AuthService ) {
-    console.log('PlaylistLayout(): route:', route);
+    // console.log('PlaylistLayout(): route:', route);
     this.jwt = authService.jwt;
   }
 
   ngOnInit():any {
-    console.log('PlaylistLayout.ngOnInit()');
+    // console.log('PlaylistLayout.ngOnInit()');
 
     this.id = this.route.snapshot.params['id'];
 

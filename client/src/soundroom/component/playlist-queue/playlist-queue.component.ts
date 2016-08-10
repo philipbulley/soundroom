@@ -52,7 +52,7 @@ export class PlaylistQueueComponent implements OnInit {
       this.playlist = playlist;
       this.playlistTracks = playlist.tracks.filter(( playlistTrack, index ) => index > 0);
 
-      console.log('PlaylistQueueComponent.ngOnInit:', playlist);
+      // console.log('PlaylistQueueComponent.ngOnInit:', playlist);
 
       this.cdr.markForCheck();
     });

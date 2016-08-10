@@ -23,7 +23,7 @@ export class TrackSearchComponent implements OnInit {
   }
 
   ngOnInit():any {
-    console.log('TrackSearch.ngOnInit()', this.observablePlaylist);
+    // console.log('TrackSearch.ngOnInit()', this.observablePlaylist);
 
     this.observablePlaylist.subscribe(( playlist:Playlist ) => {
       // console.log('TrackSearch: observablePlaylist.subscribe()', playlist);

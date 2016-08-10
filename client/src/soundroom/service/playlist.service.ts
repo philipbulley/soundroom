@@ -64,7 +64,7 @@ export class PlaylistService {
    * Starts load of the full data set.
    */
   loadCollection():void {
-    console.log('PlaylistService.loadCollection():', Config.API_BASE_URL + this.API_ENDPOINT);
+    // console.log('PlaylistService.loadCollection():', Config.API_BASE_URL + this.API_ENDPOINT);
 
     this.store.dispatch({type: PlaylistCollectionAction.LOADING});
 

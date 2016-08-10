@@ -21,7 +21,7 @@ export class AuthGuard implements CanActivate {
   }
 
   canActivate( next:ActivatedRouteSnapshot, state:RouterStateSnapshot ):boolean | Observable<boolean> {
-    console.log('AuthGuard.canActivate():', next.url);
+    // console.log('AuthGuard.canActivate():', next.url);
 
     const result = new Subject<boolean>();
     let isInit = true;

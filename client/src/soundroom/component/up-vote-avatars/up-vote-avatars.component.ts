@@ -11,14 +11,9 @@ import {MomentPipe} from "../../pipe/moment.pipe";
 })
 export class UpVoteAvatarsComponent {
 
+  /* tslint:disable:no-unused-variable */
   @Input()
   private upVotes:UpVote[];
+  /* tslint:enable:no-unused-variable */
 
-  ngOnInit() {
-    console.log('ngOnInit.upVotes:', this.upVotes);
-  }
-
-  ngOnChanges() {
-    console.log('ngOnChanges.upVotes:', this.upVotes);
-  }
 }

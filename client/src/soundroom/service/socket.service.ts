@@ -34,7 +34,7 @@ export class SocketService {
 
   constructor( private store:Store<AppState> ) {
 
-    console.log('SocketService()');
+    // console.log('SocketService()');
 
   }
 
@@ -74,7 +74,6 @@ export class SocketService {
     this.socket = io(Config.SERVER_BASE_URL);
     this.socket.on(SocketEventTypeEnum.CONNECT, data => {
       this.socket.on(SocketEventTypeEnum.AUTHENTICATED, () => {
-        console.log('SocketService: AUTHENTICATED');
         this.serverToClient.forEach(eventType => {
           // console.log('call socket.on', eventType);
 

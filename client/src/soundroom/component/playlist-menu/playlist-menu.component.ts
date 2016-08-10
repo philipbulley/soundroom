@@ -44,7 +44,7 @@ export class PlaylistMenuComponent implements OnInit, OnDestroy {
   }
 
   private handleSlowConnection( isSlow:boolean ) {
-    console.log("PlaylistMenuComponent.handleSlowConnection()", isSlow);
+    // console.log("PlaylistMenuComponent.handleSlowConnection()", isSlow);
 
     this.isSlowConnection = isSlow;
 
