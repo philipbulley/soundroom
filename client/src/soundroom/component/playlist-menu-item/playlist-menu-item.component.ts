@@ -105,6 +105,7 @@ export class PlaylistMenuItemComponent {
   }
 
   joinRoom() {
+    // TODO: Use [routerLink]="['playlist', playlist._id]" when https://github.com/angular/angular/issues/9471 fixed
     // console.log('PlaylistMenuItemComponent.joinRoom():', ['playlist', this.playlist._id]);
     this.router.navigate(['playlist', this.playlist._id]);
   }

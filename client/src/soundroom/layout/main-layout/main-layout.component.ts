@@ -7,12 +7,13 @@ import {PlaylistMenuComponent} from "../../component/playlist-menu/playlist-menu
 import {PlaylistCollection} from "../../model/playlist-collection";
 import {PlaylistService} from "../../service/playlist.service";
 import {AppState} from "../../../boot";
+import {NowPlayingPreviewComponent} from "../../component/now-playing-preview/now-playing-preview.component";
 
 @Component({
   selector: 'main-layout',
   template: require('./main-layout.html'),
   styles: [require('./main-layout.scss')],
-  directives: [PlaylistMenuComponent],
+  directives: [PlaylistMenuComponent, NowPlayingPreviewComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MainLayout {

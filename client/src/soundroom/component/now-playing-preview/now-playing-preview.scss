@@ -1,0 +1,83 @@
+@import '../../../style/setup/all';
+
+:host {
+  display: block;
+  margin: 2px;
+
+  background: #fff;
+}
+
+.columns {
+
+}
+
+.artwork {
+  text-align: center;
+  padding: 20px 20px 10px;
+}
+
+.info {
+  text-align: center;
+  padding: 20px;
+}
+
+.meta {
+  text-align: center;
+  padding: 10px 20px 20px;
+}
+
+.artwork-image {
+  $size: 100px;
+  width: $size;
+  height: $size;
+  border-radius: $size / 2;
+}
+
+.track-name {
+  color: $color-red;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.artist-name {
+  color: $color-grey-grime;
+  font-size: 16px;
+}
+
+.playlist-name {
+  color: $color-grey-grit;
+  margin: 0 0 5px;
+}
+
+button.join {
+  @include button();
+}
+
+////////////////////////////
+// Breakpoints
+////////////////////////////
+
+@include wider-than(medium) {
+  .columns {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  .artwork {
+    flex: 0 0 auto;
+    margin: 20px 20px 20px 40px;
+    text-align: left;
+  }
+
+  .info {
+    flex: 1 1 auto;
+    text-align: left;
+  }
+
+  .meta {
+    flex: 1 1 auto;
+    text-align: right;
+    margin: 20px 40px 20px 20px;
+  }
+}

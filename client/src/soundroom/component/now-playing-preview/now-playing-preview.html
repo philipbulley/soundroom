@@ -1,0 +1,19 @@
+<div class="columns" *ngIf="!(observablePlaylistCollection | async)?.loadState && playlist?.isPlaying">
+  <div class="artwork column">
+    <img class="artwork-image" [src]="playlistTrack?.track?.images[2].url">
+  </div>
+
+  <div class="info column">
+    <div class="playlist-name">
+      {{playlist.name}} is playing
+    </div>
+
+    <div class="track-name">{{playlistTrack?.track?.name}}</div>
+    <div class="artist-name">{{playlistTrack?.track?.artists | artistsNames}}</div>
+  </div>
+
+  <div class="meta column">
+    <!-- Use [routerLink]="['playlist', playlist._id]" when https://github.com/angular/angular/issues/9471 fixed -->
+    <button class="join" (click)="joinRoom()">Join Room</button>
+  </div>
+</div>

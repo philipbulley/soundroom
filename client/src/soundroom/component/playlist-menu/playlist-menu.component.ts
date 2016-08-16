@@ -22,7 +22,7 @@ export class PlaylistMenuComponent implements OnInit, OnDestroy {
 
   /* tslint:disable:no-unused-variable */
   @Input()
-  private playlistCollection:Observable<PlaylistCollection>;
+  private playlistCollection:PlaylistCollection;
   /* tslint:enable:no-unused-variable */
 
   private isSlowConnection:boolean = false;
