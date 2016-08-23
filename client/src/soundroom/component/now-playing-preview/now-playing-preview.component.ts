@@ -1,10 +1,7 @@
 import {Component, ChangeDetectionStrategy, Input, OnInit, ChangeDetectorRef} from '@angular/core';
 import {ROUTER_DIRECTIVES, Router} from '@angular/router';
 
-import {Observable} from 'rxjs/Observable';
-
 import {Playlist} from "../../model/playlist";
-import {PlaylistService} from "../../service/playlist.service";
 import {ArtistsNamesPipe} from "../../pipe/artists-names.pipe";
 import {PlaylistTrack} from "../../model/playlist-track";
 import {PlaylistCollection} from "../../model/playlist-collection";
@@ -19,8 +16,8 @@ import {PlaylistCollection} from "../../model/playlist-collection";
 })
 export class NowPlayingPreviewComponent implements OnInit {
 
-  @Input()
-  private playlistCollection:PlaylistCollection;
+  // tslint:disable-next-line:no-unused-variable
+  @Input() private playlistCollection:PlaylistCollection;
 
   private playlist:Playlist;
   private playlistTrack:PlaylistTrack;
@@ -31,8 +28,6 @@ export class NowPlayingPreviewComponent implements OnInit {
   }
 
   ngOnInit():any {
-    this.playlist = this.playlistCollection.active;
-
     this.playlistTrack = this.playlist
       ? this.playlist.current
       : null;
@@ -41,6 +36,6 @@ export class NowPlayingPreviewComponent implements OnInit {
   joinRoom() {
     // TODO: Use [routerLink]="['playlist', playlist._id]" when https://github.com/angular/angular/issues/9471 fixed
     // console.log('PlaylistMenuItemComponent.joinRoom():', ['playlist', this.playlist._id]);
-    this.router.navigate(['playlist', this.playlist._id]);
+    this.router.navigate(['playlist', this.playlistCollection.active._id]);
   }
 }
