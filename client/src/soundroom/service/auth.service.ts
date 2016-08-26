@@ -1,30 +1,32 @@
-import {Injectable} from '@angular/core';
-import {Http, Response} from '@angular/http';
+import { Injectable } from '@angular/core';
+import { Http, Response } from '@angular/http';
 
-import {Store} from '@ngrx/store';
-import {Observable} from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
 
-import {Config} from "../model/config";
-import {User} from "../model/user";
-import {AuthAction} from "../model/action/auth.action.ts";
-import {NetworkService} from "./network.service";
-import {UserFactory} from "../model/factory/user.factory";
-import {Auth} from "../model/auth";
-import {AppState} from "../../boot";
+import { Config } from "../model/config";
+import { User } from "../model/user";
+import { NetworkService } from "./network.service";
+import { UserFactory } from "../model/factory/user.factory";
+import { Auth } from "../model/auth";
+import { AppState } from "../../boot";
+import { LoadUserAction } from "../store/auth/load-user/load-user.action";
+import { AddUserAction } from "../store/auth/add-user/add-user.action";
+import { LoadUserErrorAction } from "../store/auth/load-user-error/load-user-error.action";
 
 @Injectable()
 export class AuthService {
 
-  private auth:Observable<Auth>;
-  private isInit:boolean;
+  private auth: Observable<Auth>;
+  private isInit: boolean;
 
-  constructor( private http:Http, private store:Store<AppState>, private networkService:NetworkService ) {
+  constructor( private http: Http, private store: Store<AppState>, private networkService: NetworkService ) {
 
     // console.log('AuthService()');
 
   }
 
-  load():Observable<Response> {
+  load(): Observable<Response> {
     // console.log('AuthService.load()');
 
     if (!this.isInit) {
@@ -35,30 +37,33 @@ export class AuthService {
       return Observable.throw(new Error('No cached JWT'));
     }
 
-    this.store.dispatch({type: AuthAction.LOAD});
+    this.store.dispatch(new LoadUserAction());
 
     const httpStream = this.http.get(Config.API_BASE_URL + '/me', this.networkService.requestOptions)
     // .delay(2000)    // DEBUG: Delay for simulation purposes only
-      .map(( res:Response ) => UserFactory.createFromApiResponse(res.json()))
-      .map(( user:User ) => {
+      .map(( res: Response ) => UserFactory.createFromApiResponse(res.json()))
+      .map(( user: User ) => {
         this.networkService.ok();
 
         // Assign initial data to collection
-        this.store.dispatch({type: AuthAction.POPULATE, payload: user});
+        this.store.dispatch(new AddUserAction(user));
         return true;
       })
-      .catch(( error:Response ) => {
+      .catch(( error: Response ) => {
         if (error.status === 401) {
           console.warn('401 Unauthorized!');
         } else {
           console.error(error);
         }
-        this.store.dispatch({type: AuthAction.POPULATE, payload: null});
+        this.store.dispatch(new LoadUserErrorAction({
+          status: error.status,
+          statusText: error.statusText,
+        }));
         return Observable.throw(error || 'Server error');
       });
 
     // Make the request
-    httpStream.subscribe((success:boolean) => {
+    httpStream.subscribe(( success: boolean ) => {
       //
     });
 
@@ -70,7 +75,7 @@ export class AuthService {
    *
    * @param jwt
    */
-  set jwt( jwt:string ) {
+  set jwt( jwt: string ) {
     localStorage.setItem('jwt', jwt);
   }
 

@@ -1,9 +1,11 @@
 import {AuthState} from "./state/auth.state.ts";
 import {User} from "./user";
+import { ErrorResult } from "./error-result";
 
-export class Auth {
+export interface Auth {
 
-  state:AuthState = AuthState.LOGGED_OUT;
+  state:AuthState;
   user:User;
+  error: ErrorResult;
 
 }

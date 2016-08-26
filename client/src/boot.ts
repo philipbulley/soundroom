@@ -5,11 +5,6 @@ import {HTTP_PROVIDERS} from '@angular/http';
 import {provideStore} from '@ngrx/store';
 
 import {SoundroomComponent} from './soundroom/soundroom.component';
-import {playlistCollectionReducer} from "./soundroom/model/reducers/playlist-collection.reducer";
-import {playlistReducer} from "./soundroom/model/reducers/playlist.reducer";
-import {playlistCreateReducer} from "./soundroom/model/reducers/playlist-create.reducer";
-import {authReducer} from "./soundroom/model/reducers/auth.reducer";
-
 import {Playlist} from "./soundroom/model/playlist";
 import {PlaylistCollection} from "./soundroom/model/playlist-collection";
 import {PlaylistCreate} from "./soundroom/model/playlist-create";
@@ -18,6 +13,7 @@ import {SocketService} from "./soundroom/service/socket.service";
 import {NetworkService} from "./soundroom/service/network.service";
 import {AuthService} from "./soundroom/service/auth.service";
 import {APP_ROUTER_PROVIDERS} from "./soundroom/soundroom.routes";
+import { STORE_REDUCERS } from "./soundroom/store/store.reducers";
 
 export interface AppState {
   playlist: Playlist;
@@ -27,12 +23,7 @@ export interface AppState {
 }
 
 bootstrap(SoundroomComponent, [
-  provideStore({
-    playlist: playlistReducer,
-    playlistsCollection: playlistCollectionReducer,
-    playlistCreate: playlistCreateReducer,
-    auth: authReducer
-  }),
+  provideStore(STORE_REDUCERS),
   HTTP_PROVIDERS,
   APP_ROUTER_PROVIDERS,
   AuthService,
