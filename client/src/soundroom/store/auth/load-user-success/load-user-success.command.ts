@@ -2,7 +2,7 @@ import { AuthState } from "../../../model/state/auth.state";
 import { Auth } from "../../../model/auth";
 import { User } from "../../../model/user";
 
-export const addUserCommand = (state: Auth, user: User): Auth => {
+export const loadUserSuccessCommand = ( state: Auth, user: User): Auth => {
 
 	state = Object.assign({}, state);
   state.state = user

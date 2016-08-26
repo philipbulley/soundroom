@@ -11,7 +11,7 @@ import { UserFactory } from "../model/factory/user.factory";
 import { Auth } from "../model/auth";
 import { AppState } from "../../boot";
 import { LoadUserAction } from "../store/auth/load-user/load-user.action";
-import { AddUserAction } from "../store/auth/add-user/add-user.action";
+import { LoadUserSuccessAction } from "../store/auth/load-user-success/load-user-success.action";
 import { LoadUserErrorAction } from "../store/auth/load-user-error/load-user-error.action";
 
 @Injectable()
@@ -46,7 +46,7 @@ export class AuthService {
         this.networkService.ok();
 
         // Assign initial data to collection
-        this.store.dispatch(new AddUserAction(user));
+        this.store.dispatch(new LoadUserSuccessAction(user));
         return true;
       })
       .catch(( error: Response ) => {
