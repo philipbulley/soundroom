@@ -2,7 +2,7 @@ import { compose } from '@ngrx/core/compose';
 import { combineReducers } from '@ngrx/store';
 import { storeLogger } from 'ngrx-store-logger';
 import { playlistReducer } from "../model/reducers/playlist.reducer";
-import { playlistCollectionReducer } from "../model/reducers/playlist-collection.reducer";
+import { playlistCollectionReducer } from "./playlist-collection/playlist-collection.reducer";
 import { playlistCreateReducer } from "../model/reducers/playlist-create.reducer";
 import { authReducer } from "./auth/auth.reducer";
 

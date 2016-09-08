@@ -1,15 +1,15 @@
 import {Playlist} from "./playlist";
 import {PlaylistCollectionState} from "./state/playlist-collection.state.ts";
 
-export class PlaylistCollection {
+export interface PlaylistCollection {
 
   loadState:PlaylistCollectionState;
 
-  playlists:Playlist[] = [];
+  playlists:Playlist[];
 
   /**
    * The currently active playlist.
    */
-  active:Playlist = null;
+  active:Playlist;
 
 }

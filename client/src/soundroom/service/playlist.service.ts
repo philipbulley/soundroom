@@ -1,33 +1,39 @@
-import {Injectable, EventEmitter} from '@angular/core';
-import {Http, Response} from '@angular/http';
+import { Injectable, EventEmitter } from '@angular/core';
+import { Http, Response } from '@angular/http';
 
-import {Observable} from 'rxjs/Observable';
-import {ConnectableObservable} from 'rxjs/observable/ConnectableObservable';
-import {Store} from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
+import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
+import { Store } from '@ngrx/store';
 
-import {Config} from '../model/config';
-import {Playlist} from '../model/playlist';
-import {PlaylistCreateBody} from "./vo/playlist-create-body";
-import {PlaylistAction} from "../model/action/playlist.action.ts";
-import {PlaylistCreate} from "../model/playlist-create";
-import {PlaylistCreateAction} from "../model/action/playlist-create.action.ts";
-import {PlaylistCreateState} from "../model/state/playlist-create.state.ts";
-import {PlaylistFactory} from "../model/factory/playlist.factory";
-import {NetworkService} from "./network.service";
-import {SocketService} from "./socket.service";
-import {SocketEventTypeEnum} from "../model/socket/socket-event-type.enum.ts";
-import {PlaylistCollectionAction} from "../model/action/playlist-collection.action.ts";
-import {PlaylistProgressSocketEvent} from "../model/socket/playlist-progress-socket-event";
-import {PlaylistSocketEvent} from "../model/socket/playlist-socket-event";
-import {ProviderEnum} from "../model/enum/provider.enum";
-import {PlaylistAddTrackBody} from "./vo/playlist-add-track-body";
-import {PlaylistTrackFactory} from "../model/factory/playlist-track.factory";
-import {PlaylistTracksChangeActionEnum} from "../model/socket/playlist-tracks-change-action.enum";
-import {PlaylistTracksChangeSocketEvent} from "../model/socket/playlist-tracks-change-socket-event";
-import {PlaylistTrack} from "../model/playlist-track";
-import {AppState} from "../../boot";
-import {PlaylistError} from "../model/error/PlaylistError";
-import {User} from "../model/user";
+import { Config } from '../model/config';
+import { Playlist } from '../model/playlist';
+import { PlaylistCreateBody } from "./vo/playlist-create-body";
+import { PlaylistAction } from "../model/action/playlist.action.ts";
+import { PlaylistCreate } from "../model/playlist-create";
+import { PlaylistCreateAction } from "../model/action/playlist-create.action.ts";
+import { PlaylistCreateState } from "../model/state/playlist-create.state.ts";
+import { PlaylistFactory } from "../model/factory/playlist.factory";
+import { NetworkService } from "./network.service";
+import { SocketService } from "./socket.service";
+import { SocketEventTypeEnum } from "../model/socket/socket-event-type.enum.ts";
+import { PlaylistProgressSocketEvent } from "../model/socket/playlist-progress-socket-event";
+import { PlaylistSocketEvent } from "../model/socket/playlist-socket-event";
+import { ProviderEnum } from "../model/enum/provider.enum";
+import { PlaylistAddTrackBody } from "./vo/playlist-add-track-body";
+import { PlaylistTrackFactory } from "../model/factory/playlist-track.factory";
+import { PlaylistTracksChangeActionEnum } from "../model/socket/playlist-tracks-change-action.enum";
+import { PlaylistTracksChangeSocketEvent } from "../model/socket/playlist-tracks-change-socket-event";
+import { PlaylistTrack } from "../model/playlist-track";
+import { AppState } from "../../boot";
+import { PlaylistError } from "../model/error/PlaylistError";
+import { User } from "../model/user";
+import { LoadPlaylistCollectionAction } from "../store/playlist-collection/load-playlist-collection/load-playlist-collection.action";
+import { LoadPlaylistCollectionErrorAction } from "../store/playlist-collection/load-playlist-collection-error/load-playlist-collection-error.action";
+import { DeletePlaylistAction } from "../store/playlist-collection/delete-playlist/delete-playlist.action";
+import { DeletePlaylistErrorAction } from "../store/playlist-collection/delete-playlist-error/delete-playlist-error.action";
+import { DeletePlaylistSuccessAction } from "../store/playlist-collection/delete-playlist-success/delete-playlist-success.action";
+import { PlaylistProgressAction } from "../store/playlist-collection/playlist-progress/playlist-progress.action";
+import { PlaylistPauseAction } from "../store/playlist-collection/playlist-pause/playlist-pause.action";
 
 @Injectable()
 export class PlaylistService {
@@ -37,23 +43,23 @@ export class PlaylistService {
    * more playlists.
    * @deprecated
    */
-  playlists:ConnectableObservable<Playlist[]>;
+  playlists: ConnectableObservable<Playlist[]>;
 
   /**
    * TODO refactor into it's own connection service?
    * @type {EventEmitter}
    */
-  onSlowConnection:EventEmitter<boolean> = new EventEmitter<boolean>();
+  onSlowConnection: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   /**
    * Location of RESTful resource on server
    * @type {string}
    */
-  private API_ENDPOINT:string = '/playlists';
+  private API_ENDPOINT: string = '/playlists';
 
-  private playlistCreate$:Observable<PlaylistCreate>;
+  private playlistCreate$: Observable<PlaylistCreate>;
 
-  constructor( private http:Http, public store:Store<AppState>, public networkService:NetworkService, private socketService:SocketService ) {
+  constructor( private http: Http, public store: Store<AppState>, public networkService: NetworkService, private socketService: SocketService ) {
     this.playlistCreate$ = <Observable<PlaylistCreate>>this.store.select('playlistCreate');
 
     this.observeCreate();
@@ -63,24 +69,27 @@ export class PlaylistService {
   /**
    * Starts load of the full data set.
    */
-  loadCollection():void {
+  loadCollection(): void {
     // console.log('PlaylistService.loadCollection():', Config.API_BASE_URL + this.API_ENDPOINT);
 
-    this.store.dispatch({type: PlaylistCollectionAction.LOADING});
+    this.store.dispatch(new LoadPlaylistCollectionAction());
 
     this.http.get(Config.API_BASE_URL + this.API_ENDPOINT, this.networkService.requestOptions)
     // .delay(2000)    // DEBUG: Delay for simulation purposes only
       .retryWhen(errors => this.networkService.retry(errors))
-      .map(( res:Response ) => res.json())
+      .map(( res: Response ) => res.json())
       .subscribe(( data ) => {
         this.onSlowConnection.emit(false);
 
         // Add initial data to the Store
-        this.store.dispatch({type: PlaylistCollectionAction.ADD, payload: data});
-      }, ( error:Response ) => {
+        this.store.dispatch(new LoadPlaylistCollectionAction(data));
+      }, ( error: Response ) => {
         console.error(error);
 
-        this.store.dispatch({type: PlaylistCollectionAction.ERROR_LOADING});
+        this.store.dispatch(new LoadPlaylistCollectionErrorAction({
+          status: error.status,
+          statusText: error.statusText,
+        }));
 
         return Observable.throw(error || 'Server error');
       });
@@ -90,57 +99,57 @@ export class PlaylistService {
    * Loads the full data of a single playlist
    * @param id
    */
-  load( id:string ):any {
-    this.store.dispatch({type: PlaylistAction.LOADING, payload: id});
+  load( id: string ): any {
+    this.store.dispatch({type: PlaylistAction.LOAD, payload: id});
 
     this.http.get(Config.API_BASE_URL + this.API_ENDPOINT + '/' + id, this.networkService.requestOptions)
     // .delay(2000)    // DEBUG: Delay for simulation purposes only
       .retryWhen(errors => this.networkService.retry(errors))
-      .map(( res:Response ) => PlaylistFactory.createFromApiResponse(res.json()))
+      .map(( res: Response ) => PlaylistFactory.createFromApiResponse(res.json()))
       .subscribe(( data ) => {
         this.onSlowConnection.emit(false);
 
         // Assign initial data to collection
-        this.store.dispatch({type: PlaylistCollectionAction.ADD, payload: data});
-      }, ( error:Response ) => {
+        this.store.dispatch(new LoadPlaylistCollectionAction(data));
+      }, ( error: Response ) => {
         console.error(error);
 
-        this.store.dispatch({type: PlaylistAction.ERROR_LOADING, payload: id});
+        this.store.dispatch({type: PlaylistAction.LOAD_ERROR, payload: id});
 
         return Observable.throw(error || 'Server error');
       });
   }
 
 
-  deletePlaylist( playlist:Playlist ):Observable<boolean> {
-    this.store.dispatch({type: PlaylistCollectionAction.DELETING, payload: playlist._id});
+  deletePlaylist( playlist: Playlist ): Observable<boolean> {
+    this.store.dispatch(new DeletePlaylistAction(playlist));
 
     return this.http.delete(Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id, this.networkService.requestOptions)
-      .map(( res:Response ) => {
+      .map(( res: Response ) => {
         console.log('PlaylistService.deletePlaylist() map: status:', res.headers.get('status'), 'splice:', playlist);
 
         // Delete success - reflect change in local data collection
-        this.store.dispatch({type: PlaylistCollectionAction.DELETE, payload: playlist});
+        this.store.dispatch(new DeletePlaylistSuccessAction(playlist));
 
         return res.status === 204;
-      }).catch(( error:Response ) => {
+      }).catch(( error: Response ) => {
         console.error(error);
 
-        this.store.dispatch({type: PlaylistCollectionAction.ERROR_DELETING, payload: playlist});
+        this.store.dispatch(new DeletePlaylistErrorAction(playlist));
 
         return Observable.throw(error.json().error || 'Server error');
       });
   }
 
-  play( playlistId:string ) {
+  play( playlistId: string ) {
     this.socketService.emit(SocketEventTypeEnum.PLAYLIST_PLAY, playlistId);
   }
 
-  pause( playlistId:string ) {
+  pause( playlistId: string ) {
     this.socketService.emit(SocketEventTypeEnum.PLAYLIST_PAUSE, playlistId);
   }
 
-  upVote( playlist:Playlist, playlistTrack:PlaylistTrack ) {
+  upVote( playlist: Playlist, playlistTrack: PlaylistTrack ) {
     console.log('PlaylistService.upVote:', playlist, playlistTrack);
 
     this.socketService.emit(SocketEventTypeEnum.PLAYLIST_TRACK_UPVOTE, {
@@ -157,10 +166,10 @@ export class PlaylistService {
    * @param foreignId     The ID of the track according to the provider.
    * @returns {Observable<number>}  Observable with HTTP status of the request if successful.
    */
-  addTrack( playlist:Playlist, provider:ProviderEnum, foreignId:string ):Observable<any> {
-    this.store.dispatch({type: PlaylistAction.ADDING_TRACK, payload: {playlist}});
+  addTrack( playlist: Playlist, provider: ProviderEnum, foreignId: string ): Observable<any> {
+    this.store.dispatch({type: PlaylistAction.ADD_TRACK, payload: {playlist}});
 
-    var body:PlaylistAddTrackBody = {
+    var body: PlaylistAddTrackBody = {
       provider: <string><any>provider,
       foreignId
     };
@@ -178,17 +187,17 @@ export class PlaylistService {
       .publishReplay(1) // Use publishReplay to allow multiple subscriptions, but only one request/result
       .refCount();
 
-    observable.subscribe(( res:Response ) => {
+    observable.subscribe(( res: Response ) => {
       // NOTE: Track is added to state tree via socket event handler, as all clients will receive that event.
-      this.store.dispatch({type: PlaylistAction.ADDING_TRACK_SUCCESS, payload: {playlist}});
-    }, ( error:Response ) => {
+      this.store.dispatch({type: PlaylistAction.ADD_TRACK_SUCCESS, payload: {playlist}});
+    }, ( error: Response ) => {
       // Dispatch redux action
-      this.store.dispatch({type: PlaylistAction.ADDING_TRACK_ERROR, payload: {playlist}});
+      this.store.dispatch({type: PlaylistAction.ADD_TRACK_ERROR, payload: {playlist}});
     });
 
     return observable
-      .map(( res:Response ) => res.status)
-      .catch(( error:Response ) => {
+      .map(( res: Response ) => res.status)
+      .catch(( error: Response ) => {
         // console.error(error);
         // Re-throw actual error so the requesting method can act on it
         const errorJson = error.json();
@@ -215,13 +224,13 @@ export class PlaylistService {
    * @param user
    * @returns {boolean}
    */
-  canUserDeleteTrack( playlistTrack:PlaylistTrack, user:User ) {
+  canUserDeleteTrack( playlistTrack: PlaylistTrack, user: User ) {
     // TODO: Allow admins (when implemented) to delete tracks  (also in back-end Playlist.canUserDeleteTrack())
     return playlistTrack.createdBy._id === user._id;
   }
 
-  deleteTrack( playlist:Playlist, playlistTrack:PlaylistTrack ) {
-    this.store.dispatch({type: PlaylistAction.DELETING_TRACK, payload: {playlist, playlistTrack}});
+  deleteTrack( playlist: Playlist, playlistTrack: PlaylistTrack ) {
+    this.store.dispatch({type: PlaylistAction.DELETE_TRACK, payload: {playlist, playlistTrack}});
 
     const observable = this.http.delete(
       Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id + '/tracks/' + playlistTrack._id,
@@ -230,15 +239,15 @@ export class PlaylistService {
       .publishReplay(1) // Use publishReplay to allow multiple subscriptions, but only one request/result
       .refCount();
 
-    observable.subscribe(( res:Response ) => {
-      this.store.dispatch({type: PlaylistAction.DELETING_TRACK_SUCCESS, payload: {playlist, playlistTrack}});
-    }, ( error:Response ) => {
-      this.store.dispatch({type: PlaylistAction.DELETING_TRACK_ERROR, payload: {playlist, playlistTrack}});
+    observable.subscribe(( res: Response ) => {
+      this.store.dispatch({type: PlaylistAction.DELETE_TRACK_SUCCESS, payload: {playlist, playlistTrack}});
+    }, ( error: Response ) => {
+      this.store.dispatch({type: PlaylistAction.DELETE_TRACK_ERROR, payload: {playlist, playlistTrack}});
     });
 
     return observable
-      .map(( res:Response ) => res.status)
-      .catch(( error:Response ) => {
+      .map(( res: Response ) => res.status)
+      .catch(( error: Response ) => {
         // Re-throw actual error so the requesting method can act on it
         // const errorJson = error.json();
         let errorThrow;
@@ -263,12 +272,12 @@ export class PlaylistService {
    */
   private observeCreate() {
     this.playlistCreate$
-      .filter(( playlistCreate:PlaylistCreate ) => playlistCreate.state === PlaylistCreateState.CREATING)
-      .mergeMap(( playlistCreate:PlaylistCreate ) => this.create(
+      .filter(( playlistCreate: PlaylistCreate ) => playlistCreate.state === PlaylistCreateState.CREATING)
+      .mergeMap(( playlistCreate: PlaylistCreate ) => this.create(
         playlistCreate.name,
         playlistCreate.description
       ))
-      .subscribe(( newPlaylist:Playlist ) => {
+      .subscribe(( newPlaylist: Playlist ) => {
         console.log('PlaylistService.initCreate: subscribe:', newPlaylist);
 
         // TODO: It would be amazing if we could type this payload to Playlist|Playlist[]
@@ -276,14 +285,14 @@ export class PlaylistService {
         this.store.dispatch({type: PlaylistCreateAction.SUCCESS, payload: newPlaylist});
 
         // Separate action to actually add new playlist to our collection.
-        this.store.dispatch({type: PlaylistCollectionAction.ADD, payload: newPlaylist});
+        this.store.dispatch(new LoadPlaylistCollectionAction(newPlaylist));
       }, error => this.store.dispatch({type: PlaylistCreateAction.ERROR, payload: error}));
   }
 
-  private create( name:string, description?:string ):Observable<Playlist> {
+  private create( name: string, description?: string ): Observable<Playlist> {
     console.log('PlaylistCreateService.create:', name, description);
 
-    var body:PlaylistCreateBody = {
+    var body: PlaylistCreateBody = {
       name: name
     };
 
@@ -292,8 +301,8 @@ export class PlaylistService {
     }
 
     return this.http.post(Config.API_BASE_URL + this.API_ENDPOINT, JSON.stringify(body), this.networkService.requestOptions)
-      .map(( res:Response ) => PlaylistFactory.createFromApiResponse(res.json()))
-      .catch(( error:Response ) => {
+      .map(( res: Response ) => PlaylistFactory.createFromApiResponse(res.json()))
+      .catch(( error: Response ) => {
         console.error(error);
         return Observable.throw(error.json().error || 'Server error');
       });
@@ -307,7 +316,7 @@ export class PlaylistService {
       switch (event.type) {
 
         case SocketEventTypeEnum.PLAYLIST_TRACK_PROGRESS:
-          this.store.dispatch({type: PlaylistAction.PROGRESS, payload: <PlaylistProgressSocketEvent>event.data});
+          this.store.dispatch(new PlaylistProgressAction(<PlaylistProgressSocketEvent>event.data));
           break;
 
         // NOTE: Don't really need to use PLAYLIST_PLAY as PROGRESS does the same job + more
@@ -316,11 +325,11 @@ export class PlaylistService {
         //   break;
 
         case SocketEventTypeEnum.PLAYLIST_PAUSE:
-          this.store.dispatch({type: PlaylistAction.PAUSE, payload: <PlaylistSocketEvent>event.data});
+          this.store.dispatch(new PlaylistPauseAction(<PlaylistSocketEvent>event.data));
           break;
 
         case SocketEventTypeEnum.PLAYLIST_TRACKS_CHANGE:
-          const eventData:PlaylistTracksChangeSocketEvent = event.data;
+          const eventData: PlaylistTracksChangeSocketEvent = event.data;
           const playlistTrack = PlaylistTrackFactory.createFromApiResponse(eventData.playlistTrack);
 
           console.log('PlaylistService.observeSocket: SocketEventTypeEnum.PLAYLIST_TRACKS_CHANGE', event, eventData);
@@ -336,7 +345,7 @@ export class PlaylistService {
                 type: eventData.action === PlaylistTracksChangeActionEnum.COMPLETE ||
                 eventData.action === PlaylistTracksChangeActionEnum.UP_VOTE
                   ? PlaylistAction.UPDATE_TRACK
-                  : PlaylistAction.ADD_TRACK,
+                  : PlaylistAction.TRACK_ADDED,
                 payload: {
                   playlistId: eventData.playlistId,
                   playlistTrack,
@@ -349,7 +358,7 @@ export class PlaylistService {
               console.log('PlaylistService.observeSocket: DELETE:', eventData.action, eventData);
 
               this.store.dispatch({
-                type: PlaylistAction.DELETE_TRACK,
+                type: PlaylistAction.TRACK_DELETED,
                 payload: {
                   playlistId: eventData.playlistId,
                   playlistTrack,

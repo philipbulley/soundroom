@@ -15,7 +15,7 @@ export const playlistReducer:ActionReducer<Playlist> = ( state:Playlist = new Pl
 
   switch (action.type) {
 
-    case PlaylistAction.LOADING:
+    case PlaylistAction.LOAD:
       if (action.payload !== state._id) {
         return state;
       }
@@ -23,7 +23,7 @@ export const playlistReducer:ActionReducer<Playlist> = ( state:Playlist = new Pl
       newState.loadState = PlaylistState.LOADING;
       return newState;
 
-    case PlaylistAction.ERROR_LOADING:
+    case PlaylistAction.LOAD_ERROR:
       if (action.payload !== state._id) {
         return state;
       }
@@ -114,8 +114,8 @@ export const playlistReducer:ActionReducer<Playlist> = ( state:Playlist = new Pl
       return state;
 
     // TODO: Implement the following with payload:{playlist, track}
-    case PlaylistAction.ADDING_TRACK:
-    case PlaylistAction.DELETING_TRACK:
+    case PlaylistAction.ADD_TRACK:
+    case PlaylistAction.DELETE_TRACK:
       if (action.payload.playlist._id !== state._id) {
         return state;
       }
@@ -124,7 +124,7 @@ export const playlistReducer:ActionReducer<Playlist> = ( state:Playlist = new Pl
       newState.loadState = PlaylistState.ADDING_TRACK;
       return newState;
 
-    case PlaylistAction.ADD_TRACK:
+    case PlaylistAction.TRACK_ADDED:
     case PlaylistAction.UPDATE_TRACK:
       if (action.payload.playlistId !== state._id) {
         return state;
@@ -146,7 +146,7 @@ export const playlistReducer:ActionReducer<Playlist> = ( state:Playlist = new Pl
       // console.log('playlistReducer: PlaylistAction.ADD_TRACK: newState:', newState);
       return newState;
 
-    case PlaylistAction.DELETE_TRACK:
+    case PlaylistAction.TRACK_DELETED:
       if (action.payload.playlistId !== state._id) {
         return state;
       }
@@ -162,10 +162,10 @@ export const playlistReducer:ActionReducer<Playlist> = ( state:Playlist = new Pl
       newState.tracks = sortPlaylistTracks(newState.tracks, action.payload.playlistTrackIds);
       return newState;
 
-    case PlaylistAction.ADDING_TRACK_SUCCESS:
-    case PlaylistAction.ADDING_TRACK_ERROR:
-    case PlaylistAction.DELETING_TRACK_SUCCESS:
-    case PlaylistAction.DELETING_TRACK_ERROR:
+    case PlaylistAction.ADD_TRACK_SUCCESS:
+    case PlaylistAction.ADD_TRACK_ERROR:
+    case PlaylistAction.DELETE_TRACK_SUCCESS:
+    case PlaylistAction.DELETE_TRACK_ERROR:
       // ADDING_TRACK_SUCCESS is separate from ADD_TRACK as it's specific to this client.
       // ADD_TRACK will occur across all connected clients
 
