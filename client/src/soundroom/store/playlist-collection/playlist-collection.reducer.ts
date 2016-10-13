@@ -1,9 +1,5 @@
-import { ActionReducer, Action } from '@ngrx/store';
-import { Playlist } from "../../model/playlist";
-import { PlaylistAction } from "../../model/action/playlist.action.ts";
+import { ActionReducer } from '@ngrx/store';
 import { PlaylistCollection } from "../../model/playlist-collection";
-import { playlistReducer } from "../../model/reducers/playlist.reducer";
-import { PlaylistProgressSocketEvent } from "../../model/socket/playlist-progress-socket-event";
 import { LoadPlaylistCollectionAction } from "./load-playlist-collection/load-playlist-collection.action";
 import { loadPlaylistCollectionCommand } from "./load-playlist-collection/load-playlist-collection.command";
 import { CommandReducer } from "../../model/reducers/command-reducer";
@@ -23,7 +19,8 @@ import { PlaylistPauseAction } from "./playlist-pause/playlist-pause.action";
 import { playlistPauseCommand } from "./playlist-pause/playlist-pause.command";
 import { PlaylistLoadAction } from './playlist-load/playlist-load.action';
 import { playlistLoadCommand } from './playlist-load/playlist-load.command';
-
+import { PlaylistLoadErrorAction } from './playlist-load-error/playlist-load-error.action';
+import { playlistLoadErrorCommand } from './playlist-load-error/playlist-load-error.command';
 
 const DEFAULT_STATE = {
   loadState: null,
@@ -35,67 +32,30 @@ export const playlistCollectionReducer: ActionReducer<PlaylistCollection> = new 
   .add(LoadPlaylistCollectionAction, loadPlaylistCollectionCommand)
   .add(LoadPlaylistCollectionSuccessAction, loadPlaylistCollectionSuccessCommand)
   .add(LoadPlaylistCollectionErrorAction, loadPlaylistCollectionErrorCommand)
+
   .add(DeletePlaylistAction, deletePlaylistCommand)
   .add(DeletePlaylistSuccessAction, deletePlaylistCollectionSuccessCommand)
   .add(DeletePlaylistErrorAction, deletePlaylistErrorCommand)
+
   .add(PlaylistProgressAction, playlistProgressCommand)
   .add(PlaylistPauseAction, playlistPauseCommand)
+
   .add(PlaylistLoadAction, playlistLoadCommand)
+  .add(PlaylistLoadErrorAction, playlistLoadErrorCommand)
   // TODO: Create the commands below
-  // .delegate(PlaylistLoadErrorAction, delegateToPlaylistCommand)
+
+  // payload: {playlist}
   // .delegate(AddTrackAction, delegateToPlaylistCommand)
   // .delegate(AddTrackSuccessAction, delegateToPlaylistCommand)
   // .delegate(AddTrackErrorAction, delegateToPlaylistCommand)
+
+  // payload: {playlist, playlistTrack}
   // .delegate(DeleteTrackAction, delegateToPlaylistCommand)
   // .delegate(DeleteTrackSuccessAction, delegateToPlaylistCommand)
   // .delegate(DeleteTrackErrorAction, delegateToPlaylistCommand)
+
+  // payload: {playlistId, playlistTrack, playlistTrackIds}
   // .delegate(TrackAddedAction, delegateToPlaylistCommand)
   // .delegate(TrackUpdatedAction, delegateToPlaylistCommand)
   // .delegate(TrackDeletedAction, delegateToPlaylistCommand)
   .reducer();
-
-export const playlistCollectionReducer: ActionReducer<PlaylistCollection> = ( state: PlaylistCollection = new PlaylistCollection, action: Action ) => {
-
-  // console.log('playlistCollectionReducer():', action.type);
-  // console.log(' - action:', action);
-  // console.log(' - state:', state);
-
-  let newState: PlaylistCollection;
-
-  switch (action.type) {
-
-    // All PlaylistActions to be caught here and mapped to each playlist
-
-          // TODO: Figure out how to map these to commands to send to reducer?!
-
-    // payload: id
-    case PlaylistAction.LOAD:
-    case PlaylistAction.LOAD_ERROR:
-
-    // payload: {playlist}
-    case PlaylistAction.ADD_TRACK:
-    case PlaylistAction.ADD_TRACK_SUCCESS:
-    case PlaylistAction.ADD_TRACK_ERROR:
-
-    // payload: {playlist, playlistTrack}
-    case PlaylistAction.DELETE_TRACK:
-    case PlaylistAction.DELETE_TRACK_SUCCESS:
-    case PlaylistAction.DELETE_TRACK_ERROR:
-
-    // payload: {playlistId, playlistTrack, playlistTrackIds}
-    case PlaylistAction.TRACK_ADDED:
-    case PlaylistAction.TRACK_UPDATED:
-    case PlaylistAction.TRACK_DELETED:
-
-      newState = Object.assign(new PlaylistCollection, state);
-      newState.playlists = newState.playlists.map(( playlist: Playlist ) => playlistReducer(playlist, action));
-      return newState;
-
-
-    default:
-      return state;
-  }
-
-};
-
-

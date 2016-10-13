@@ -34,6 +34,7 @@ import { DeletePlaylistErrorAction } from "../store/playlist-collection/delete-p
 import { DeletePlaylistSuccessAction } from "../store/playlist-collection/delete-playlist-success/delete-playlist-success.action";
 import { PlaylistProgressAction } from "../store/playlist-collection/playlist-progress/playlist-progress.action";
 import { PlaylistPauseAction } from "../store/playlist-collection/playlist-pause/playlist-pause.action";
+import { PlaylistLoadErrorAction } from '../store/playlist-collection/playlist-load-error/playlist-load-error.action';
 
 @Injectable()
 export class PlaylistService {
@@ -59,8 +60,8 @@ export class PlaylistService {
 
   private playlistCreate$: Observable<PlaylistCreate>;
 
-  constructor( private http: Http, public store: Store<AppState>, public networkService: NetworkService, private socketService: SocketService ) {
-    this.playlistCreate$ = <Observable<PlaylistCreate>>this.store.select('playlistCreate');
+  constructor(private http: Http, public store$: Store<AppState>, public networkService: NetworkService, private socketService: SocketService ) {
+    this.playlistCreate$ = <Observable<PlaylistCreate>>this.store$.select('playlistCreate');
 
     this.observeCreate();
     this.observeSocket();
@@ -72,7 +73,7 @@ export class PlaylistService {
   loadCollection(): void {
     // console.log('PlaylistService.loadCollection():', Config.API_BASE_URL + this.API_ENDPOINT);
 
-    this.store.dispatch(new LoadPlaylistCollectionAction());
+    this.store$.dispatch(new LoadPlaylistCollectionAction());
 
     this.http.get(Config.API_BASE_URL + this.API_ENDPOINT, this.networkService.requestOptions)
     // .delay(2000)    // DEBUG: Delay for simulation purposes only
@@ -82,11 +83,11 @@ export class PlaylistService {
         this.onSlowConnection.emit(false);
 
         // Add initial data to the Store
-        this.store.dispatch(new LoadPlaylistCollectionAction(data));
+        this.store$.dispatch(new LoadPlaylistCollectionAction(data));
       }, ( error: Response ) => {
         console.error(error);
 
-        this.store.dispatch(new LoadPlaylistCollectionErrorAction({
+        this.store$.dispatch(new LoadPlaylistCollectionErrorAction({
           status: error.status,
           statusText: error.statusText,
         }));
@@ -100,7 +101,7 @@ export class PlaylistService {
    * @param id
    */
   load( id: string ): any {
-    this.store.dispatch({type: PlaylistAction.LOAD, payload: id});
+    this.store$.dispatch({type: PlaylistAction.LOAD, payload: id});
 
     this.http.get(Config.API_BASE_URL + this.API_ENDPOINT + '/' + id, this.networkService.requestOptions)
     // .delay(2000)    // DEBUG: Delay for simulation purposes only
@@ -110,11 +111,11 @@ export class PlaylistService {
         this.onSlowConnection.emit(false);
 
         // Assign initial data to collection
-        this.store.dispatch(new LoadPlaylistCollectionAction(data));
+        this.store$.dispatch(new LoadPlaylistCollectionAction(data));
       }, ( error: Response ) => {
         console.error(error);
 
-        this.store.dispatch({type: PlaylistAction.LOAD_ERROR, payload: id});
+        this.store$.dispatch(new PlaylistLoadErrorAction(id));
 
         return Observable.throw(error || 'Server error');
       });
@@ -122,20 +123,20 @@ export class PlaylistService {
 
 
   deletePlaylist( playlist: Playlist ): Observable<boolean> {
-    this.store.dispatch(new DeletePlaylistAction(playlist));
+    this.store$.dispatch(new DeletePlaylistAction(playlist));
 
     return this.http.delete(Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id, this.networkService.requestOptions)
       .map(( res: Response ) => {
         console.log('PlaylistService.deletePlaylist() map: status:', res.headers.get('status'), 'splice:', playlist);
 
         // Delete success - reflect change in local data collection
-        this.store.dispatch(new DeletePlaylistSuccessAction(playlist));
+        this.store$.dispatch(new DeletePlaylistSuccessAction(playlist));
 
         return res.status === 204;
       }).catch(( error: Response ) => {
         console.error(error);
 
-        this.store.dispatch(new DeletePlaylistErrorAction(playlist));
+        this.store$.dispatch(new DeletePlaylistErrorAction(playlist));
 
         return Observable.throw(error.json().error || 'Server error');
       });
@@ -167,7 +168,7 @@ export class PlaylistService {
    * @returns {Observable<number>}  Observable with HTTP status of the request if successful.
    */
   addTrack( playlist: Playlist, provider: ProviderEnum, foreignId: string ): Observable<any> {
-    this.store.dispatch({type: PlaylistAction.ADD_TRACK, payload: {playlist}});
+    this.store$.dispatch({type: PlaylistAction.ADD_TRACK, payload: {playlist}});
 
     var body: PlaylistAddTrackBody = {
       provider: <string><any>provider,
@@ -189,10 +190,10 @@ export class PlaylistService {
 
     observable.subscribe(( res: Response ) => {
       // NOTE: Track is added to state tree via socket event handler, as all clients will receive that event.
-      this.store.dispatch({type: PlaylistAction.ADD_TRACK_SUCCESS, payload: {playlist}});
+      this.store$.dispatch({type: PlaylistAction.ADD_TRACK_SUCCESS, payload: {playlist}});
     }, ( error: Response ) => {
       // Dispatch redux action
-      this.store.dispatch({type: PlaylistAction.ADD_TRACK_ERROR, payload: {playlist}});
+      this.store$.dispatch({type: PlaylistAction.ADD_TRACK_ERROR, payload: {playlist}});
     });
 
     return observable
@@ -230,7 +231,7 @@ export class PlaylistService {
   }
 
   deleteTrack( playlist: Playlist, playlistTrack: PlaylistTrack ) {
-    this.store.dispatch({type: PlaylistAction.DELETE_TRACK, payload: {playlist, playlistTrack}});
+    this.store$.dispatch({type: PlaylistAction.DELETE_TRACK, payload: {playlist, playlistTrack}});
 
     const observable = this.http.delete(
       Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id + '/tracks/' + playlistTrack._id,
@@ -240,9 +241,9 @@ export class PlaylistService {
       .refCount();
 
     observable.subscribe(( res: Response ) => {
-      this.store.dispatch({type: PlaylistAction.DELETE_TRACK_SUCCESS, payload: {playlist, playlistTrack}});
+      this.store$.dispatch({type: PlaylistAction.DELETE_TRACK_SUCCESS, payload: {playlist, playlistTrack}});
     }, ( error: Response ) => {
-      this.store.dispatch({type: PlaylistAction.DELETE_TRACK_ERROR, payload: {playlist, playlistTrack}});
+      this.store$.dispatch({type: PlaylistAction.DELETE_TRACK_ERROR, payload: {playlist, playlistTrack}});
     });
 
     return observable
@@ -282,11 +283,11 @@ export class PlaylistService {
 
         // TODO: It would be amazing if we could type this payload to Playlist|Playlist[]
         // For the benefit of notifying PlaylistCreateComponent that we're successful
-        this.store.dispatch({type: PlaylistCreateAction.SUCCESS, payload: newPlaylist});
+        this.store$.dispatch({type: PlaylistCreateAction.SUCCESS, payload: newPlaylist});
 
         // Separate action to actually add new playlist to our collection.
-        this.store.dispatch(new LoadPlaylistCollectionAction(newPlaylist));
-      }, error => this.store.dispatch({type: PlaylistCreateAction.ERROR, payload: error}));
+        this.store$.dispatch(new LoadPlaylistCollectionAction(newPlaylist));
+      }, error => this.store$.dispatch({type: PlaylistCreateAction.ERROR, payload: error}));
   }
 
   private create( name: string, description?: string ): Observable<Playlist> {
@@ -316,7 +317,7 @@ export class PlaylistService {
       switch (event.type) {
 
         case SocketEventTypeEnum.PLAYLIST_TRACK_PROGRESS:
-          this.store.dispatch(new PlaylistProgressAction(<PlaylistProgressSocketEvent>event.data));
+          this.store$.dispatch(new PlaylistProgressAction(<PlaylistProgressSocketEvent>event.data));
           break;
 
         // NOTE: Don't really need to use PLAYLIST_PLAY as PROGRESS does the same job + more
@@ -325,7 +326,7 @@ export class PlaylistService {
         //   break;
 
         case SocketEventTypeEnum.PLAYLIST_PAUSE:
-          this.store.dispatch(new PlaylistPauseAction(<PlaylistSocketEvent>event.data));
+          this.store$.dispatch(new PlaylistPauseAction(<PlaylistSocketEvent>event.data));
           break;
 
         case SocketEventTypeEnum.PLAYLIST_TRACKS_CHANGE:
@@ -341,7 +342,7 @@ export class PlaylistService {
               console.log('PlaylistService.observeSocket: ', eventData.action, eventData);
 
               // A track has been successfully added - reflect change in local data collection
-              this.store.dispatch({
+              this.store$.dispatch({
                 type: eventData.action === PlaylistTracksChangeActionEnum.COMPLETE ||
                 eventData.action === PlaylistTracksChangeActionEnum.UP_VOTE
                   ? PlaylistAction.TRACK_UPDATED
@@ -357,7 +358,7 @@ export class PlaylistService {
             case PlaylistTracksChangeActionEnum.DELETE:
               console.log('PlaylistService.observeSocket: DELETE:', eventData.action, eventData);
 
-              this.store.dispatch({
+              this.store$.dispatch({
                 type: PlaylistAction.TRACK_DELETED,
                 payload: {
                   playlistId: eventData.playlistId,

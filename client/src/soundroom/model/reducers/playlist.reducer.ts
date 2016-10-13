@@ -15,14 +15,6 @@ export const playlistReducer:ActionReducer<Playlist> = ( state:Playlist = new Pl
 
   switch (action.type) {
 
-    case PlaylistAction.LOAD_ERROR:
-      if (action.payload !== state._id) {
-        return state;
-      }
-      newState = Object.assign(new Playlist, state);
-      newState.loadState = null;
-      return newState;
-
     case PlaylistAction.PROGRESS:
 
       let payload:PlaylistProgressSocketEvent = action.payload;
