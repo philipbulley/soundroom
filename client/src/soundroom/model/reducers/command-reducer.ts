@@ -19,6 +19,12 @@ interface ActionCommandMapping<A, P, S> {
   command: PayloadCommandFn<S, P, A>;
 }
 
+interface DelegateActionCommandMapping<A, P, S> {
+  type: CommandType;
+  action: ActionStatic<A, P>;
+  command: DelegateCommandFn<S, A>;
+}
+
 interface ActionDelegateReducerMapping<A, P, S, SS> {
   action: ActionStatic<A, P>;
   reducer: ActionReducer<SS>;
@@ -52,7 +58,7 @@ export class CommandReducer<S> {
       type: CommandType.PAYLOAD,
       action,
       command,
-    } as ActionCommandMapping);
+    } as ActionCommandMapping<A, P, S>);
 
     return this;
   };
@@ -74,7 +80,7 @@ export class CommandReducer<S> {
       type: CommandType.DELEGATE,
       action,
       command,
-    } as ActionCommandMapping);
+    } as DelegateActionCommandMapping<A, P, S>);
 
     return this;
   };
