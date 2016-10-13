@@ -21,6 +21,8 @@ import { PlaylistProgressAction } from "./playlist-progress/playlist-progress.ac
 import { playlistProgressCommand } from "./playlist-progress/playlist-progress.command";
 import { PlaylistPauseAction } from "./playlist-pause/playlist-pause.action";
 import { playlistPauseCommand } from "./playlist-pause/playlist-pause.command";
+import { PlaylistLoadAction } from './playlist-load/playlist-load.action';
+import { playlistLoadCommand } from './playlist-load/playlist-load.command';
 
 
 const DEFAULT_STATE = {
@@ -36,20 +38,20 @@ export const playlistCollectionReducer: ActionReducer<PlaylistCollection> = new 
   .add(DeletePlaylistAction, deletePlaylistCommand)
   .add(DeletePlaylistSuccessAction, deletePlaylistCollectionSuccessCommand)
   .add(DeletePlaylistErrorAction, deletePlaylistErrorCommand)
-  // .delegate(
-  //   PlaylistProgressAction,
-  //   playlistReducer,
-  //   ( state: PlaylistCollection ) => state.playlists,
-  //   ( state: PlaylistCollection, subState: Playlist[] ) => state.playlists = subState
-  // )
-  .delegate(PlaylistLoadAction, (state: PlaylistCollection, action: Action) => {
-    // TODO: Move this to a command file
-    state = Object.assign({}, state);
-    state.playlists = state.playlists.map(( playlist: Playlist ) => playlistReducer(playlist, action));
-    return state;
-  })
   .add(PlaylistProgressAction, playlistProgressCommand)
   .add(PlaylistPauseAction, playlistPauseCommand)
+  .add(PlaylistLoadAction, playlistLoadCommand)
+  // TODO: Create the commands below
+  // .delegate(PlaylistLoadErrorAction, delegateToPlaylistCommand)
+  // .delegate(AddTrackAction, delegateToPlaylistCommand)
+  // .delegate(AddTrackSuccessAction, delegateToPlaylistCommand)
+  // .delegate(AddTrackErrorAction, delegateToPlaylistCommand)
+  // .delegate(DeleteTrackAction, delegateToPlaylistCommand)
+  // .delegate(DeleteTrackSuccessAction, delegateToPlaylistCommand)
+  // .delegate(DeleteTrackErrorAction, delegateToPlaylistCommand)
+  // .delegate(TrackAddedAction, delegateToPlaylistCommand)
+  // .delegate(TrackUpdatedAction, delegateToPlaylistCommand)
+  // .delegate(TrackDeletedAction, delegateToPlaylistCommand)
   .reducer();
 
 export const playlistCollectionReducer: ActionReducer<PlaylistCollection> = ( state: PlaylistCollection = new PlaylistCollection, action: Action ) => {
@@ -82,7 +84,7 @@ export const playlistCollectionReducer: ActionReducer<PlaylistCollection> = ( st
 
     // payload: {playlistId, playlistTrack, playlistTrackIds}
     case PlaylistAction.TRACK_ADDED:
-    case PlaylistAction.UPDATE_TRACK:
+    case PlaylistAction.TRACK_UPDATED:
     case PlaylistAction.TRACK_DELETED:
 
       newState = Object.assign(new PlaylistCollection, state);

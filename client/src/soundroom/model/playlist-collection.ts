@@ -9,6 +9,7 @@ export interface PlaylistCollection {
 
   /**
    * The currently active playlist.
+   * TODO: Change to ID of the playlist
    */
   active:Playlist;
 

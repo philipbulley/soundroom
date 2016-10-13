@@ -344,7 +344,7 @@ export class PlaylistService {
               this.store.dispatch({
                 type: eventData.action === PlaylistTracksChangeActionEnum.COMPLETE ||
                 eventData.action === PlaylistTracksChangeActionEnum.UP_VOTE
-                  ? PlaylistAction.UPDATE_TRACK
+                  ? PlaylistAction.TRACK_UPDATED
                   : PlaylistAction.TRACK_ADDED,
                 payload: {
                   playlistId: eventData.playlistId,

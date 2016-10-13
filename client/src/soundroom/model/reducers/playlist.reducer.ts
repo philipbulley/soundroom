@@ -15,14 +15,6 @@ export const playlistReducer:ActionReducer<Playlist> = ( state:Playlist = new Pl
 
   switch (action.type) {
 
-    case PlaylistAction.LOAD:
-      if (action.payload !== state._id) {
-        return state;
-      }
-      newState = Object.assign(new Playlist, state);
-      newState.loadState = PlaylistState.LOADING;
-      return newState;
-
     case PlaylistAction.LOAD_ERROR:
       if (action.payload !== state._id) {
         return state;
@@ -125,7 +117,7 @@ export const playlistReducer:ActionReducer<Playlist> = ( state:Playlist = new Pl
       return newState;
 
     case PlaylistAction.TRACK_ADDED:
-    case PlaylistAction.UPDATE_TRACK:
+    case PlaylistAction.TRACK_UPDATED:
       if (action.payload.playlistId !== state._id) {
         return state;
       }

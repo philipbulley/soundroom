@@ -23,6 +23,8 @@ export class Playlist {
    *
    * This is only populated with the track if Playlist.tracks has been populated.
    * If you only want to know which playlist is playing, look at `PlaylistCollection.active`.
+   *
+   * TODO: Change to PlaylistTrack id
    */
   current:PlaylistTrack = null;
 
