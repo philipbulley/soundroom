@@ -1,7 +1,5 @@
 export class PlaylistAction {
 
-  static LOAD_ERROR = `PlaylistAction.ERROR_LOADING`;
-
   static PROGRESS = `PlaylistAction.PROGRESS`;
   static PAUSE = `PlaylistAction.PAUSE`;
 

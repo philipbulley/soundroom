@@ -21,6 +21,8 @@ import { PlaylistLoadAction } from './playlist-load/playlist-load.action';
 import { playlistLoadCommand } from './playlist-load/playlist-load.command';
 import { PlaylistLoadErrorAction } from './playlist-load-error/playlist-load-error.action';
 import { playlistLoadErrorCommand } from './playlist-load-error/playlist-load-error.command';
+import { AddTrackAction } from './add-track/add-track.action';
+import { addTrackCommand } from './add-track/add-track.command';
 
 const DEFAULT_STATE = {
   loadState: null,
@@ -45,7 +47,7 @@ export const playlistCollectionReducer: ActionReducer<PlaylistCollection> = new 
   // TODO: Create the commands below
 
   // payload: {playlist}
-  // .delegate(AddTrackAction, delegateToPlaylistCommand)
+  .add(AddTrackAction, addTrackCommand)
   // .delegate(AddTrackSuccessAction, delegateToPlaylistCommand)
   // .delegate(AddTrackErrorAction, delegateToPlaylistCommand)
 

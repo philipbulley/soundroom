@@ -97,15 +97,16 @@ export const playlistReducer:ActionReducer<Playlist> = ( state:Playlist = new Pl
       // No change to this playlist
       return state;
 
-    // TODO: Implement the following with payload:{playlist, track}
     case PlaylistAction.ADD_TRACK:
+    // TODO: Implement the following with payload:{playlist, track}
     case PlaylistAction.DELETE_TRACK:
+      // TODO: Add this to addTrackCommand
       if (action.payload.playlist._id !== state._id) {
         return state;
       }
 
       newState = Object.assign(new Playlist, state);
-      newState.loadState = PlaylistState.ADDING_TRACK;
+      newState.loadState = PlaylistState.ADDING_TRACK;  // This shuld be delete for delete action
       return newState;
 
     case PlaylistAction.TRACK_ADDED:
