@@ -41,6 +41,7 @@ import { AddTrackSuccessAction } from '../store/playlist-collection/add-track-su
 import { AddTrackErrorAction } from '../store/playlist-collection/add-track-error/add-track-error.action';
 import { DeleteTrackSuccessAction } from '../store/playlist-collection/delete-track-success/delete-track-success.action';
 import { DeleteTrackErrorAction } from '../store/playlist-collection/delete-track-error/delete-track-error.action';
+import { DeleteTrackAction } from '../store/playlist-collection/delete-track/delete-track.action';
 
 @Injectable()
 export class PlaylistService {
@@ -237,7 +238,7 @@ export class PlaylistService {
   }
 
   deleteTrack(playlist: Playlist, playlistTrack: PlaylistTrack) {
-    this.store$.dispatch({type: PlaylistAction.DELETE_TRACK, payload: {playlist, playlistTrack}});
+    this.store$.dispatch(new DeleteTrackAction({playlist, playlistTrack}));
 
     const observable = this.http.delete(
       Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id + '/tracks/' + playlistTrack._id,
