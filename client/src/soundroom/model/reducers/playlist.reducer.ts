@@ -15,65 +15,6 @@ export const playlistReducer:ActionReducer<Playlist> = ( state:Playlist = new Pl
 
   switch (action.type) {
 
-    case PlaylistAction.PROGRESS:
-
-      let payload:PlaylistProgressSocketEvent = action.payload;
-
-      if (state.current && payload.playlistId !== state._id) {
-        // This playlist is no longer playing
-        newState = Object.assign(new Playlist, state);
-        newState.current = null;
-        newState.tracks = newState.tracks.map(( playlistTrack:PlaylistTrack ) => {
-          if (playlistTrack.isPlaying) {
-            // This is the track that WAS playing
-            let newTrack = Object.assign(new PlaylistTrack, playlistTrack);
-            newTrack.isPlaying = false;
-            return newTrack;
-          }
-
-          // No changes to this track
-          return playlistTrack;
-        });
-        return newState;
-      } else if (state.current || (!state.current && payload.playlistId === state._id)) {
-        // This playlist is playing
-
-        if (!state.tracks) {
-          // No changes necessary, as we haven't loaded individual tracks
-          return state;
-        }
-
-        // Playlist's tracks are fully loaded (ie. we've not just loaded the list of playlists, but the details of
-        // this playlist).
-        newState = Object.assign(new Playlist, state);
-
-        // Update the correct playlist track with the progress details
-        newState.tracks = newState.tracks.map(( playlistTrack:PlaylistTrack ) => {
-          if (playlistTrack.isPlaying && payload.playlistTrackId !== playlistTrack._id) {
-            // This is no longer playing, another track in this playlist is now playing
-            let newTrack:PlaylistTrack = Object.assign(new PlaylistTrack, playlistTrack);
-            newTrack.isPlaying = false;
-            return newTrack;
-          } else if (playlistTrack._id === payload.playlistTrackId) {
-            // This track is playing
-            let newTrack:PlaylistTrack = Object.assign(new PlaylistTrack, playlistTrack);
-            newTrack.isPlaying = true;
-            // Ignoring presence of `payload.duration` as it already exists on `PlaylistTrack.track`
-            newTrack.currentTime = payload.currentTime;
-            newTrack.progress = payload.progress;
-
-            // Keep Playlist.nowPlaying up to date with latest instance of currently playing PlaylistTrack
-            newState.current = newTrack;
-            return newTrack;
-          }
-          return playlistTrack;
-        });
-
-        return newState;
-      }
-      return state;
-
-
     case PlaylistAction.PAUSE:
       if (state.current) {
         newState = Object.assign(new Playlist, state);
