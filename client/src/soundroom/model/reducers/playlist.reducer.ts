@@ -15,29 +15,6 @@ export const playlistReducer:ActionReducer<Playlist> = ( state:Playlist = new Pl
 
   switch (action.type) {
 
-    case PlaylistAction.PAUSE:
-      if (state.current) {
-        newState = Object.assign(new Playlist, state);
-
-        newState.tracks = newState.tracks.map(( track:PlaylistTrack ) => {
-          // console.log('playlistReducer: PlaylistAction.PAUSE: track:', track.isPlaying, track);
-          if (track.isPlaying) {
-            let newTrack:PlaylistTrack = Object.assign(new PlaylistTrack, track);
-            newTrack.isPlaying = false;
-
-            // Assign reference of newly created PlaylistTrack to Playlist
-            newState.current = newTrack;
-            return newTrack;
-          }
-          return track;
-        });
-        // console.log('playlistReducer: PlaylistAction.PAUSE: current playlist after:', newState);
-        return newState;
-      }
-
-      // No change to this playlist
-      return state;
-
     // TODO: Implement the following with payload:{playlist, track}
     case PlaylistAction.DELETE_TRACK:
       // TODO: Add this to addTrackCommand

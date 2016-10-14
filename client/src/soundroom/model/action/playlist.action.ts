@@ -1,7 +1,5 @@
 export class PlaylistAction {
 
-  static PAUSE = `PlaylistAction.PAUSE`;
-
   /** A track has been added to the playlist by either this client or another. Playlist+Track info in payload. */
   static TRACK_ADDED = `PlaylistAction.TRACK_ADDED`;
 
