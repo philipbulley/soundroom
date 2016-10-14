@@ -97,7 +97,6 @@ export const playlistReducer:ActionReducer<Playlist> = ( state:Playlist = new Pl
       // No change to this playlist
       return state;
 
-    case PlaylistAction.ADD_TRACK:
     // TODO: Implement the following with payload:{playlist, track}
     case PlaylistAction.DELETE_TRACK:
       // TODO: Add this to addTrackCommand
@@ -145,21 +144,6 @@ export const playlistReducer:ActionReducer<Playlist> = ( state:Playlist = new Pl
 
       // Sort the tracks based on the playlistTrackIds received
       newState.tracks = sortPlaylistTracks(newState.tracks, action.payload.playlistTrackIds);
-      return newState;
-
-    case PlaylistAction.ADD_TRACK_SUCCESS:
-    case PlaylistAction.ADD_TRACK_ERROR:
-    case PlaylistAction.DELETE_TRACK_SUCCESS:
-    case PlaylistAction.DELETE_TRACK_ERROR:
-      // ADDING_TRACK_SUCCESS is separate from ADD_TRACK as it's specific to this client.
-      // ADD_TRACK will occur across all connected clients
-
-      if (action.payload.playlistId !== state._id) {
-        return state;
-      }
-
-      newState = Object.assign(new Playlist, state);
-      newState.loadState = null;
       return newState;
 
     default:

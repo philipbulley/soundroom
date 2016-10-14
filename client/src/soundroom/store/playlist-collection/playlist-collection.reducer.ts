@@ -20,9 +20,13 @@ import { playlistPauseCommand } from "./playlist-pause/playlist-pause.command";
 import { PlaylistLoadAction } from './playlist-load/playlist-load.action';
 import { playlistLoadCommand } from './playlist-load/playlist-load.command';
 import { PlaylistLoadErrorAction } from './playlist-load-error/playlist-load-error.action';
-import { playlistLoadErrorCommand } from './playlist-load-error/playlist-load-error.command';
+import { resetPlaylistLoadStateCommand } from './reset-playlist-load-state.command';
 import { AddTrackAction } from './add-track/add-track.action';
 import { addTrackCommand } from './add-track/add-track.command';
+import { AddTrackSuccessAction } from './add-track-success/add-track-success.action';
+import { AddTrackErrorAction } from './add-track-error/add-track-error.action';
+import { DeleteTrackSuccessAction } from './delete-track-success/delete-track-success.action';
+import { DeleteTrackErrorAction } from './delete-track-error/delete-track-error.action';
 
 const DEFAULT_STATE = {
   loadState: null,
@@ -43,18 +47,18 @@ export const playlistCollectionReducer: ActionReducer<PlaylistCollection> = new 
   .add(PlaylistPauseAction, playlistPauseCommand)
 
   .add(PlaylistLoadAction, playlistLoadCommand)
-  .add(PlaylistLoadErrorAction, playlistLoadErrorCommand)
+  .add(PlaylistLoadErrorAction, resetPlaylistLoadStateCommand)
   // TODO: Create the commands below
 
   // payload: {playlist}
   .add(AddTrackAction, addTrackCommand)
-  // .delegate(AddTrackSuccessAction, delegateToPlaylistCommand)
-  // .delegate(AddTrackErrorAction, delegateToPlaylistCommand)
+  .add(AddTrackSuccessAction, resetPlaylistLoadStateCommand)
+  .add(AddTrackErrorAction, resetPlaylistLoadStateCommand)
 
   // payload: {playlist, playlistTrack}
   // .delegate(DeleteTrackAction, delegateToPlaylistCommand)
-  // .delegate(DeleteTrackSuccessAction, delegateToPlaylistCommand)
-  // .delegate(DeleteTrackErrorAction, delegateToPlaylistCommand)
+  .add(DeleteTrackSuccessAction, resetPlaylistLoadStateCommand)
+  .add(DeleteTrackErrorAction, resetPlaylistLoadStateCommand)
 
   // payload: {playlistId, playlistTrack, playlistTrackIds}
   // .delegate(TrackAddedAction, delegateToPlaylistCommand)

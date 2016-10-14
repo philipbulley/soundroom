@@ -8,14 +8,14 @@ export const playlistLoadCommand = (state: PlaylistCollection, playlistId: strin
   // Find the playlist
   const playlist: Playlist = Object.assign(
     new Playlist,
-    state.playlists.find((playlist: Playlist) => playlistId === playlist._id),
+    state.playlists.find((playlist: Playlist) => playlistId === playlist._id)
   );
 
   playlist.loadState = PlaylistState.LOADING;
 
     state.playlists = [
     ...state.playlists.filter((playlist: Playlist) => playlistId !== playlist._id),
-    playlist
+    playlist,
   ];
 
   return state;

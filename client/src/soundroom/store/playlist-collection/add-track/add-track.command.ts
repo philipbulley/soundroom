@@ -9,7 +9,7 @@ export const addTrackCommand = (state: PlaylistCollection, payload: AddTrackPayl
   // Find the playlist
   const playlist: Playlist = Object.assign(
     new Playlist,
-    state.playlists.find((playlist: Playlist) => payload.playlist._id === playlist._id),
+    state.playlists.find((playlist: Playlist) => payload.playlist._id === playlist._id)
   );
 
   playlist.loadState = PlaylistState.ADDING_TRACK;

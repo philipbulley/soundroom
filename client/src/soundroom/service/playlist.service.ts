@@ -37,6 +37,10 @@ import { PlaylistPauseAction } from "../store/playlist-collection/playlist-pause
 import { PlaylistLoadErrorAction } from '../store/playlist-collection/playlist-load-error/playlist-load-error.action';
 import { AddTrackAction } from '../store/playlist-collection/add-track/add-track.action';
 import { PlaylistLoadAction } from '../store/playlist-collection/playlist-load/playlist-load.action';
+import { AddTrackSuccessAction } from '../store/playlist-collection/add-track-success/add-track-success.action';
+import { AddTrackErrorAction } from '../store/playlist-collection/add-track-error/add-track-error.action';
+import { DeleteTrackSuccessAction } from '../store/playlist-collection/delete-track-success/delete-track-success.action';
+import { DeleteTrackErrorAction } from '../store/playlist-collection/delete-track-error/delete-track-error.action';
 
 @Injectable()
 export class PlaylistService {
@@ -192,10 +196,10 @@ export class PlaylistService {
 
     observable.subscribe((res: Response) => {
       // NOTE: Track is added to state tree via socket event handler, as all clients will receive that event.
-      this.store$.dispatch({type: PlaylistAction.ADD_TRACK_SUCCESS, payload: {playlist}});
+      this.store$.dispatch(new AddTrackSuccessAction(playlist._id));
     }, (error: Response) => {
       // Dispatch redux action
-      this.store$.dispatch({type: PlaylistAction.ADD_TRACK_ERROR, payload: {playlist}});
+      this.store$.dispatch(new AddTrackErrorAction(playlist._id));
     });
 
     return observable
@@ -243,9 +247,9 @@ export class PlaylistService {
       .refCount();
 
     observable.subscribe((res: Response) => {
-      this.store$.dispatch({type: PlaylistAction.DELETE_TRACK_SUCCESS, payload: {playlist, playlistTrack}});
+      this.store$.dispatch(new DeleteTrackSuccessAction(playlist._id));
     }, (error: Response) => {
-      this.store$.dispatch({type: PlaylistAction.DELETE_TRACK_ERROR, payload: {playlist, playlistTrack}});
+      this.store$.dispatch(new DeleteTrackErrorAction(playlist._id));
     });
 
     return observable
