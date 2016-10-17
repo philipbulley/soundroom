@@ -1,9 +1,7 @@
 export class PlaylistAction {
 
-  /** A track has been added to the playlist by either this client or another. Playlist+Track info in payload. */
   static TRACK_ADDED = `PlaylistAction.TRACK_ADDED`;
 
-  /** `TRACK_UPDATED` is to be used when a track is simply being updated. */
   static TRACK_UPDATED = `PlaylistAction.TRACK_UPDATED`;
 
   /** A track has been deleted from the playlist by either this client or another. Playlist+Track info in payload. */

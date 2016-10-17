@@ -42,6 +42,9 @@ import { AddTrackErrorAction } from '../store/playlist-collection/add-track-erro
 import { DeleteTrackSuccessAction } from '../store/playlist-collection/delete-track-success/delete-track-success.action';
 import { DeleteTrackErrorAction } from '../store/playlist-collection/delete-track-error/delete-track-error.action';
 import { DeleteTrackAction } from '../store/playlist-collection/delete-track/delete-track.action';
+import { TrackUpsertPayload } from '../store/playlist-collection/track-upsert/track-upsert-payload';
+import { TrackUpdatedAction } from '../store/playlist-collection/track-upsert/track-updated.action';
+import { TrackAddedAction } from '../store/playlist-collection/track-upsert/track-added.action';
 
 @Injectable()
 export class PlaylistService {
@@ -349,17 +352,18 @@ export class PlaylistService {
               console.log('PlaylistService.observeSocket: ', eventData.action, eventData);
 
               // A track has been successfully added - reflect change in local data collection
-              this.store$.dispatch({
-                type: eventData.action === PlaylistTracksChangeActionEnum.COMPLETE ||
+              const payload: TrackUpsertPayload = {
+                playlistId: eventData.playlistId,
+                playlistTrack,
+                playlistTrackIds: eventData.playlistTrackIds
+              };
+
+              this.store$.dispatch(
+                eventData.action === PlaylistTracksChangeActionEnum.COMPLETE ||
                 eventData.action === PlaylistTracksChangeActionEnum.UP_VOTE
-                  ? PlaylistAction.TRACK_UPDATED
-                  : PlaylistAction.TRACK_ADDED,
-                payload: {
-                  playlistId: eventData.playlistId,
-                  playlistTrack,
-                  playlistTrackIds: eventData.playlistTrackIds
-                }
-              });
+                  ? new TrackUpdatedAction(payload)
+                  : new TrackAddedAction(payload)
+              );
               break;
 
             case PlaylistTracksChangeActionEnum.DELETE:
