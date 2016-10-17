@@ -8,7 +8,6 @@ import { Store } from '@ngrx/store';
 import { Config } from '../model/config';
 import { Playlist } from '../model/playlist';
 import { PlaylistCreateBody } from "./vo/playlist-create-body";
-import { PlaylistAction } from "../model/action/playlist.action.ts";
 import { PlaylistCreate } from "../model/playlist-create";
 import { PlaylistCreateAction } from "../model/action/playlist-create.action.ts";
 import { PlaylistCreateState } from "../model/state/playlist-create.state.ts";
@@ -42,9 +41,10 @@ import { AddTrackErrorAction } from '../store/playlist-collection/add-track-erro
 import { DeleteTrackSuccessAction } from '../store/playlist-collection/delete-track-success/delete-track-success.action';
 import { DeleteTrackErrorAction } from '../store/playlist-collection/delete-track-error/delete-track-error.action';
 import { DeleteTrackAction } from '../store/playlist-collection/delete-track/delete-track.action';
-import { TrackUpsertPayload } from '../store/playlist-collection/track-upsert/track-upsert-payload';
+import { TrackUpdatePayload } from '../store/playlist-collection/track-update-payload';
 import { TrackUpdatedAction } from '../store/playlist-collection/track-upsert/track-updated.action';
 import { TrackAddedAction } from '../store/playlist-collection/track-upsert/track-added.action';
+import { TrackDeletedAction } from '../store/playlist-collection/track-deleted/track-deleted.action';
 
 @Injectable()
 export class PlaylistService {
@@ -352,7 +352,7 @@ export class PlaylistService {
               console.log('PlaylistService.observeSocket: ', eventData.action, eventData);
 
               // A track has been successfully added - reflect change in local data collection
-              const payload: TrackUpsertPayload = {
+              const payload: TrackUpdatePayload = {
                 playlistId: eventData.playlistId,
                 playlistTrack,
                 playlistTrackIds: eventData.playlistTrackIds
@@ -369,14 +369,11 @@ export class PlaylistService {
             case PlaylistTracksChangeActionEnum.DELETE:
               console.log('PlaylistService.observeSocket: DELETE:', eventData.action, eventData);
 
-              this.store$.dispatch({
-                type: PlaylistAction.TRACK_DELETED,
-                payload: {
-                  playlistId: eventData.playlistId,
-                  playlistTrack,
-                  playlistTrackIds: eventData.playlistTrackIds
-                }
-              });
+              this.store$.dispatch(new TrackDeletedAction({
+                playlistId: eventData.playlistId,
+                playlistTrack,
+                playlistTrackIds: eventData.playlistTrackIds
+              }));
               break;
           }
           break;

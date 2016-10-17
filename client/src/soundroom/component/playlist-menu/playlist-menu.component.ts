@@ -1,13 +1,14 @@
-import {Component, OnInit, OnDestroy, ChangeDetectionStrategy, Input} from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, Input } from '@angular/core';
 
-import {Subscription} from 'rxjs/Subscription';
+import { Subscription } from 'rxjs/Subscription';
 var alertify = require('alertify.js');
 
-import {PlaylistService} from "../../service/playlist.service";
-import {PlaylistMenuItemComponent} from "../../component/playlist-menu-item/playlist-menu-item.component";
-import {CountPipe} from "../../pipe/count.pipe";
-import {PlaylistCreateComponent} from "../playlist-create/playlist-create.component";
-import {PlaylistCollection} from "../../model/playlist-collection";
+import { PlaylistService } from "../../service/playlist.service";
+import { PlaylistMenuItemComponent } from "../../component/playlist-menu-item/playlist-menu-item.component";
+import { CountPipe } from "../../pipe/count.pipe";
+import { PlaylistCreateComponent } from "../playlist-create/playlist-create.component";
+import { PlaylistCollection } from "../../model/playlist-collection";
+import { PlaylistCollectionState } from '../../model/state/playlist-collection.state';
 
 @Component({
   selector: 'playlist-menu',
@@ -20,29 +21,30 @@ import {PlaylistCollection} from "../../model/playlist-collection";
 export class PlaylistMenuComponent implements OnInit, OnDestroy {
 
   /* tslint:disable:no-unused-variable */
-  @Input()
-  private playlistCollection:PlaylistCollection;
+  @Input() private playlistCollection: PlaylistCollection;
+
+  private PlaylistCollectionState = PlaylistCollectionState;
   /* tslint:enable:no-unused-variable */
 
-  private isSlowConnection:boolean = false;
-  private onSlowConnectionSubscription:Subscription;
+  private isSlowConnection: boolean = false;
+  private onSlowConnectionSubscription: Subscription;
 
-  constructor( private playlistService:PlaylistService ) {
+  constructor(private playlistService: PlaylistService) {
     //
   }
 
-  ngOnInit():any {
+  ngOnInit(): any {
     // TODO: Move slow connection to state tree
     this.onSlowConnectionSubscription = this.playlistService.onSlowConnection.subscribe(
-      ( isSlow:boolean ) => this.handleSlowConnection(isSlow)
+      (isSlow: boolean) => this.handleSlowConnection(isSlow)
     );
   }
 
-  ngOnDestroy():any {
+  ngOnDestroy(): any {
     this.onSlowConnectionSubscription.unsubscribe();
   }
 
-  private handleSlowConnection( isSlow:boolean ) {
+  private handleSlowConnection(isSlow: boolean) {
     // console.log("PlaylistMenuComponent.handleSlowConnection()", isSlow);
 
     this.isSlowConnection = isSlow;

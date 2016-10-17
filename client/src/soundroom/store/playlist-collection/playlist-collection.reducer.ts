@@ -32,6 +32,8 @@ import { deleteTrackCommand } from './delete-track/delete-track.command';
 import { TrackAddedAction } from './track-upsert/track-added.action';
 import { TrackUpdatedAction } from './track-upsert/track-updated.action';
 import { trackUpsertCommand } from './track-upsert/track-upsert.command';
+import { TrackDeletedAction } from './track-deleted/track-deleted.action';
+import { trackDeletedCommand } from './track-deleted/track-deleted.command';
 
 const DEFAULT_STATE = {
   loadState: null,
@@ -53,20 +55,16 @@ export const playlistCollectionReducer: ActionReducer<PlaylistCollection> = new 
 
   .add(PlaylistLoadAction, playlistLoadCommand)
   .add(PlaylistLoadErrorAction, resetPlaylistLoadStateCommand)
-  // TODO: Create the commands below
 
-  // payload: {playlist}
   .add(AddTrackAction, addTrackCommand)
   .add(AddTrackSuccessAction, resetPlaylistLoadStateCommand)
   .add(AddTrackErrorAction, resetPlaylistLoadStateCommand)
 
-  // payload: {playlist, playlistTrack}
   .add(DeleteTrackAction, deleteTrackCommand)
   .add(DeleteTrackSuccessAction, resetPlaylistLoadStateCommand)
   .add(DeleteTrackErrorAction, resetPlaylistLoadStateCommand)
 
-  // payload: {playlistId, playlistTrack, playlistTrackIds}
   .add(TrackAddedAction, trackUpsertCommand)
   .add(TrackUpdatedAction, trackUpsertCommand)
-  // .delegate(TrackDeletedAction, delegateToPlaylistCommand)
+  .add(TrackDeletedAction, trackDeletedCommand)
   .reducer();

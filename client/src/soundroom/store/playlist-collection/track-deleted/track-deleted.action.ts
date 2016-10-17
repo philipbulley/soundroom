@@ -2,11 +2,11 @@ import { Action } from '@ngrx/store';
 import { TrackUpdatePayload } from '../track-update-payload';
 
 /**
- * A track has been added to the playlist by either this client or another.
+ * A track has been deleted from the playlist by either this client or another.
  */
-export class TrackAddedAction implements Action {
+export class TrackDeletedAction implements Action {
   // tslint:disable-next-line:no-reserved-keywords
-  type: string = 'TrackAddedAction';
+  type: string = 'TrackDeletedAction';
 
   constructor(public payload?: TrackUpdatePayload) {
   }
