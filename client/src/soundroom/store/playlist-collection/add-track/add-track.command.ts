@@ -16,7 +16,7 @@ export const addTrackCommand = (state: PlaylistCollection, payload: AddTrackPayl
 
   state.playlists = [
     ...state.playlists.filter((playlist: Playlist) => payload.playlist._id !== playlist._id),
-    playlist
+    playlist,
   ];
 
   return state;

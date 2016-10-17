@@ -19,7 +19,7 @@ import {AlertifyComponent} from "./component/alertify/alertify.component";
   directives: [...ROUTER_DIRECTIVES, AppToolbarLayout, AlertifyComponent],
   template: require('./soundroom.html'),
   providers: [PlaylistService, SpotifyService],
-  styles: [require('./soundroom.scss')]
+  styles: [require('./soundroom.scss')],
 })
 export class SoundroomComponent implements OnInit {
 

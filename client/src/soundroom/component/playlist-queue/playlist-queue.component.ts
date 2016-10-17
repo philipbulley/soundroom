@@ -24,7 +24,7 @@ var alertify = require('alertify.js');
   styles: [require('./playlist-queue.scss')],
   pipes: [ArtistsNamesPipe, MomentPipe],
   directives: [UpVoteAvatarsComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlaylistQueueComponent implements OnInit {
 

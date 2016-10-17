@@ -3,7 +3,7 @@ import {ProviderEnum} from "../enum/provider.enum";
 export class ProviderFactory {
 
   private static dict = {
-    'spotify': ProviderEnum.SPOTIFY
+    'spotify': ProviderEnum.SPOTIFY,
   };
 
   static getByString( apiData:string ):ProviderEnum {

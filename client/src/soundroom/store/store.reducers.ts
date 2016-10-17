@@ -8,7 +8,7 @@ import { authReducer } from "./auth/auth.reducer";
 const REDUCERS = {
   playlistsCollection: playlistCollectionReducer,
   playlistCreate: playlistCreateReducer,
-  auth: authReducer
+  auth: authReducer,
 };
 
 export const STORE_REDUCERS = compose(storeLogger(), combineReducers)(REDUCERS);

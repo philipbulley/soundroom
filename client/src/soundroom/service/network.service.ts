@@ -72,7 +72,7 @@ export class NetworkService {
     }
 
     return new RequestOptions({
-      headers: new Headers(headers)
+      headers: new Headers(headers),
     });
   }
 }

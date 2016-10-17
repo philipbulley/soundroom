@@ -7,7 +7,7 @@ import {MomentPipe} from "../../pipe/moment.pipe";
   template: require('./up-vote-avatars.html'),
   styles: [require('./up-vote-avatars.scss')],
   pipes: [MomentPipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UpVoteAvatarsComponent {
 

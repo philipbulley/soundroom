@@ -28,7 +28,7 @@ export class SocketService {
     SocketEventTypeEnum.USER_UPDATE,
     SocketEventTypeEnum.PLAYLIST_TRACK_UPVOTE,
     SocketEventTypeEnum.PLAYLIST_TRACK_VETO,
-    SocketEventTypeEnum.PLAYLIST_TRACKS_CHANGE
+    SocketEventTypeEnum.PLAYLIST_TRACKS_CHANGE,
   ];
   private streamObserver:Observer<any>;
 

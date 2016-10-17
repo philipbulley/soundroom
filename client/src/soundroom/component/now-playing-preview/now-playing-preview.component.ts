@@ -12,7 +12,7 @@ import {PlaylistCollection} from "../../model/playlist-collection";
   styles: [require('./now-playing-preview.scss')],
   directives: [ROUTER_DIRECTIVES],
   pipes: [ArtistsNamesPipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NowPlayingPreviewComponent implements OnInit {
 

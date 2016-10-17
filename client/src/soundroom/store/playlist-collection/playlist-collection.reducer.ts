@@ -38,7 +38,7 @@ import { trackDeletedCommand } from './track-deleted/track-deleted.command';
 const DEFAULT_STATE = {
   loadState: null,
   playlists: null,
-  active: null
+  active: null,
 };
 
 export const playlistCollectionReducer: ActionReducer<PlaylistCollection> = new CommandReducer<PlaylistCollection>(DEFAULT_STATE)

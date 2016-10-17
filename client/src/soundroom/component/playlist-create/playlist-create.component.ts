@@ -13,7 +13,7 @@ import {AppState} from "../../../boot";
   selector: 'playlist-create',
   template: require('./playlist-create.html'),
   styles: [require('./playlist-create.scss')],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlaylistCreateComponent {
 

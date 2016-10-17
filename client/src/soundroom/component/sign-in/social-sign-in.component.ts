@@ -5,7 +5,7 @@ import {Config} from "../../model/config";
   selector: 'social-sign-in',
   template: require('./social-sign-in.html'),
   styles: [require('./social-sign-in.scss')],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SocialSignInComponent {
 

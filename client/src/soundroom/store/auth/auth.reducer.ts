@@ -12,7 +12,7 @@ import { CommandReducer } from "../../model/reducers/command-reducer";
 const DEFAULT_STATE = {
   state: AuthState.LOGGED_OUT,
   user: null,
-  error: null
+  error: null,
 };
 
 export const authReducer: ActionReducer<Auth> = new CommandReducer<Auth>(DEFAULT_STATE)

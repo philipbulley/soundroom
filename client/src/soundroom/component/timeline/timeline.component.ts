@@ -6,7 +6,7 @@ import {Observable} from 'rxjs/Observable';
   selector: 'timeline',
   template: require('./timeline.html'),
   styles: [require('./timeline.scss')],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimelineComponent implements OnInit {
 

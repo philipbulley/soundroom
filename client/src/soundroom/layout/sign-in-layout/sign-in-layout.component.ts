@@ -14,7 +14,7 @@ import { AuthState } from "../../model/state/auth.state";
   template: require('./sign-in-layout.html'),
   styles: [require('./sign-in-layout.scss')],
   directives: [SocialSignInComponent, ROUTER_DIRECTIVES],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignInLayout implements OnInit {
 

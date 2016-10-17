@@ -18,9 +18,9 @@ import {PlaylistError} from "../../model/error/PlaylistError";
     '(drop)': 'handleDrop($event)',
     '(dragover)': 'handleDragOver($event)',
     '(dragend)': 'handleDragEnd($event)',
-    '(dragleave)': 'handleDragLeave($event)'
+    '(dragleave)': 'handleDragLeave($event)',
   },
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DropUrlComponent implements OnInit {
 

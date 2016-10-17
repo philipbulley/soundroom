@@ -11,23 +11,23 @@ export const routes:RouterConfig = [
   {
     path: '',
     component: MainLayout,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'sign-in',
     component: SignInLayout,
-    canActivate: [NoAuthGuard]
+    canActivate: [NoAuthGuard],
   },
   {
     path: 'playlist/:id',
     component: PlaylistLayout,
-    canActivate: [AuthGuard]
-  }
+    canActivate: [AuthGuard],
+  },
 ];
 
 export const APP_ROUTER_PROVIDERS = [
   provideRouter(routes),
   AuthGuard,
   NoAuthGuard,
-  AuthService
+  AuthService,
 ];

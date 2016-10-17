@@ -9,7 +9,7 @@ export const deletePlaylistCollectionSuccessCommand = ( state: PlaylistCollectio
   const i = state.playlists.indexOf(playlist);
   state.playlists = [
     ...state.playlists.slice(0, i),
-    ...state.playlists.slice(i + 1)
+    ...state.playlists.slice(i + 1),
   ];
 
   return state;

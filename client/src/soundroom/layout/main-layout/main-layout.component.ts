@@ -14,7 +14,7 @@ import {NowPlayingPreviewComponent} from "../../component/now-playing-preview/no
   template: require('./main-layout.html'),
   styles: [require('./main-layout.scss')],
   directives: [PlaylistMenuComponent, NowPlayingPreviewComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainLayout {
 

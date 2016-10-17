@@ -14,7 +14,7 @@ import {PlaylistTrack} from "../../model/playlist-track";
   styles: [require('./now-playing.scss')],
   directives: [TimelineComponent],
   pipes: [ArtistsNamesPipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NowPlayingComponent implements OnInit {
 

@@ -16,7 +16,7 @@ export const deleteTrackCommand = (state: PlaylistCollection, payload: DeleteTra
 
   state.playlists = [
     ...state.playlists.filter((playlist: Playlist) => payload.playlist._id !== playlist._id),
-    playlist
+    playlist,
   ];
 
   return state;

@@ -23,7 +23,7 @@ export const trackDeletedCommand = (state: PlaylistCollection, payload: TrackUpd
 
   state.playlists = [
     ...state.playlists.filter((playlist: Playlist) => payload.playlistId !== playlist._id),
-    playlist
+    playlist,
   ];
 
   return state;

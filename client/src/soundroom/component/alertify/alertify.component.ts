@@ -6,7 +6,7 @@ var alertify = require('alertify.js');
   selector: 'alertify',
   template: require('./alertify.html'),
   styles: [require('./alertify.scss')],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlertifyComponent implements OnInit {
 

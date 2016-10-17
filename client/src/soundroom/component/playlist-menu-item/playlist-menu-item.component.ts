@@ -12,7 +12,7 @@ import {Observable} from 'rxjs/Observable';
   template: require('./playlist-menu-item.html'),
   styles: [require('./playlist-menu-item.scss')],
   directives: [ROUTER_DIRECTIVES],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlaylistMenuItemComponent {
 

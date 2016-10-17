@@ -12,7 +12,7 @@ import * as moment from 'moment';
  *     // TODO: Implement chained calls using something like `moment|[startOf:['day'], 'fromNow']` any string values in array will always be a method if the array contains an object at any index
  */
 @Pipe({
-  name: 'moment'
+  name: 'moment',
 })
 export class MomentPipe implements PipeTransform {
 

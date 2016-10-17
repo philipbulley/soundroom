@@ -165,7 +165,7 @@ export class PlaylistService {
 
     this.socketService.emit(SocketEventTypeEnum.PLAYLIST_TRACK_UPVOTE, {
       playlistId: playlist._id,
-      playlistTrackId: playlistTrack._id
+      playlistTrackId: playlistTrack._id,
     });
   }
 
@@ -182,7 +182,7 @@ export class PlaylistService {
 
     var body: PlaylistAddTrackBody = {
       provider: <string><any>provider,
-      foreignId
+      foreignId,
     };
 
     console.log('PlaylistService.addTrack: call POST:',
@@ -304,7 +304,7 @@ export class PlaylistService {
     console.log('PlaylistCreateService.create:', name, description);
 
     var body: PlaylistCreateBody = {
-      name: name
+      name: name,
     };
 
     if (description) {
@@ -355,7 +355,7 @@ export class PlaylistService {
               const payload: TrackUpdatePayload = {
                 playlistId: eventData.playlistId,
                 playlistTrack,
-                playlistTrackIds: eventData.playlistTrackIds
+                playlistTrackIds: eventData.playlistTrackIds,
               };
 
               this.store$.dispatch(
@@ -372,7 +372,7 @@ export class PlaylistService {
               this.store$.dispatch(new TrackDeletedAction({
                 playlistId: eventData.playlistId,
                 playlistTrack,
-                playlistTrackIds: eventData.playlistTrackIds
+                playlistTrackIds: eventData.playlistTrackIds,
               }));
               break;
           }

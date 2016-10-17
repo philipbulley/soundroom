@@ -10,7 +10,7 @@ import {Auth} from "../../model/auth";
   template: require('./app-toolbar-layout.html'),
   styles: [require('./app-toolbar-layout.scss')],
   directives: [ROUTER_DIRECTIVES],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppToolbarLayout implements OnInit {
 

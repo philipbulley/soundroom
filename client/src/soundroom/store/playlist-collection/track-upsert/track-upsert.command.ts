@@ -26,7 +26,7 @@ export const trackUpsertCommand = (state: PlaylistCollection, payload: TrackUpda
 
   state.playlists = [
     ...state.playlists.filter((playlist: Playlist) => payload.playlistId !== playlist._id),
-    playlist
+    playlist,
   ];
 
   return state;

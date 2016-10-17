@@ -16,7 +16,7 @@ import { PlaylistCollectionState } from '../../model/state/playlist-collection.s
   styles: [require('./playlist-menu.scss')],
   directives: [PlaylistMenuItemComponent, PlaylistCreateComponent],
   pipes: [CountPipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlaylistMenuComponent implements OnInit, OnDestroy {
 

@@ -9,7 +9,7 @@ import {PlaylistService} from "../../service/playlist.service";
   selector: 'track-search',
   template: require('./track-search.html'),
   styles: [require('./track-search.scss')],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TrackSearchComponent implements OnInit {
 
