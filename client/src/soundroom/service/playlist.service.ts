@@ -45,6 +45,7 @@ import { TrackUpdatePayload } from '../store/playlist-collection/track-update-pa
 import { TrackUpdatedAction } from '../store/playlist-collection/track-upsert/track-updated.action';
 import { TrackAddedAction } from '../store/playlist-collection/track-upsert/track-added.action';
 import { TrackDeletedAction } from '../store/playlist-collection/track-deleted/track-deleted.action';
+import { LoadPlaylistCollectionSuccessAction } from '../store/playlist-collection/load-playlist-collection-success/load-playlist-collection-success.action';
 
 @Injectable()
 export class PlaylistService {
@@ -81,7 +82,7 @@ export class PlaylistService {
    * Starts load of the full data set.
    */
   loadCollection(): void {
-    // console.log('PlaylistService.loadCollection():', Config.API_BASE_URL + this.API_ENDPOINT);
+    console.log('PlaylistService.loadCollection():', Config.API_BASE_URL + this.API_ENDPOINT);
 
     this.store$.dispatch(new LoadPlaylistCollectionAction());
 
@@ -93,7 +94,7 @@ export class PlaylistService {
         this.onSlowConnection.emit(false);
 
         // Add initial data to the Store
-        this.store$.dispatch(new LoadPlaylistCollectionAction(data));
+        this.store$.dispatch(new LoadPlaylistCollectionSuccessAction(data));
       }, (error: Response) => {
         console.error(error);
 

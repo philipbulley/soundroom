@@ -62,11 +62,6 @@ export class AuthService {
         return Observable.throw(error || 'Server error');
       });
 
-    // Make the request
-    httpStream.subscribe(( success: boolean ) => {
-      //
-    });
-
     return httpStream;
   }
 
