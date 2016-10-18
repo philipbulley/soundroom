@@ -1,22 +1,22 @@
-import {PlaylistState} from "./state/playlist.state.ts";
-import {PlaylistTrack} from "./playlist-track";
+import { PlaylistState } from "./state/playlist.state.ts";
+import { PlaylistTrack } from "./playlist-track";
 
 export class Playlist {
 
   /** _id is the MongoDB convention, not intending this to appear as "private" */
-  _id:string;
+  _id: string;
 
-  name:string;
+  name: string;
 
-  description:string;
+  description: string;
 
-  created:string;
+  created: string;
 
-  modified:string;
+  modified: string;
 
-  tracks:PlaylistTrack[] = [];
+  tracks: PlaylistTrack[] = [];
 
-  loadState:PlaylistState = null;
+  loadState: PlaylistState = null;
 
   /**
    * The track currently playing.
@@ -26,12 +26,12 @@ export class Playlist {
    *
    * TODO: Change to PlaylistTrack id
    */
-  current:PlaylistTrack = null;
+  current: PlaylistTrack = null;
 
   /**
    * Read-only convenience property to determine whether this playlist is playing.
    */
-  get isPlaying():boolean {
+  get isPlaying(): boolean {
     return !this.current
       ? false
       : this.current.isPlaying;

@@ -37,7 +37,7 @@ import { trackDeletedCommand } from './track-deleted/track-deleted.command';
 
 const DEFAULT_STATE = {
   loadState: null,
-  playlists: null,
+  playlists: [],
   active: null,
 };
 

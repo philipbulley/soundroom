@@ -93,8 +93,10 @@ export class PlaylistService {
       .subscribe((data) => {
         this.onSlowConnection.emit(false);
 
+        const playlists: Playlist[] = data.map(playlistData => PlaylistFactory.createFromApiResponse(playlistData));
+
         // Add initial data to the Store
-        this.store$.dispatch(new LoadPlaylistCollectionSuccessAction(data));
+        this.store$.dispatch(new LoadPlaylistCollectionSuccessAction(playlists));
       }, (error: Response) => {
         console.error(error);
 

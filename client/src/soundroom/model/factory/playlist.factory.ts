@@ -1,9 +1,9 @@
-import {Playlist} from "../playlist";
-import {PlaylistTrackFactory} from "./playlist-track.factory";
+import { Playlist } from "../playlist";
+import { PlaylistTrackFactory } from "./playlist-track.factory";
 
 export class PlaylistFactory {
 
-  static createFromApiResponse( apiData:any ):Playlist {
+  static createFromApiResponse(apiData: any): Playlist {
 
     var playlist = new Playlist();
 
@@ -17,7 +17,9 @@ export class PlaylistFactory {
 
     playlist.modified = apiData.modified;
 
-    playlist.tracks = apiData.tracks.map( playlistTrackData => PlaylistTrackFactory.createFromApiResponse( playlistTrackData ) );
+    playlist.tracks = apiData.tracks
+      ? apiData.tracks.map(playlistTrackData => PlaylistTrackFactory.createFromApiResponse(playlistTrackData))
+      : null;
 
     return playlist;
 
