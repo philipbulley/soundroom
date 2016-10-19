@@ -1,11 +1,11 @@
-import {Action} from '@ngrx/store';
+import { Action } from '@ngrx/store';
 import { Playlist } from "../../../model/playlist";
 
 export class DeletePlaylistSuccessAction implements Action {
   // tslint:disable-next-line:no-reserved-keywords
-  type:string = 'DeletePlaylistSuccessAction';
+  type: string = 'DeletePlaylistSuccessAction';
 
-  constructor( public playlist?:Playlist ) {
+  constructor(public payload?: Playlist) {
   }
 
 }
