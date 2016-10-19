@@ -28,8 +28,8 @@ var alertify = require('alertify.js');
 })
 export class PlaylistQueueComponent implements OnInit {
 
-  @Input('playlist')
-  observablePlaylist:Observable<Playlist>;
+  // TODO: No need to be observable
+  @Input('playlist') observablePlaylist:Observable<Playlist>;
 
   /**
    * List of tracks in queue (not including first track ink playlist)

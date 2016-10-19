@@ -1,12 +1,12 @@
-import {Component, ChangeDetectionStrategy, Input, OnInit, ChangeDetectorRef} from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 
-import {Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
 
-import {Playlist} from "../../model/playlist";
-import {PlaylistService} from "../../service/playlist.service";
-import {ArtistsNamesPipe} from "../../pipe/artists-names.pipe";
-import {TimelineComponent} from "../timeline/timeline.component";
-import {PlaylistTrack} from "../../model/playlist-track";
+import { Playlist } from "../../model/playlist";
+import { PlaylistService } from "../../service/playlist.service";
+import { ArtistsNamesPipe } from "../../pipe/artists-names.pipe";
+import { TimelineComponent } from "../timeline/timeline.component";
+import { PlaylistTrack } from "../../model/playlist-track";
 
 @Component({
   selector: 'now-playing',
@@ -18,31 +18,33 @@ import {PlaylistTrack} from "../../model/playlist-track";
 })
 export class NowPlayingComponent implements OnInit {
 
-  @Input('playlist')
-  observablePlaylist:Observable<Playlist>;
+  // TODO: No need to be observable
+  @Input('playlist') observablePlaylist: Observable<Playlist>;
 
-  private playlist:Playlist;
-  private playlistTrack:PlaylistTrack;
-  private progress$:Observable<number>;
+  private playlist: Playlist;
+  private playlistTrack: PlaylistTrack;
+  private progress$: Observable<number>;
 
-  constructor( private cdr:ChangeDetectorRef, private playlistService:PlaylistService ) {
+  constructor(private cdr: ChangeDetectorRef, private playlistService: PlaylistService) {
 
   }
 
-  ngOnInit():any {
+  ngOnInit(): any {
     // console.log('NowPlaying.ngOnInit():', this.observablePlaylist);
 
-    this.observablePlaylist.subscribe(( playlist:Playlist ) => {
+    this.observablePlaylist.subscribe((playlist: Playlist) => {
       // console.log('NowPlaying.ngOnInit: subscribe:', playlist);
       this.playlist = playlist;
 
-      this.playlistTrack = playlist.current ||
-        (playlist.tracks.length ? playlist.tracks[0] : null);
+      this.playlistTrack = playlist.current
+        || (playlist.tracks && playlist.tracks.length
+          ? playlist.tracks[0]
+          : null);
 
       this.cdr.markForCheck();
     });
 
-    this.progress$ = this.observablePlaylist.map(( playlist:Playlist ) => playlist.current ? playlist.current.progress : 0);
+    this.progress$ = this.observablePlaylist.map((playlist: Playlist) => playlist.current ? playlist.current.progress : 0);
   }
 
   play() {

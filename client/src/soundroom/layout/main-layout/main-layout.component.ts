@@ -20,9 +20,9 @@ export class MainLayout {
 
   private playlistCollection$:Observable<PlaylistCollection>;
 
-  constructor( private store:Store<AppState>, private playlistService:PlaylistService ) {
+  constructor( private store$:Store<AppState>, private playlistService:PlaylistService ) {
 
-    this.playlistCollection$ = <Observable<PlaylistCollection>>store.select('playlistsCollection');
+    this.playlistCollection$ = this.store$.map((state: AppState) => state.playlistCollection);
     // this.playlistCollection$.subscribe(data => console.log('MainLayout.playlistCollection: data:', data));   // debug!
 
     this.playlistService.loadCollection();

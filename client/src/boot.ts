@@ -17,7 +17,7 @@ import { STORE_REDUCERS } from "./soundroom/store/store.reducers";
 
 export interface AppState {
   playlist: Playlist;
-  playlistsCollection: PlaylistCollection;
+  playlistCollection: PlaylistCollection;
   playlistCreate: PlaylistCreate;
   auth: Auth;
 }

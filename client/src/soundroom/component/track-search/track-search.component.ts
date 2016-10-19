@@ -13,8 +13,8 @@ import {PlaylistService} from "../../service/playlist.service";
 })
 export class TrackSearchComponent implements OnInit {
 
-  @Input('playlist')
-  observablePlaylist:Observable<Playlist>;
+  // TODO: No need to be observable
+  @Input('playlist') observablePlaylist:Observable<Playlist>;
 
   private playlist:Playlist;
 

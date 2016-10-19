@@ -46,6 +46,7 @@ import { TrackUpdatedAction } from '../store/playlist-collection/track-upsert/tr
 import { TrackAddedAction } from '../store/playlist-collection/track-upsert/track-added.action';
 import { TrackDeletedAction } from '../store/playlist-collection/track-deleted/track-deleted.action';
 import { LoadPlaylistCollectionSuccessAction } from '../store/playlist-collection/load-playlist-collection-success/load-playlist-collection-success.action';
+import { PlaylistLoadSuccessAction } from '../store/playlist-collection/playlist-load-success/playlist-load-success.action';
 
 @Injectable()
 export class PlaylistService {
@@ -120,11 +121,11 @@ export class PlaylistService {
     // .delay(2000)    // DEBUG: Delay for simulation purposes only
       .retryWhen(errors => this.networkService.retry(errors))
       .map((res: Response) => PlaylistFactory.createFromApiResponse(res.json()))
-      .subscribe((data) => {
+      .subscribe((playlist: Playlist) => {
         this.onSlowConnection.emit(false);
 
-        // Assign initial data to collection
-        this.store$.dispatch(new LoadPlaylistCollectionAction(data));
+        // Assign initial playlist to collection
+        this.store$.dispatch(new PlaylistLoadSuccessAction(playlist));
       }, (error: Response) => {
         console.error(error);
 

@@ -3,14 +3,14 @@ import { Playlist } from "../../../model/playlist";
 import { upsertPlaylists } from "../../../util/playlist.util";
 
 /**
- * Add an array of new Playlists to our PlaylistCollection
+ * Add a new Playlist to our PlaylistCollection
  */
-export const loadPlaylistCollectionSuccessCommand = (state: PlaylistCollection, newPlaylists: Playlist[]): PlaylistCollection => {
+export const playlistLoadSuccessCommand = ( state: PlaylistCollection, newPlaylist: Playlist ): PlaylistCollection => {
 
   state = Object.assign({}, state);
   state.loadState = null;
 
-  state.playlists = upsertPlaylists(state.playlists, newPlaylists);
+  state.playlists = upsertPlaylists(state.playlists, [newPlaylist]);
 
   return state;
 };

@@ -6,7 +6,7 @@ import { playlistCreateReducer } from "../model/reducers/playlist-create.reducer
 import { authReducer } from "./auth/auth.reducer";
 
 const REDUCERS = {
-  playlistsCollection: playlistCollectionReducer,
+  playlistCollection: playlistCollectionReducer,
   playlistCreate: playlistCreateReducer,
   auth: authReducer,
 };
