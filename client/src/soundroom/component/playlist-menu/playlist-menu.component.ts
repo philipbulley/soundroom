@@ -3,12 +3,12 @@ import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, Input } from '@a
 import { Subscription } from 'rxjs/Subscription';
 var alertify = require('alertify.js');
 
-import { PlaylistService } from "../../service/playlist.service";
+import { PlaylistService } from "../../shared/service/playlist.service";
 import { PlaylistMenuItemComponent } from "../../component/playlist-menu-item/playlist-menu-item.component";
-import { CountPipe } from "../../pipe/count.pipe";
+import { CountPipe } from "../../shared/pipe/count.pipe";
 import { PlaylistCreateComponent } from "../playlist-create/playlist-create.component";
-import { PlaylistCollection } from "../../model/playlist-collection";
-import { PlaylistCollectionState } from '../../model/state/playlist-collection.state';
+import { PlaylistCollection } from "../../shared/model/playlist-collection";
+import { PlaylistCollectionState } from '../../shared/model/state/playlist-collection.state';
 
 @Component({
   selector: 'playlist-menu',

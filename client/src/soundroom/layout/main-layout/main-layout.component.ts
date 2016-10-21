@@ -4,8 +4,8 @@ import {Observable} from 'rxjs/Observable';
 import {Store} from '@ngrx/store';
 
 import {PlaylistMenuComponent} from "../../component/playlist-menu/playlist-menu.component";
-import {PlaylistCollection} from "../../model/playlist-collection";
-import {PlaylistService} from "../../service/playlist.service";
+import {PlaylistCollection} from "../../shared/model/playlist-collection";
+import {PlaylistService} from "../../shared/service/playlist.service";
 import {AppState} from "../../../boot";
 import {NowPlayingPreviewComponent} from "../../component/now-playing-preview/now-playing-preview.component";
 

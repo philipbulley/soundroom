@@ -2,19 +2,19 @@ import {Component, ChangeDetectionStrategy, Input, OnInit, ChangeDetectorRef} fr
 
 import {Observable} from 'rxjs/Observable';
 
-import {Playlist} from "../../model/playlist";
-import {ArtistsNamesPipe} from "../../pipe/artists-names.pipe";
-import {PlaylistTrack} from "../../model/playlist-track";
-import {PlaylistService} from "../../service/playlist.service";
+import {Playlist} from "../../shared/model/playlist";
+import {ArtistsNamesPipe} from "../../shared/pipe/artists-names.pipe";
+import {PlaylistTrack} from "../../shared/model/playlist-track";
+import {PlaylistService} from "../../shared/service/playlist.service";
 import {UpVoteAvatarsComponent} from "../up-vote-avatars/up-vote-avatars.component";
-import {UpVote} from "../../model/up-vote";
-import {Auth} from "../../model/auth";
+import {UpVote} from "../../shared/model/up-vote";
+import {Auth} from "../../shared/model/auth";
 import {Store} from '@ngrx/store';
-import {AuthState} from "../../model/state/auth.state";
-import {MomentPipe} from "../../pipe/moment.pipe";
+import {AuthState} from "../../shared/model/state/auth.state";
+import {MomentPipe} from "../../shared/pipe/moment.pipe";
 import {AppState} from "../../../boot";
-import {User} from "../../model/user";
-import {PlaylistError} from "../../model/error/PlaylistError";
+import {User} from "../../shared/model/user";
+import {PlaylistError} from "../../shared/model/error/PlaylistError";
 
 var alertify = require('alertify.js');
 

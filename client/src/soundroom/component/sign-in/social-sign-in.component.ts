@@ -1,5 +1,5 @@
 import {Component, ChangeDetectionStrategy} from '@angular/core';
-import {Config} from "../../model/config";
+import {Config} from "../../shared/model/config";
 
 @Component({
   selector: 'social-sign-in',

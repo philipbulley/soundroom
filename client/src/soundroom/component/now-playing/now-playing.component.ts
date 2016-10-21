@@ -2,11 +2,11 @@ import { Component, ChangeDetectionStrategy, Input, OnInit, ChangeDetectorRef } 
 
 import { Observable } from 'rxjs/Observable';
 
-import { Playlist } from "../../model/playlist";
-import { PlaylistService } from "../../service/playlist.service";
-import { ArtistsNamesPipe } from "../../pipe/artists-names.pipe";
+import { Playlist } from "../../shared/model/playlist";
+import { PlaylistService } from "../../shared/service/playlist.service";
+import { ArtistsNamesPipe } from "../../shared/pipe/artists-names.pipe";
 import { TimelineComponent } from "../timeline/timeline.component";
-import { PlaylistTrack } from "../../model/playlist-track";
+import { PlaylistTrack } from "../../shared/model/playlist-track";
 
 @Component({
   selector: 'now-playing',

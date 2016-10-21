@@ -5,15 +5,15 @@ import { HTTP_PROVIDERS } from '@angular/http';
 import { provideStore } from '@ngrx/store';
 
 import { SoundroomComponent } from './soundroom/soundroom.component';
-import { Playlist } from "./soundroom/model/playlist";
-import { PlaylistCollection } from "./soundroom/model/playlist-collection";
-import { PlaylistCreate } from "./soundroom/model/playlist-create";
-import { Auth } from "./soundroom/model/auth";
-import { SocketService } from "./soundroom/service/socket.service";
-import { NetworkService } from "./soundroom/service/network.service";
-import { AuthService } from "./soundroom/service/auth.service";
+import { Playlist } from "./soundroom/shared/model/playlist";
+import { PlaylistCollection } from "./soundroom/shared/model/playlist-collection";
+import { PlaylistCreate } from "./soundroom/shared/model/playlist-create";
+import { Auth } from "./soundroom/shared/model/auth";
+import { SocketService } from "./soundroom/shared/service/socket.service";
+import { NetworkService } from "./soundroom/shared/service/network.service";
+import { AuthService } from "./soundroom/shared/service/auth.service";
 import { APP_ROUTER_PROVIDERS } from "./soundroom/soundroom.routes";
-import { STORE_REDUCERS } from "./soundroom/store/store.reducers";
+import { STORE_REDUCERS } from "./soundroom/shared/store/store.reducers";
 
 export interface AppState {
   playlist: Playlist;

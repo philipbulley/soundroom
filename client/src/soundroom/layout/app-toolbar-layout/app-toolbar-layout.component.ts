@@ -3,7 +3,7 @@ import {ROUTER_DIRECTIVES} from '@angular/router';
 
 import {Observable} from 'rxjs/Observable';
 
-import {Auth} from "../../model/auth";
+import {Auth} from "../../shared/model/auth";
 
 @Component({
   selector: 'app-toolbar',

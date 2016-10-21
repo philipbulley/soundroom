@@ -6,11 +6,11 @@ import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs/Observable';
 
 
-import {PlaylistService} from "./service/playlist.service";
-import {SocketService} from "./service/socket.service";
-import {Auth} from "./model/auth";
+import {PlaylistService} from "./shared/service/playlist.service";
+import {SocketService} from "./shared/service/socket.service";
+import {Auth} from "./shared/model/auth";
 import {AppToolbarLayout} from "./layout/app-toolbar-layout/app-toolbar-layout.component";
-import {SpotifyService} from "./service/spotify.service";
+import {SpotifyService} from "./shared/service/spotify.service";
 import {AppState} from "../boot";
 import {AlertifyComponent} from "./component/alertify/alertify.component";
 

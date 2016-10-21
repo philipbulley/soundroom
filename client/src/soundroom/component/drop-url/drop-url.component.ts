@@ -2,12 +2,12 @@ import {Component, ElementRef, OnInit, Input, ChangeDetectionStrategy} from '@an
 import {Observable} from 'rxjs/Observable';
 var alertify = require('alertify.js');
 
-import {PlaylistService} from "../../service/playlist.service.ts";
-import {Playlist} from "../../model/playlist";
+import {PlaylistService} from "../../shared/service/playlist.service.ts";
+import {Playlist} from "../../shared/model/playlist";
 
-import {ProviderEnum} from "../../model/enum/provider.enum.ts";
-import {SpotifyService} from "../../service/spotify.service.ts";
-import {PlaylistError} from "../../model/error/PlaylistError";
+import {ProviderEnum} from "../../shared/model/enum/provider.enum.ts";
+import {SpotifyService} from "../../shared/service/spotify.service.ts";
+import {PlaylistError} from "../../shared/model/error/PlaylistError";
 
 // Change to Component and transclude drop-url-overlay
 @Component({

@@ -1,13 +1,24 @@
-import {Component, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef} from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  ViewChild,
+  ElementRef,
+  OnInit,
+} from '@angular/core';
+
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
+
+import { PlaylistCreate } from "../../shared/model/playlist-create";
+import { PlaylistCreateState } from "../../shared/model/state/playlist-create.state.ts";
+import { AppState } from "../../../boot";
+import { PlaylistCreateAddNameAction } from '../../shared/store/playlist-create/add-name/playlist-create-add-name.action';
+import { PlaylistCreateAddDescriptionCreateAction } from '../../shared/store/playlist-create/add-description-create/playlist-create-add-description-create.action';
+import { PlaylistCreateResetAction } from '../../shared/store/playlist-create/reset/playlist-create-reset.action';
+import { PlaylistCreateStartAction } from '../../shared/store/playlist-create/start/playlist-create-start.action';
 
 var alertify = require('alertify.js');
-import {Store} from '@ngrx/store';
-import {Observable} from 'rxjs/Observable';
-
-import {PlaylistCreate} from "../../model/playlist-create";
-import {PlaylistCreateAction} from "../../model/action/playlist-create.action.ts";
-import {PlaylistCreateState} from "../../model/state/playlist-create.state.ts";
-import {AppState} from "../../../boot";
 
 @Component({
   selector: 'playlist-create',
@@ -15,28 +26,34 @@ import {AppState} from "../../../boot";
   styles: [require('./playlist-create.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PlaylistCreateComponent {
+export class PlaylistCreateComponent implements OnInit {
 
   @ViewChild('nameEl')
-  nameEl:ElementRef;
+  nameEl: ElementRef;
 
   @ViewChild('descriptionEl')
-  descriptionEl:ElementRef;
+  descriptionEl: ElementRef;
 
-  private name:string;
-  private description:string;
-  private playlistCreate$:Observable<PlaylistCreate>;
-  private playlistCreate:PlaylistCreate;
+  private name: string;
+  private description: string;
+  private playlistCreate$: Observable<PlaylistCreate>;
+  private playlistCreate: PlaylistCreate;
   //private states:PlaylistCreateState;
 
-  constructor( private store:Store<AppState>, private cdr:ChangeDetectorRef ) {
+  // tslint:disable-next-line:no-unused-variable
+  private PlaylistCreateState = PlaylistCreateState;
 
+  constructor(private store$: Store<AppState>, private cdr: ChangeDetectorRef) {
+    //
+  }
+
+  ngOnInit() {
     // console.log('PlaylistCreateComponent()');
-    this.playlistCreate$ = <Observable<PlaylistCreate>>this.store.select('playlistCreate');
+    this.playlistCreate$ = this.store$.map((state: AppState) => state.playlistCreate);
 
     //this.states = PlaylistCreateState;
 
-    this.playlistCreate$.subscribe(( data:PlaylistCreate ) => {
+    this.playlistCreate$.subscribe((data: PlaylistCreate) => {
       // console.log('PlaylistCreateComponent.playlistCreate$: data:', data);
 
       // The immutible store
@@ -62,7 +79,7 @@ export class PlaylistCreateComponent {
 
           // Immediately transition to reset this component, ready for another playlist
           // TODO: Perhaps in future we open the new playlist's route instead
-          this.store.dispatch({type: PlaylistCreateAction.RESET});
+          this.store$.dispatch(new PlaylistCreateResetAction());
           return;
 
         case PlaylistCreateState.ERROR:
@@ -71,8 +88,10 @@ export class PlaylistCreateComponent {
       }
 
       // As our store Observable is via DI, ChangeDetectionStrategy.OnPush won't notice changes. Tell it to check.
-      //cdr.markForCheck();   // Calling synchronously causes error within markForCheck(). PlaylistCreate can't return to default as a result on success.
-      setTimeout(() => cdr.markForCheck(), 1); // Until the above is fixed (issue with angular2 2.0.0-beta.8), setTimeout fixes by calling asynchronously
+      //cdr.markForCheck();   // Calling synchronously causes error within markForCheck(). PlaylistCreate can't return
+      // to default as a result on success.
+      setTimeout(() => this.cdr.markForCheck(), 1); // Until the above is fixed (issue with angular2 2.0.0-beta.8),
+                                                    // setTimeout fixes by calling asynchronously
     });
   }
 
@@ -82,7 +101,7 @@ export class PlaylistCreateComponent {
     switch (this.playlistCreate.state) {
 
       case PlaylistCreateState.DEFAULT:
-        this.store.dispatch({type: PlaylistCreateAction.START});
+        this.store$.dispatch(new PlaylistCreateStartAction());
         break;
 
       case PlaylistCreateState.ADDING_NAME:
@@ -92,7 +111,7 @@ export class PlaylistCreateComponent {
           alertify.error("You have to give your new room a nice name!");
           return;
         }
-        this.store.dispatch({type: PlaylistCreateAction.ADD_NAME, payload: this.name});
+        this.store$.dispatch(new PlaylistCreateAddNameAction(this.name));
         break;
 
       case PlaylistCreateState.ADDING_DESCRIPTION:
@@ -103,16 +122,16 @@ export class PlaylistCreateComponent {
           this.descriptionEl.nativeElement.focus();
           return alertify.error("Surely you can come up with a better description than that!");
         }
-        this.store.dispatch({type: PlaylistCreateAction.ADD_DESCRIPTION_AND_CREATE, payload: this.description});
+        this.store$.dispatch(new PlaylistCreateAddDescriptionCreateAction(this.description));
         break;
     }
   }
 
   close() {
-    this.store.dispatch({type: PlaylistCreateAction.RESET});
+    this.store$.dispatch(new PlaylistCreateResetAction());
   }
 
-  getButtonLabel( state:PlaylistCreateState ) {
+  getButtonLabel(state: PlaylistCreateState) {
     switch (state) {
       case PlaylistCreateState.ADDING_NAME:
         return 'Next';

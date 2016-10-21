@@ -1,6 +1,6 @@
 import {Component, ChangeDetectionStrategy, Input} from '@angular/core';
-import {UpVote} from "../../model/up-vote";
-import {MomentPipe} from "../../pipe/moment.pipe";
+import {UpVote} from "../../shared/model/up-vote";
+import {MomentPipe} from "../../shared/pipe/moment.pipe";
 
 @Component({
   selector: 'up-vote-avatars',

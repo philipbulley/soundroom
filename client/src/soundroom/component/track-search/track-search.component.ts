@@ -2,8 +2,8 @@ import {Component, ChangeDetectionStrategy, Input, OnInit, ChangeDetectorRef} fr
 
 import {Observable} from 'rxjs/Observable';
 
-import {Playlist} from "../../model/playlist";
-import {PlaylistService} from "../../service/playlist.service";
+import {Playlist} from "../../shared/model/playlist";
+import {PlaylistService} from "../../shared/service/playlist.service";
 
 @Component({
   selector: 'track-search',

@@ -1,10 +1,10 @@
 import {Component, ChangeDetectionStrategy, Input, OnInit, ChangeDetectorRef} from '@angular/core';
 import {ROUTER_DIRECTIVES, Router} from '@angular/router';
 
-import {Playlist} from "../../model/playlist";
-import {ArtistsNamesPipe} from "../../pipe/artists-names.pipe";
-import {PlaylistTrack} from "../../model/playlist-track";
-import {PlaylistCollection} from "../../model/playlist-collection";
+import {Playlist} from "../../shared/model/playlist";
+import {ArtistsNamesPipe} from "../../shared/pipe/artists-names.pipe";
+import {PlaylistTrack} from "../../shared/model/playlist-track";
+import {PlaylistCollection} from "../../shared/model/playlist-collection";
 
 @Component({
   selector: 'now-playing-preview',

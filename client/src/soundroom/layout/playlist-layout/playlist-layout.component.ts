@@ -5,13 +5,13 @@ import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import 'rxjs/add/operator/distinctUntilChanged';
 
-import { PlaylistService } from "../../service/playlist.service";
-import { Playlist } from "../../model/playlist";
-import { PlaylistCollection } from "../../model/playlist-collection";
+import { PlaylistService } from "../../shared/service/playlist.service";
+import { Playlist } from "../../shared/model/playlist";
+import { PlaylistCollection } from "../../shared/model/playlist-collection";
 import { NowPlayingComponent } from "../../component/now-playing/now-playing.component";
 import { TrackSearchComponent } from "../../component/track-search/track-search.component";
 import { PlaylistQueueComponent } from "../../component/playlist-queue/playlist-queue.component";
-import { AuthService } from "../../service/auth.service";
+import { AuthService } from "../../shared/service/auth.service";
 import { DropUrlComponent } from "../../component/drop-url/drop-url.component";
 import { AppState } from "../../../boot";
 

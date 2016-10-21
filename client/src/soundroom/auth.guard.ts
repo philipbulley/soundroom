@@ -5,10 +5,10 @@ import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
 
-import {AuthService} from "./service/auth.service";
-import {Auth} from "./model/auth";
+import {AuthService} from "./shared/service/auth.service";
+import {Auth} from "./shared/model/auth";
 import {AppState} from "../boot";
-import {AuthState} from "./model/state/auth.state";
+import {AuthState} from "./shared/model/state/auth.state";
 
 @Injectable()
 export class AuthGuard implements CanActivate {

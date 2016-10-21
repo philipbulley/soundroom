@@ -4,10 +4,10 @@ import { Router, ActivatedRoute, ROUTER_DIRECTIVES } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import { SocialSignInComponent } from "../../component/sign-in/social-sign-in.component";
-import { Auth } from "../../model/auth";
-import { AuthService } from "../../service/auth.service";
+import { Auth } from "../../shared/model/auth";
+import { AuthService } from "../../shared/service/auth.service";
 import { AppState } from "../../../boot";
-import { AuthState } from "../../model/state/auth.state";
+import { AuthState } from "../../shared/model/state/auth.state";
 
 @Component({
   selector: 'main-layout',
