@@ -9,7 +9,7 @@ import {Config} from "../../shared/model/config";
 import {Auth} from "../../shared/model/auth";
 import {SocketEventTypeEnum} from "../../shared/model/socket/socket-event-type.enum.ts";
 import {AuthState} from "../../shared/model/state/auth.state.ts";
-import {AppState} from "../../../boot";
+import { AppState } from '../model/app-state';
 
 @Injectable()
 export class SocketService {

@@ -1,0 +1,24 @@
+<drop-url [playlist]="playlist$">
+  <div class="main" *ngIf="playlist$ | async" [class.is-empty]="!(playlist$ | async).tracks?.length">
+    <section class="inner">
+      <div class="o-container">
+
+        <div *ngIf="!isLoading">
+          <now-playing [playlist]="playlist$"></now-playing>
+          <track-search [playlist]="playlist$"></track-search>
+          <playlist-queue [playlist]="playlist$" *ngIf="(playlist$ | async).tracks?.length"></playlist-queue>
+        </div>
+
+        <!--<pre>PlaylistLayoutComponent: {{id}}</pre>-->
+        <!--<pre>Name: {{(playlist$ | async).name}}</pre>-->
+        <!--<pre>Number of tracks: {{(playlist$ | async).tracks?.length}}</pre>-->
+
+        <!--<div>-->
+        <!--<span *ngIf="!isLoading && !(playlist$ | async).tracks?.length">No tracks in this playlist.</span>-->
+        <!--Add tracks via the API:-->
+        <!--<pre>curl -X POST -H "Authorization: JWT {{jwt}}" -H "Cache-Control: no-cache" -H "Content-Type: application/x-www-form-urlencoded" -d 'foreignId=spotify:track:XXXXXXXXXXXXXXXX&provider=spotify' "http://localhost:8123/api/playlists/{{(playlist | async)._id}}/tracks"</pre>-->
+        <!--</div>-->
+      </div>
+    </section>
+  </div>
+</drop-url>

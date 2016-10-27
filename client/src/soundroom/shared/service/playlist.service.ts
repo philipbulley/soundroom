@@ -22,7 +22,6 @@ import { PlaylistTrackFactory } from "../../shared/model/factory/playlist-track.
 import { PlaylistTracksChangeActionEnum } from "../../shared/model/socket/playlist-tracks-change-action.enum";
 import { PlaylistTracksChangeSocketEvent } from "../../shared/model/socket/playlist-tracks-change-socket-event";
 import { PlaylistTrack } from "../../shared/model/playlist-track";
-import { AppState } from "../../../boot";
 import { PlaylistError } from "../../shared/model/error/PlaylistError";
 import { User } from "../../shared/model/user";
 import { LoadPlaylistCollectionAction } from "../../shared/store/playlist-collection/load-playlist-collection/load-playlist-collection.action";
@@ -48,6 +47,7 @@ import { LoadPlaylistCollectionSuccessAction } from '../../shared/store/playlist
 import { PlaylistLoadSuccessAction } from '../../shared/store/playlist-collection/playlist-load-success/playlist-load-success.action';
 import { PlaylistCreateErrorAction } from '../../shared/store/playlist-create/error/playlist-create-error.action';
 import { PlaylistCreateSuccessAction } from '../../shared/store/playlist-create/success/playlist-create-success.action';
+import { AppState } from '../model/app-state';
 
 @Injectable()
 export class PlaylistService {

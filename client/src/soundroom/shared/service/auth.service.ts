@@ -9,10 +9,10 @@ import { User } from "../../shared/model/user";
 import { NetworkService } from "./network.service";
 import { UserFactory } from "../../shared/model/factory/user.factory";
 import { Auth } from "../../shared/model/auth";
-import { AppState } from "../../../boot";
 import { LoadUserAction } from "../../shared/store/auth/load-user/load-user.action";
 import { LoadUserSuccessAction } from "../../shared/store/auth/load-user-success/load-user-success.action";
 import { LoadUserErrorAction } from "../../shared/store/auth/load-user-error/load-user-error.action";
+import { AppState } from '../model/app-state';
 
 @Injectable()
 export class AuthService {
