@@ -13,7 +13,6 @@
   </div>
 
   <div class="meta column">
-    <!-- Use [routerLink]="['playlist', playlist._id]" when https://github.com/angular/angular/issues/9471 fixed -->
-    <button class="join" (click)="joinRoom()">Join Room</button>
+    <button class="join" [routerLink]="['/room', playlistCollection.active._id]">Join Room</button>
   </div>
 </div>
