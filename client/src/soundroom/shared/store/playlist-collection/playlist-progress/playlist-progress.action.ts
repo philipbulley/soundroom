@@ -5,7 +5,9 @@ export class PlaylistProgressAction implements Action {
   // tslint:disable-next-line:no-reserved-keywords
   type: string = 'PlaylistProgressAction';
 
-  constructor(public playlist?: PlaylistProgressSocketEvent) {
-  }
+  payload: PlaylistProgressSocketEvent;
 
+  constructor(playlist: PlaylistProgressSocketEvent) {
+    this.payload = playlist;
+  }
 }

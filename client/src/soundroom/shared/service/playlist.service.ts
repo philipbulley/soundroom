@@ -332,7 +332,7 @@ export class PlaylistService {
       switch (event.type) {
 
         case SocketEventTypeEnum.PLAYLIST_TRACK_PROGRESS:
-          this.store$.dispatch(new PlaylistProgressAction(<PlaylistProgressSocketEvent>event.data));
+          this.store$.dispatch(new PlaylistProgressAction(event.data as PlaylistProgressSocketEvent));
           break;
 
         // NOTE: Don't really need to use PLAYLIST_PLAY as PROGRESS does the same job + more
@@ -341,7 +341,7 @@ export class PlaylistService {
         //   break;
 
         case SocketEventTypeEnum.PLAYLIST_PAUSE:
-          this.store$.dispatch(new PlaylistPauseAction(<PlaylistSocketEvent>event.data));
+          this.store$.dispatch(new PlaylistPauseAction(event.data as PlaylistSocketEvent));
           break;
 
         case SocketEventTypeEnum.PLAYLIST_TRACKS_CHANGE:
