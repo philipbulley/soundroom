@@ -6,7 +6,7 @@ import { SharedModule } from '../shared/shared.module';
 
 const ROUTES: Routes = [
 	{
-    path: 'playlist/:id',
+    path: 'room/:id',
 		component: PlaylistLayoutComponent,
     canActivate: [AuthGuard],
 	},
