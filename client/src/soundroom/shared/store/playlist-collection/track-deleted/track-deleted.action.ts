@@ -8,6 +8,6 @@ export class TrackDeletedAction implements Action {
   // tslint:disable-next-line:no-reserved-keywords
   type: string = 'TrackDeletedAction';
 
-  constructor(public payload?: TrackUpdatePayload) {
+  constructor(public payload: TrackUpdatePayload) {
   }
 }

@@ -5,7 +5,7 @@ export class PlaylistLoadAction implements Action {
   type: string = 'PlaylistLoadAction';
   payload: string;
 
-  constructor(playlistId?: string) {
+  constructor(playlistId: string) {
     this.payload = playlistId;
   }
 }

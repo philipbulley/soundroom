@@ -8,7 +8,7 @@ export class DeleteTrackErrorAction implements Action {
   type: string = 'DeleteTrackErrorAction';
   payload: string;
 
-  constructor(playlistId?: string) {
+  constructor(playlistId: string) {
     this.payload = playlistId;
   }
 }

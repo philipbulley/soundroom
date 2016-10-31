@@ -9,7 +9,7 @@ export class AddTrackSuccessAction implements Action {
   type: string = 'AddTrackSuccessAction';
   payload: string;
 
-  constructor(playlistId?: string) {
+  constructor(playlistId: string) {
     this.payload = playlistId;
   }
 }

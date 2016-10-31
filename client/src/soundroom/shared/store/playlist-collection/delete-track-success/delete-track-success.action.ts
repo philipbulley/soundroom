@@ -9,7 +9,7 @@ export class DeleteTrackSuccessAction implements Action {
   type: string = 'DeleteTrackSuccessAction';
   payload: string;
 
-  constructor(playlistId?: string) {
+  constructor(playlistId: string) {
     this.payload = playlistId;
   }
 }

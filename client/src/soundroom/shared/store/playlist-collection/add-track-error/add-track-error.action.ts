@@ -8,7 +8,7 @@ export class AddTrackErrorAction implements Action {
   type: string = 'AddTrackErrorAction';
   payload: string;
 
-  constructor(playlistId?: string) {
+  constructor(playlistId: string) {
     this.payload = playlistId;
   }
 }

@@ -5,7 +5,7 @@ export class PlaylistPauseAction implements Action {
   // tslint:disable-next-line:no-reserved-keywords
   type: string = 'PlaylistPauseAction';
 
-  constructor(public payload?: PlaylistSocketEvent) {
+  constructor(public payload: PlaylistSocketEvent) {
   }
 
 }

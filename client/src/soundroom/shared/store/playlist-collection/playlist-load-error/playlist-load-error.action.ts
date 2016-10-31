@@ -5,7 +5,7 @@ export class PlaylistLoadErrorAction implements Action {
   type: string = 'PlaylistLoadErrorAction';
   payload: string;
 
-  constructor(playlistId?: string) {
+  constructor(playlistId: string) {
     this.payload = playlistId;
   }
 }

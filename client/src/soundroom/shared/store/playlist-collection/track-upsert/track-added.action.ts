@@ -8,6 +8,6 @@ export class TrackAddedAction implements Action {
   // tslint:disable-next-line:no-reserved-keywords
   type: string = 'TrackAddedAction';
 
-  constructor(public payload?: TrackUpdatePayload) {
+  constructor(public payload: TrackUpdatePayload) {
   }
 }

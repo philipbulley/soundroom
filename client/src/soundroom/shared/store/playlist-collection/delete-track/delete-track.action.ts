@@ -8,6 +8,6 @@ export class DeleteTrackAction implements Action {
   // tslint:disable-next-line:no-reserved-keywords
   type: string = 'DeleteTrackAction';
 
-  constructor(public payload?: DeleteTrackPayload) {
+  constructor(public payload: DeleteTrackPayload) {
   }
 }

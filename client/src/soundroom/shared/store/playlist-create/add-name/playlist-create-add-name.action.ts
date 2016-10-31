@@ -4,6 +4,6 @@ export class PlaylistCreateAddNameAction implements Action {
   // tslint:disable-next-line:no-reserved-keywords
   type: string = 'PlaylistCreateAddNameAction';
 
-  constructor(public payload?: string) {
+  constructor(public payload: string) {
   }
 }
