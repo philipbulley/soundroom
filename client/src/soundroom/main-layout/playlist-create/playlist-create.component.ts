@@ -64,11 +64,6 @@ export class PlaylistCreateComponent implements OnInit {
       this.description = this.playlistCreate.description;
 
       switch (data.state) {
-        case PlaylistCreateState.ADDING_NAME:
-          // NOTE: Wait for element to show before we can focus it. Know a better way?
-          setTimeout(() => this.nameEl.nativeElement.focus(), 1);
-          break;
-
         case PlaylistCreateState.ADDING_DESCRIPTION:
           // NOTE: Wait for element to show before we can focus it. Know a better way?
           setTimeout(() => this.descriptionEl.nativeElement.focus(), 1);
@@ -106,7 +101,6 @@ export class PlaylistCreateComponent implements OnInit {
 
       case PlaylistCreateState.ADDING_NAME:
         if (!this.name || !this.name.length) {
-          console.log('this.$name:', this.nameEl);
           this.nameEl.nativeElement.focus();
           alertify.error("You have to give your new room a nice name!");
           return;
