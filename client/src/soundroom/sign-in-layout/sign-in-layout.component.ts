@@ -8,7 +8,7 @@ import { Auth } from '../shared/model/auth';
 import { AuthService } from '../shared/service/auth.service';
 
 @Component({
-  selector: 'main-layout',
+  selector: 'sr-main-layout',
   template: require('./sign-in-layout.html'),
   styles: [require('./sign-in-layout.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,

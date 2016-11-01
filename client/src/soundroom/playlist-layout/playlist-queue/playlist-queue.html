@@ -16,12 +16,12 @@
       <div class="track__data track__album-art"><img class="o-avatar" [class.o-avatar--medium]="index === 0" [src]="playlistTrack.track.images[0].url"></div>
       <div class="track__data track__info">
         <div class="track__info-name">{{playlistTrack.track.name}}</div>
-        <div class="track__info-artists">{{playlistTrack.track.artists | artistsNames}}</div>
+        <div class="track__info-artists">{{playlistTrack.track.artists | srArtistsNames}}</div>
         <!--<div>{{playlistTrack._id}} / {{playlistTrack.track._id}}</div>-->
       </div>
-      <div class="track__data track__user" title="{{playlistTrack.createdBy.name}} added this track {{playlistTrack.created | moment:'fromNow'}}!"><i class="fa fa-user"></i> {{playlistTrack.createdBy.name}}</div>
+      <div class="track__data track__user" title="{{playlistTrack.createdBy.name}} added this track {{playlistTrack.created | srMoment:'fromNow'}}!"><i class="fa fa-user"></i> {{playlistTrack.createdBy.name}}</div>
       <div class="track__data track__avatars">
-        <up-vote-avatars [upVotes]="playlistTrack.upVotes"></up-vote-avatars>
+        <sr-up-vote-avatars [upVotes]="playlistTrack.upVotes"></sr-up-vote-avatars>
       </div>
     </li>
   </ol>

@@ -11,7 +11,7 @@ import { PlaylistService } from '../shared/service/playlist.service';
 import { AuthService } from '../shared/service/auth.service';
 
 @Component({
-  selector: 'playlist-layout',
+  selector: 'sr-playlist-layout',
   template: require('./playlist-layout.html'),
   styles: [require('./playlist-layout.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -2,7 +2,7 @@ import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {Config} from "../../shared/model/config";
 
 @Component({
-  selector: 'social-sign-in',
+  selector: 'sr-social-sign-in',
   template: require('./social-sign-in.html'),
   styles: [require('./social-sign-in.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,

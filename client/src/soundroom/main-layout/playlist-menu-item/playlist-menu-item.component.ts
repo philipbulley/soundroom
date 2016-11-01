@@ -7,7 +7,7 @@ import { Observable } from 'rxjs/Observable';
 var alertify = require('alertify.js');
 
 @Component({
-  selector: 'playlist-menu-item',
+  selector: 'sr-playlist-menu-item',
   template: require('./playlist-menu-item.html'),
   styles: [require('./playlist-menu-item.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,

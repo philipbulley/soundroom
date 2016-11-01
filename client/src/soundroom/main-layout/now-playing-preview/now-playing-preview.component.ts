@@ -5,7 +5,7 @@ import { PlaylistTrack } from '../../shared/model/playlist-track';
 import { PlaylistCollection } from '../../shared/model/playlist-collection';
 
 @Component({
-  selector: 'now-playing-preview',
+  selector: 'sr-now-playing-preview',
   template: require('./now-playing-preview.html'),
   styles: [require('./now-playing-preview.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 import { Auth } from '../../shared/model/auth';
 
 @Component({
-  selector: 'app-toolbar',
+  selector: 'sr-app-toolbar',
   template: require('./app-toolbar-layout.html'),
   styles: [require('./app-toolbar-layout.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,

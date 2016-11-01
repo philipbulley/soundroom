@@ -6,7 +6,7 @@ import {Playlist} from "../../shared/model/playlist";
 import {PlaylistService} from "../../shared/service/playlist.service";
 
 @Component({
-  selector: 'track-search',
+  selector: 'sr-track-search',
   template: require('./track-search.html'),
   styles: [require('./track-search.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,

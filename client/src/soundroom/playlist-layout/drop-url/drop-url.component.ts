@@ -11,7 +11,7 @@ import {PlaylistError} from "../../shared/model/error/PlaylistError";
 
 // Change to Component and transclude drop-url-overlay
 @Component({
-  selector: 'drop-url',
+  selector: 'sr-drop-url',
   template: require('./drop-url.html'),
   styles: [require('./drop-url.scss')],
   host: {

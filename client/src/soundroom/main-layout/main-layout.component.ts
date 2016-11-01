@@ -7,7 +7,7 @@ import { AppState } from '../shared/model/app-state';
 import { PlaylistService } from '../shared/service/playlist.service';
 
 @Component({
-  selector: 'main-layout',
+  selector: 'sr-main-layout',
   template: require('./main-layout.html'),
   styles: [require('./main-layout.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,

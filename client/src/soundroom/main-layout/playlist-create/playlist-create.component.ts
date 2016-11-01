@@ -21,7 +21,7 @@ import { AppState } from '../../shared/model/app-state';
 var alertify = require('alertify.js');
 
 @Component({
-  selector: 'playlist-create',
+  selector: 'sr-playlist-create',
   template: require('./playlist-create.html'),
   styles: [require('./playlist-create.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -73,7 +73,7 @@ export class PlaylistCreateComponent implements OnInit {
           alertify.success("Created the \"" + data.playlistCreated.name + "\" room!");
 
           // Immediately transition to reset this component, ready for another playlist
-          // TODO: Perhaps in future we open the new playlist's route instead
+          // TODO: Perhaps in future we open the new playlist's route instead (save for @ngrx/effects!)
           this.store$.dispatch(new PlaylistCreateResetAction());
           return;
 

@@ -1,12 +1,12 @@
-<drop-url [playlist]="playlist$">
+<sr-drop-url [playlist]="playlist$">
   <div class="main" *ngIf="playlist$ | async" [class.is-empty]="!(playlist$ | async).tracks?.length">
     <section class="inner">
       <div class="o-container">
 
         <div *ngIf="!isLoading">
-          <now-playing [playlist]="playlist$"></now-playing>
-          <track-search [playlist]="playlist$"></track-search>
-          <playlist-queue [playlist]="playlist$" *ngIf="(playlist$ | async).tracks?.length"></playlist-queue>
+          <sr-now-playing [playlist]="playlist$"></sr-now-playing>
+          <sr-track-search [playlist]="playlist$"></sr-track-search>
+          <sr-playlist-queue [playlist]="playlist$" *ngIf="(playlist$ | async).tracks?.length"></sr-playlist-queue>
         </div>
 
         <!--<pre>PlaylistLayoutComponent: {{id}}</pre>-->
@@ -21,4 +21,4 @@
       </div>
     </section>
   </div>
-</drop-url>
+</sr-drop-url>

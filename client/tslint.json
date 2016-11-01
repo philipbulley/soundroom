@@ -1,4 +1,7 @@
 {
+  "rulesDirectory": [
+    "node_modules/codelyzer"
+  ],
   "rules": {
     "class-name": true,
     "curly": true,
@@ -48,6 +51,9 @@
       "check-decl",
       "check-operator",
       "check-separator"
-    ]
+    ],
+    "directive-selector-prefix": [true, "sr"],
+    "component-selector-prefix": [true, "sr"],
+    "pipe-naming": [true, "camelCase", "sr"]
   }
 }

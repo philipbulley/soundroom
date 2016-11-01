@@ -2,7 +2,7 @@ import {Component, ChangeDetectionStrategy, Input} from '@angular/core';
 import {UpVote} from "../../shared/model/up-vote";
 
 @Component({
-  selector: 'up-vote-avatars',
+  selector: 'sr-up-vote-avatars',
   template: require('./up-vote-avatars.html'),
   styles: [require('./up-vote-avatars.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,

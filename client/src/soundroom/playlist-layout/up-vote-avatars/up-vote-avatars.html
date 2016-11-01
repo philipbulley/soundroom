@@ -2,7 +2,7 @@
 
 <ul class="avatar-list">
   <li class="avatar-list__item" *ngFor="let upVote of upVotes">
-    <img class="o-avatar" title="{{upVote.createdBy.name}} up voted this track {{upVote.created | moment:'fromNow'}}!" [src]="upVote.createdBy.avatar">
+    <img class="o-avatar" title="{{upVote.createdBy.name}} up voted this track {{upVote.created | srMoment:'fromNow'}}!" [src]="upVote.createdBy.avatar">
   </li>
 </ul>
 

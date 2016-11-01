@@ -7,7 +7,7 @@ import { PlaylistCollectionState } from '../../shared/model/state/playlist-colle
 var alertify = require('alertify.js');
 
 @Component({
-  selector: 'playlist-menu',
+  selector: 'sr-playlist-menu',
   template: require('./playlist-menu.html'),
   styles: [require('./playlist-menu.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,

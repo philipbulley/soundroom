@@ -5,9 +5,9 @@
   <!--<pre>Room Now Playing: {{(playlistCollection$ | async).active?.name}}</pre>-->
   <!--<pre>Track Now Playing (only available if room previously joined): {{(playlistCollection$ | async).active?.current?.track?.name}}</pre>-->
 
-  <now-playing-preview [playlistCollection]="playlistCollection$ | async"></now-playing-preview>
+  <sr-now-playing-preview [playlistCollection]="playlistCollection$ | async"></sr-now-playing-preview>
 
-  <playlist-menu [playlistCollection]="playlistCollection$ | async"></playlist-menu>
+  <sr-playlist-menu [playlistCollection]="playlistCollection$ | async"></sr-playlist-menu>
 
   <!--<pre>playlistCollection: {{(playlistCollection$ | async).playlists.length}}</pre>-->
 

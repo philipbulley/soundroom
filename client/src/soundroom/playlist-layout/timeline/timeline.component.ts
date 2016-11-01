@@ -3,7 +3,7 @@ import {Component, ChangeDetectionStrategy, Input, OnInit, ChangeDetectorRef} fr
 import {Observable} from 'rxjs/Observable';
 
 @Component({
-  selector: 'timeline',
+  selector: 'sr-timeline',
   template: require('./timeline.html'),
   styles: [require('./timeline.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,

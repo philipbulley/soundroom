@@ -14,7 +14,7 @@ import { AppState } from '../../shared/model/app-state';
 var alertify = require('alertify.js');
 
 @Component({
-  selector: 'playlist-queue',
+  selector: 'sr-playlist-queue',
   template: require('./playlist-queue.html'),
   styles: [require('./playlist-queue.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,

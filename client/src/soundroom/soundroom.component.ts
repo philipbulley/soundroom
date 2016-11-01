@@ -6,7 +6,7 @@ import { Auth } from './shared/model/auth';
 import { AppState } from './shared/model/app-state';
 
 @Component({
-  selector: 'soundroom',
+  selector: 'sr-soundroom',
   template: require('./soundroom.html'),
   styles: [require('./soundroom.scss')],
 })

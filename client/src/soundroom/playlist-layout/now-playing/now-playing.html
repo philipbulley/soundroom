@@ -24,7 +24,7 @@
 <div class="columns" *ngIf="!(observablePlaylist | async).loadState && (observablePlaylist | async).tracks?.length">
   <!-- POPULATED PLAYLIST -->
   <div class="artwork">
-    <timeline [percentage]="progress$"></timeline>
+    <sr-timeline [percentage]="progress$"></sr-timeline>
 
     <button class="artwork__image-wrap u-no-style" (click)="togglePlay()">
       <img class="artwork__image" [src]="playlistTrack?.track?.images[2].url">
@@ -45,7 +45,7 @@
     </div>
 
     <div class="info__track-name">{{playlistTrack?.track?.name}}</div>
-    <div class="info__artist-name">{{playlistTrack?.track?.artists | artistsNames}}</div>
+    <div class="info__artist-name">{{playlistTrack?.track?.artists | srArtistsNames}}</div>
     <div class="info__user-name-added">Added by {{playlistTrack?.createdBy?.name}}</div>
   </div>
 </div>

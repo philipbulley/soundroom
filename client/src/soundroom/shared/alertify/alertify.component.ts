@@ -3,7 +3,7 @@ import {Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, ElementRe
 var alertify = require('alertify.js');
 
 @Component({
-  selector: 'alertify',
+  selector: 'sr-alertify',
   template: require('./alertify.html'),
   styles: [require('./alertify.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
