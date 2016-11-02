@@ -1,4 +1,4 @@
-<div class="columns" *ngIf="(observablePlaylist | async).loadState === 'PlaylistState.LOADING'">
+<div class="columns" *ngIf="playlist.loadState === 'PlaylistState.LOADING'">
   <!-- LOADING -->
   <div class="artwork">
 
@@ -9,7 +9,7 @@
   </div>
 </div>
 
-<div class="columns" *ngIf="!(observablePlaylist | async).loadState && !(observablePlaylist | async).tracks?.length">
+<div class="columns" *ngIf="!playlist.loadState && !playlist.tracks?.length">
   <!-- EMPTY PLAYLIST -->
   <div class="artwork is-empty">
 
@@ -21,27 +21,27 @@
   </div>
 </div>
 
-<div class="columns" *ngIf="!(observablePlaylist | async).loadState && (observablePlaylist | async).tracks?.length">
+<div class="columns" *ngIf="!playlist.loadState && playlist.tracks?.length">
   <!-- POPULATED PLAYLIST -->
   <div class="artwork">
-    <sr-timeline [percentage]="progress$"></sr-timeline>
+    <sr-timeline class="artwork__timeline" [percentage]="progress"></sr-timeline>
 
     <button class="artwork__image-wrap u-no-style" (click)="togglePlay()">
       <img class="artwork__image" [src]="playlistTrack?.track?.images[2].url">
     </button>
 
     <div class="play-pause">
-      <i class="artwork__play-icon fa fa-play fa-2x" *ngIf="!(observablePlaylist | async).isPlaying"></i>
-      <i class="artwork__pause-icon fa fa-pause fa-2x" *ngIf="(observablePlaylist | async).isPlaying"></i>
+      <i class="artwork__play-icon fa fa-play fa-2x" *ngIf="!playlist.isPlaying"></i>
+      <i class="artwork__pause-icon fa fa-pause fa-2x" *ngIf="playlist.isPlaying"></i>
     </div>
   </div>
 
   <div class="info">
     <div class="info__playlist-name">
-      {{(observablePlaylist | async).isPlaying
+      {{playlist.isPlaying
       ? 'Now playing in'
       : 'Ready to play in'}}
-      {{(observablePlaylist | async).name}}
+      {{playlist.name}}
     </div>
 
     <div class="info__track-name">{{playlistTrack?.track?.name}}</div>
@@ -50,5 +50,5 @@
   </div>
 </div>
 
-<!--<pre>loadState: {{(observablePlaylist | async).loadState}}</pre>-->
-<!--<pre>tracks: {{(observablePlaylist | async).tracks}}</pre>-->
+<!--<pre>loadState: {{playlist.loadState}}</pre>-->
+<!--<pre>tracks: {{playlist.tracks}}</pre>-->
