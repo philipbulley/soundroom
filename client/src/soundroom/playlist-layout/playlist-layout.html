@@ -6,7 +6,11 @@
         <div *ngIf="!isLoading">
           <sr-now-playing [playlist]="playlist$ | async"></sr-now-playing>
           <sr-track-search [playlist]="playlist$ | async"></sr-track-search>
-          <sr-playlist-queue [playlist]="playlist$" *ngIf="(playlist$ | async).tracks?.length"></sr-playlist-queue>
+          <sr-playlist-queue
+            [playlist]="playlist$ | async"
+            [user]="user$ | async"
+            *ngIf="(playlist$ | async).tracks?.length"
+          ></sr-playlist-queue>
         </div>
 
         <!--<pre>PlaylistLayoutComponent: {{id}}</pre>-->

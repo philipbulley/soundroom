@@ -1,15 +1,10 @@
-import { Component, ChangeDetectionStrategy, Input, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Component, ChangeDetectionStrategy, Input, OnChanges } from '@angular/core';
 import { Playlist } from '../../shared/model/playlist';
 import { PlaylistTrack } from '../../shared/model/playlist-track';
 import { PlaylistService } from '../../shared/service/playlist.service';
 import { UpVote } from '../../shared/model/up-vote';
-import { Auth } from '../../shared/model/auth';
-import { Store } from '@ngrx/store';
-import { AuthState } from '../../shared/model/state/auth.state';
 import { User } from '../../shared/model/user';
 import { PlaylistError } from '../../shared/model/error/PlaylistError';
-import { AppState } from '../../shared/model/app-state';
 
 var alertify = require('alertify.js');
 
@@ -19,43 +14,21 @@ var alertify = require('alertify.js');
   styles: [require('./playlist-queue.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PlaylistQueueComponent implements OnInit {
+export class PlaylistQueueComponent implements OnChanges {
 
-  // TODO: No need to be observable
-  @Input('playlist') observablePlaylist: Observable<Playlist>;
+  @Input() playlist: Playlist;
+  @Input() user: User;
 
   /**
    * List of tracks in queue (not including first track ink playlist)
    */
   private playlistTracks: PlaylistTrack[];
 
-  private playlist: Playlist;
-
-  private auth: Observable<Auth>;
-
-  private isLoggedIn: boolean = false;
-  private user: User;
-
-  constructor(private cdr: ChangeDetectorRef, private playlistService: PlaylistService, private store: Store<AppState>) {
-    this.auth = <Observable<Auth>>this.store.select('auth');
+  constructor(private playlistService: PlaylistService) {
   }
 
-  ngOnInit(): any {
-    this.observablePlaylist.subscribe((playlist: Playlist) => {
-      this.playlist = playlist;
-      this.playlistTracks = playlist.tracks.filter((playlistTrack, index) => index > 0);
-
-      // console.log('PlaylistQueueComponent.ngOnInit:', playlist);
-
-      this.cdr.markForCheck();
-    });
-
-
-    this.auth.subscribe((auth: Auth) => {
-      this.isLoggedIn = auth.state === AuthState.LOGGED_IN;
-      this.user = auth.user;
-      this.cdr.markForCheck();
-    });
+  ngOnChanges() {
+    this.playlistTracks = this.playlist.tracks.filter((playlistTrack, index) => index > 0);
   }
 
   upVote(playlistTrack: PlaylistTrack): void {

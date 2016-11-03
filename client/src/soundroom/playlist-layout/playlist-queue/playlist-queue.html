@@ -10,8 +10,8 @@
         <button class="track__delete u-no-style" (click)="deleteTrack(playlistTrack)"><i class="fa fa-close"></i></button>
       </div>
       <div class="track__data track__up-vote">
-        <button class="u-no-style" (click)="upVote(playlistTrack)" *ngIf="isLoggedIn && !hasUserUpVote(playlistTrack)"><i class="fa fa-arrow-up"></i></button>
-        <i class="fa fa-smile-o fa-2x" *ngIf="isLoggedIn && hasUserUpVote(playlistTrack)"></i>
+        <button class="u-no-style" (click)="upVote(playlistTrack)" *ngIf="user && !hasUserUpVote(playlistTrack)"><i class="fa fa-arrow-up"></i></button>
+        <i class="fa fa-smile-o fa-2x" *ngIf="user && hasUserUpVote(playlistTrack)"></i>
       </div>
       <div class="track__data track__album-art"><img class="o-avatar" [class.o-avatar--medium]="index === 0" [src]="playlistTrack.track.images[0].url"></div>
       <div class="track__data track__info">

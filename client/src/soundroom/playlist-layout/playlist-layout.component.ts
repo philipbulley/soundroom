@@ -1,6 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import 'rxjs/add/operator/distinctUntilChanged';
@@ -9,6 +8,7 @@ import { PlaylistCollection } from '../shared/model/playlist-collection';
 import { AppState } from '../shared/model/app-state';
 import { PlaylistService } from '../shared/service/playlist.service';
 import { AuthService } from '../shared/service/auth.service';
+import { User } from '../shared/model/user';
 
 @Component({
   selector: 'sr-playlist-layout',
@@ -20,6 +20,7 @@ export class PlaylistLayoutComponent implements OnInit {
   private playlist$: Observable<Playlist>;
   private id: string;
   private playlistCollection$: Observable<PlaylistCollection>;
+  private user$: Observable<User>;
   private isLoading: boolean;
   private jwt: string;
 
@@ -34,6 +35,7 @@ export class PlaylistLayoutComponent implements OnInit {
     this.id = this.route.snapshot.params['id'];
 
     this.playlistCollection$ = this.store$.map((state: AppState) => state.playlistCollection);
+    this.user$ = this.store$.map((state: AppState) => state.auth.user);
 
     this.playlist$ = this.playlistCollection$
       .distinctUntilChanged()
