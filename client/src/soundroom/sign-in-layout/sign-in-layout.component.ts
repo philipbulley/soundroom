@@ -6,6 +6,7 @@ import { AppState } from '../shared/model/app-state';
 import { AuthState } from '../shared/model/state/auth.state';
 import { Auth } from '../shared/model/auth';
 import { AuthService } from '../shared/service/auth.service';
+import 'rxjs/add/operator/first';
 
 @Component({
   selector: 'sr-main-layout',
@@ -15,16 +16,16 @@ import { AuthService } from '../shared/service/auth.service';
 })
 export class SignInLayoutComponent implements OnInit {
 
-  private auth: Observable<Auth>;
+  private auth$: Observable<Auth>;
 
-  constructor(private store: Store<AppState>, private activatedRoute: ActivatedRoute, private authService: AuthService) {
+  constructor(private store$: Store<AppState>, private activatedRoute: ActivatedRoute, private authService: AuthService) {
 
-    this.auth = <Observable<Auth>>store.select('auth');
+    this.auth$ = this.store$.map((state: AppState) => state.auth);
 
   }
 
   ngOnInit(): any {
-    this.auth.subscribe((auth: Auth) => {
+    this.auth$.subscribe((auth: Auth) => {
       console.log('SignInLayoutComponent.auth: Auth:', auth);
 
       switch (auth.state) {
@@ -45,13 +46,14 @@ export class SignInLayoutComponent implements OnInit {
    * Checks whether we've been passed a new JWT via the query string
    */
   checkJwt() {
-    // TODO: It should be possible to get jwt from ActivatedRoute.snapshot, but doesn't seem to work with
-    // @angular/router 3.0.0-beta.2 — for now we can subscribe to router Observable let jwt =
-    // this.route.snapshot.params['jwt']; console.log('SignInLayout.ngOnInit: jwt:', this.route.snapshot);
+    // Test OAuth redirect URL:
+    // http://localhost:8080/sign-in?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI1NmY1NDkxNDE0YmE1YjI1OWY4M2NkMjMiLCJleHAiOjE1MTA0MTg0NzF9.6Jfb51IvZxkjKg0DZICAEFoUGfIHtMMEc-CNAci7ISM
 
     this.activatedRoute
-      .params
+      .queryParams
+      .first()
       .subscribe((params: any) => {
+        console.log('SignInLayoutComponent.checkJwt(): subscribe: params:', params);
 
         if (params.jwt) {
           console.log('SignInLayout: FOUND JWT – attempt to auth...');
