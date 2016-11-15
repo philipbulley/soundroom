@@ -5,14 +5,14 @@ import { SocialSignInComponent } from './sign-in/social-sign-in.component';
 import { SignInLayoutRoutingModule } from './sign-in-layout-routing.module';
 
 @NgModule({
-	imports: [
-	  SharedModule,
+  imports: [
+    SharedModule,
     SignInLayoutRoutingModule,
   ],
-	declarations: [
-		SignInLayoutComponent,
+  declarations: [
+    SignInLayoutComponent,
     SocialSignInComponent,
-	],
+  ],
 })
 export class SignInLayoutModule {
 }

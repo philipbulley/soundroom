@@ -1,25 +1,23 @@
-import {Injectable} from '@angular/core';
-
+import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
-import {Store} from '@ngrx/store';
-import {Observable} from 'rxjs/Observable';
-import {Observer} from 'rxjs/Observer';
-
-import {Config} from "../../shared/model/config";
-import {Auth} from "../../shared/model/auth";
-import {SocketEventTypeEnum} from "../../shared/model/socket/socket-event-type.enum.ts";
-import {AuthState} from "../../shared/model/state/auth.state.ts";
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
+import { Observer } from 'rxjs/Observer';
+import { Config } from '../../shared/model/config';
+import { Auth } from '../../shared/model/auth';
+import { SocketEventTypeEnum } from '../../shared/model/socket/socket-event-type.enum.ts';
+import { AuthState } from '../../shared/model/state/auth.state.ts';
 import { AppState } from '../model/app-state';
 
 @Injectable()
 export class SocketService {
-  stream$:Observable<any>;
+  stream$: Observable<any>;
 
-  private socket:SocketIOClient.Socket;
-  private isInit:boolean;
-  private auth:Observable<Auth>;
+  private socket: SocketIOClient.Socket;
+  private isInit: boolean;
+  private auth$: Observable<Auth>;
 
-  private serverToClient:any = [
+  private serverToClient: any = [
     SocketEventTypeEnum.PLAYLIST_PLAY,
     SocketEventTypeEnum.PLAYLIST_PAUSE,
     SocketEventTypeEnum.PLAYLIST_TRACK_START,
@@ -30,12 +28,10 @@ export class SocketService {
     SocketEventTypeEnum.PLAYLIST_TRACK_VETO,
     SocketEventTypeEnum.PLAYLIST_TRACKS_CHANGE,
   ];
-  private streamObserver:Observer<any>;
+  private streamObserver: Observer<any>;
 
-  constructor( private store:Store<AppState> ) {
-
+  constructor(private store$: Store<AppState>) {
     // console.log('SocketService()');
-
   }
 
   init() {
@@ -43,19 +39,18 @@ export class SocketService {
 
     this.stream$ = new Observable(observer => this.streamObserver = observer);
 
-    this.auth = <Observable<Auth>>this.store.select('auth');
-    this.auth.subscribe( auth => {
+    this.auth$ = this.store$.map((state: AppState) => state.auth);
+    this.auth$.subscribe(auth => {
 
       console.log('SocketService.init: subscribe()', auth);
 
       if (auth && auth.state === AuthState.LOGGED_IN && !this.isConnected) {
         this.connect();
       }
-
     });
   }
 
-  emit( event:SocketEventTypeEnum, value:any ) {
+  emit(event: SocketEventTypeEnum, value: any) {
     this.ensureConnected();
 
     this.socket.emit(<string>event, value);
@@ -64,7 +59,6 @@ export class SocketService {
   get isConnected() {
     return this.socket && this.socket.connected;
   }
-
 
   /////////////////////////
   // PRIVATE METHODS
@@ -87,7 +81,7 @@ export class SocketService {
         });
       });
 
-      this.socket.emit( SocketEventTypeEnum.AUTHENTICATE, {jwt: localStorage.getItem('jwt')} );
+      this.socket.emit(SocketEventTypeEnum.AUTHENTICATE, {jwt: localStorage.getItem('jwt')});
     });
   }
 

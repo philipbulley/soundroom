@@ -1,11 +1,11 @@
 export class Image {
 
-  _id:string;
+  _id: string;
 
-  width:number;
+  width: number;
 
-  height:number;
+  height: number;
 
-  url:string;
+  url: string;
 
 }

@@ -1,8 +1,8 @@
-import {User} from "../user";
+import { User } from "../user";
 
 export class UserFactory {
 
-  static createFromApiResponse( apiData:any ):User {
+  static createFromApiResponse(apiData: any): User {
 
     var user = new User();
 

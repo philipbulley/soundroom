@@ -1,17 +1,17 @@
-import {ProviderEnum} from "./enum/provider.enum";
+import { ProviderEnum } from "./enum/provider.enum";
 
 export class Album {
 
-  _id:string;
+  _id: string;
 
-  foreignId:string;
+  foreignId: string;
 
-  created:Date;
+  created: Date;
 
-  modified:Date;
+  modified: Date;
 
-  name:string;
+  name: string;
 
-  provider:ProviderEnum;
+  provider: ProviderEnum;
 
 }

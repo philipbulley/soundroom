@@ -1,9 +1,9 @@
-import {Artist} from "../artist";
-import {ProviderFactory} from "./provider.factory";
+import { Artist } from "../artist";
+import { ProviderFactory } from "./provider.factory";
 
 export class ArtistFactory {
 
-  static createFromApiResponse( apiData:any ):Artist {
+  static createFromApiResponse(apiData: any): Artist {
 
     var artist = new Artist();
 

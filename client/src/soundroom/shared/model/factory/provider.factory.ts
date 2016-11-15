@@ -1,4 +1,4 @@
-import {ProviderEnum} from "../enum/provider.enum";
+import { ProviderEnum } from "../enum/provider.enum";
 
 export class ProviderFactory {
 
@@ -6,7 +6,7 @@ export class ProviderFactory {
     'spotify': ProviderEnum.SPOTIFY,
   };
 
-  static getByString( apiData:string ):ProviderEnum {
+  static getByString(apiData: string): ProviderEnum {
 
     return this.dict[apiData];
 

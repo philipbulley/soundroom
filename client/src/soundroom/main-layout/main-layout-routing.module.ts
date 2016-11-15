@@ -5,11 +5,11 @@ import { AuthGuard } from '../core/routing/auth.guard';
 import { SharedModule } from '../shared/shared.module';
 
 const ROUTES: Routes = [
-	{
-		path: 'rooms',
-		component: MainLayoutComponent,
+  {
+    path: 'rooms',
+    component: MainLayoutComponent,
     canActivate: [AuthGuard],
-	},
+  },
 ];
 
 @NgModule({
@@ -17,6 +17,7 @@ const ROUTES: Routes = [
     SharedModule,
     RouterModule.forChild(ROUTES),
   ],
-  exports: [ RouterModule ],
+  exports: [RouterModule],
 })
-export class MainLayoutRoutingModule {}
+export class MainLayoutRoutingModule {
+}

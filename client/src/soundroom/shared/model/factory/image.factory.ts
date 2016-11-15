@@ -1,8 +1,8 @@
-import {Image} from "../image";
+import { Image } from "../image";
 
 export class ImageFactory {
 
-  static createFromApiResponse( apiData:any ):Image {
+  static createFromApiResponse(apiData: any): Image {
 
     var image = new Image();
 

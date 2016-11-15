@@ -1,9 +1,9 @@
 export interface PlaylistSocketEvent {
 
-  playlistId:string;
+  playlistId: string;
 
-  playlistTrackId:string;
+  playlistTrackId: string;
 
-  trackId:string;
+  trackId: string;
 
 }

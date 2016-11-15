@@ -36,7 +36,7 @@ export class PlaylistMenuItemComponent {
   private deleteState = null;
 
   /** Observable that produces a counter based on the DELETE_CONFIRM_* constants */
-  private deleteConfirm: Observable<number>;
+  private deleteConfirm$: Observable<number>;
 
   /** Number of seconds remaining until delete button becomes enabled */
   private deleteDisabledSecs: number;
@@ -55,7 +55,7 @@ export class PlaylistMenuItemComponent {
 
       // The `deleteConfirm` Observable is no longer used with AsyncPipe in the template, as it was causing an error to
       // be thrown when changing route in angular 2.0.0-beta.11
-      this.deleteConfirm = Observable
+      this.deleteConfirm$ = Observable
       // Fire initial timer value at 1ms, not 0ms. 0ms will dispatch first value synchronously, which for some reason
       // prevents AsyncPipe from updating. Not figured out why yet. Could this be a clue:
       // http://www.bennadel.com/blog/3029-rxjs-streams-are-inconsistently-asynchronous-in-angular-2-beta-6.htm?source=epicenter
@@ -64,7 +64,7 @@ export class PlaylistMenuItemComponent {
         .map(secs => secs);
 
       // Observer for seconds before delete can be clicked
-      this.deleteConfirm
+      this.deleteConfirm$
         .map((secs: number) => Math.max(0, this.DELETE_CONFIRM_DISABLED_SECS - secs))
         .subscribe(secs => {
           this.deleteDisabledSecs = secs;
@@ -77,7 +77,7 @@ export class PlaylistMenuItemComponent {
         });
 
       // Observer which will exit the delete confirmation, assuming user is not wanting to delete anymore
-      this.deleteConfirm
+      this.deleteConfirm$
         .subscribe((secs: number) => {
           if (secs === this.DELETE_CONFIRM_DISABLED_SECS + this.DELETE_CONFIRM_ENABLED_SECS) {
             this.deleteState = null;

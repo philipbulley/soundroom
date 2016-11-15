@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {RequestOptions, Headers} from '@angular/http';
+import { Injectable } from '@angular/core';
+import { RequestOptions, Headers } from '@angular/http';
 
-import {Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class NetworkService {
@@ -11,14 +11,14 @@ export class NetworkService {
    * exceed this value.
    * @type {number}
    */
-  private MAX_RETRY_INTERVAL:number = 30;
+  private MAX_RETRY_INTERVAL: number = 30;
 
   /**
    * On this number of retries (within the exponential backoff strategy), we will emit our slow connection. This may be
    * communicated to the user via UI.
    * @type {number}
    */
-  private SLOW_CONNECTION_RETRIES:number = 2;
+  private SLOW_CONNECTION_RETRIES: number = 2;
 
   /**
    * Use with the `retryWhen()` operator for an exponential backoff retry strategy
@@ -30,9 +30,9 @@ export class NetworkService {
    * @param errors
    * @returns {Observable<R>}
    */
-  retry( errors:Observable<any> ):Observable<any> {
+  retry(errors: Observable<any>): Observable<any> {
     return errors
-      .mergeMap(( err, count ) => {
+      .mergeMap((err, count) => {
         // Emit event if we've retried SLOW_CONNECTION_RETRIES times
         if (count === this.SLOW_CONNECTION_RETRIES) {
           console.warn('TODO: Slow Connection: Implement slow connection reducer logic');

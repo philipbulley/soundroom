@@ -1,4 +1,4 @@
-import {Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, ElementRef} from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, ElementRef } from '@angular/core';
 
 var alertify = require('alertify.js');
 
@@ -10,7 +10,7 @@ var alertify = require('alertify.js');
 })
 export class AlertifyComponent implements OnInit {
 
-  constructor( private cdr:ChangeDetectorRef, private elRef:ElementRef ) {
+  constructor(private cdr: ChangeDetectorRef, private elRef: ElementRef) {
   }
 
   ngOnInit() {

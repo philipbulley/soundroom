@@ -1,5 +1,5 @@
-import {AbstractError} from "./AbstractError";
-import {Playlist} from "../playlist";
+import { AbstractError } from "./AbstractError";
+import { Playlist } from "../playlist";
 
 export class PlaylistError extends AbstractError {
 
@@ -15,11 +15,11 @@ export class PlaylistError extends AbstractError {
   /** Unspecified server error  */
   static UNKNOWN = 'PlaylistError.UNKNOWN';
 
-  constructor( public type:string, devMessage?:any, model?:Playlist, public originalError?:any ) {
+  constructor(public type: string, devMessage?: any, model?: Playlist, public originalError?: any) {
     super(type, devMessage, model);
   }
 
-  getFriendlyMessage():string {
+  getFriendlyMessage(): string {
     switch (this.type) {
       case PlaylistError.PROVIDER_CONNECTION:
         return `We haven't been able to connect to %provider%.`;
@@ -28,7 +28,7 @@ export class PlaylistError extends AbstractError {
     }
   }
 
-  toString():string {
+  toString(): string {
     return '[PlaylistError type="' + this.type + '", devMessage="' + this.message + '", model="' + this.model + '", originalError="' + this.originalError + '"]';
   }
 }

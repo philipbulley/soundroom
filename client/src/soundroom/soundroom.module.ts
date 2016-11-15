@@ -12,21 +12,21 @@ import { SharedModule } from './shared/shared.module';
 
 /* Feature Modules */
 @NgModule({
-	bootstrap: [SoundroomComponent],
-	imports: [
-		CoreModule,
+  bootstrap: [SoundroomComponent],
+  imports: [
+    CoreModule,
     SharedModule,
-		StoreModule.provideStore(STORE_REDUCERS),
-		STORE_EFFECTS,
+    StoreModule.provideStore(STORE_REDUCERS),
+    STORE_EFFECTS,
     SoundroomRoutingModule,
-		// Non lazy-loaded modules
+    // Non lazy-loaded modules
     MainLayoutModule,
     PlaylistLayoutModule,
     SignInLayoutModule,
-	],
-	declarations: [
-		SoundroomComponent,
-	],
+  ],
+  declarations: [
+    SoundroomComponent,
+  ],
 })
 export class SoundroomModule {
 }

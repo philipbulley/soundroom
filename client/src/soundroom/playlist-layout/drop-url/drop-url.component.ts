@@ -1,13 +1,13 @@
-import {Component, ElementRef, OnInit, Input, ChangeDetectionStrategy} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
+import { Component, ElementRef, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 var alertify = require('alertify.js');
 
-import {PlaylistService} from "../../shared/service/playlist.service.ts";
-import {Playlist} from "../../shared/model/playlist";
+import { PlaylistService } from "../../shared/service/playlist.service.ts";
+import { Playlist } from "../../shared/model/playlist";
 
-import {ProviderEnum} from "../../shared/model/enum/provider.enum.ts";
-import {SpotifyService} from "../../shared/service/spotify.service.ts";
-import {PlaylistError} from "../../shared/model/error/PlaylistError";
+import { ProviderEnum } from "../../shared/model/enum/provider.enum.ts";
+import { SpotifyService } from "../../shared/service/spotify.service.ts";
+import { PlaylistError } from "../../shared/model/error/PlaylistError";
 
 // Change to Component and transclude drop-url-overlay
 @Component({
@@ -25,18 +25,18 @@ import {PlaylistError} from "../../shared/model/error/PlaylistError";
 export class DropUrlComponent implements OnInit {
 
   @Input('playlist')
-  private observablePlaylist:Observable<Playlist>;
+  private observablePlaylist: Observable<Playlist>;
 
-  private playlist:Playlist;
+  private playlist: Playlist;
 
-  private CSS_CLASS:string = 'drop-url';
-  private CSS_CLASS_ACTIVE:string = 'is-active';
-  private CSS_CLASS_ACCEPTED:string = 'is-accepted';
-  private CSS_CLASS_REJECTED:string = 'is-rejected';
+  private CSS_CLASS: string = 'drop-url';
+  private CSS_CLASS_ACTIVE: string = 'is-active';
+  private CSS_CLASS_ACCEPTED: string = 'is-accepted';
+  private CSS_CLASS_REJECTED: string = 'is-rejected';
 
-  private isDrag:boolean = false;
+  private isDrag: boolean = false;
 
-  constructor( private el:ElementRef, private playlistService:PlaylistService, private spotifyService:SpotifyService ) {
+  constructor(private el: ElementRef, private playlistService: PlaylistService, private spotifyService: SpotifyService) {
     // console.log('DropUrlComponent()');
   }
 
@@ -45,7 +45,7 @@ export class DropUrlComponent implements OnInit {
     this.observablePlaylist.subscribe(playlist => this.playlist = playlist);
   }
 
-  handleDragOver( event ) {
+  handleDragOver(event) {
     // console.log('DropUrlComponent.handleDragOver()', event.dataTransfer);
     event.preventDefault();
 
@@ -57,7 +57,7 @@ export class DropUrlComponent implements OnInit {
     this.el.nativeElement.classList.add(this.CSS_CLASS_ACTIVE);
   }
 
-  handleDrop( event ) {
+  handleDrop(event) {
     // console.log('DropUrlComponent.handleDrop()', event, event.dataTransfer.getData("URL"));
     event.preventDefault();
 
@@ -81,11 +81,11 @@ export class DropUrlComponent implements OnInit {
     console.info('DropUrlComponent.drop: ACCEPTED', spotifyUri, this.playlist);
     this.playlistService.addTrack(this.playlist, ProviderEnum.SPOTIFY, spotifyUri)
       .subscribe(
-        ( status:number ) => {
+        (status: number) => {
           // console.log('DropUrlComponent.subscribe(): status:', status);
           this.hideOverlay();
         },
-        ( error:PlaylistError ) => {
+        (error: PlaylistError) => {
 
           // console.log('DropUrlComponent.subscribe(): ERROR:', error);
 
@@ -109,14 +109,14 @@ export class DropUrlComponent implements OnInit {
       );
   }
 
-  handleDragEnd( event ) {
+  handleDragEnd(event) {
     // console.log('DropUrlComponent.handleDragEnd()', event);
     event.preventDefault();
 
     this.hideOverlay();
   }
 
-  handleDragLeave( event ) {
+  handleDragLeave(event) {
     // console.log('DropUrlComponent.dragLeave()', event);
     event.preventDefault();
 

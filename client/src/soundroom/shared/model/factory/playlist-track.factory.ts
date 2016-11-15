@@ -1,11 +1,11 @@
-import {TrackFactory} from "./track.factory";
-import {UpVoteFactory} from "./up-vote.factory";
-import {PlaylistTrack} from "../playlist-track";
-import {UserFactory} from "./user.factory";
+import { TrackFactory } from "./track.factory";
+import { UpVoteFactory } from "./up-vote.factory";
+import { PlaylistTrack } from "../playlist-track";
+import { UserFactory } from "./user.factory";
 
 export class PlaylistTrackFactory {
 
-  static createFromApiResponse( apiData:any ):PlaylistTrack {
+  static createFromApiResponse(apiData: any): PlaylistTrack {
 
     var playlistTrack = new PlaylistTrack();
 

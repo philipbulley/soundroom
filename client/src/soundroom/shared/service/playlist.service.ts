@@ -74,7 +74,7 @@ export class PlaylistService {
   private playlistCreate$: Observable<PlaylistCreate>;
 
   constructor(private http: Http, public store$: Store<AppState>, public networkService: NetworkService, private socketService: SocketService) {
-    this.playlistCreate$ = <Observable<PlaylistCreate>>this.store$.select('playlistCreate');
+    this.playlistCreate$ = this.store$.map((state: AppState) => state.playlistCreate);
 
     this.observeCreate();
     this.observeSocket();

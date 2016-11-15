@@ -1,5 +1,5 @@
-import {Component, ChangeDetectionStrategy, Input} from '@angular/core';
-import {UpVote} from "../../shared/model/up-vote";
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { UpVote } from "../../shared/model/up-vote";
 
 @Component({
   selector: 'sr-up-vote-avatars',
@@ -11,7 +11,7 @@ export class UpVoteAvatarsComponent {
 
   /* tslint:disable:no-unused-variable */
   @Input()
-  private upVotes:UpVote[];
+  private upVotes: UpVote[];
   /* tslint:enable:no-unused-variable */
 
 }

@@ -1,14 +1,14 @@
-import {Track} from "../track";
-import {AlbumFactory} from "./album.factory";
-import {ArtistFactory} from "./artist.factory";
-import {ProviderFactory} from "./provider.factory";
-import {UserFactory} from "./user.factory";
-import {ImageFactory} from "./image.factory";
-import {Image} from "../image";
+import { Track } from "../track";
+import { AlbumFactory } from "./album.factory";
+import { ArtistFactory } from "./artist.factory";
+import { ProviderFactory } from "./provider.factory";
+import { UserFactory } from "./user.factory";
+import { ImageFactory } from "./image.factory";
+import { Image } from "../image";
 
 export class TrackFactory {
 
-  static createFromApiResponse( apiData:any ):Track {
+  static createFromApiResponse(apiData: any): Track {
 
     var track = new Track();
 
@@ -27,7 +27,7 @@ export class TrackFactory {
     track.artists = apiData.artists.map(artistsData => ArtistFactory.createFromApiResponse(artistsData));
 
     track.images = apiData.images.map(imageData => ImageFactory.createFromApiResponse(imageData))
-      .sort(( a:Image, b:Image ) => a.height > b.height ? 1 : -1);
+      .sort((a: Image, b: Image) => a.height > b.height ? 1 : -1);
 
     track.createdBy = UserFactory.createFromApiResponse(apiData.createdBy);
 

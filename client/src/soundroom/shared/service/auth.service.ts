@@ -17,10 +17,10 @@ import { AppState } from '../model/app-state';
 @Injectable()
 export class AuthService {
 
-  private auth: Observable<Auth>;
+  private auth$: Observable<Auth>;
   private isInit: boolean;
 
-  constructor( private http: Http, private store: Store<AppState>, private networkService: NetworkService ) {
+  constructor(private http: Http, private store$: Store<AppState>, private networkService: NetworkService) {
 
     // console.log('AuthService()');
 
@@ -37,25 +37,25 @@ export class AuthService {
       return Observable.throw(new Error('No cached JWT'));
     }
 
-    this.store.dispatch(new LoadUserAction());
+    this.store$.dispatch(new LoadUserAction());
 
     const httpStream = this.http.get(Config.API_BASE_URL + '/me', this.networkService.requestOptions)
     // .delay(2000)    // DEBUG: Delay for simulation purposes only
-      .map(( res: Response ) => UserFactory.createFromApiResponse(res.json()))
-      .map(( user: User ) => {
+      .map((res: Response) => UserFactory.createFromApiResponse(res.json()))
+      .map((user: User) => {
         this.networkService.ok();
 
         // Assign initial data to collection
-        this.store.dispatch(new LoadUserSuccessAction(user));
+        this.store$.dispatch(new LoadUserSuccessAction(user));
         return true;
       })
-      .catch(( error: Response ) => {
+      .catch((error: Response) => {
         if (error.status === 401) {
           console.warn('401 Unauthorized!');
         } else {
           console.error(error);
         }
-        this.store.dispatch(new LoadUserErrorAction({
+        this.store$.dispatch(new LoadUserErrorAction({
           status: error.status,
           statusText: error.statusText,
         }));
@@ -70,7 +70,7 @@ export class AuthService {
    *
    * @param jwt
    */
-  set jwt( jwt: string ) {
+  set jwt(jwt: string) {
     localStorage.setItem('jwt', jwt);
   }
 
@@ -86,7 +86,7 @@ export class AuthService {
   private init() {
     this.isInit = true;
 
-    this.auth = <Observable<Auth>>this.store.select('auth');
+    this.auth$ = this.store$.map((state: AppState) => state.auth);
   }
 
 }

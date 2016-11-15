@@ -1,5 +1,5 @@
-import {Component, ChangeDetectionStrategy} from '@angular/core';
-import {Config} from "../../shared/model/config";
+import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Config } from "../../shared/model/config";
 
 @Component({
   selector: 'sr-social-sign-in',
@@ -9,7 +9,7 @@ import {Config} from "../../shared/model/config";
 })
 export class SocialSignInComponent {
 
-  private serverBaseUrl:string;
+  private serverBaseUrl: string;
 
   constructor() {
 

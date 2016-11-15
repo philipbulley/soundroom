@@ -1,16 +1,16 @@
-import {User} from "./user";
+import { User } from "./user";
 
 /**
  * Represents an UpVote as created by a User
  */
 export class UpVote {
 
-  _id:string;
+  _id: string;
 
-  createdBy:User;
+  createdBy: User;
 
-  created:Date;
+  created: Date;
 
-  modified:Date;
+  modified: Date;
 
 }

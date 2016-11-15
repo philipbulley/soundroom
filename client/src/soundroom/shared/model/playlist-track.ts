@@ -1,30 +1,30 @@
-import {Track} from "./track";
-import {UpVote} from "./up-vote";
-import {User} from "./user";
+import { Track } from "./track";
+import { UpVote } from "./up-vote";
+import { User } from "./user";
 
 /**
  * Represents a Track in the context of a Playlist
  */
 export class PlaylistTrack {
 
-  _id:string;
+  _id: string;
 
-  track:Track;
+  track: Track;
 
-  upVotes:UpVote[];
+  upVotes: UpVote[];
 
-  created:Date;
+  created: Date;
 
-  modified:Date;
+  modified: Date;
 
-  isPlaying:boolean;
+  isPlaying: boolean;
 
-  currentTime:number;
+  currentTime: number;
 
-  progress:number;
+  progress: number;
 
-  createdBy:User;
+  createdBy: User;
 
-  playCompleted:Date;
+  playCompleted: Date;
 
 }

@@ -1,11 +1,11 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 
 @Injectable()
 export class SpotifyService {
 
-  private ACCEPT_REGEX:RegExp = /^https?:\/\/open.spotify\.com\/track\/(.*)/;
+  private ACCEPT_REGEX: RegExp = /^https?:\/\/open.spotify\.com\/track\/(.*)/;
 
-  linkToSpotifyUri( url:string ) {
+  linkToSpotifyUri(url: string) {
     if (url.charAt(url.length - 1) === '/') {
       // Trim trailing slash
       url = url.substr(0, url.length - 2);
@@ -21,7 +21,7 @@ export class SpotifyService {
     return spotifyUri;
   }
 
-  isValidSpotifyUrl( url:string ) {
+  isValidSpotifyUrl(url: string) {
     console.log('SpotifyService.isValidSpotifyUrl()', this.ACCEPT_REGEX.test(url), url);
     return this.ACCEPT_REGEX.test(url);
   }

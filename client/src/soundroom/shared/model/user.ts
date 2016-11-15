@@ -1,23 +1,23 @@
 export class User {
 
-  _id:string;
+  _id: string;
 
-  name:string;
+  name: string;
 
-  avatar:string;
+  avatar: string;
 
-  created:Date;
+  created: Date;
 
-  modified:Date;
+  modified: Date;
 
-  googleId:string;
+  googleId: string;
 
-  spotifyId:string;
+  spotifyId: string;
 
-  facebookId:string;
+  facebookId: string;
 
-  twitterId:string;
+  twitterId: string;
 
-  userId:string;
+  userId: string;
 
 }

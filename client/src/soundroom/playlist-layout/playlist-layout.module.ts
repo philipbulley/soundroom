@@ -10,19 +10,19 @@ import { TimelineComponent } from './timeline/timeline.component';
 import { UpVoteAvatarsComponent } from './up-vote-avatars/up-vote-avatars.component';
 
 @NgModule({
-	imports: [
-	  SharedModule,
+  imports: [
+    SharedModule,
     PlaylistLayoutRoutingModule,
   ],
-	declarations: [
-		PlaylistLayoutComponent,
+  declarations: [
+    PlaylistLayoutComponent,
     NowPlayingComponent,
     TrackSearchComponent,
     PlaylistQueueComponent,
     DropUrlComponent,
     TimelineComponent,
     UpVoteAvatarsComponent,
-	],
+  ],
 })
 export class PlaylistLayoutModule {
 }

@@ -1,4 +1,4 @@
 export interface PlaylistAddTrackBody {
-  provider:string
-  foreignId:string
+  provider: string
+  foreignId: string
 }

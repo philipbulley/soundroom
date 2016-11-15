@@ -1,9 +1,9 @@
-import {UserFactory} from "./user.factory";
-import {UpVote} from "../up-vote";
+import { UserFactory } from "./user.factory";
+import { UpVote } from "../up-vote";
 
 export class UpVoteFactory {
 
-  static createFromApiResponse( apiData:any ):UpVote {
+  static createFromApiResponse(apiData: any): UpVote {
 
     const upVote = new UpVote();
 

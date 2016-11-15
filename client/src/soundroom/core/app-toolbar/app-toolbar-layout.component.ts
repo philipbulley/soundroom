@@ -10,6 +10,7 @@ import { Auth } from '../../shared/model/auth';
 })
 export class AppToolbarComponent implements OnInit {
 
+  // TODO: No need for Observable here
   @Input()
   auth: Observable<Auth>;
 

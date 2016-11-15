@@ -1,9 +1,9 @@
-import {Album} from "../album";
-import {ProviderFactory} from "./provider.factory";
+import { Album } from "../album";
+import { ProviderFactory } from "./provider.factory";
 
 export class AlbumFactory {
 
-  static createFromApiResponse( apiData:any ):Album {
+  static createFromApiResponse(apiData: any): Album {
 
     var album = new Album();
 

@@ -8,17 +8,17 @@ import { PlaylistCreateComponent } from './playlist-create/playlist-create.compo
 import { PlaylistMenuItemComponent } from './playlist-menu-item/playlist-menu-item.component';
 
 @NgModule({
-	imports: [
-	  SharedModule,
+  imports: [
+    SharedModule,
     MainLayoutRoutingModule,
   ],
-	declarations: [
-		MainLayoutComponent,
+  declarations: [
+    MainLayoutComponent,
     PlaylistMenuComponent,
     NowPlayingPreviewComponent,
     PlaylistMenuItemComponent,
     PlaylistCreateComponent,
-	],
+  ],
 })
 export class MainLayoutModule {
 }

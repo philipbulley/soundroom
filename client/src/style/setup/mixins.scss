@@ -1,11 +1,11 @@
-@mixin clearfix-content () {
+@mixin clearfix-content() {
   display: table;
   width: 100%;
   clear: both;
   content: "";
 }
 
-@mixin clearfix () {
+@mixin clearfix() {
   // scss-lint:disable PseudoElement
   &:after {
     @include clearfix-content;
@@ -34,7 +34,7 @@
   -webkit-appearance: button;
 }
 
-@mixin button($color: $color-grey-grime, $background-color: $color-grey-dust){
+@mixin button($color: $color-grey-grime, $background-color: $color-grey-dust) {
   @include button-no-style();
 
   padding: 14px 30px;
@@ -52,7 +52,6 @@
     transition: background-color 0s, color 0s;
   }
 }
-
 
 ////////////////////////////
 // Breakpoints

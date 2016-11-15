@@ -12,9 +12,9 @@ import { AppState } from './shared/model/app-state';
 })
 export class SoundroomComponent implements OnInit {
 
-  private auth: Observable<Auth>;
+  private auth$: Observable<Auth>;
 
-  constructor(private store: Store<AppState>, private socketService: SocketService) {
+  constructor(private store$: Store<AppState>, private socketService: SocketService) {
     // console.log('SoundroomComponent()');
 
     //console.log('%c♪ ♫ ♬  Soundroom  ♬ ♫ ♪', 'background-color:#3fa2db;color:#fff;padding:20px
@@ -26,7 +26,7 @@ export class SoundroomComponent implements OnInit {
   }
 
   ngOnInit(): any {
-    this.auth = <Observable<Auth>>this.store.select('auth');
+    this.auth$ = this.store$.map((state: AppState) => state.auth);
 
     // TODO: Move to effect
     this.socketService.init();

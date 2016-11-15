@@ -30,11 +30,11 @@ module soundroomError {
    * extend AbstractError.
    */
   export declare class CustomError {
-    public name:string;
-    public message:string;
-    public stack:string;
+    public name: string;
+    public message: string;
+    public stack: string;
 
-    constructor( message?:string );
+    constructor(message?: string);
   }
   /* tslint:disable-next-line:no-eval */
   eval('soundroomError.CustomError = Error');
@@ -55,7 +55,7 @@ module soundroomError {
  * available.
  */
 export abstract class AbstractError extends soundroomError.CustomError {
-  constructor( public name:string, public message?:string, public model?:any ) {
+  constructor(public name: string, public message?: string, public model?: any) {
     super(message);
 
     var e = new soundroomError.CustomError(message);
@@ -72,7 +72,7 @@ export abstract class AbstractError extends soundroomError.CustomError {
    * @param type
    * @returns {string}
    */
-  getFriendlyMessage():string {
+  getFriendlyMessage(): string {
     return 'Aww... we have a little problem!';
   }
 }

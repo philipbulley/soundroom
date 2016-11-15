@@ -7,19 +7,24 @@
     <li class="track" *ngFor="let playlistTrack of playlistTracks; let index = index" [class.allow-delete]="canCurrentUserDeleteTrack(playlistTrack)">
       <div class="track__data">
         <span class="track__up-vote-count">{{playlistTrack.upVotes.length}}</span>
-        <button class="track__delete u-no-style" (click)="deleteTrack(playlistTrack)"><i class="fa fa-close"></i></button>
+        <button class="track__delete u-no-style" (click)="deleteTrack(playlistTrack)"><i class="fa fa-close"></i>
+        </button>
       </div>
       <div class="track__data track__up-vote">
-        <button class="u-no-style" (click)="upVote(playlistTrack)" *ngIf="user && !hasUserUpVote(playlistTrack)"><i class="fa fa-arrow-up"></i></button>
+        <button class="u-no-style" (click)="upVote(playlistTrack)" *ngIf="user && !hasUserUpVote(playlistTrack)">
+          <i class="fa fa-arrow-up"></i></button>
         <i class="fa fa-smile-o fa-2x" *ngIf="user && hasUserUpVote(playlistTrack)"></i>
       </div>
-      <div class="track__data track__album-art"><img class="o-avatar" [class.o-avatar--medium]="index === 0" [src]="playlistTrack.track.images[0].url"></div>
+      <div class="track__data track__album-art">
+        <img class="o-avatar" [class.o-avatar--medium]="index === 0" [src]="playlistTrack.track.images[0].url"></div>
       <div class="track__data track__info">
         <div class="track__info-name">{{playlistTrack.track.name}}</div>
         <div class="track__info-artists">{{playlistTrack.track.artists | srArtistsNames}}</div>
         <!--<div>{{playlistTrack._id}} / {{playlistTrack.track._id}}</div>-->
       </div>
-      <div class="track__data track__user" title="{{playlistTrack.createdBy.name}} added this track {{playlistTrack.created | srMoment:'fromNow'}}!"><i class="fa fa-user"></i> {{playlistTrack.createdBy.name}}</div>
+      <div class="track__data track__user" title="{{playlistTrack.createdBy.name}} added this track {{playlistTrack.created | srMoment:'fromNow'}}!">
+        <i class="fa fa-user"></i> {{playlistTrack.createdBy.name}}
+      </div>
       <div class="track__data track__avatars">
         <sr-up-vote-avatars [upVotes]="playlistTrack.upVotes"></sr-up-vote-avatars>
       </div>

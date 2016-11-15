@@ -1,31 +1,31 @@
-import {ProviderEnum} from "./enum/provider.enum";
-import {Album} from "./album";
-import {Artist} from "./artist";
-import {User} from "./user";
-import {Image} from "./image";
+import { ProviderEnum } from "./enum/provider.enum";
+import { Album } from "./album";
+import { Artist } from "./artist";
+import { User } from "./user";
+import { Image } from "./image";
 
 export class Track {
 
-  _id:string;
+  _id: string;
 
-  created:Date;
+  created: Date;
 
-  modified:Date;
+  modified: Date;
 
-  name:string;
+  name: string;
 
-  duration:number;
+  duration: number;
 
-  foreignId:string;
+  foreignId: string;
 
-  provider:ProviderEnum;
+  provider: ProviderEnum;
 
-  album:Album;
+  album: Album;
 
-  artists:Artist[];
+  artists: Artist[];
 
-  createdBy:User;
+  createdBy: User;
 
-  images:Image[];
+  images: Image[];
 
 }
