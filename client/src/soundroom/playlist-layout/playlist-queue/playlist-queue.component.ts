@@ -6,7 +6,7 @@ import { UpVote } from '../../shared/model/up-vote';
 import { User } from '../../shared/model/user';
 import { PlaylistError } from '../../shared/model/error/PlaylistError';
 
-var alertify = require('alertify.js');
+const alertify = require('alertify.js');
 
 @Component({
   selector: 'sr-playlist-queue',

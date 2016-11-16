@@ -7,7 +7,7 @@ export class PlaylistTrackFactory {
 
   static createFromApiResponse(apiData: any): PlaylistTrack {
 
-    var playlistTrack = new PlaylistTrack();
+    const playlistTrack = new PlaylistTrack();
 
     playlistTrack._id = apiData._id;
 

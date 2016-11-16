@@ -185,7 +185,7 @@ export class PlaylistService {
   addTrack(playlist: Playlist, provider: ProviderEnum, foreignId: string): Observable<any> {
     this.store$.dispatch(new AddTrackAction({playlist, provider, foreignId}));
 
-    var body: PlaylistAddTrackBody = {
+    const body: PlaylistAddTrackBody = {
       provider: <string><any>provider,
       foreignId,
     };
@@ -307,7 +307,7 @@ export class PlaylistService {
   private create(name: string, description?: string): Observable<Playlist> {
     console.log('PlaylistCreateService.create:', name, description);
 
-    var body: PlaylistCreateBody = {
+    const body: PlaylistCreateBody = {
       name: name,
     };
 

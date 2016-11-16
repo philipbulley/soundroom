@@ -5,7 +5,7 @@ export class AlbumFactory {
 
   static createFromApiResponse(apiData: any): Album {
 
-    var album = new Album();
+    const album = new Album();
 
     album._id = apiData._id;
 

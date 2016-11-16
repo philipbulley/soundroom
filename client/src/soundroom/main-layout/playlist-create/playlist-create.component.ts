@@ -18,7 +18,7 @@ import { PlaylistCreateResetAction } from '../../shared/store/playlist-create/re
 import { PlaylistCreateStartAction } from '../../shared/store/playlist-create/start/playlist-create-start.action';
 import { AppState } from '../../shared/model/app-state';
 
-var alertify = require('alertify.js');
+const alertify = require('alertify.js');
 
 @Component({
   selector: 'sr-playlist-create',

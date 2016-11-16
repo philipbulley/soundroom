@@ -5,7 +5,7 @@ export class PlaylistFactory {
 
   static createFromApiResponse(apiData: any): Playlist {
 
-    var playlist = new Playlist();
+    const playlist = new Playlist();
 
     playlist._id = apiData._id;
 

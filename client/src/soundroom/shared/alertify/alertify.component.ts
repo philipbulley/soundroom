@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, ElementRef } from '@angular/core';
 
-var alertify = require('alertify.js');
+const alertify = require('alertify.js');
 
 @Component({
   selector: 'sr-alertify',

@@ -10,7 +10,7 @@ export class TrackFactory {
 
   static createFromApiResponse(apiData: any): Track {
 
-    var track = new Track();
+    const track = new Track();
 
     track._id = apiData._id;
 

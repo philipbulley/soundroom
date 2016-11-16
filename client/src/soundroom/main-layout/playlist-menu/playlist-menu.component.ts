@@ -4,7 +4,7 @@ import { PlaylistService } from '../../shared/service/playlist.service';
 import { PlaylistCollection } from '../../shared/model/playlist-collection';
 import { PlaylistCollectionState } from '../../shared/model/state/playlist-collection.state';
 
-var alertify = require('alertify.js');
+const alertify = require('alertify.js');
 
 @Component({
   selector: 'sr-playlist-menu',

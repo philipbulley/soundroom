@@ -5,7 +5,7 @@ export class ArtistFactory {
 
   static createFromApiResponse(apiData: any): Artist {
 
-    var artist = new Artist();
+    const artist = new Artist();
 
     artist._id = apiData._id;
 

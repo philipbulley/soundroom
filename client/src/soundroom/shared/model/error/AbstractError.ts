@@ -58,7 +58,7 @@ export abstract class AbstractError extends soundroomError.CustomError {
   constructor(public name: string, public message?: string, public model?: any) {
     super(message);
 
-    var e = new soundroomError.CustomError(message);
+    const e = new soundroomError.CustomError(message);
     e.name = this.name;
     if (e.stack) {
       this.stack = e.stack;

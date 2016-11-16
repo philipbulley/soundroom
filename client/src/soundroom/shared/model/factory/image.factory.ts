@@ -4,7 +4,7 @@ export class ImageFactory {
 
   static createFromApiResponse(apiData: any): Image {
 
-    var image = new Image();
+    const image = new Image();
 
     image._id = apiData._id;
 

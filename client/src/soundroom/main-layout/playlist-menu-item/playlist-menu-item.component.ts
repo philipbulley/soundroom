@@ -4,7 +4,7 @@ import { Playlist } from '../../shared/model/playlist';
 import { PlaylistService } from '../../shared/service/playlist.service';
 import { Observable } from 'rxjs/Observable';
 
-var alertify = require('alertify.js');
+const alertify = require('alertify.js');
 
 @Component({
   selector: 'sr-playlist-menu-item',

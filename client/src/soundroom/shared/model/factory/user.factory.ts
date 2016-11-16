@@ -4,7 +4,7 @@ export class UserFactory {
 
   static createFromApiResponse(apiData: any): User {
 
-    var user = new User();
+    const user = new User();
 
     user._id = apiData._id;
 
