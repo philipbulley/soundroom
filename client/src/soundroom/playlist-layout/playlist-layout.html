@@ -1,4 +1,4 @@
-<sr-drop-url [playlist]="playlist$">
+<sr-drop-url [playlist]="playlist$ | async">
   <div class="main" *ngIf="playlist$ | async" [class.is-empty]="!(playlist$ | async).tracks?.length">
     <section class="inner">
       <div class="o-container">

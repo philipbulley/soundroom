@@ -1,13 +1,16 @@
-import { Component, ElementRef, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-var alertify = require('alertify.js');
-
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  Input,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { PlaylistService } from "../../shared/service/playlist.service.ts";
 import { Playlist } from "../../shared/model/playlist";
-
 import { ProviderEnum } from "../../shared/model/enum/provider.enum.ts";
 import { SpotifyService } from "../../shared/service/spotify.service.ts";
 import { PlaylistError } from "../../shared/model/error/PlaylistError";
+const alertify = require('alertify.js');
 
 // Change to Component and transclude drop-url-overlay
 @Component({
@@ -24,10 +27,7 @@ import { PlaylistError } from "../../shared/model/error/PlaylistError";
 })
 export class DropUrlComponent implements OnInit {
 
-  @Input('playlist')
-  private observablePlaylist: Observable<Playlist>;
-
-  private playlist: Playlist;
+  @Input() playlist: Playlist;
 
   private CSS_CLASS: string = 'drop-url';
   private CSS_CLASS_ACTIVE: string = 'is-active';
@@ -42,7 +42,6 @@ export class DropUrlComponent implements OnInit {
 
   ngOnInit() {
     this.el.nativeElement.classList.add(this.CSS_CLASS);
-    this.observablePlaylist.subscribe(playlist => this.playlist = playlist);
   }
 
   handleDragOver(event) {
