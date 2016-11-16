@@ -1,5 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { Auth } from '../../shared/model/auth';
 
 @Component({
@@ -8,14 +7,8 @@ import { Auth } from '../../shared/model/auth';
   styles: [require('./app-toolbar-layout.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppToolbarComponent implements OnInit {
+export class AppToolbarComponent {
 
-  // TODO: No need for Observable here
-  @Input()
-  auth: Observable<Auth>;
-
-  ngOnInit(): any {
-    // console.log('AppToolbarLayoutComponent.ngOnInit()', this.auth$);
-  }
+  @Input() auth: Auth;
 
 }

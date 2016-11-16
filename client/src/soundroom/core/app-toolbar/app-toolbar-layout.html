@@ -2,10 +2,10 @@
   <div class="inner o-container">
     <div class="main">
       <a class="logo" [routerLink]="['']">Soundroom</a>
-      <a [routerLink]="['sign-in']" *ngIf="(auth | async).state !== 'AuthState.LOGGED_IN'">Sign In</a>
-      <span class="user" *ngIf="(auth | async).state === 'AuthState.LOGGED_IN'">
-        <img class="o-avatar" [src]="(auth | async).user.avatar">
-        {{(auth | async).user.name}}
+      <a [routerLink]="['sign-in']" *ngIf="auth.state !== 'AuthState.LOGGED_IN'">Sign In</a>
+      <span class="user" *ngIf="auth.state === 'AuthState.LOGGED_IN'">
+        <img class="o-avatar" [src]="auth.user.avatar">
+        {{auth.user.name}}
       </span>
     </div>
     <div class="meta">
