@@ -1,7 +1,7 @@
 import { ActionReducer } from '@ngrx/store';
+import { CommandReducer } from 'ngrx-command-reducer';
 import { PlaylistCreate } from '../../model/playlist-create';
 import { PlaylistCreateState } from '../../model/state/playlist-create.state.ts';
-import { CommandReducer } from '../../../../shared/reducer/command-reducer';
 import { PlaylistCreateResetAction } from './reset/playlist-create-reset.action';
 import { playlistCreateResetCommand } from './reset/playlist-create-reset.command';
 import { PlaylistCreateStartAction } from './start/playlist-create-start.action';

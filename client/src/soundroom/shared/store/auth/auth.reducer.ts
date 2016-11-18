@@ -1,4 +1,5 @@
 import { ActionReducer } from '@ngrx/store';
+import { CommandReducer } from 'ngrx-command-reducer';
 import { LoadUserAction } from './load-user/load-user.action';
 import { loadUserCommand } from './load-user/load-user.command';
 import { LoadUserSuccessAction } from './load-user-success/load-user-success.action';
@@ -7,7 +8,6 @@ import { loadUserErrorCommand } from './load-user-error/load-user-error.command'
 import { LoadUserErrorAction } from './load-user-error/load-user-error.action';
 import { AuthState } from '../../model/state/auth.state';
 import { Auth } from '../../model/auth';
-import { CommandReducer } from '../../../../shared/reducer/command-reducer';
 
 const DEFAULT_STATE = {
   state: AuthState.LOGGED_OUT,

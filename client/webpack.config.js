@@ -86,13 +86,21 @@ module.exports = function makeWebpackConfig() {
    * This handles most of the magic responsible for converting modules
    */
   config.module = {
-    preLoaders: isTest ? [] : [{test: /\.ts$/, loader: 'tslint'}],
+    preLoaders: isTest
+      ? []
+      : [{test: /\.ts$/, loader: 'tslint'}],
     loaders: [
       // Support for .ts files.
       {
         test: /\.ts$/,
         loaders: ['ts', 'angular2-template-loader'],
-        exclude: [isTest ? /\.(e2e)\.ts$/ : /\.(spec|e2e)\.ts$/, /node_modules\/(?!(ng2-.+))/]
+        exclude: [
+          isTest
+            ? /\.(e2e)\.ts$/
+            : /\.(spec|e2e)\.ts$/
+            /*, /node_modules\/(?!(ng2-.+))/*/  // Prevents ts in node_modules from bing compiled except node_modules/ng2-XXXXX
+                                                // commenting out as we want any typescript imported from node_modules to be compiled
+          ]
       },
 
       // copy those assets to output

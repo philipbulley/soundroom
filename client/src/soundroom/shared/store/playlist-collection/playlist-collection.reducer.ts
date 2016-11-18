@@ -1,8 +1,8 @@
 import { ActionReducer } from '@ngrx/store';
+import { CommandReducer } from 'ngrx-command-reducer';
 import { PlaylistCollection } from '../../model/playlist-collection';
 import { LoadPlaylistCollectionAction } from './load-playlist-collection/load-playlist-collection.action';
 import { loadPlaylistCollectionCommand } from './load-playlist-collection/load-playlist-collection.command';
-import { CommandReducer } from '../../../../shared/reducer/command-reducer';
 import { LoadPlaylistCollectionErrorAction } from './load-playlist-collection-error/load-playlist-collection-error.action';
 import { loadPlaylistCollectionErrorCommand } from './load-playlist-collection-error/load-playlist-collection-error.command';
 import { LoadPlaylistCollectionSuccessAction } from './load-playlist-collection-success/load-playlist-collection-success.action';
