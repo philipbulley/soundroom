@@ -37,7 +37,10 @@ module.exports = function makeWebpackConfig() {
   if (isProd) {
     config.devtool = 'source-map';
   } else {
-    config.devtool = 'eval-source-map';
+    // not sure why eval-source-map was used for non-prod, source-map is easier
+    // to read in DevTools
+    // config.devtool = 'eval-source-map';
+    config.devtool = 'source-map';
   }
 
   // add debug messages
