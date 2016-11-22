@@ -5,7 +5,7 @@ import { PlaylistTrack } from '../model/playlist-track';
  * counterparts inside `newPlaylists`. Any other playlists in `newPlaylists` will be inserted.
  */
 export function upsertPlaylists(existingPlaylists: Playlist[], newPlaylists: Playlist[]): Playlist[] {
-  const allPlaylists = existingPlaylists
+  let allPlaylists = existingPlaylists
     .map((playlist: Playlist) => {
       // Is this playlist being replaced?
       let replacementPlaylist = newPlaylists.find((_playlist: Playlist) => _playlist._id === playlist._id);
@@ -23,7 +23,17 @@ export function upsertPlaylists(existingPlaylists: Playlist[], newPlaylists: Pla
         : playlist;
     });
 
-  return allPlaylists.concat(newPlaylists);
+  allPlaylists = allPlaylists.concat(newPlaylists);
+
+  allPlaylists.sort(sortPlaylistsByModified);
+
+  return allPlaylists;
+}
+
+function sortPlaylistsByModified(a: Playlist, b: Playlist) {
+  return a.modified > b.modified
+    ? -1
+    : 1;
 }
 
 /**
