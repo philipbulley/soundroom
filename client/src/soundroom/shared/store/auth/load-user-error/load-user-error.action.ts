@@ -1,12 +1,11 @@
 import { Action } from '@ngrx/store';
-import { ErrorResult } from '../../../model/error-result';
+import { LoadUserErrorResult } from './load-user-error-result';
 
 export class LoadUserErrorAction implements Action {
   // tslint:disable-next-line:no-reserved-keywords
-  type: string = 'LoginErrorAction';
+  type: string = 'LoadUserErrorAction';
 
-  constructor(public payload?: ErrorResult) {
-    console.log('LoginErrorAction()', payload);
+  constructor(public payload: LoadUserErrorResult) {
+    console.log('LoadUserErrorAction():', payload);
   }
-
 }
