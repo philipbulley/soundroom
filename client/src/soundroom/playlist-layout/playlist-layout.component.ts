@@ -7,7 +7,6 @@ import { Playlist } from '../shared/model/playlist';
 import { PlaylistCollection } from '../shared/model/playlist-collection';
 import { AppState } from '../shared/model/app-state';
 import { PlaylistService } from '../shared/service/playlist.service';
-import { AuthService } from '../shared/service/auth.service';
 import { User } from '../shared/model/user';
 
 @Component({
@@ -22,11 +21,9 @@ export class PlaylistLayoutComponent implements OnInit {
   private playlistCollection$: Observable<PlaylistCollection>;
   private user$: Observable<User>;
   private isLoading: boolean;
-  private jwt: string;
 
-  constructor(private route: ActivatedRoute, private store$: Store<AppState>, private playlistService: PlaylistService, private authService: AuthService) {
+  constructor(private route: ActivatedRoute, private store$: Store<AppState>, private playlistService: PlaylistService) {
     // console.log('PlaylistLayoutComponent(): route:', route);
-    this.jwt = authService.jwt;   // for debug in template
   }
 
   ngOnInit(): any {
