@@ -6,6 +6,8 @@ import { Observable } from 'rxjs/Observable';
 @Injectable()
 export class NetworkService {
 
+  private JWT_STORAGE_KEY: string = 'soundroom.auth.jwt';
+
   /**
    * An exponential backoff strategy is used when loading playlist data, but we won't allow that exponential delay
    * exceed this value.
@@ -66,13 +68,27 @@ export class NetworkService {
       'Content-Type': 'application/json',
     };
 
-    const jwt = localStorage.getItem('jwt');
-    if (jwt) {
-      headers['Authorization'] = `JWT ${jwt}`;
+    if (this.jwt) {
+      headers['Authorization'] = `JWT ${this.jwt}`;
     }
 
     return new RequestOptions({
       headers: new Headers(headers),
     });
+  }
+
+  /**
+   * Cache the JWT that has just been received after a login.
+   *
+   * @param jwt
+   */
+  set jwt(jwt: string) {
+    // console.log('NetworkService: set jwt():', jwt);
+    localStorage.setItem(this.JWT_STORAGE_KEY, jwt);
+  }
+
+  get jwt() {
+    // console.log('NetworkService: get jwt():', localStorage.getItem(this.JWT_STORAGE_KEY));
+    return localStorage.getItem(this.JWT_STORAGE_KEY);
   }
 }

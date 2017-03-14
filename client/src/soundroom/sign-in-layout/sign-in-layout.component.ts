@@ -5,8 +5,8 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../shared/model/app-state';
 import { AuthState } from '../shared/model/state/auth.state';
 import { Auth } from '../shared/model/auth';
-import { AuthService } from '../shared/service/auth.service';
 import 'rxjs/add/operator/first';
+import { LoadUserAction } from '../shared/store/auth/load-user/load-user.action';
 
 @Component({
   selector: 'sr-main-layout',
@@ -18,7 +18,7 @@ export class SignInLayoutComponent implements OnInit {
 
   private auth$: Observable<Auth>;
 
-  constructor(private store$: Store<AppState>, private activatedRoute: ActivatedRoute, private authService: AuthService) {
+  constructor(private store$: Store<AppState>, private activatedRoute: ActivatedRoute) {
 
     this.auth$ = this.store$.map((state: AppState) => state.auth);
 
@@ -38,7 +38,6 @@ export class SignInLayoutComponent implements OnInit {
           this.checkJwt();
           break;
       }
-
     });
   }
 
@@ -56,14 +55,9 @@ export class SignInLayoutComponent implements OnInit {
         console.log('SignInLayoutComponent.checkJwt(): subscribe: params:', params);
 
         if (params.jwt) {
-          console.log('SignInLayout: FOUND JWT – attempt to auth...');
-          this.authService.jwt = params.jwt;
+          console.log('SignInLayout: FOUND JWT IN URL – attempt to auth...');
 
-          // TODO: Dispatch LoadUserAction here and run load() as an effect
-          this.authService.load()
-            .subscribe(() => {
-              //
-            });
+          this.store$.dispatch(new LoadUserAction({jwt: params.jwt}));
         } else {
           console.log('SignInLayout: No JWT passed in, user to click a sign-in provider icon');
         }

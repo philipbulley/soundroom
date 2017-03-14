@@ -1,6 +1,5 @@
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../shared/service/auth.service';
 import { SocketService } from '../shared/service/socket.service';
 import { NetworkService } from '../shared/service/network.service';
 import { AppToolbarComponent } from './app-toolbar/app-toolbar-layout.component';
@@ -27,7 +26,6 @@ import { AuthGuard } from './routing/auth.guard';
     AppToolbarComponent,
   ],
   providers: [
-    AuthService,
     NetworkService,
     SocketService,
     PlaylistService,
