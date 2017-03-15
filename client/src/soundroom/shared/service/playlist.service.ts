@@ -29,9 +29,7 @@ import { DeletePlaylistErrorAction } from "../../shared/store/playlist-collectio
 import { DeletePlaylistSuccessAction } from "../../shared/store/playlist-collection/delete-playlist-success/delete-playlist-success.action";
 import { PlaylistProgressAction } from "../../shared/store/playlist-collection/playlist-progress/playlist-progress.action";
 import { PlaylistPauseAction } from "../../shared/store/playlist-collection/playlist-pause/playlist-pause.action";
-import { PlaylistLoadErrorAction } from '../../shared/store/playlist-collection/playlist-load-error/playlist-load-error.action';
 import { AddTrackAction } from '../../shared/store/playlist-collection/add-track/add-track.action';
-import { PlaylistLoadAction } from '../../shared/store/playlist-collection/playlist-load/playlist-load.action';
 import { AddTrackSuccessAction } from '../../shared/store/playlist-collection/add-track-success/add-track-success.action';
 import { AddTrackErrorAction } from '../../shared/store/playlist-collection/add-track-error/add-track-error.action';
 import { DeleteTrackSuccessAction } from '../../shared/store/playlist-collection/delete-track-success/delete-track-success.action';
@@ -76,32 +74,6 @@ export class PlaylistService {
     this.observeCreate();
     this.observeSocket();
   }
-
-  /**
-   * Loads the full data of a single playlist
-   * @param id
-   */
-  load(id: string): any {
-    this.store$.dispatch(new PlaylistLoadAction(id));
-
-    this.http.get(Config.API_BASE_URL + this.API_ENDPOINT + '/' + id, this.networkService.requestOptions)
-    // .delay(2000)    // DEBUG: Delay for simulation purposes only
-      .retryWhen(errors => this.networkService.retry(errors))
-      .map((res: Response) => PlaylistFactory.createFromApiResponse(res.json()))
-      .subscribe((playlist: Playlist) => {
-        this.onSlowConnection.emit(false);
-
-        // Assign initial playlist to collection
-        this.store$.dispatch(new PlaylistLoadSuccessAction(playlist));
-      }, (error: Response) => {
-        console.error(error);
-
-        this.store$.dispatch(new PlaylistLoadErrorAction(id));
-
-        return Observable.throw(error || 'Server error');
-      });
-  }
-
 
   deletePlaylist(playlist: Playlist): Observable<boolean> {
     this.store$.dispatch(new DeletePlaylistAction(playlist));

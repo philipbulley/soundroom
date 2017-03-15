@@ -13,6 +13,9 @@ import { LoadPlaylistCollectionSuccessAction } from './load-playlist-collection-
 import { Playlist } from '../../model/playlist';
 import { PlaylistFactory } from '../../model/factory/playlist.factory';
 import { LoadPlaylistCollectionErrorAction } from './load-playlist-collection-error/load-playlist-collection-error.action';
+import { PlaylistLoadAction } from './playlist-load/playlist-load.action';
+import { PlaylistLoadSuccessAction } from './playlist-load-success/playlist-load-success.action';
+import { PlaylistLoadErrorAction } from './playlist-load-error/playlist-load-error.action';
 
 @Injectable()
 export class PlaylistCollectionEffects {
@@ -28,6 +31,9 @@ export class PlaylistCollectionEffects {
     //
   }
 
+  /**
+   * Starts load of the full data set.
+   */
   @Effect()
   loadCollection(): Observable<LoadPlaylistCollectionSuccessAction | LoadPlaylistCollectionErrorAction> {
     return this.actions$
@@ -43,12 +49,33 @@ export class PlaylistCollectionEffects {
             // Add initial data to the Store
             return new LoadPlaylistCollectionSuccessAction(playlists);
           })
-          .catch((error: Response) => {
-            return Observable.of(new LoadPlaylistCollectionErrorAction({
+          .catch((error: Response) => Observable.of(new LoadPlaylistCollectionErrorAction({
               status: error.status,
               statusText: error.statusText,
-            }));
-          });
+            }))
+          );
+      });
+  }
+
+  /**
+   * Loads the full data of a single playlist
+   */
+  @Effect()
+  loadPlaylist(): Observable<PlaylistLoadSuccessAction | PlaylistLoadErrorAction> {
+    return this.actions$
+      .filter((action: Action) => action instanceof PlaylistLoadAction)
+      .switchMap(action => {
+        const playlistId = action.payload;
+
+        return this.http.get(Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlistId, this.networkService.requestOptions)
+        // .delay(2000)    // DEBUG: Delay for simulation purposes only
+          .retryWhen(errors => this.networkService.retry(errors))
+          .map((res: Response) => PlaylistFactory.createFromApiResponse(res.json()))
+          .map((playlist: Playlist) => {
+            // this.onSlowConnection.emit(false);
+            return new PlaylistLoadSuccessAction(playlist);
+          })
+          .catch((error: Response) => Observable.of(new PlaylistLoadErrorAction(playlistId)));
       });
   }
 }

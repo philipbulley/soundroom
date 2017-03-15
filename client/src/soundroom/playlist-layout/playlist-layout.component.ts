@@ -6,8 +6,8 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import { Playlist } from '../shared/model/playlist';
 import { PlaylistCollection } from '../shared/model/playlist-collection';
 import { AppState } from '../shared/model/app-state';
-import { PlaylistService } from '../shared/service/playlist.service';
 import { User } from '../shared/model/user';
+import { PlaylistLoadAction } from '../shared/store/playlist-collection/playlist-load/playlist-load.action';
 
 @Component({
   selector: 'sr-playlist-layout',
@@ -22,7 +22,7 @@ export class PlaylistLayoutComponent implements OnInit {
   private user$: Observable<User>;
   private isLoading: boolean;
 
-  constructor(private route: ActivatedRoute, private store$: Store<AppState>, private playlistService: PlaylistService) {
+  constructor(private route: ActivatedRoute, private store$: Store<AppState>) {
     // console.log('PlaylistLayoutComponent(): route:', route);
   }
 
@@ -44,7 +44,7 @@ export class PlaylistLayoutComponent implements OnInit {
           .find((playlist: Playlist) => playlist._id === this.id);
       });
 
-    this.playlistService.load(this.id);
+    this.store$.dispatch(new PlaylistLoadAction(this.id));
   }
 
 }
