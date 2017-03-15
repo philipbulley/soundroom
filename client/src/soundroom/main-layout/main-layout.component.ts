@@ -1,10 +1,10 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import { PlaylistCollection } from '../shared/model/playlist-collection';
 import { AppState } from '../shared/model/app-state';
-import { PlaylistService } from '../shared/service/playlist.service';
+import { LoadPlaylistCollectionAction } from '../shared/store/playlist-collection/load-playlist-collection/load-playlist-collection.action';
 
 @Component({
   selector: 'sr-main-layout',
@@ -12,17 +12,17 @@ import { PlaylistService } from '../shared/service/playlist.service';
   styles: [require('./main-layout.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MainLayoutComponent {
+export class MainLayoutComponent implements OnInit {
 
   private playlistCollection$: Observable<PlaylistCollection>;
 
-  constructor(private store$: Store<AppState>, private playlistService: PlaylistService) {
+  constructor(private store$: Store<AppState>) {
+    //
+  }
 
+  ngOnInit() {
     this.playlistCollection$ = this.store$.map((state: AppState) => state.playlistCollection);
-    // this.playlistCollection$.subscribe(data => console.log('MainLayoutComponent.playlistCollection: data:', data));
-    //  // debug!
 
-    this.playlistService.loadCollection();
-
+    this.store$.dispatch(new LoadPlaylistCollectionAction());
   }
 }

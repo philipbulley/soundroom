@@ -24,8 +24,6 @@ import { PlaylistTracksChangeSocketEvent } from "../../shared/model/socket/playl
 import { PlaylistTrack } from "../../shared/model/playlist-track";
 import { PlaylistError } from "../../shared/model/error/PlaylistError";
 import { User } from "../../shared/model/user";
-import { LoadPlaylistCollectionAction } from "../../shared/store/playlist-collection/load-playlist-collection/load-playlist-collection.action";
-import { LoadPlaylistCollectionErrorAction } from "../../shared/store/playlist-collection/load-playlist-collection-error/load-playlist-collection-error.action";
 import { DeletePlaylistAction } from "../../shared/store/playlist-collection/delete-playlist/delete-playlist.action";
 import { DeletePlaylistErrorAction } from "../../shared/store/playlist-collection/delete-playlist-error/delete-playlist-error.action";
 import { DeletePlaylistSuccessAction } from "../../shared/store/playlist-collection/delete-playlist-success/delete-playlist-success.action";
@@ -43,7 +41,6 @@ import { TrackUpdatePayload } from '../../shared/store/playlist-collection/track
 import { TrackUpdatedAction } from '../../shared/store/playlist-collection/track-upsert/track-updated.action';
 import { TrackAddedAction } from '../../shared/store/playlist-collection/track-upsert/track-added.action';
 import { TrackDeletedAction } from '../../shared/store/playlist-collection/track-deleted/track-deleted.action';
-import { LoadPlaylistCollectionSuccessAction } from '../../shared/store/playlist-collection/load-playlist-collection-success/load-playlist-collection-success.action';
 import { PlaylistLoadSuccessAction } from '../../shared/store/playlist-collection/playlist-load-success/playlist-load-success.action';
 import { PlaylistCreateErrorAction } from '../../shared/store/playlist-create/error/playlist-create-error.action';
 import { PlaylistCreateSuccessAction } from '../../shared/store/playlist-create/success/playlist-create-success.action';
@@ -78,37 +75,6 @@ export class PlaylistService {
 
     this.observeCreate();
     this.observeSocket();
-  }
-
-  /**
-   * Starts load of the full data set.
-   */
-  loadCollection(): void {
-    console.log('PlaylistService.loadCollection():', Config.API_BASE_URL + this.API_ENDPOINT);
-
-    this.store$.dispatch(new LoadPlaylistCollectionAction());
-
-    this.http.get(Config.API_BASE_URL + this.API_ENDPOINT, this.networkService.requestOptions)
-    // .delay(2000)    // DEBUG: Delay for simulation purposes only
-      .retryWhen(errors => this.networkService.retry(errors))
-      .map((res: Response) => res.json())
-      .subscribe((data) => {
-        this.onSlowConnection.emit(false);
-
-        const playlists: Playlist[] = data.map(playlistData => PlaylistFactory.createFromApiResponse(playlistData));
-
-        // Add initial data to the Store
-        this.store$.dispatch(new LoadPlaylistCollectionSuccessAction(playlists));
-      }, (error: Response) => {
-        console.error(error);
-
-        this.store$.dispatch(new LoadPlaylistCollectionErrorAction({
-          status: error.status,
-          statusText: error.statusText,
-        }));
-
-        return Observable.throw(error || 'Server error');
-      });
   }
 
   /**
