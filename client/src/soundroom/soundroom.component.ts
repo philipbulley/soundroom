@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { SocketService } from './shared/service/socket.service';
 import { Auth } from './shared/model/auth';
 import { AppState } from './shared/model/app-state';
+import { AppInitAction } from './shared/store/app-init/app-init.action';
 
 @Component({
   selector: 'sr-soundroom',
@@ -26,6 +27,8 @@ export class SoundroomComponent implements OnInit {
   }
 
   ngOnInit(): any {
+    this.store$.dispatch(new AppInitAction());
+
     this.auth$ = this.store$.map((state: AppState) => state.auth);
 
     // TODO: Move to effect

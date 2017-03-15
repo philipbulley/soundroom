@@ -40,14 +40,12 @@ export class SocketService {
     this.stream$ = new Observable(observer => this.streamObserver = observer);
 
     this.auth$ = this.store$.map((state: AppState) => state.auth);
-    this.auth$.subscribe(auth => {
-
-      console.log('SocketService.init: subscribe()', auth);
-
-      if (auth && auth.state === AuthState.LOGGED_IN && !this.isConnected) {
+    this.auth$
+      .filter((auth: Auth) => auth && auth.state === AuthState.LOGGED_IN && !this.isConnected)
+      .subscribe(auth => {
+        console.log('SocketService.init: auth$.subscribe(): User logged in but socket not connected');
         this.connect();
-      }
-    });
+      });
   }
 
   emit(event: SocketEventTypeEnum, value: any) {
@@ -65,14 +63,17 @@ export class SocketService {
   /////////////////////////
 
   private connect() {
+    console.log('SocketService.connect()');
+
     this.socket = io(Config.SERVER_BASE_URL);
+
     this.socket.on(SocketEventTypeEnum.CONNECT, data => {
       this.socket.on(SocketEventTypeEnum.AUTHENTICATED, () => {
         this.serverToClient.forEach(eventType => {
-          // console.log('call socket.on', eventType);
+          // console.log('SocketService: call socket.on', eventType);
 
           this.socket.on(eventType, data => {
-            // console.log('socket.on():', eventType, data, this.streamObserver);
+            // console.log('SocketService: socket.on():', eventType, data, this.streamObserver);
             if (this.streamObserver) {
               // TODO: Create a type for this event object
               this.streamObserver.next({type: eventType, data: data});
@@ -81,7 +82,11 @@ export class SocketService {
         });
       });
 
-      this.socket.emit(SocketEventTypeEnum.AUTHENTICATE, {jwt: localStorage.getItem('jwt')});
+      // TODO: Replace with selector
+      this.store$
+        .select((store: AppState) => store.auth.jwt)
+        .take(1)
+        .subscribe(jwt => this.socket.emit(SocketEventTypeEnum.AUTHENTICATE, {jwt: jwt}));
     });
   }
 

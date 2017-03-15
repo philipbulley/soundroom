@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { RequestOptions, Headers } from '@angular/http';
+import { Store } from '@ngrx/store';
 
 import { Observable } from 'rxjs/Observable';
+import { AppState } from '../model/app-state';
 
 @Injectable()
 export class NetworkService {
-
-  private JWT_STORAGE_KEY: string = 'soundroom.auth.jwt';
 
   /**
    * An exponential backoff strategy is used when loading playlist data, but we won't allow that exponential delay
@@ -21,6 +21,10 @@ export class NetworkService {
    * @type {number}
    */
   private SLOW_CONNECTION_RETRIES: number = 2;
+
+  constructor(private store$: Store<AppState>) {
+
+  }
 
   /**
    * Use with the `retryWhen()` operator for an exponential backoff retry strategy
@@ -68,27 +72,20 @@ export class NetworkService {
       'Content-Type': 'application/json',
     };
 
-    if (this.jwt) {
-      headers['Authorization'] = `JWT ${this.jwt}`;
+    let cachedJwt: string;
+
+    // TODO: Replace with selector
+    this.store$
+      .select((store: AppState) => store.auth.jwt)
+      .take(1)
+      .subscribe(jwt => cachedJwt = jwt);
+
+    if (cachedJwt) {
+      headers['Authorization'] = `JWT ${cachedJwt}`;
     }
 
     return new RequestOptions({
       headers: new Headers(headers),
     });
-  }
-
-  /**
-   * Cache the JWT that has just been received after a login.
-   *
-   * @param jwt
-   */
-  set jwt(jwt: string) {
-    // console.log('NetworkService: set jwt():', jwt);
-    localStorage.setItem(this.JWT_STORAGE_KEY, jwt);
-  }
-
-  get jwt() {
-    // console.log('NetworkService: get jwt():', localStorage.getItem(this.JWT_STORAGE_KEY));
-    return localStorage.getItem(this.JWT_STORAGE_KEY);
   }
 }

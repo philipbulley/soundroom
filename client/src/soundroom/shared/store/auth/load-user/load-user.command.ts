@@ -8,5 +8,9 @@ export const loadUserCommand = (state: Auth, payload: LoadUserParams): Auth => {
   state.state = AuthState.LOADING;
   state.error = null;
 
+  if (payload && payload.jwt) {
+    state.jwt = payload.jwt;
+  }
+
   return state;
 };

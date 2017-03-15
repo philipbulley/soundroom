@@ -6,6 +6,7 @@ export interface Auth {
 
   state: AuthState;
   user: User;
+  jwt: string;
   error: ErrorResult;
 
 }

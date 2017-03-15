@@ -158,10 +158,12 @@ export class PlaylistService {
   }
 
   play(playlistId: string) {
+    console.log('PlaylistService.play():', playlistId);
     this.socketService.emit(SocketEventTypeEnum.PLAYLIST_PLAY, playlistId);
   }
 
   pause(playlistId: string) {
+    console.log('PlaylistService.pause():', playlistId);
     this.socketService.emit(SocketEventTypeEnum.PLAYLIST_PAUSE, playlistId);
   }
 

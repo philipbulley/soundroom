@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Router } from '@angular/router';
 import { Effect, Actions } from '@ngrx/effects';
-import { Action } from '@ngrx/store';
+import { Store, Action } from '@ngrx/store';
 import 'rxjs/add/operator/filter';
 import { LoadUserAction } from './load-user/load-user.action';
 import { NetworkService } from '../../service/network.service';
@@ -14,12 +14,28 @@ import { LoadUserSuccessAction } from './load-user-success/load-user-success.act
 import { LoadUserErrorAction } from './load-user-error/load-user-error.action';
 import { LoadUserParams } from './load-user/load-user-params';
 import { LoadUserErrorResult } from './load-user-error/load-user-error-result';
+import { AppState } from '../../model/app-state';
+import { AppInitAction } from '../app-init/app-init.action';
+import { AddCachedJwtAction } from './add-cached-jwt/add-cached-jwt.action';
 
 @Injectable()
 export class AuthEffects {
 
-  constructor(private actions$: Actions, private http: Http, private networkService: NetworkService, private router: Router) {
+  private JWT_STORAGE_KEY: string = 'soundroom.auth.jwt';
+
+  constructor(private store$: Store<AppState>,
+              private actions$: Actions,
+              private http: Http,
+              private networkService: NetworkService,
+              private router: Router) {
     //
+  }
+
+  @Effect()
+  appInit(): Observable<AddCachedJwtAction> {
+    return this.actions$
+      .filter((action: Action) => action instanceof AppInitAction)
+      .map(action => new AddCachedJwtAction(localStorage.getItem(this.JWT_STORAGE_KEY)));
   }
 
   @Effect()
@@ -29,7 +45,7 @@ export class AuthEffects {
       .do((action: LoadUserAction) => {
         if (action.payload && action.payload.jwt) {
           // Persist the JWT
-          this.networkService.jwt = action.payload.jwt;
+          localStorage.setItem(this.JWT_STORAGE_KEY, action.payload.jwt);
         }
       })
       .switchMap((action: LoadUserAction) => {
@@ -66,7 +82,15 @@ export class AuthEffects {
   private makeLoginRequest(params: LoadUserParams): Observable<User> {
     console.log('AuthEffects.makeLoginRequest(): params', params);
 
-    if (!this.networkService.jwt) {
+    let cachedJwt: string;
+
+    // TODO: Replace with selector
+    this.store$
+      .select((store: AppState) => store.auth.jwt)
+      .take(1)
+      .subscribe(jwt => cachedJwt = jwt);
+
+    if (!cachedJwt) {
       const error: LoadUserError = {
         params: params,
         error: new Error('No cached JWT'),
