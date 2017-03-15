@@ -11,4 +11,4 @@ const REDUCERS = {
   auth: authReducer,
 };
 
-export const STORE_REDUCERS = compose(storeLogger(), combineReducers)(REDUCERS);
+export const STORE_REDUCERS = compose(storeLogger({collapsed: true}), combineReducers)(REDUCERS);

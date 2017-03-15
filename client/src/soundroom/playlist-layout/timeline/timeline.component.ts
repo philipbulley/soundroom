@@ -29,7 +29,7 @@ export class TimelineComponent implements OnChanges {
   }
 
   draw() {
-    console.log('TimelineComponent.draw:', this.percentage);
+    // console.log('TimelineComponent.draw:', this.percentage);
     let c = Math.PI * (this.radius * 2);
     this.strokeDashoffset = (1 - this.percentage) * c;
   }

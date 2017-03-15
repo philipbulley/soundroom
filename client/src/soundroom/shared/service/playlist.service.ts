@@ -327,8 +327,7 @@ export class PlaylistService {
 
   private observeSocket() {
     this.socketService.stream$.subscribe((event) => {
-
-      console.log('PlaylistService.observeSocket: subscribe():', event);
+      // console.log('PlaylistService.observeSocket: subscribe():', event);
 
       switch (event.type) {
 

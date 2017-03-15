@@ -4,7 +4,7 @@ import { Playlist } from '../../../model/playlist';
 import { PlaylistTrack } from '../../../model/playlist-track';
 
 export const playlistProgressCommand = (state: PlaylistCollection, payload: PlaylistProgressSocketEvent): PlaylistCollection => {
-  console.log('playlistProgressCommand:', payload);
+  // console.log('playlistProgressCommand:', payload);
   state = Object.assign({}, state);
 
   // Call playlistReducer on each playlist, forwarding the state and action
