@@ -30,3 +30,6 @@ node_modules
 
 # WebStorm / IntelliJ
 .idea
+
+# Custom
+todo.txt
