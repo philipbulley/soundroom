@@ -75,26 +75,6 @@ export class PlaylistService {
     this.observeSocket();
   }
 
-  deletePlaylist(playlist: Playlist): Observable<boolean> {
-    this.store$.dispatch(new DeletePlaylistAction(playlist));
-
-    return this.http.delete(Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id, this.networkService.requestOptions)
-      .map((res: Response) => {
-        console.log('PlaylistService.deletePlaylist() map: status:', res.headers.get('status'), 'playlist needs to be removed:', playlist, 'res:', res);
-
-        // Delete success - reflect change in local data collection
-        this.store$.dispatch(new DeletePlaylistSuccessAction(playlist));
-
-        return res.status === 204;
-      }).catch((error: Response) => {
-        console.error(error);
-
-        this.store$.dispatch(new DeletePlaylistErrorAction(playlist));
-
-        return Observable.throw(error.json().error || 'Server error');
-      });
-  }
-
   play(playlistId: string) {
     console.log('PlaylistService.play():', playlistId);
     this.socketService.emit(SocketEventTypeEnum.PLAYLIST_PLAY, playlistId);

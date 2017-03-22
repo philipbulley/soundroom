@@ -5,7 +5,9 @@ export class DeletePlaylistAction implements Action {
   // tslint:disable-next-line:no-reserved-keywords
   type: string = 'DeletePlaylistAction';
 
-  constructor(public playlist: Playlist) {
-  }
+  payload: Playlist;
 
+  constructor(playlist: Playlist) {
+    this.payload = playlist;
+  }
 }

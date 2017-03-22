@@ -2,6 +2,7 @@ import { PlaylistCollection } from '../../../model/playlist-collection';
 import { Playlist } from '../../../model/playlist';
 
 export const deletePlaylistCollectionSuccessCommand = (state: PlaylistCollection, playlist: Playlist): PlaylistCollection => {
+  console.log('deletePlaylistCollectionSuccessCommand()');
   state = Object.assign({}, state);
   state.loadState = null;
 

@@ -1,8 +1,15 @@
-import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Playlist } from '../../shared/model/playlist';
 import { PlaylistService } from '../../shared/service/playlist.service';
 import { Observable } from 'rxjs/Observable';
+import { DeletePlaylistAction } from '../../shared/store/playlist-collection/delete-playlist/delete-playlist.action';
+import { Store, Action } from '@ngrx/store';
+import { AppState } from '../../shared/model/app-state';
+import { PlaylistCollection } from '../../shared/model/playlist-collection';
+import { DeletePlaylistErrorAction } from '../../shared/store/playlist-collection/delete-playlist-error/delete-playlist-error.action';
+import { DeletePlaylistSuccessAction } from '../../shared/store/playlist-collection/delete-playlist-success/delete-playlist-success.action';
+import { Subscription } from 'rxjs';
 
 const alertify = require('alertify.js');
 
@@ -12,7 +19,7 @@ const alertify = require('alertify.js');
   styles: [require('./playlist-menu-item.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PlaylistMenuItemComponent {
+export class PlaylistMenuItemComponent implements OnDestroy {
 
   @Input()
   private playlist: Playlist;
@@ -40,67 +47,98 @@ export class PlaylistMenuItemComponent {
 
   /** Number of seconds remaining until delete button becomes enabled */
   private deleteDisabledSecs: number;
+  private successOrError: Subscription;
+  private deleteConfirmClickable: Subscription;
+  private deleteConfirmCancel: Subscription;
 
-
-  constructor(private playlistService: PlaylistService, private cdr: ChangeDetectorRef, private router: Router) {
+  constructor(private store$: Store<AppState>,
+              private playlistService: PlaylistService,
+              private cdr: ChangeDetectorRef,
+              private router: Router) {
     // console.log('PlaylistMenuItemComponent()', router);
+  }
+
+  ngOnDestroy(): void {
+    if (this.successOrError) {
+      this.successOrError.unsubscribe();
+    }
+
+    if (this.deleteConfirmClickable) {
+      this.deleteConfirmClickable.unsubscribe();
+    }
+
+    if (this.deleteConfirmCancel) {
+      this.deleteConfirmCancel.unsubscribe();
+    }
   }
 
   deleteMe() {
     // console.log('PlaylistMenuItemComponent.deleteMe()', this.playlist);
+    this.deleteState
+      ? this.dispatchDelete()
+      : this.initDeleteConfirm();
+  }
 
-    if (!this.deleteState) {
+  private dispatchDelete() {
+    this.deleteState = this.DELETE_STATE_NETWORK;
 
-      this.deleteState = this.DELETE_STATE_CONFIRM_DISABLED;
+    const playlistCollection$ = this.store$.map((state: AppState) => state.playlistCollection);
 
-      // The `deleteConfirm` Observable is no longer used with AsyncPipe in the template, as it was causing an error to
-      // be thrown when changing route in angular 2.0.0-beta.11
-      this.deleteConfirm$ = Observable
-      // Fire initial timer value at 1ms, not 0ms. 0ms will dispatch first value synchronously, which for some reason
-      // prevents AsyncPipe from updating. Not figured out why yet. Could this be a clue:
-      // http://www.bennadel.com/blog/3029-rxjs-streams-are-inconsistently-asynchronous-in-angular-2-beta-6.htm?source=epicenter
-        .timer(1, 1000)
-        .take(this.DELETE_CONFIRM_DISABLED_SECS + this.DELETE_CONFIRM_ENABLED_SECS + 1)
-        .map(secs => secs);
+    // Wait for delete success or error
+    this.successOrError = playlistCollection$
+      .map((playlistCollection: PlaylistCollection) => playlistCollection.recentAction)
+      .filter((recentAction: Action) =>
+        (recentAction instanceof DeletePlaylistSuccessAction
+        || recentAction instanceof DeletePlaylistErrorAction)
+        && recentAction.payload === this.playlist
+      )
+      .take(1)
+      .subscribe((recentAction: DeletePlaylistSuccessAction | DeletePlaylistErrorAction) => {
+        if (recentAction instanceof DeletePlaylistSuccessAction) {
+          // TODO: Check this this works!!!
+          alertify.success(`Successfully deleted "${this.playlist.name}".`);
+        } else if (recentAction instanceof DeletePlaylistSuccessAction) {
+          alertify.error(`Can't delete "${this.playlist.name}". Try again later.`);
+          this.deleteState = null;
+        }
+      });
 
-      // Observer for seconds before delete can be clicked
-      this.deleteConfirm$
-        .map((secs: number) => Math.max(0, this.DELETE_CONFIRM_DISABLED_SECS - secs))
-        .subscribe(secs => {
-          this.deleteDisabledSecs = secs;
+    this.store$.dispatch(new DeletePlaylistAction(this.playlist));
+  }
 
-          if (secs === 0) {
-            this.deleteState = this.DELETE_STATE_CONFIRM_ENABLED;
-          }
+  private initDeleteConfirm() {
+    this.deleteState = this.DELETE_STATE_CONFIRM_DISABLED;
 
-          this.cdr.markForCheck();
-        });
+    // The `deleteConfirmClickable` Observable is no longer used with AsyncPipe in the template, as it was causing an
+    // error to be thrown when changing route in angular 2.0.0-beta.11
+    this.deleteConfirm$ = Observable
+    // Fire initial timer value at 1ms, not 0ms. 0ms will dispatch first value synchronously, which for some reason
+    // prevents AsyncPipe from updating. Not figured out why yet. Could this be a clue:
+    // http://www.bennadel.com/blog/3029-rxjs-streams-are-inconsistently-asynchronous-in-angular-2-beta-6.htm?source=epicenter
+      .timer(1, 1000)
+      .take(this.DELETE_CONFIRM_DISABLED_SECS + this.DELETE_CONFIRM_ENABLED_SECS + 1)
+      .map(secs => secs);
 
-      // Observer which will exit the delete confirmation, assuming user is not wanting to delete anymore
-      this.deleteConfirm$
-        .subscribe((secs: number) => {
-          if (secs === this.DELETE_CONFIRM_DISABLED_SECS + this.DELETE_CONFIRM_ENABLED_SECS) {
-            this.deleteState = null;
-          }
-          this.cdr.markForCheck();
-        });
+    // Observable for seconds before delete can be clicked
+    this.deleteConfirmClickable = this.deleteConfirm$
+      .map((secs: number) => Math.max(0, this.DELETE_CONFIRM_DISABLED_SECS - secs))
+      .map((secs: number) => {
+        this.deleteDisabledSecs = secs;
+        this.cdr.markForCheck();
+        return secs;
+      })
+      .filter((secs: number) => secs === 0)
+      .subscribe(secs => {
+        this.deleteState = this.DELETE_STATE_CONFIRM_ENABLED;
+        this.cdr.markForCheck();
+      });
 
-    } else {
-
-      this.deleteState = this.DELETE_STATE_NETWORK;
-
-      return this.playlistService.deletePlaylist(this.playlist)
-        .subscribe((success) => {
-            // success should really always be true, otherwise we should have errored
-            //console.log('PlaylistMenuComponent.deletePlaylist() subscribe: removing', playlist);
-            //this.playlists.splice(this.playlists.indexOf(playlist), 1);
-            alertify.success("Successfully deleted \"" + this.playlist.name + "\".");
-            // console.log('PlaylistMenuItemComponent.deletePlaylist() subscribe: success', success);
-          },
-          error => {
-            alertify.error("Can't delete \"" + this.playlist.name + "\". Try again later.");
-            this.deleteState = null;
-          });
-    }
+    // Observable which will exit the delete confirmation, assuming user is not wanting to delete anymore
+    this.deleteConfirmCancel = this.deleteConfirm$
+      .filter((secs: number) => secs === this.DELETE_CONFIRM_DISABLED_SECS + this.DELETE_CONFIRM_ENABLED_SECS)
+      .subscribe((secs: number) => {
+        this.deleteState = null;
+        this.cdr.markForCheck();
+      });
   }
 }

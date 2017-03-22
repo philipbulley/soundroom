@@ -1,4 +1,4 @@
-import { ActionReducer } from '@ngrx/store';
+import { ActionReducer, Action } from '@ngrx/store';
 import { CommandReducer } from 'ngrx-command-reducer';
 import { PlaylistCollection } from '../../model/playlist-collection';
 import { LoadPlaylistCollectionAction } from './load-playlist-collection/load-playlist-collection.action';
@@ -36,14 +36,17 @@ import { TrackDeletedAction } from './track-deleted/track-deleted.action';
 import { trackDeletedCommand } from './track-deleted/track-deleted.command';
 import { PlaylistLoadSuccessAction } from './playlist-load-success/playlist-load-success.action';
 import { playlistLoadSuccessCommand } from './playlist-load-success/playlist-load-success.command';
+import { playlistCollectionCommand } from './playlist-collection-command.command';
 
-const DEFAULT_STATE = {
+const DEFAULT_STATE: PlaylistCollection = {
   loadState: null,
   playlists: [],
   active: null,
+  recentAction: null,
 };
 
 export const playlistCollectionReducer: ActionReducer<PlaylistCollection> = new CommandReducer<PlaylistCollection>(DEFAULT_STATE)
+  .all(playlistCollectionCommand, true)
   .add(LoadPlaylistCollectionAction, loadPlaylistCollectionCommand)
   .add(LoadPlaylistCollectionSuccessAction, loadPlaylistCollectionSuccessCommand)
   .add(LoadPlaylistCollectionErrorAction, loadPlaylistCollectionErrorCommand)

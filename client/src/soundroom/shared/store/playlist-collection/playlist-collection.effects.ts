@@ -16,6 +16,9 @@ import { LoadPlaylistCollectionErrorAction } from './load-playlist-collection-er
 import { PlaylistLoadAction } from './playlist-load/playlist-load.action';
 import { PlaylistLoadSuccessAction } from './playlist-load-success/playlist-load-success.action';
 import { PlaylistLoadErrorAction } from './playlist-load-error/playlist-load-error.action';
+import { DeletePlaylistSuccessAction } from './delete-playlist-success/delete-playlist-success.action';
+import { DeletePlaylistAction } from './delete-playlist/delete-playlist.action';
+import { DeletePlaylistErrorAction } from './delete-playlist-error/delete-playlist-error.action';
 
 @Injectable()
 export class PlaylistCollectionEffects {
@@ -78,4 +81,27 @@ export class PlaylistCollectionEffects {
           .catch((error: Response) => Observable.of(new PlaylistLoadErrorAction(playlistId)));
       });
   }
+
+  @Effect()
+  deletePlaylist(): Observable<DeletePlaylistSuccessAction | DeletePlaylistErrorAction> {
+    return this.actions$
+      .filter((action: Action) => action instanceof DeletePlaylistAction)
+      .switchMap(action => {
+          const playlist: Playlist = action.payload;
+
+          return this.http.delete(Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id, this.networkService.requestOptions)
+            .map((res: Response) => new DeletePlaylistSuccessAction(playlist))
+            .catch((error: Response) => Observable.of(new DeletePlaylistErrorAction(playlist)));
+        }
+      );
+  }
+
+// @Effect()
+// xxxxxxtemplate(): Observable<XXXX | XXXX> {
+//   return this.actions$
+//     .filter((action: Action) => action instanceof XXXX)
+//     .switchMap(action => {
+//       return xxxx;
+//     });
+// }
 }

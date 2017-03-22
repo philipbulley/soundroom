@@ -31,11 +31,10 @@ export class PlaylistLayoutComponent implements OnInit {
 
     this.id = this.route.snapshot.params['id'];
 
-    this.playlistCollection$ = this.store$.map((state: AppState) => state.playlistCollection);
-    this.user$ = this.store$.map((state: AppState) => state.auth.user);
+    this.playlistCollection$ = this.store$.select((state: AppState) => state.playlistCollection);
+    this.user$ = this.store$.select((state: AppState) => state.auth.user);
 
     this.playlist$ = this.playlistCollection$
-      .distinctUntilChanged()
       .map((playlistCollection: PlaylistCollection) => {
 
         this.isLoading = !!playlistCollection.loadState;

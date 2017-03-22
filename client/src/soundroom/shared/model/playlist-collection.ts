@@ -1,3 +1,4 @@
+import { Action } from '@ngrx/store';
 import { Playlist } from "./playlist";
 import { PlaylistCollectionState } from "./state/playlist-collection.state.ts";
 
@@ -12,5 +13,7 @@ export interface PlaylistCollection {
    * TODO: Change to ID of the playlist
    */
   active: Playlist;
+
+  recentAction: Action;
 
 }
