@@ -1,10 +1,10 @@
 <button class="close u-no-style"
-        [class.is-delete-confirm]="deleteState && deleteState !== DELETE_STATE_NETWORK"
-        *ngIf="!deleteState || (deleteState && deleteState !== DELETE_STATE_NETWORK)"
+        [class.is-delete-confirm]="DeleteState.INACTIVE !== deleteState && DeleteState.NETWORK !== deleteState"
+        *ngIf="DeleteState.NETWORK !== deleteState"
         (click)="deleteMe()"
-        [disabled]="deleteState === DELETE_STATE_CONFIRM_DISABLED">
+        [disabled]="DeleteState.CONFIRM_DISABLED === deleteState">
   <i class="fa fa-close"></i>
-  <span *ngIf="deleteState === DELETE_STATE_CONFIRM_DISABLED || deleteState === DELETE_STATE_CONFIRM_ENABLED">Delete playlist forever?
+  <span *ngIf="DeleteState.CONFIRM_DISABLED === deleteState || DeleteState.CONFIRM_ENABLED === deleteState">Delete playlist forever?
     <span *ngIf="deleteDisabledSecs > 0">({{deleteDisabledSecs}})</span>
   </span>
 </button>
@@ -12,7 +12,7 @@
 <h3>{{playlist.name}}</h3>
 <!--<code>{{playlist._id}}</code>-->
 
-<i *ngIf="deleteState === DELETE_STATE_NETWORK" class="fa fa-circle-o-notch fa-spin"></i>
+<i *ngIf="DeleteState.NETWORK === deleteState" class="fa fa-circle-o-notch fa-spin"></i>
 
 <div>
   <button class="join" [routerLink]="['/room', playlist._id]">Join Room</button>

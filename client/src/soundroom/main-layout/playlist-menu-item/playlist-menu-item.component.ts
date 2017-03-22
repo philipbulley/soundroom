@@ -21,6 +21,8 @@ const alertify = require('alertify.js');
 })
 export class PlaylistMenuItemComponent implements OnDestroy {
 
+  DeleteState = DeleteState;
+
   @Input()
   private playlist: Playlist;
 
@@ -30,17 +32,8 @@ export class PlaylistMenuItemComponent implements OnDestroy {
   /** Button will allow a click to execute delete for this length of time following the disabled period */
   private DELETE_CONFIRM_ENABLED_SECS: number = 2;
 
-  /** A delete network request is in progress */
-  private DELETE_STATE_NETWORK = 'DELETE_STATE_NETWORK';
-
-  /** The full delete button is visible, but is not yet clickable */
-  private DELETE_STATE_CONFIRM_DISABLED = 'DELETE_STATE_CONFIRM_DISABLED';
-
-  /** The delete button can be clicked, doing so will execute a delete */
-  private DELETE_STATE_CONFIRM_ENABLED = 'DELETE_STATE_CONFIRM_ENABLED';
-
-  /** Holds the value of a `DELETE_STATE_*` constant */
-  private deleteState = null;
+  /** Holds the internal state of deletion */
+  private _deleteState: DeleteState = DeleteState.INACTIVE;
 
   /** Observable that produces a counter based on the DELETE_CONFIRM_* constants */
   private deleteConfirm$: Observable<number>;
@@ -59,17 +52,7 @@ export class PlaylistMenuItemComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.successOrError) {
-      this.successOrError.unsubscribe();
-    }
-
-    if (this.deleteConfirmClickable) {
-      this.deleteConfirmClickable.unsubscribe();
-    }
-
-    if (this.deleteConfirmCancel) {
-      this.deleteConfirmCancel.unsubscribe();
-    }
+    this.cleanUp();
   }
 
   deleteMe() {
@@ -79,10 +62,22 @@ export class PlaylistMenuItemComponent implements OnDestroy {
       : this.initDeleteConfirm();
   }
 
-  private dispatchDelete() {
-    this.deleteState = this.DELETE_STATE_NETWORK;
+  set deleteState(state: DeleteState) {
+    this._deleteState = state;
+    if (DeleteState.INACTIVE === state) {
+      this.cleanUp();
+    }
+    this.cdr.markForCheck();
+  }
 
-    const playlistCollection$ = this.store$.map((state: AppState) => state.playlistCollection);
+  get deleteState(): DeleteState {
+    return this._deleteState;
+  }
+
+  private dispatchDelete() {
+    this.deleteState = DeleteState.NETWORK;
+
+    const playlistCollection$ = this.store$.select((state: AppState) => state.playlistCollection);
 
     // Wait for delete success or error
     this.successOrError = playlistCollection$
@@ -95,19 +90,18 @@ export class PlaylistMenuItemComponent implements OnDestroy {
       .take(1)
       .subscribe((recentAction: DeletePlaylistSuccessAction | DeletePlaylistErrorAction) => {
         if (recentAction instanceof DeletePlaylistSuccessAction) {
-          // TODO: Check this this works!!!
           alertify.success(`Successfully deleted "${this.playlist.name}".`);
-        } else if (recentAction instanceof DeletePlaylistSuccessAction) {
+        } else if (recentAction instanceof DeletePlaylistErrorAction) {
           alertify.error(`Can't delete "${this.playlist.name}". Try again later.`);
-          this.deleteState = null;
         }
+        this.deleteState = DeleteState.INACTIVE;
       });
 
     this.store$.dispatch(new DeletePlaylistAction(this.playlist));
   }
 
   private initDeleteConfirm() {
-    this.deleteState = this.DELETE_STATE_CONFIRM_DISABLED;
+    this.deleteState = DeleteState.CONFIRM_DISABLED;
 
     // The `deleteConfirmClickable` Observable is no longer used with AsyncPipe in the template, as it was causing an
     // error to be thrown when changing route in angular 2.0.0-beta.11
@@ -128,17 +122,38 @@ export class PlaylistMenuItemComponent implements OnDestroy {
         return secs;
       })
       .filter((secs: number) => secs === 0)
-      .subscribe(secs => {
-        this.deleteState = this.DELETE_STATE_CONFIRM_ENABLED;
-        this.cdr.markForCheck();
-      });
+      .subscribe(secs => this.deleteState = DeleteState.CONFIRM_ENABLED);
 
     // Observable which will exit the delete confirmation, assuming user is not wanting to delete anymore
     this.deleteConfirmCancel = this.deleteConfirm$
       .filter((secs: number) => secs === this.DELETE_CONFIRM_DISABLED_SECS + this.DELETE_CONFIRM_ENABLED_SECS)
-      .subscribe((secs: number) => {
-        this.deleteState = null;
-        this.cdr.markForCheck();
-      });
+      .subscribe((secs: number) => this.deleteState = DeleteState.INACTIVE);
   }
+
+  private cleanUp() {
+    if (this.successOrError) {
+      this.successOrError.unsubscribe();
+    }
+
+    if (this.deleteConfirmClickable) {
+      this.deleteConfirmClickable.unsubscribe();
+    }
+
+    if (this.deleteConfirmCancel) {
+      this.deleteConfirmCancel.unsubscribe();
+    }
+  }
+}
+
+enum DeleteState {
+  INACTIVE,
+
+    /** The full delete button is visible, but is not yet clickable */
+  CONFIRM_DISABLED,
+
+    /** The delete button can be clicked, doing so will execute a delete */
+  CONFIRM_ENABLED,
+
+    /** A delete network request is in progress */
+  NETWORK,
 }
