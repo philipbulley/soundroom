@@ -24,11 +24,8 @@ import { PlaylistTracksChangeSocketEvent } from "../../shared/model/socket/playl
 import { PlaylistTrack } from "../../shared/model/playlist-track";
 import { PlaylistError } from "../../shared/model/error/PlaylistError";
 import { User } from "../../shared/model/user";
-import { DeletePlaylistAction } from "../../shared/store/playlist-collection/delete-playlist/delete-playlist.action";
-import { DeletePlaylistErrorAction } from "../../shared/store/playlist-collection/delete-playlist-error/delete-playlist-error.action";
-import { DeletePlaylistSuccessAction } from "../../shared/store/playlist-collection/delete-playlist-success/delete-playlist-success.action";
 import { PlaylistProgressAction } from "../../shared/store/playlist-collection/playlist-progress/playlist-progress.action";
-import { PlaylistPauseAction } from "../../shared/store/playlist-collection/playlist-pause/playlist-pause.action";
+import { PlaylistPausedAction } from "../store/playlist-collection/playlist-paused/playlist-paused.action";
 import { AddTrackAction } from '../../shared/store/playlist-collection/add-track/add-track.action';
 import { AddTrackSuccessAction } from '../../shared/store/playlist-collection/add-track-success/add-track-success.action';
 import { AddTrackErrorAction } from '../../shared/store/playlist-collection/add-track-error/add-track-error.action';
@@ -73,16 +70,6 @@ export class PlaylistService {
 
     this.observeCreate();
     this.observeSocket();
-  }
-
-  play(playlistId: string) {
-    console.log('PlaylistService.play():', playlistId);
-    this.socketService.emit(SocketEventTypeEnum.PLAYLIST_PLAY, playlistId);
-  }
-
-  pause(playlistId: string) {
-    console.log('PlaylistService.pause():', playlistId);
-    this.socketService.emit(SocketEventTypeEnum.PLAYLIST_PAUSE, playlistId);
   }
 
   upVote(playlist: Playlist, playlistTrack: PlaylistTrack) {
@@ -259,7 +246,7 @@ export class PlaylistService {
         //   break;
 
         case SocketEventTypeEnum.PLAYLIST_PAUSE:
-          this.store$.dispatch(new PlaylistPauseAction(event.data as PlaylistSocketEvent));
+          this.store$.dispatch(new PlaylistPausedAction(event.data as PlaylistSocketEvent));
           break;
 
         case SocketEventTypeEnum.PLAYLIST_TRACKS_CHANGE:

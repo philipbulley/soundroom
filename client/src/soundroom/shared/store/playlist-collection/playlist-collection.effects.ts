@@ -19,6 +19,10 @@ import { PlaylistLoadErrorAction } from './playlist-load-error/playlist-load-err
 import { DeletePlaylistSuccessAction } from './delete-playlist-success/delete-playlist-success.action';
 import { DeletePlaylistAction } from './delete-playlist/delete-playlist.action';
 import { DeletePlaylistErrorAction } from './delete-playlist-error/delete-playlist-error.action';
+import { SocketEventTypeEnum } from '../../model/socket/socket-event-type.enum';
+import { PlaylistPlayAction } from './playlist-play/playlist-play.action';
+import { SocketService } from '../../service/socket.service';
+import { PlaylistPauseAction } from './playlist-pause/playlist-pause.action';
 
 @Injectable()
 export class PlaylistCollectionEffects {
@@ -30,6 +34,7 @@ export class PlaylistCollectionEffects {
               private actions$: Actions,
               private http: Http,
               private networkService: NetworkService,
+              private socketService: SocketService,
               private router: Router) {
     //
   }
@@ -94,6 +99,28 @@ export class PlaylistCollectionEffects {
             .catch((error: Response) => Observable.of(new DeletePlaylistErrorAction(playlist)));
         }
       );
+  }
+
+  @Effect({
+    dispatch: false,
+  })
+  play() {
+    return this.actions$
+      .filter((action: Action) => action instanceof PlaylistPlayAction)
+      .map((action: PlaylistPlayAction) =>
+        this.socketService.emit(SocketEventTypeEnum.PLAYLIST_PLAY, action.payload._id))
+      .ignoreElements();
+  }
+
+  @Effect({
+    dispatch: false,
+  })
+  pause() {
+    return this.actions$
+      .filter((action: Action) => action instanceof PlaylistPauseAction)
+      .map((action: PlaylistPlayAction) =>
+        this.socketService.emit(SocketEventTypeEnum.PLAYLIST_PAUSE, action.payload._id))
+      .ignoreElements();
   }
 
 // @Effect()

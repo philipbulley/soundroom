@@ -15,8 +15,8 @@ import { DeletePlaylistSuccessAction } from './delete-playlist-success/delete-pl
 import { deletePlaylistCollectionSuccessCommand } from './delete-playlist-success/delete-playlist-success.command';
 import { PlaylistProgressAction } from './playlist-progress/playlist-progress.action';
 import { playlistProgressCommand } from './playlist-progress/playlist-progress.command';
-import { PlaylistPauseAction } from './playlist-pause/playlist-pause.action';
-import { playlistPauseCommand } from './playlist-pause/playlist-pause.command';
+import { PlaylistPausedAction } from './playlist-paused/playlist-paused.action';
+import { playlistPauseCommand } from './playlist-paused/playlist-paused.command';
 import { PlaylistLoadAction } from './playlist-load/playlist-load.action';
 import { playlistLoadCommand } from './playlist-load/playlist-load.command';
 import { PlaylistLoadErrorAction } from './playlist-load-error/playlist-load-error.action';
@@ -56,7 +56,7 @@ export const playlistCollectionReducer: ActionReducer<PlaylistCollection> = new 
   .add(DeletePlaylistErrorAction, deletePlaylistErrorCommand)
 
   .add(PlaylistProgressAction, playlistProgressCommand)
-  .add(PlaylistPauseAction, playlistPauseCommand)
+  .add(PlaylistPausedAction, playlistPauseCommand)
 
   .add(PlaylistLoadAction, playlistLoadCommand)
   .add(PlaylistLoadSuccessAction, playlistLoadSuccessCommand)

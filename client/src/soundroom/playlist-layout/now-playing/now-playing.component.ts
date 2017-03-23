@@ -1,7 +1,10 @@
 import { Component, ChangeDetectionStrategy, Input, OnChanges } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Playlist } from '../../shared/model/playlist';
-import { PlaylistService } from '../../shared/service/playlist.service';
 import { PlaylistTrack } from '../../shared/model/playlist-track';
+import { AppState } from '../../shared/model/app-state';
+import { PlaylistPlayAction } from '../../shared/store/playlist-collection/playlist-play/playlist-play.action';
+import { PlaylistPauseAction } from '../../shared/store/playlist-collection/playlist-pause/playlist-pause.action';
 
 @Component({
   selector: 'sr-now-playing',
@@ -16,7 +19,7 @@ export class NowPlayingComponent implements OnChanges {
   private playlistTrack: PlaylistTrack;
   private progress: number;
 
-  constructor(private playlistService: PlaylistService) {
+  constructor(private store: Store<AppState>) {
     //
   }
 
@@ -32,11 +35,11 @@ export class NowPlayingComponent implements OnChanges {
   }
 
   play() {
-    this.playlistService.play(this.playlist._id);
+    this.store.dispatch(new PlaylistPlayAction(this.playlist));
   }
 
   pause() {
-    this.playlistService.pause(this.playlist._id);
+    this.store.dispatch(new PlaylistPauseAction(this.playlist));
   }
 
   togglePlay() {
