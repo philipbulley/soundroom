@@ -5,10 +5,12 @@ import {
   ViewChild,
   ElementRef,
   OnInit,
+  OnDestroy,
+  Renderer,
 } from '@angular/core';
 
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { Observable, Subscription } from 'rxjs';
 
 import { PlaylistCreate } from "../../shared/model/playlist-create";
 import { PlaylistCreateState } from "../../shared/model/state/playlist-create.state.ts";
@@ -26,13 +28,14 @@ const alertify = require('alertify.js');
   styles: [require('./playlist-create.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PlaylistCreateComponent implements OnInit {
+export class PlaylistCreateComponent implements OnInit, OnDestroy {
+  @ViewChild('nameInput')
+  nameInput: ElementRef;
 
-  @ViewChild('nameEl')
-  nameEl: ElementRef;
+  @ViewChild('descriptionInput')
+  descriptionInput: ElementRef;
 
-  @ViewChild('descriptionEl')
-  descriptionEl: ElementRef;
+  @ViewChild('myInput') input: ElementRef;
 
   private name: string;
   private description: string;
@@ -42,66 +45,70 @@ export class PlaylistCreateComponent implements OnInit {
 
   // tslint:disable-next-line:no-unused-variable
   private PlaylistCreateState = PlaylistCreateState;
+  private playlistCreateSub: Subscription;
 
-  constructor(private store$: Store<AppState>, private cdr: ChangeDetectorRef) {
+  constructor(private store$: Store<AppState>, private cdr: ChangeDetectorRef, private renderer: Renderer) {
     //
   }
 
   ngOnInit() {
-    // console.log('PlaylistCreateComponent()');
-    this.playlistCreate$ = this.store$.map((state: AppState) => state.playlistCreate);
+    // console.log('PlaylistCreateComponent.ngOnInit()');
+    this.playlistCreate$ = this.store$
+      .select((state: AppState) => state.playlistCreate);
 
-    //this.states = PlaylistCreateState;
+    this.playlistCreateSub = this.playlistCreate$
+      .distinctUntilChanged()
+      .subscribe((playlistCreate: PlaylistCreate) => this.handleStateChange(playlistCreate));
+  }
 
-    this.playlistCreate$.subscribe((data: PlaylistCreate) => {
-      // console.log('PlaylistCreateComponent.playlistCreate$: data:', data);
+  ngOnDestroy(): void {
+    if (this.playlistCreateSub) {
+      this.playlistCreateSub.unsubscribe();
+    }
+  }
 
-      // The immutible store
-      this.playlistCreate = data;
+  handleStateChange(data: PlaylistCreate) {
+    // console.log('PlaylistCreateComponent.handleStateChange: data:', data);
 
-      // Update our template-bound properties with latest data from the store
-      this.name = this.playlistCreate.name;
-      this.description = this.playlistCreate.description;
+    this.playlistCreate = data;
 
-      switch (data.state) {
-        case PlaylistCreateState.ADDING_DESCRIPTION:
-          // NOTE: Wait for element to show before we can focus it. Know a better way?
-          setTimeout(() => this.descriptionEl.nativeElement.focus(), 1);
-          break;
+    // Update our template-bound properties with latest data from the store
+    this.name = this.playlistCreate.name;
+    this.description = this.playlistCreate.description;
 
-        case PlaylistCreateState.SUCCESS:
-          alertify.success("Created the \"" + data.playlistCreated.name + "\" room!");
+    switch (data.state) {
+      case PlaylistCreateState.ADDING_DESCRIPTION:
+        // NOTE: Wait for element to show before we can focus it. Know a better way?
+        setTimeout(() => this.renderer.invokeElementMethod(this.descriptionInput.nativeElement, 'focus'), 1);
+        break;
 
-          // Immediately transition to reset this component, ready for another playlist
-          // TODO: Perhaps in future we open the new playlist's route instead (save for @ngrx/effects!)
-          this.store$.dispatch(new PlaylistCreateResetAction());
-          return;
+      case PlaylistCreateState.SUCCESS:
+        alertify.success("Created the \"" + data.playlistCreated.name + "\" room!");
 
-        case PlaylistCreateState.ERROR:
-          alertify.error("Can't create \"" + this.playlistCreate.name + "\". Try again later.");
-          break;
-      }
+        // Immediately transition to reset this component, ready for another playlist
+        // TODO: Perhaps in future we open the new playlist's route instead (save for @ngrx/effects!)
+        this.store$.dispatch(new PlaylistCreateResetAction());
+        return;
 
-      // As our store Observable is via DI, ChangeDetectionStrategy.OnPush won't notice changes. Tell it to check.
-      //cdr.markForCheck();   // Calling synchronously causes error within markForCheck(). PlaylistCreate can't return
-      // to default as a result on success.
-      setTimeout(() => this.cdr.markForCheck(), 1); // Until the above is fixed (issue with angular2 2.0.0-beta.8),
-                                                    // setTimeout fixes by calling asynchronously
-    });
+      case PlaylistCreateState.ERROR:
+        alertify.error("Can't create \"" + this.playlistCreate.name + "\". Try again later.");
+        break;
+    }
+
+    this.cdr.markForCheck();
   }
 
   next() {
     // console.log('PlaylistCreateComponent.next()', this.playlistCreate.state);
 
     switch (this.playlistCreate.state) {
-
       case PlaylistCreateState.DEFAULT:
         this.store$.dispatch(new PlaylistCreateStartAction());
         break;
 
       case PlaylistCreateState.ADDING_NAME:
         if (!this.name || !this.name.length) {
-          this.nameEl.nativeElement.focus();
+          this.nameInput.nativeElement.focus();
           alertify.error("You have to give your new room a nice name!");
           return;
         }
@@ -110,10 +117,10 @@ export class PlaylistCreateComponent implements OnInit {
 
       case PlaylistCreateState.ADDING_DESCRIPTION:
         if (!this.description) {
-          this.descriptionEl.nativeElement.focus();
+          this.descriptionInput.nativeElement.focus();
           return alertify.error("Tell people what your room's all about!!");
         } else if (this.description.length < 5) {
-          this.descriptionEl.nativeElement.focus();
+          this.descriptionInput.nativeElement.focus();
           return alertify.error("Surely you can come up with a better description than that!");
         }
         this.store$.dispatch(new PlaylistCreateAddDescriptionCreateAction(this.description));

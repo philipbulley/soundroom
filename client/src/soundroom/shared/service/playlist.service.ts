@@ -225,7 +225,7 @@ export class PlaylistService {
   }
 
   private create(name: string, description?: string): Observable<Playlist> {
-    console.log('PlaylistCreateService.create:', name, description);
+    console.log('PlaylistService.create:', name, description);
 
     const body: PlaylistCreateBody = {
       name: name,
