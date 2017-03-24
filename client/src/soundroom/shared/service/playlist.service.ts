@@ -72,15 +72,6 @@ export class PlaylistService {
     this.observeSocket();
   }
 
-  upVote(playlist: Playlist, playlistTrack: PlaylistTrack) {
-    console.log('PlaylistService.upVote:', playlist, playlistTrack);
-
-    this.socketService.emit(SocketEventTypeEnum.PLAYLIST_TRACK_UPVOTE, {
-      playlistId: playlist._id,
-      playlistTrackId: playlistTrack._id,
-    });
-  }
-
   /**
    * Makes request to add a track on the server. Notifies the redux state tree at the relevant points.
    *
@@ -231,6 +222,7 @@ export class PlaylistService {
   }
 
   private observeSocket() {
+    // TODO: Should socket service should dispatch directly to store?
     this.socketService.stream$
       .subscribe((event) => {
       // console.log('PlaylistService.observeSocket: subscribe():', event);

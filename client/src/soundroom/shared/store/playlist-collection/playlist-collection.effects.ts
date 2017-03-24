@@ -23,6 +23,7 @@ import { SocketEventTypeEnum } from '../../model/socket/socket-event-type.enum';
 import { PlaylistPlayAction } from './playlist-play/playlist-play.action';
 import { SocketService } from '../../service/socket.service';
 import { PlaylistPauseAction } from './playlist-pause/playlist-pause.action';
+import { TrackUpVoteAction } from './track-up-vote/track-up-vote.action';
 
 @Injectable()
 export class PlaylistCollectionEffects {
@@ -120,6 +121,23 @@ export class PlaylistCollectionEffects {
       .filter((action: Action) => action instanceof PlaylistPauseAction)
       .map((action: PlaylistPlayAction) =>
         this.socketService.emit(SocketEventTypeEnum.PLAYLIST_PAUSE, action.payload._id))
+      .ignoreElements();
+  }
+
+  @Effect({
+    dispatch: false,
+  })
+  trackUpvote() {
+    return this.actions$
+      .filter((action: Action) => action instanceof TrackUpVoteAction)
+      .map((action: TrackUpVoteAction) => {
+        console.log('PlaylistCollectionEffects.trackUpVote:', action.payload.playlist, action.payload.playlistTrack);
+
+        this.socketService.emit(SocketEventTypeEnum.PLAYLIST_TRACK_UPVOTE, {
+          playlistId: action.payload.playlist._id,
+          playlistTrackId: action.payload.playlistTrack._id,
+        });
+      })
       .ignoreElements();
   }
 

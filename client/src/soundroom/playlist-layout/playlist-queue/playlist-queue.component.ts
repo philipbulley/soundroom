@@ -1,10 +1,13 @@
 import { Component, ChangeDetectionStrategy, Input, OnChanges } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Playlist } from '../../shared/model/playlist';
 import { PlaylistTrack } from '../../shared/model/playlist-track';
 import { PlaylistService } from '../../shared/service/playlist.service';
 import { UpVote } from '../../shared/model/up-vote';
 import { User } from '../../shared/model/user';
 import { PlaylistError } from '../../shared/model/error/PlaylistError';
+import { AppState } from '../../shared/model/app-state';
+import { TrackUpVoteAction } from '../../shared/store/playlist-collection/track-up-vote/track-up-vote.action';
 
 const alertify = require('alertify.js');
 
@@ -24,7 +27,7 @@ export class PlaylistQueueComponent implements OnChanges {
    */
   private playlistTracks: PlaylistTrack[];
 
-  constructor(private playlistService: PlaylistService) {
+  constructor(private playlistService: PlaylistService, private store$: Store<AppState>) {
   }
 
   ngOnChanges() {
@@ -32,7 +35,7 @@ export class PlaylistQueueComponent implements OnChanges {
   }
 
   upVote(playlistTrack: PlaylistTrack): void {
-    this.playlistService.upVote(this.playlist, playlistTrack);
+    this.store$.dispatch(new TrackUpVoteAction({playlist: this.playlist, playlistTrack}));
   }
 
   hasUserUpVote(playlistTrack: PlaylistTrack): boolean {
