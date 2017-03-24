@@ -17,7 +17,7 @@ export class SocketService {
   private isInit: boolean;
   private auth$: Observable<Auth>;
 
-  private serverToClient: any = [
+  private serverToClient: SocketEventTypeEnum[] = [
     SocketEventTypeEnum.PLAYLIST_PLAY,
     SocketEventTypeEnum.PLAYLIST_PAUSE,
     SocketEventTypeEnum.PLAYLIST_TRACK_START,
@@ -29,6 +29,7 @@ export class SocketService {
     SocketEventTypeEnum.PLAYLIST_TRACKS_CHANGE,
   ];
   private streamObserver: Observer<any>;
+  private isConnecting: boolean;
 
   constructor(private store$: Store<AppState>) {
     // console.log('SocketService()');
@@ -39,16 +40,14 @@ export class SocketService {
 
     this.stream$ = new Observable(observer => this.streamObserver = observer);
 
-    this.auth$ = this.store$.map((state: AppState) => state.auth);
+    this.auth$ = this.store$.select((state: AppState) => state.auth);
     this.auth$
-      .filter((auth: Auth) => auth && auth.state === AuthState.LOGGED_IN && !this.isConnected)
-      .subscribe(auth => {
-        console.log('SocketService.init: auth$.subscribe(): User logged in but socket not connected');
-        this.connect();
-      });
+      .filter((auth: Auth) => auth && auth.state === AuthState.LOGGED_IN && !this.isConnected && !this.isConnecting)
+      .subscribe(auth => this.connect());
   }
 
   emit(event: SocketEventTypeEnum, value: any) {
+    // console.log('SocketService.emit():', event, value);
     this.ensureConnected();
 
     this.socket.emit(<string>event, value);
@@ -62,32 +61,55 @@ export class SocketService {
   // PRIVATE METHODS
   /////////////////////////
 
+  /**
+   * Start the process of connecting to the server via socket connection
+   */
   private connect() {
-    console.log('SocketService.connect()');
+    // console.log('SocketService.connect()');
 
+    // TODO: Handle connection errors?
+    this.isConnecting = true;
     this.socket = io(Config.SERVER_BASE_URL);
 
-    this.socket.on(SocketEventTypeEnum.CONNECT, data => {
-      this.socket.on(SocketEventTypeEnum.AUTHENTICATED, () => {
-        this.serverToClient.forEach(eventType => {
-          // console.log('SocketService: call socket.on', eventType);
+    // Wait for socket connection to be made...
+    this.socket.on(SocketEventTypeEnum.CONNECT, data => this.handleSocketConnect(data));
+  }
 
-          this.socket.on(eventType, data => {
-            // console.log('SocketService: socket.on():', eventType, data, this.streamObserver);
-            if (this.streamObserver) {
-              // TODO: Create a type for this event object
-              this.streamObserver.next({type: eventType, data: data});
-            }
-          });
-        });
-      });
+  /**
+   * Invoked once the socket connection has been established
+   */
+  private handleSocketConnect(data: any) {
+    // Wait for user to be authenticated over socket connection...
+    this.socket.on(SocketEventTypeEnum.AUTHENTICATED, () => this.handleSocketAuthenticated());
 
-      // TODO: Replace with selector
-      this.store$
-        .select((store: AppState) => store.auth.jwt)
-        .take(1)
-        .subscribe(jwt => this.socket.emit(SocketEventTypeEnum.AUTHENTICATE, {jwt: jwt}));
-    });
+    // TODO: Replace with selector
+    this.store$
+      .select((store: AppState) => store.auth.jwt)
+      .take(1)
+      .subscribe(jwt => this.socket.emit(SocketEventTypeEnum.AUTHENTICATE, {jwt: jwt}));
+  }
+
+  /**
+   * Invoked once the user has been authenticated on the socket connection
+   */
+  private handleSocketAuthenticated() {
+    this.isConnecting = false;
+
+    // Register handler for each server -> client event
+    this.serverToClient.forEach(eventType =>
+      this.socket.on(eventType.toString(), data => this.handleSocketEvent(eventType, data))
+    );
+  }
+
+  /**
+   * Invoked when receiving an event from the server
+   */
+  private handleSocketEvent(type: SocketEventTypeEnum, data: any) {
+    // console.log('SocketService: socket.on():', eventType, data, this.streamObserver);
+    if (this.streamObserver) {
+      // TODO: Create a type for this event object
+      this.streamObserver.next({type, data});
+    }
   }
 
   private ensureConnected() {
@@ -95,5 +117,4 @@ export class SocketService {
       throw new Error('Please ensure socket is connected before using it.');
     }
   }
-
 }
