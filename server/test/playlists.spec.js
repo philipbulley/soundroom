@@ -426,9 +426,9 @@ describe('/api/playlists', function () {
             });
         });
 
-        // it('should upvote a track by playlist track id', function (done) {
+        // it('should up-vote a track by playlist track id', function (done) {
         //   request(index.app)
-        //     .post('/api/playlists/' + playlistId2 + '/tracks/' + playlistTrack._id + '/upvote')
+        //     .post('/api/playlists/' + playlistId2 + '/tracks/' + playlistTrack._id + '/up-vote')
         //     .send(dummyExternalTrack)
         //     .end(function (err, res) {
         //       if (err) throw err;
@@ -449,9 +449,9 @@ describe('/api/playlists', function () {
         //     });
         // });
         //
-        // it('should upvote a track by actual track id', function (done) {
+        // it('should up-vote a track by actual track id', function (done) {
         //   request(index.app)
-        //     .post('/api/playlists/' + playlistId2 + '/tracks/' + playlistTrack.track._id + '/upvote')
+        //     .post('/api/playlists/' + playlistId2 + '/tracks/' + playlistTrack.track._id + '/up-vote')
         //     .send(dummyExternalTrack)
         //     .end(function (err, res) {
         //       if (err) throw err;
@@ -486,7 +486,7 @@ describe('/api/playlists', function () {
   // TODO: GET /:playlist_id/tracks/:track_id
   // TODO: DELETE /:playlist_id/tracks/:track_id
 
-  // TODO: POST /:playlist_id/tracks/:track_id/upvote
-  // TODO: DELETE /:playlist_id/tracks/:track_id/upvote
+  // TODO: POST /:playlist_id/tracks/:track_id/up-vote
+  // TODO: DELETE /:playlist_id/tracks/:track_id/up-vote
 
 });

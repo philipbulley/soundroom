@@ -83,7 +83,7 @@ class SocketService extends EventEmitter {
     socket.emit(EventTypeEnum.CONNECT, currentState)
       .on(EventTypeEnum.PLAYLIST_PLAY, id => this.emit(EventTypeEnum.PLAYLIST_PLAY, id))
       .on(EventTypeEnum.PLAYLIST_PAUSE, id => this.emit(EventTypeEnum.PLAYLIST_PAUSE, id))
-      .on(EventTypeEnum.PLAYLIST_TRACK_UPVOTE, (playlistId, trackId) => this.emit(EventTypeEnum.PLAYLIST_TRACK_UPVOTE, socket, playlistId, trackId))
+      .on(EventTypeEnum.PLAYLIST_TRACK_UP_VOTE, (playlistId, trackId) => this.emit(EventTypeEnum.PLAYLIST_TRACK_UP_VOTE, socket, playlistId, trackId))
       .on(EventTypeEnum.PLAYLIST_TRACK_VETO, (playlistId, trackId) => this.emit(EventTypeEnum.PLAYLIST_TRACK_VETO, socket, playlistId, trackId))
       .on(EventTypeEnum.DISCONNECT, () => {
         socket.removeAllListeners();
@@ -133,7 +133,7 @@ class SocketService extends EventEmitter {
    * @param track
    */
   emitUpVote(track) {
-    this.io.emit(EventTypeEnum.PLAYLIST_TRACK_UPVOTE, track);
+    this.io.emit(EventTypeEnum.PLAYLIST_TRACK_UP_VOTE, track);
   }
 
   /**

@@ -16,7 +16,7 @@ const upVote = (client, payload) => {
 
   return playlistController.upVoteTrack(client.user, playlistId, playlistTrackId || trackId)
     .catch((err) => {
-      client.emit(EventTypeEnum.ERROR_PLAYLIST_TRACK_UPVOTE, err.message, playlistId, trackId);
+      client.emit(EventTypeEnum.ERROR_PLAYLIST_TRACK_UP_VOTE, err.message, playlistId, trackId);
       // HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
       log.formatError(err, 'PlaylistRequestController.upVoteTrack');
       // socketService.emitUpVoteError(track);
@@ -34,7 +34,7 @@ const initSocket = (server) => {
   socketService
     .on(EventTypeEnum.PLAYLIST_PLAY, play)
     .on(EventTypeEnum.PLAYLIST_PAUSE, pause)
-    .on(EventTypeEnum.PLAYLIST_TRACK_UPVOTE, upVote)
+    .on(EventTypeEnum.PLAYLIST_TRACK_UP_VOTE, upVote)
     .on(EventTypeEnum.PLAYLIST_TRACK_VETO, veto)
     .on(EventTypeEnum.USER_UPDATE, updateUserList);
 };

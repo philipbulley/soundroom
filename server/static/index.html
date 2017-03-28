@@ -68,14 +68,14 @@
 		  USER_ENTER: 'user.enter',
 		  PLAYLIST_PLAY: 'playlist.play',
 		  PLAYLIST_PAUSE: 'playlist.pause',
-		  PLAYLIST_TRACK_UPVOTE: 'playlist.track.upvote',
+		  PLAYLIST_TRACK_UP_VOTE: 'playlist.track.up-vote',
 		  PLAYLIST_TRACK_VETO: 'playlist.track.veto',
 		  DISCONNECT: 'disconnect',
 		  PLAYLIST_TRACK_START: 'playlist.track.start',
 		  PLAYLIST_TRACK_PROGRESS: 'playlist.track.progress',
 		  PLAYLIST_END: 'playlist.end',
 		  USER_UPDATE: 'user.update',
-			ERROR_PLAYLIST_TRACK_UPVOTE: 'error.playlist.track.upvote',
+			ERROR_PLAYLIST_TRACK_UP_VOTE: 'error.playlist.track.up-vote',
 			ERROR_PLAYLIST_TRACK_VETO: 'error.playlist.track.veto'
 		};
 
@@ -140,8 +140,8 @@
 											<button data-action="veto" data-track="${id}">
 												veto
 											</button>
-											<button data-action="upvote" data-track="${id}">
-												upvote (<span>${votes}</span>)
+											<button data-action="up-vote" data-track="${id}">
+												up-vote (<span>${votes}</span>)
 											</button>
 										</li>`;
 					}).join('');
@@ -169,13 +169,13 @@
       progress.innerHTML = currentTime + ' / ' + duration + ' (' + percent + '%)';
     });
 
-		socket.on(EventTypeEnum.PLAYLIST_TRACK_UPVOTE, (data) => {
-			console.log('track upvoted', data);
+		socket.on(EventTypeEnum.PLAYLIST_TRACK_UP_VOTE, (data) => {
+			console.log('track up-voted', data);
 			const numVotes = data.upVotes.length;
 			if (data.track._id === trackId.innerHTML) {
 				votes.innerHTML = numVotes;
 			}
-			const selector = `[data-action="upvote"][data-track="${data.track._id}"] span`;
+			const selector = `[data-action="up-vote"][data-track="${data.track._id}"] span`;
 			const el = tracks.querySelector(selector);
 			el.innerHTML = numVotes;
 		});
@@ -200,8 +200,8 @@
 		});
     socket.on(EventTypeEnum.PLAYLIST_PAUSE, () => togglePlay(false));
     socket.on(EventTypeEnum.PLAYLIST_PLAY, () => togglePlay(true));
-    socket.on(EventTypeEnum.ERROR_PLAYLIST_TRACK_UPVOTE, (err, playlistId, trackId) => (
-			console.error('upvote error', err, playlistId, trackId)
+    socket.on(EventTypeEnum.ERROR_PLAYLIST_TRACK_UP_VOTE, (err, playlistId, trackId) => (
+			console.error('up-vote error', err, playlistId, trackId)
 		));
     socket.on(EventTypeEnum.ERROR_PLAYLIST_TRACK_VETO, (err, playlistId, trackId) => (
 			console.error('veto error', err, playlistId, trackId)
@@ -217,8 +217,8 @@
 			const trackId = el.getAttribute('data-track');
 
 			switch (action) {
-				case 'upvote':
-					socket.emit(EventTypeEnum.PLAYLIST_TRACK_UPVOTE, playlistId(), trackId);
+				case 'up-vote':
+					socket.emit(EventTypeEnum.PLAYLIST_TRACK_UP_VOTE, playlistId(), trackId);
 					break;
 				case 'veto':
 					socket.emit(EventTypeEnum.PLAYLIST_TRACK_VETO, playlistId(), trackId);

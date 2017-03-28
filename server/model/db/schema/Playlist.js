@@ -252,17 +252,17 @@ export default function create() {
           // a was create/completed after b, so should appear after b in the playlist
           return 1;
         } else {
-          // Unlikely unless a batch operation updated all 0 upvoted tracks at the same time :)
+          // Unlikely unless a batch operation updated all 0 up-voted tracks at the same time :)
           return 0;
         }
       } else if (a.upVotes[a.upVotes.length - 1].created < b.upVotes[b.upVotes.length - 1].created) {
-        // a was upvoted before b, so should appear before b in the playlist
+        // a was up-voted before b, so should appear before b in the playlist
         return -1;
       } else if (a.upVotes[a.upVotes.length - 1].created > b.upVotes[b.upVotes.length - 1].created) {
-        // a was upvoted after b, so should appear after b in the playlist
+        // a was up-voted after b, so should appear after b in the playlist
         return 1;
       } else {
-        // Unlikely unless two tracks were upvoted at the same time :/
+        // Unlikely unless two tracks were up-voted at the same time :/
         return 0;
       }
     }

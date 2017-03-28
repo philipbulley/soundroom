@@ -127,13 +127,13 @@ export class PlaylistCollectionEffects {
   @Effect({
     dispatch: false,
   })
-  trackUpvote() {
+  trackUpVote() {
     return this.actions$
       .filter((action: Action) => action instanceof TrackUpVoteAction)
       .map((action: TrackUpVoteAction) => {
         console.log('PlaylistCollectionEffects.trackUpVote:', action.payload.playlist, action.payload.playlistTrack);
 
-        this.socketService.emit(SocketEventTypeEnum.PLAYLIST_TRACK_UPVOTE, {
+        this.socketService.emit(SocketEventTypeEnum.PLAYLIST_TRACK_UP_VOTE, {
           playlistId: action.payload.playlist._id,
           playlistTrackId: action.payload.playlistTrack._id,
         });

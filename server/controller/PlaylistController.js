@@ -85,7 +85,7 @@ class PlaylistController {
   }
 
   /**
-   * Adds a track to a playlist and upvotes it.
+   * Adds a track to a playlist and up-votes it.
    *
    * @param {User} user
    * @param {string} playlistId
@@ -135,7 +135,7 @@ class PlaylistController {
    * @param {User} user
    * @param {string} playlistId
    * @param {string} trackId      A trackId or a playlistTrackId
-   * @param {boolean} [emitSocketEvent=true]   Should this action emit a socket event notifying clients about the upvote?
+   * @param {boolean} [emitSocketEvent=true]   Should this action emit a socket event notifying clients about the up-vote?
    * @returns {Promise<Playlist>}   Promise resolved with playlist whose tracks are freshly sorted taking this upVote in to account
    */
   upVoteTrack(user, playlistId, trackId, emitSocketEvent = true) {
