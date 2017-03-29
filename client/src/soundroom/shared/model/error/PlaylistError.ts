@@ -6,7 +6,7 @@ export class PlaylistError extends AbstractError {
   /** When we can't connect to the provider  */
   static PROVIDER_CONNECTION = 'PlaylistError.PROVIDER_CONNECTION';
 
-  /** When we can't connect to the provider  */
+  /** When a user has attempted to up-vote a track more than once */
   static DUPLICATE_USER_UP_VOTE = 'PlaylistError.DUPLICATE_USER_UP_VOTE';
 
   /** Unspecified server error  */

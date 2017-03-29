@@ -81,33 +81,11 @@ export class PlaylistService {
    * @returns {Observable<number>}  Observable with HTTP status of the request if successful.
    */
   addTrack(playlist: Playlist, provider: ProviderEnum, foreignId: string): Observable<any> {
-    this.store$.dispatch(new AddTrackAction({playlist, provider, foreignId}));
 
-    const body: PlaylistAddTrackBody = {
-      provider: <string><any>provider,
-      foreignId,
-    };
 
-    console.log('PlaylistService.addTrack: call POST:',
-      Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id + '/tracks',
-      body,
-      this.networkService.requestOptions);
 
-    const observable = this.http.post(
-      Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id + '/tracks',
-      JSON.stringify(body),
-      this.networkService.requestOptions
-    )
-      .publishReplay(1) // Use publishReplay to allow multiple subscriptions, but only one request/result
-      .refCount();
 
-    observable.subscribe((res: Response) => {
-      // NOTE: Track is added to state tree via socket event handler, as all clients will receive that event.
-      this.store$.dispatch(new AddTrackSuccessAction(playlist._id));
-    }, (error: Response) => {
-      // Dispatch redux action
-      this.store$.dispatch(new AddTrackErrorAction(playlist._id));
-    });
+
 
     return observable
       .map((res: Response) => res.status)

@@ -24,6 +24,10 @@ import { PlaylistPlayAction } from './playlist-play/playlist-play.action';
 import { SocketService } from '../../service/socket.service';
 import { PlaylistPauseAction } from './playlist-pause/playlist-pause.action';
 import { TrackUpVoteAction } from './track-up-vote/track-up-vote.action';
+import { AddTrackErrorAction } from './add-track-error/add-track-error.action';
+import { AddTrackSuccessAction } from './add-track-success/add-track-success.action';
+import { AddTrackAction } from './add-track/add-track.action';
+import { PlaylistAddTrackBody } from '../../service/vo/playlist-add-track-body';
 
 @Injectable()
 export class PlaylistCollectionEffects {
@@ -139,6 +143,32 @@ export class PlaylistCollectionEffects {
         });
       })
       .ignoreElements();
+  }
+
+  @Effect()
+  addTrack(): Observable<AddTrackSuccessAction | AddTrackErrorAction> {
+    return this.actions$
+      .filter((action: Action) => action instanceof AddTrackAction)
+      .switchMap((action: AddTrackAction): Observable<AddTrackSuccessAction | AddTrackErrorAction> => {
+        const body: PlaylistAddTrackBody = {
+          provider: action.payload.provider.toString(),
+          foreignId: action.payload.foreignId,
+        };
+
+        // console.log('PlaylistService.addTrack: call POST:',
+        //   Config.API_BASE_URL + this.API_ENDPOINT + '/' + action.payload.playlist._id + '/tracks',
+        //   body,
+        //   this.networkService.requestOptions);
+
+        return this.http.post(
+          Config.API_BASE_URL + this.API_ENDPOINT + '/' + action.payload.playlist._id + '/tracks',
+          JSON.stringify(body),
+          this.networkService.requestOptions
+        )
+        // NOTE: Track is added to store via socket event handler, as all clients will receive that event.
+          .map((res: Response) => new AddTrackSuccessAction(action.payload.playlist._id))
+          .catch((error: Response) => Observable.of(new AddTrackErrorAction(action.payload.playlist._id)));
+      });
   }
 
 // @Effect()

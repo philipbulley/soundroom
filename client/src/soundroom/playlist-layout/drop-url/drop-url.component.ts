@@ -5,11 +5,14 @@ import {
   Input,
   ChangeDetectionStrategy,
 } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { PlaylistService } from "../../shared/service/playlist.service.ts";
 import { Playlist } from "../../shared/model/playlist";
 import { ProviderEnum } from "../../shared/model/enum/provider.enum.ts";
 import { SpotifyService } from "../../shared/service/spotify.service.ts";
 import { PlaylistError } from "../../shared/model/error/PlaylistError";
+import { AddTrackAction } from '../../shared/store/playlist-collection/add-track/add-track.action';
+import { AppState } from '../../shared/model/app-state';
 const alertify = require('alertify.js');
 
 // Change to Component and transclude drop-url-overlay
@@ -36,7 +39,10 @@ export class DropUrlComponent implements OnInit {
 
   private isDrag: boolean = false;
 
-  constructor(private el: ElementRef, private playlistService: PlaylistService, private spotifyService: SpotifyService) {
+  constructor(private el: ElementRef,
+              private store$: Store<AppState>,
+              private playlistService: PlaylistService,
+              private spotifyService: SpotifyService) {
     // console.log('DropUrlComponent()');
   }
 
@@ -78,34 +84,41 @@ export class DropUrlComponent implements OnInit {
 
     const spotifyUri = this.spotifyService.linkToSpotifyUri(url);
     console.info('DropUrlComponent.drop: ACCEPTED', spotifyUri, this.playlist);
-    this.playlistService.addTrack(this.playlist, ProviderEnum.SPOTIFY, spotifyUri)
-      .subscribe(
-        (status: number) => {
-          // console.log('DropUrlComponent.subscribe(): status:', status);
-          this.hideOverlay();
-        },
-        (error: PlaylistError) => {
 
-          // console.log('DropUrlComponent.subscribe(): ERROR:', error);
+    this.store$.dispatch(new AddTrackAction({
+      playlist: this.playlist,
+      provider: ProviderEnum.SPOTIFY,
+      foreignId: spotifyUri
+    }));
 
-          switch (error.type) {
-            case PlaylistError.PROVIDER_CONNECTION:
-              alertify.error(`Sorry! The Soundroom server can't reach Spotify — your track hasn't been added.`);
-              break;
-            case PlaylistError.DUPLICATE_USER_UP_VOTE:
-              alertify.error(`You've already up voted that track.`);
-              break;
-            case PlaylistError.SERVER:
-              alertify.error(`Sorry! The Soundroom server is having a bad day — your track hasn't been added.`);
-              break;
-            case PlaylistError.UNKNOWN:
-              alertify.error(`Sorry! We haven't been able to add your track.`);
-              break;
-          }
-
-          this.hideOverlay();
-        }
-      );
+    // this.playlistService.addTrack(this.playlist, ProviderEnum.SPOTIFY, spotifyUri)
+    //   .subscribe(
+    //     (status: number) => {
+    //       // console.log('DropUrlComponent.subscribe(): status:', status);
+    //       this.hideOverlay();
+    //     },
+    //     (error: PlaylistError) => {
+    //
+    //       // console.log('DropUrlComponent.subscribe(): ERROR:', error);
+    //
+    //       switch (error.type) {
+    //         case PlaylistError.PROVIDER_CONNECTION:
+    //           alertify.error(`Sorry! The Soundroom server can't reach Spotify — your track hasn't been added.`);
+    //           break;
+    //         case PlaylistError.DUPLICATE_USER_UP_VOTE:
+    //           alertify.error(`You've already up voted that track.`);
+    //           break;
+    //         case PlaylistError.SERVER:
+    //           alertify.error(`Sorry! The Soundroom server is having a bad day — your track hasn't been added.`);
+    //           break;
+    //         case PlaylistError.UNKNOWN:
+    //           alertify.error(`Sorry! We haven't been able to add your track.`);
+    //           break;
+    //       }
+    //
+    //       this.hideOverlay();
+    //     }
+    //   );
   }
 
   handleDragEnd(event) {
