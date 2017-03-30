@@ -22,7 +22,7 @@ import { PlaylistTrackFactory } from "../../shared/model/factory/playlist-track.
 import { PlaylistTracksChangeActionEnum } from "../../shared/model/socket/playlist-tracks-change-action.enum";
 import { PlaylistTracksChangeSocketEvent } from "../../shared/model/socket/playlist-tracks-change-socket-event";
 import { PlaylistTrack } from "../../shared/model/playlist-track";
-import { PlaylistError } from "../../shared/model/error/PlaylistError";
+import { PlaylistError } from "../model/error/playlist-error";
 import { User } from "../../shared/model/user";
 import { PlaylistProgressAction } from "../../shared/store/playlist-collection/playlist-progress/playlist-progress.action";
 import { PlaylistPausedAction } from "../store/playlist-collection/playlist-paused/playlist-paused.action";
@@ -70,43 +70,6 @@ export class PlaylistService {
 
     this.observeCreate();
     this.observeSocket();
-  }
-
-  /**
-   * Makes request to add a track on the server. Notifies the redux state tree at the relevant points.
-   *
-   * @param playlist      The `Playlist` being added to.
-   * @param provider      The provider of the track.
-   * @param foreignId     The ID of the track according to the provider.
-   * @returns {Observable<number>}  Observable with HTTP status of the request if successful.
-   */
-  addTrack(playlist: Playlist, provider: ProviderEnum, foreignId: string): Observable<any> {
-
-
-
-
-
-
-    return observable
-      .map((res: Response) => res.status)
-      .catch((error: Response) => {
-        // console.error(error);
-        // Re-throw actual error so the requesting method can act on it
-        const errorJson = error.json();
-        let errorThrow;
-
-        if (errorJson.hasOwnProperty('message') && ~errorJson.message.indexOf('getaddrinfo ENOTFOUND')) {
-          errorThrow = new PlaylistError(PlaylistError.PROVIDER_CONNECTION, null, playlist, error);
-        } else if (errorJson.hasOwnProperty('message') && errorJson.message === 'DUPLICATE_USER_UP_VOTE') {
-          errorThrow = new PlaylistError(PlaylistError.DUPLICATE_USER_UP_VOTE, null, playlist, error);
-        } else if (error.status === 500) {
-          errorThrow = new PlaylistError(PlaylistError.SERVER, null, playlist, error);
-        } else {
-          errorThrow = new PlaylistError(PlaylistError.UNKNOWN, null, playlist, error);
-        }
-
-        return Observable.throw(errorThrow);
-      });
   }
 
   /**

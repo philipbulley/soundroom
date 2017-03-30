@@ -1,4 +1,5 @@
 import { Action } from '@ngrx/store';
+import { AddTrackPayload } from '../add-track/add-track-payload';
 
 /**
  * This client has successfully added a track to the playlist. This and all clients should expect an NEW_TRACK around
@@ -7,9 +8,8 @@ import { Action } from '@ngrx/store';
 export class AddTrackSuccessAction implements Action {
   // tslint:disable-next-line:no-reserved-keywords
   type: string = 'AddTrackSuccessAction';
-  payload: string;
 
-  constructor(playlistId: string) {
-    this.payload = playlistId;
+  constructor(public payload: AddTrackPayload) {
+    //
   }
 }

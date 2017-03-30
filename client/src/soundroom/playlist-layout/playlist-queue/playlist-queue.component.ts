@@ -5,7 +5,7 @@ import { PlaylistTrack } from '../../shared/model/playlist-track';
 import { PlaylistService } from '../../shared/service/playlist.service';
 import { UpVote } from '../../shared/model/up-vote';
 import { User } from '../../shared/model/user';
-import { PlaylistError } from '../../shared/model/error/PlaylistError';
+import { PlaylistError } from '../../shared/model/error/playlist-error';
 import { AppState } from '../../shared/model/app-state';
 import { TrackUpVoteAction } from '../../shared/store/playlist-collection/track-up-vote/track-up-vote.action';
 

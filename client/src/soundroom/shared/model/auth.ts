@@ -1,6 +1,6 @@
 import { AuthState } from "./state/auth.state.ts";
 import { User } from "./user";
-import { ErrorResult } from "./error-result";
+import { ErrorResult } from "./error/error-result";
 
 export interface Auth {
 

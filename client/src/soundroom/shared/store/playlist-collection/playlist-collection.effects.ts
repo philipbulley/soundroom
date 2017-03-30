@@ -28,6 +28,8 @@ import { AddTrackErrorAction } from './add-track-error/add-track-error.action';
 import { AddTrackSuccessAction } from './add-track-success/add-track-success.action';
 import { AddTrackAction } from './add-track/add-track.action';
 import { PlaylistAddTrackBody } from '../../service/vo/playlist-add-track-body';
+import { PlaylistError } from '../../model/error/playlist-error';
+import { PlaylistErrorResult } from '../../model/error/playlist-error-result';
 
 @Injectable()
 export class PlaylistCollectionEffects {
@@ -63,8 +65,10 @@ export class PlaylistCollectionEffects {
             return new LoadPlaylistCollectionSuccessAction(playlists);
           })
           .catch((error: Response) => Observable.of(new LoadPlaylistCollectionErrorAction({
+              type: PlaylistError.PLAYLIST_COLLECTION_NOT_FOUND,
+              playlistId: null,
               status: error.status,
-              statusText: error.statusText,
+              message: error.statusText,
             }))
           );
       });
@@ -155,20 +159,38 @@ export class PlaylistCollectionEffects {
           foreignId: action.payload.foreignId,
         };
 
-        // console.log('PlaylistService.addTrack: call POST:',
-        //   Config.API_BASE_URL + this.API_ENDPOINT + '/' + action.payload.playlist._id + '/tracks',
-        //   body,
-        //   this.networkService.requestOptions);
-
         return this.http.post(
           Config.API_BASE_URL + this.API_ENDPOINT + '/' + action.payload.playlist._id + '/tracks',
           JSON.stringify(body),
           this.networkService.requestOptions
         )
         // NOTE: Track is added to store via socket event handler, as all clients will receive that event.
-          .map((res: Response) => new AddTrackSuccessAction(action.payload.playlist._id))
-          .catch((error: Response) => Observable.of(new AddTrackErrorAction(action.payload.playlist._id)));
+          .map((res: Response) => new AddTrackSuccessAction(action.payload))
+          .catch((response: Response) =>
+            Observable.of(new AddTrackErrorAction(this.getAddTrackError(response, action.payload.playlist))));
       });
+  }
+
+  private getAddTrackError(response: Response, playlist: Playlist): PlaylistErrorResult {
+    const errorJson = response.json();
+
+    const error: PlaylistErrorResult = {
+      type: null,
+      playlistId: playlist._id,
+      status: response.status,
+      message: response.statusText,
+    };
+
+    if (errorJson.hasOwnProperty('message') && ~errorJson.message.indexOf('getaddrinfo ENOTFOUND')) {
+      return Object.assign(error, {type: PlaylistError.PROVIDER_CONNECTION});
+    }
+    if (errorJson.hasOwnProperty('message') && errorJson.message === 'DUPLICATE_USER_UP_VOTE') {
+      return Object.assign(error, {type: PlaylistError.DUPLICATE_USER_UP_VOTE});
+    }
+    if (response.status === 500) {
+      return Object.assign(error, {type: PlaylistError.SERVER});
+    }
+    return Object.assign(error, {type: PlaylistError.UNKNOWN});
   }
 
 // @Effect()
