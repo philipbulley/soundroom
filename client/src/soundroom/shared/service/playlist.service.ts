@@ -85,35 +85,6 @@ export class PlaylistService {
     return playlistTrack.createdBy._id === user._id;
   }
 
-  deleteTrack(playlist: Playlist, playlistTrack: PlaylistTrack) {
-    return observable
-      .map((res: Response) => res.status)
-      .catch((error: Response) => {
-        // Re-throw actual error so the requesting method can act on it
-        // const errorJson = error.json();
-        let errorThrow: PlaylistErrorResult;
-
-        if (error.status === 500) {
-          errorThrow = {
-            type: PlaylistError.SERVER,
-            playlistId: playlist._id,
-            status: error.status,
-            message: error.statusText
-          };
-        } else {
-          errorThrow = {
-            type: PlaylistError.UNKNOWN,
-            playlistId: playlist._id,
-            status: error.status,
-            message: error.statusText
-          };
-        }
-
-        return Observable.throw(errorThrow);
-      });
-  }
-
-
   /////////////////////////
   // PRIVATE METHODS
   /////////////////////////

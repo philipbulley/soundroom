@@ -65,7 +65,6 @@ export class PlaylistQueueComponent implements OnDestroy, OnChanges {
 
     alertify.confirm(message, () => {
       // user clicked "ok"
-
       const playlistCollection$ = this.store$.select((store: AppState) => store.playlistCollection);
       const success$ = playlistCollection$
         .map(playlistCollection => playlistCollection.recentAction)
