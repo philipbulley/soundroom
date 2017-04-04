@@ -1,13 +1,16 @@
-import { Component, ChangeDetectionStrategy, Input, OnChanges } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, OnChanges, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
 import { Playlist } from '../../shared/model/playlist';
 import { PlaylistTrack } from '../../shared/model/playlist-track';
 import { PlaylistService } from '../../shared/service/playlist.service';
 import { UpVote } from '../../shared/model/up-vote';
 import { User } from '../../shared/model/user';
-import { PlaylistError } from '../../shared/model/error/playlist-error';
 import { AppState } from '../../shared/model/app-state';
 import { TrackUpVoteAction } from '../../shared/store/playlist-collection/track-up-vote/track-up-vote.action';
+import { DeleteTrackAction } from "../../shared/store/playlist-collection/delete-track/delete-track.action";
+import { TrackDeletedAction } from "../../shared/store/playlist-collection/track-deleted/track-deleted.action";
+import { DeleteTrackErrorAction } from "../../shared/store/playlist-collection/delete-track-error/delete-track-error.action";
 
 const alertify = require('alertify.js');
 
@@ -17,7 +20,7 @@ const alertify = require('alertify.js');
   styles: [require('./playlist-queue.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PlaylistQueueComponent implements OnChanges {
+export class PlaylistQueueComponent implements OnDestroy, OnChanges {
 
   @Input() playlist: Playlist;
   @Input() user: User;
@@ -26,12 +29,19 @@ export class PlaylistQueueComponent implements OnChanges {
    * List of tracks in queue (not including first track ink playlist)
    */
   private playlistTracks: PlaylistTrack[];
+  private playlistTrackDeletedResult: Subscription;
 
   constructor(private playlistService: PlaylistService, private store$: Store<AppState>) {
   }
 
   ngOnChanges() {
     this.playlistTracks = this.playlist.tracks.filter((playlistTrack, index) => index > 0);
+  }
+
+  ngOnDestroy(): void {
+    if (this.playlistTrackDeletedResult) {
+      this.playlistTrackDeletedResult.unsubscribe();
+    }
   }
 
   upVote(playlistTrack: PlaylistTrack): void {
@@ -55,17 +65,41 @@ export class PlaylistQueueComponent implements OnChanges {
 
     alertify.confirm(message, () => {
       // user clicked "ok"
-      this.playlistService.deleteTrack(this.playlist, playlistTrack)
-        .subscribe((status: number) => {
-          alertify.success(`Your track has been deleted.`);
-        }, (error: PlaylistError) => {
-          console.error('PlaylistQueueComponent.deleteTrack:', error);
-          alertify.error(`Sorry, we weren\'t able to delete your track, please try again.`);
-        });
+
+      const playlistCollection$ = this.store$.select((store: AppState) => store.playlistCollection);
+      const success$ = playlistCollection$
+        .map(playlistCollection => playlistCollection.recentAction)
+        .filter(recentAction => recentAction instanceof TrackDeletedAction)
+        .filter((recentAction: TrackDeletedAction) => recentAction.payload.playlistTrack._id === playlistTrack._id);
+
+      const error$ = playlistCollection$
+        .map(playlistCollection => playlistCollection.recentAction)
+        .filter(recentAction => recentAction instanceof DeleteTrackErrorAction)
+        .filter((recentAction: DeleteTrackErrorAction) => recentAction.payload.playlistTrack._id === playlistTrack._id)
+        .switchMap((recentAction: DeleteTrackErrorAction) => Observable.throw(recentAction));
+
+      this.playlistTrackDeletedResult = Observable.merge(success$, error$)
+        .take(1)
+        .subscribe(
+          (action: TrackDeletedAction) => this.handleDeleteTrackSuccess(action.payload.playlistTrack),
+          (action: DeleteTrackErrorAction) => this.handleDeleteTrackError(action.payload.playlistTrack)
+        );
+
+      this.store$.dispatch(new DeleteTrackAction({playlist: this.playlist, playlistTrack}));
     });
   }
 
   canCurrentUserDeleteTrack(playlistTrack: PlaylistTrack) {
     return this.playlistService.canUserDeleteTrack(playlistTrack, this.user);
+  }
+
+  private handleDeleteTrackSuccess(playlistTrack: PlaylistTrack) {
+    const goodbyes = ['Goodbye', 'Adiós', 'Au Revoir', 'Cheerio', 'Ciao', 'So long'];
+    const goodbye = goodbyes[Math.floor(Math.random() * goodbyes.length)];
+    alertify.success(`${goodbye}, ${playlistTrack.track.artists[0].name}. "${playlistTrack.track.name}" is gone.`);
+  }
+
+  private handleDeleteTrackError(playlistTrack: PlaylistTrack) {
+    alertify.error(`Sorry, we weren\'t able to delete "${playlistTrack.track.name}", please try again.`);
   }
 }

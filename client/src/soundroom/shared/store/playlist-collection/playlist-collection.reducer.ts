@@ -37,6 +37,8 @@ import { trackDeletedCommand } from './track-deleted/track-deleted.command';
 import { PlaylistLoadSuccessAction } from './playlist-load-success/playlist-load-success.action';
 import { playlistLoadSuccessCommand } from './playlist-load-success/playlist-load-success.command';
 import { playlistCollectionCommand } from './playlist-collection.command';
+import { deleteTrackErrorCommand } from './delete-track-error/delete-track-error.command';
+import { deleteTrackSuccessCommand } from './delete-track-success/delete-track-success.command';
 
 const DEFAULT_STATE: PlaylistCollection = {
   loadState: null,
@@ -67,8 +69,8 @@ export const playlistCollectionReducer: ActionReducer<PlaylistCollection> = new 
   .add(AddTrackErrorAction, resetPlaylistLoadStateCommand)
 
   .add(DeleteTrackAction, deleteTrackCommand)
-  .add(DeleteTrackSuccessAction, resetPlaylistLoadStateCommand)
-  .add(DeleteTrackErrorAction, resetPlaylistLoadStateCommand)
+  .add(DeleteTrackSuccessAction, deleteTrackSuccessCommand)
+  .add(DeleteTrackErrorAction, deleteTrackErrorCommand)
 
   .add(TrackAddedAction, trackUpsertCommand)
   .add(TrackUpdatedAction, trackUpsertCommand)

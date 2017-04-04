@@ -1,35 +1,38 @@
-import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { Router } from '@angular/router';
-import { Effect, Actions } from '@ngrx/effects';
-import { Store, Action } from '@ngrx/store';
+import {Injectable} from '@angular/core';
+import {Http, Response} from '@angular/http';
+import {Router} from '@angular/router';
+import {Effect, Actions} from '@ngrx/effects';
+import {Store, Action} from '@ngrx/store';
 import 'rxjs/add/operator/filter';
-import { NetworkService } from '../../service/network.service';
-import { Observable } from 'rxjs';
-import { Config } from '../../model/config';
-import { AppState } from '../../model/app-state';
-import { LoadPlaylistCollectionAction } from './load-playlist-collection/load-playlist-collection.action';
-import { LoadPlaylistCollectionSuccessAction } from './load-playlist-collection-success/load-playlist-collection-success.action';
-import { Playlist } from '../../model/playlist';
-import { PlaylistFactory } from '../../model/factory/playlist.factory';
-import { LoadPlaylistCollectionErrorAction } from './load-playlist-collection-error/load-playlist-collection-error.action';
-import { PlaylistLoadAction } from './playlist-load/playlist-load.action';
-import { PlaylistLoadSuccessAction } from './playlist-load-success/playlist-load-success.action';
-import { PlaylistLoadErrorAction } from './playlist-load-error/playlist-load-error.action';
-import { DeletePlaylistSuccessAction } from './delete-playlist-success/delete-playlist-success.action';
-import { DeletePlaylistAction } from './delete-playlist/delete-playlist.action';
-import { DeletePlaylistErrorAction } from './delete-playlist-error/delete-playlist-error.action';
-import { SocketEventTypeEnum } from '../../model/socket/socket-event-type.enum';
-import { PlaylistPlayAction } from './playlist-play/playlist-play.action';
-import { SocketService } from '../../service/socket.service';
-import { PlaylistPauseAction } from './playlist-pause/playlist-pause.action';
-import { TrackUpVoteAction } from './track-up-vote/track-up-vote.action';
-import { AddTrackErrorAction } from './add-track-error/add-track-error.action';
-import { AddTrackSuccessAction } from './add-track-success/add-track-success.action';
-import { AddTrackAction } from './add-track/add-track.action';
-import { PlaylistAddTrackBody } from '../../service/vo/playlist-add-track-body';
-import { PlaylistError } from '../../model/error/playlist-error';
-import { PlaylistErrorResult } from '../../model/error/playlist-error-result';
+import {NetworkService} from '../../service/network.service';
+import {Observable} from 'rxjs';
+import {Config} from '../../model/config';
+import {AppState} from '../../model/app-state';
+import {LoadPlaylistCollectionAction} from './load-playlist-collection/load-playlist-collection.action';
+import {LoadPlaylistCollectionSuccessAction} from './load-playlist-collection-success/load-playlist-collection-success.action';
+import {Playlist} from '../../model/playlist';
+import {PlaylistFactory} from '../../model/factory/playlist.factory';
+import {LoadPlaylistCollectionErrorAction} from './load-playlist-collection-error/load-playlist-collection-error.action';
+import {PlaylistLoadAction} from './playlist-load/playlist-load.action';
+import {PlaylistLoadSuccessAction} from './playlist-load-success/playlist-load-success.action';
+import {PlaylistLoadErrorAction} from './playlist-load-error/playlist-load-error.action';
+import {DeletePlaylistSuccessAction} from './delete-playlist-success/delete-playlist-success.action';
+import {DeletePlaylistAction} from './delete-playlist/delete-playlist.action';
+import {DeletePlaylistErrorAction} from './delete-playlist-error/delete-playlist-error.action';
+import {SocketEventTypeEnum} from '../../model/socket/socket-event-type.enum';
+import {PlaylistPlayAction} from './playlist-play/playlist-play.action';
+import {SocketService} from '../../service/socket.service';
+import {PlaylistPauseAction} from './playlist-pause/playlist-pause.action';
+import {TrackUpVoteAction} from './track-up-vote/track-up-vote.action';
+import {AddTrackErrorAction} from './add-track-error/add-track-error.action';
+import {AddTrackSuccessAction} from './add-track-success/add-track-success.action';
+import {AddTrackAction} from './add-track/add-track.action';
+import {PlaylistAddTrackBody} from '../../service/vo/playlist-add-track-body';
+import {PlaylistError} from '../../model/error/playlist-error';
+import {PlaylistErrorResult} from '../../model/error/playlist-error-result';
+import {DeleteTrackSuccessAction} from "./delete-track-success/delete-track-success.action";
+import {DeleteTrackErrorAction} from "./delete-track-error/delete-track-error.action";
+import {DeleteTrackAction} from "./delete-track/delete-track.action";
 
 @Injectable()
 export class PlaylistCollectionEffects {
@@ -168,6 +171,19 @@ export class PlaylistCollectionEffects {
           .map((res: Response) => new AddTrackSuccessAction(action.payload))
           .catch((response: Response) =>
             Observable.of(new AddTrackErrorAction(this.getAddTrackError(response, action.payload.playlist))));
+      });
+  }
+
+  @Effect()
+  deleteTrack(): Observable<DeleteTrackSuccessAction | DeleteTrackErrorAction> {
+    return this.actions$
+      .filter((action: Action) => action instanceof DeleteTrackAction)
+      .switchMap((action: DeleteTrackAction) => {
+        return this.http.delete(
+          Config.API_BASE_URL + this.API_ENDPOINT + '/' + action.payload.playlist._id + '/tracks/' + action.payload.playlistTrack._id,
+          this.networkService.requestOptions)
+          .map((res: Response) => new DeleteTrackSuccessAction(action.payload))
+          .catch((res: Response) => Observable.of(new DeleteTrackErrorAction(action.payload)))
       });
   }
 

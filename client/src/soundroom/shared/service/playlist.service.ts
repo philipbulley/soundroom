@@ -86,21 +86,6 @@ export class PlaylistService {
   }
 
   deleteTrack(playlist: Playlist, playlistTrack: PlaylistTrack) {
-    this.store$.dispatch(new DeleteTrackAction({playlist, playlistTrack}));
-
-    const observable = this.http.delete(
-      Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id + '/tracks/' + playlistTrack._id,
-      this.networkService.requestOptions
-    )
-      .publishReplay(1) // Use publishReplay to allow multiple subscriptions, but only one request/result
-      .refCount();
-
-    observable.subscribe((res: Response) => {
-      this.store$.dispatch(new DeleteTrackSuccessAction(playlist._id));
-    }, (error: Response) => {
-      this.store$.dispatch(new DeleteTrackErrorAction(playlist._id));
-    });
-
     return observable
       .map((res: Response) => res.status)
       .catch((error: Response) => {
