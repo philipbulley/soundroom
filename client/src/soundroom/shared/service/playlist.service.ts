@@ -16,22 +16,11 @@ import { SocketService } from "./socket.service";
 import { SocketEventTypeEnum } from "../../shared/model/socket/socket-event-type.enum.ts";
 import { PlaylistProgressSocketEvent } from "../../shared/model/socket/playlist-progress-socket-event";
 import { PlaylistSocketEvent } from "../../shared/model/socket/playlist-socket-event";
-import { ProviderEnum } from "../../shared/model/enum/provider.enum";
-import { PlaylistAddTrackBody } from "./vo/playlist-add-track-body";
 import { PlaylistTrackFactory } from "../../shared/model/factory/playlist-track.factory";
 import { PlaylistTracksChangeActionEnum } from "../../shared/model/socket/playlist-tracks-change-action.enum";
 import { PlaylistTracksChangeSocketEvent } from "../../shared/model/socket/playlist-tracks-change-socket-event";
-import { PlaylistTrack } from "../../shared/model/playlist-track";
-import { PlaylistError } from "../model/error/playlist-error";
-import { User } from "../../shared/model/user";
 import { PlaylistProgressAction } from "../../shared/store/playlist-collection/playlist-progress/playlist-progress.action";
 import { PlaylistPausedAction } from "../store/playlist-collection/playlist-paused/playlist-paused.action";
-import { AddTrackAction } from '../../shared/store/playlist-collection/add-track/add-track.action';
-import { AddTrackSuccessAction } from '../../shared/store/playlist-collection/add-track-success/add-track-success.action';
-import { AddTrackErrorAction } from '../../shared/store/playlist-collection/add-track-error/add-track-error.action';
-import { DeleteTrackSuccessAction } from '../../shared/store/playlist-collection/delete-track-success/delete-track-success.action';
-import { DeleteTrackErrorAction } from '../../shared/store/playlist-collection/delete-track-error/delete-track-error.action';
-import { DeleteTrackAction } from '../../shared/store/playlist-collection/delete-track/delete-track.action';
 import { TrackUpdatePayload } from '../../shared/store/playlist-collection/track-update-payload';
 import { TrackUpdatedAction } from '../../shared/store/playlist-collection/track-upsert/track-updated.action';
 import { TrackAddedAction } from '../../shared/store/playlist-collection/track-upsert/track-added.action';
@@ -40,7 +29,6 @@ import { PlaylistLoadSuccessAction } from '../../shared/store/playlist-collectio
 import { PlaylistCreateErrorAction } from '../../shared/store/playlist-create/error/playlist-create-error.action';
 import { PlaylistCreateSuccessAction } from '../../shared/store/playlist-create/success/playlist-create-success.action';
 import { AppState } from '../model/app-state';
-import { PlaylistErrorResult } from '../model/error/playlist-error-result';
 
 @Injectable()
 export class PlaylistService {
@@ -71,18 +59,6 @@ export class PlaylistService {
 
     this.observeCreate();
     this.observeSocket();
-  }
-
-  /**
-   * Determines whether the user specified can delete the track specified.
-   *
-   * @param playlistTrack
-   * @param user
-   * @returns {boolean}
-   */
-  canUserDeleteTrack(playlistTrack: PlaylistTrack, user: User) {
-    // TODO: Allow admins (when implemented) to delete tracks  (also in back-end Playlist.canUserDeleteTrack())
-    return playlistTrack.createdBy._id === user._id;
   }
 
   /////////////////////////

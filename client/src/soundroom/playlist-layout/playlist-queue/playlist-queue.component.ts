@@ -11,6 +11,7 @@ import { TrackUpVoteAction } from '../../shared/store/playlist-collection/track-
 import { DeleteTrackAction } from "../../shared/store/playlist-collection/delete-track/delete-track.action";
 import { TrackDeletedAction } from "../../shared/store/playlist-collection/track-deleted/track-deleted.action";
 import { DeleteTrackErrorAction } from "../../shared/store/playlist-collection/delete-track-error/delete-track-error.action";
+import { canUserDeleteTrack } from '../../shared/util/playlist.util';
 
 const alertify = require('alertify.js');
 
@@ -89,7 +90,7 @@ export class PlaylistQueueComponent implements OnDestroy, OnChanges {
   }
 
   canCurrentUserDeleteTrack(playlistTrack: PlaylistTrack) {
-    return this.playlistService.canUserDeleteTrack(playlistTrack, this.user);
+    return canUserDeleteTrack(playlistTrack, this.user);
   }
 
   private handleDeleteTrackSuccess(playlistTrack: PlaylistTrack) {
