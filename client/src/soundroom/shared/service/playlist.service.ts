@@ -40,6 +40,7 @@ import { PlaylistLoadSuccessAction } from '../../shared/store/playlist-collectio
 import { PlaylistCreateErrorAction } from '../../shared/store/playlist-create/error/playlist-create-error.action';
 import { PlaylistCreateSuccessAction } from '../../shared/store/playlist-create/success/playlist-create-success.action';
 import { AppState } from '../model/app-state';
+import { PlaylistErrorResult } from '../model/error/playlist-error-result';
 
 @Injectable()
 export class PlaylistService {
@@ -105,12 +106,22 @@ export class PlaylistService {
       .catch((error: Response) => {
         // Re-throw actual error so the requesting method can act on it
         // const errorJson = error.json();
-        let errorThrow;
+        let errorThrow: PlaylistErrorResult;
 
         if (error.status === 500) {
-          errorThrow = new PlaylistError(PlaylistError.SERVER, null, playlist, error);
+          errorThrow = {
+            type: PlaylistError.SERVER,
+            playlistId: playlist._id,
+            status: error.status,
+            message: error.statusText
+          };
         } else {
-          errorThrow = new PlaylistError(PlaylistError.UNKNOWN, null, playlist, error);
+          errorThrow = {
+            type: PlaylistError.UNKNOWN,
+            playlistId: playlist._id,
+            status: error.status,
+            message: error.statusText
+          };
         }
 
         return Observable.throw(errorThrow);
@@ -166,63 +177,63 @@ export class PlaylistService {
     // TODO: Should socket service should dispatch directly to store?
     this.socketService.stream$
       .subscribe((event) => {
-      // console.log('PlaylistService.observeSocket: subscribe():', event);
+        // console.log('PlaylistService.observeSocket: subscribe():', event);
 
-      switch (event.type) {
+        switch (event.type) {
 
-        case SocketEventTypeEnum.PLAYLIST_TRACK_PROGRESS:
-          this.store$.dispatch(new PlaylistProgressAction(event.data as PlaylistProgressSocketEvent));
-          break;
+          case SocketEventTypeEnum.PLAYLIST_TRACK_PROGRESS:
+            this.store$.dispatch(new PlaylistProgressAction(event.data as PlaylistProgressSocketEvent));
+            break;
 
-        // NOTE: Don't really need to use PLAYLIST_PLAY as PROGRESS does the same job + more
-        // case SocketEventTypeEnum.PLAYLIST_PLAY:
-        //   this.store.dispatch({type: PlaylistAction.PLAY, payload: data});
-        //   break;
+          // NOTE: Don't really need to use PLAYLIST_PLAY as PROGRESS does the same job + more
+          // case SocketEventTypeEnum.PLAYLIST_PLAY:
+          //   this.store.dispatch({type: PlaylistAction.PLAY, payload: data});
+          //   break;
 
-        case SocketEventTypeEnum.PLAYLIST_PAUSE:
-          this.store$.dispatch(new PlaylistPausedAction(event.data as PlaylistSocketEvent));
-          break;
+          case SocketEventTypeEnum.PLAYLIST_PAUSE:
+            this.store$.dispatch(new PlaylistPausedAction(event.data as PlaylistSocketEvent));
+            break;
 
-        case SocketEventTypeEnum.PLAYLIST_TRACKS_CHANGE:
-          const eventData: PlaylistTracksChangeSocketEvent = event.data;
-          const playlistTrack = PlaylistTrackFactory.createFromApiResponse(eventData.playlistTrack);
+          case SocketEventTypeEnum.PLAYLIST_TRACKS_CHANGE:
+            const eventData: PlaylistTracksChangeSocketEvent = event.data;
+            const playlistTrack = PlaylistTrackFactory.createFromApiResponse(eventData.playlistTrack);
 
-          console.log('PlaylistService.observeSocket: SocketEventTypeEnum.PLAYLIST_TRACKS_CHANGE', event, eventData);
+            console.log('PlaylistService.observeSocket: SocketEventTypeEnum.PLAYLIST_TRACKS_CHANGE', event, eventData);
 
-          switch (eventData.action) {
-            case PlaylistTracksChangeActionEnum.ADD:
-            case PlaylistTracksChangeActionEnum.COMPLETE:
-            case PlaylistTracksChangeActionEnum.UP_VOTE:
-              console.log('PlaylistService.observeSocket: ', eventData.action, eventData);
+            switch (eventData.action) {
+              case PlaylistTracksChangeActionEnum.ADD:
+              case PlaylistTracksChangeActionEnum.COMPLETE:
+              case PlaylistTracksChangeActionEnum.UP_VOTE:
+                console.log('PlaylistService.observeSocket: ', eventData.action, eventData);
 
-              // A track has been successfully added - reflect change in local data collection
-              const payload: TrackUpdatePayload = {
-                playlistId: eventData.playlistId,
-                playlistTrack,
-                playlistTrackIds: eventData.playlistTrackIds,
-              };
+                // A track has been successfully added - reflect change in local data collection
+                const payload: TrackUpdatePayload = {
+                  playlistId: eventData.playlistId,
+                  playlistTrack,
+                  playlistTrackIds: eventData.playlistTrackIds,
+                };
 
-              this.store$.dispatch(
-                eventData.action === PlaylistTracksChangeActionEnum.COMPLETE ||
-                eventData.action === PlaylistTracksChangeActionEnum.UP_VOTE
-                  ? new TrackUpdatedAction(payload)
-                  : new TrackAddedAction(payload)
-              );
-              break;
+                this.store$.dispatch(
+                  eventData.action === PlaylistTracksChangeActionEnum.COMPLETE ||
+                  eventData.action === PlaylistTracksChangeActionEnum.UP_VOTE
+                    ? new TrackUpdatedAction(payload)
+                    : new TrackAddedAction(payload)
+                );
+                break;
 
-            case PlaylistTracksChangeActionEnum.DELETE:
-              console.log('PlaylistService.observeSocket: DELETE:', eventData.action, eventData);
+              case PlaylistTracksChangeActionEnum.DELETE:
+                console.log('PlaylistService.observeSocket: DELETE:', eventData.action, eventData);
 
-              this.store$.dispatch(new TrackDeletedAction({
-                playlistId: eventData.playlistId,
-                playlistTrack,
-                playlistTrackIds: eventData.playlistTrackIds,
-              }));
-              break;
-          }
-          break;
-      }
+                this.store$.dispatch(new TrackDeletedAction({
+                  playlistId: eventData.playlistId,
+                  playlistTrack,
+                  playlistTrackIds: eventData.playlistTrackIds,
+                }));
+                break;
+            }
+            break;
+        }
 
-    });
+      });
   }
 }

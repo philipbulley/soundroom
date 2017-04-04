@@ -6,18 +6,20 @@ import {
   Input,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { Store, Action } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
-import { PlaylistService } from "../../shared/service/playlist.service.ts";
-import { Playlist } from "../../shared/model/playlist";
-import { ProviderEnum } from "../../shared/model/enum/provider.enum.ts";
-import { SpotifyService } from "../../shared/service/spotify.service.ts";
-import { PlaylistError } from "../../shared/model/error/playlist-error";
-import { AddTrackAction } from '../../shared/store/playlist-collection/add-track/add-track.action';
-import { AppState } from '../../shared/model/app-state';
-import { PlaylistCollection } from '../../shared/model/playlist-collection';
-import { PlaylistTrack } from '../../shared/model/playlist-track';
-import { AddTrackErrorAction } from '../../shared/store/playlist-collection/add-track-error/add-track-error.action';
+import {Store, Action} from '@ngrx/store';
+import {Observable, Subscription} from 'rxjs';
+import 'rxjs/add/observable/merge';
+import {PlaylistService} from "../../shared/service/playlist.service.ts";
+import {Playlist} from "../../shared/model/playlist";
+import {ProviderEnum} from "../../shared/model/enum/provider.enum.ts";
+import {SpotifyService} from "../../shared/service/spotify.service.ts";
+import {PlaylistError} from "../../shared/model/error/playlist-error";
+import {AddTrackAction} from '../../shared/store/playlist-collection/add-track/add-track.action';
+import {AppState} from '../../shared/model/app-state';
+import {PlaylistCollection} from '../../shared/model/playlist-collection';
+import {PlaylistTrack} from '../../shared/model/playlist-track';
+import {AddTrackErrorAction} from '../../shared/store/playlist-collection/add-track-error/add-track-error.action';
+import {TrackAddedAction} from '../../shared/store/playlist-collection/track-upsert/track-added.action';
 const alertify = require('alertify.js');
 
 // Change to Component and transclude drop-url-overlay
@@ -43,8 +45,7 @@ export class DropUrlComponent implements OnInit, OnDestroy {
   private CSS_CLASS_REJECTED: string = 'is-rejected';
 
   private isDrag: boolean = false;
-  private playlistTrackAddedSuccess: Subscription;
-  private playlistTrackAddedError: Subscription;
+  private playlistTrackAddedResult: Subscription;
 
   constructor(private el: ElementRef,
               private store$: Store<AppState>,
@@ -58,12 +59,8 @@ export class DropUrlComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.playlistTrackAddedSuccess) {
-      this.playlistTrackAddedError.unsubscribe();
-    }
-
-    if (this.playlistTrackAddedError) {
-      this.playlistTrackAddedError.unsubscribe();
+    if (this.playlistTrackAddedResult) {
+      this.playlistTrackAddedResult.unsubscribe();
     }
   }
 
@@ -104,55 +101,44 @@ export class DropUrlComponent implements OnInit, OnDestroy {
 
     const playlistCollection$ = this.store$.select((store: AppState) => store.playlistCollection);
 
-    // Get playlist by id
-    const playlist$: Observable<Playlist> = playlistCollection$.map((playlistCollection: PlaylistCollection) =>
-      playlistCollection.playlists.find((playlist: Playlist) => playlist._id === this.playlist._id))
+    // Wait for `TrackAddedAction` and get playlist by id.
+    // NOTE: `AddTrackSuccessAction` occurs when the server tells us the track has been added (on the server)
+    // `TrackAddedAction` occurs when the track data model is sent to all clients including this one, so we wait for
+    // this action to determine when the `PlaylistTrack` will be in the store.
+    const playlist$: Observable<Playlist> = playlistCollection$
+      .filter((playlistCollection: PlaylistCollection) =>
+        playlistCollection.recentAction instanceof TrackAddedAction
+        && playlistCollection.recentAction.payload.playlistId === this.playlist._id
+      )
+      .map((playlistCollection: PlaylistCollection) =>
+        playlistCollection.playlists.find((playlist: Playlist) => playlist._id === this.playlist._id))
       .distinctUntilChanged();
 
     // Get PlaylistTrack by foreignId
     const track$: Observable<PlaylistTrack> = playlist$.map((playlist: Playlist) =>
       playlist.tracks.find((playlistTrack: PlaylistTrack) => playlistTrack.track.foreignId === spotifyUri))
+      .filter(Boolean)
       .distinctUntilChanged();
 
-    // Wait for success
-    this.playlistTrackAddedSuccess = track$
-      .filter(Boolean)
-      .take(1)
-      .subscribe(() => {
-        console.log('DropUrlComponent.subscribe(): status:', status);
-        this.hideOverlay();
-      });
-
     // Wait for error
-    this.playlistTrackAddedError = playlistCollection$
+    const error$ = playlistCollection$
       .map((playlistCollection: PlaylistCollection) => playlistCollection.recentAction)
       .filter((recentAction: Action) =>
         recentAction instanceof AddTrackErrorAction && recentAction.payload.playlistId === this.playlist._id
       )
-      .take(1)
-      .subscribe((recentAction: AddTrackErrorAction) => {
-        switch (recentAction.payload.type) {
-          case PlaylistError.PROVIDER_CONNECTION:
-            alertify.error(`Sorry! The Soundroom server can't reach Spotify — your track hasn't been added.`);
-            break;
-          case PlaylistError.DUPLICATE_USER_UP_VOTE:
-            alertify.error(`You've already up voted that track.`);
-            break;
-          case PlaylistError.SERVER:
-            alertify.error(`Sorry! The Soundroom server is having a bad day — your track hasn't been added.`);
-            break;
-          case PlaylistError.UNKNOWN:
-            alertify.error(`Sorry! We haven't been able to add your track.`);
-            break;
-        }
+      .switchMap((action: AddTrackErrorAction) => Observable.throw(action));
 
-        this.hideOverlay();
-      });
+    this.playlistTrackAddedResult = Observable.merge(track$, error$)
+      .take(1)
+      .subscribe(
+        (track: PlaylistTrack) => this.handleAddTrackSuccess(track),
+        (recentAction: AddTrackErrorAction) => this.handleAddTrackError(recentAction)
+      );
 
     this.store$.dispatch(new AddTrackAction({
       playlist: this.playlist,
       provider: ProviderEnum.SPOTIFY,
-      foreignId: spotifyUri
+      foreignId: spotifyUri,
     }));
   }
 
@@ -170,6 +156,29 @@ export class DropUrlComponent implements OnInit, OnDestroy {
     this.hideOverlay();
   }
 
+  handleAddTrackSuccess(track: PlaylistTrack) {
+    this.hideOverlay();
+  }
+
+  handleAddTrackError(recentAction: AddTrackErrorAction) {
+    switch (recentAction.payload.type) {
+      case PlaylistError.PROVIDER_CONNECTION:
+        alertify.error(`Sorry! The Soundroom server can't reach Spotify — your track hasn't been added.`);
+        break;
+      case PlaylistError.DUPLICATE_USER_UP_VOTE:
+        alertify.error(`You've already up voted that track.`);
+        break;
+      case PlaylistError.SERVER:
+        alertify.error(`Sorry! The Soundroom server is having a bad day — your track hasn't been added.`);
+        break;
+      case PlaylistError.UNKNOWN:
+        alertify.error(`Sorry! We haven't been able to add your track.`);
+        break;
+    }
+
+    this.hideOverlay();
+  }
+
   hideOverlay() {
     this.isDrag = false;
     this.el.nativeElement.classList.remove(
@@ -178,6 +187,4 @@ export class DropUrlComponent implements OnInit, OnDestroy {
       this.CSS_CLASS_REJECTED
     );
   }
-
-
 }

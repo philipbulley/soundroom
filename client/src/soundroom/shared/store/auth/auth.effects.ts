@@ -52,13 +52,14 @@ export class AuthEffects {
         return this.makeLoginRequest(action.payload)
           .map((user: User) => new LoadUserSuccessAction(user))
           .catch((loadUserError: LoadUserError) => Observable.of(new LoadUserErrorAction({
+            type: null, // TODO: Define error types for this kind of error?
             skipSignInRedirect: loadUserError.params
               ? loadUserError.params.skipSignInRedirectOnError
               : false,
             status: loadUserError.error instanceof Response
               ? (loadUserError.error as Response).status
               : 0,
-            statusText: loadUserError.error instanceof Response
+            message: loadUserError.error instanceof Response
               ? (loadUserError.error as Response).statusText
               : (loadUserError.error as Error).message,
           })));
