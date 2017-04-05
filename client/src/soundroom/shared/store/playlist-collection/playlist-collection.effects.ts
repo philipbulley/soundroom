@@ -28,13 +28,19 @@ import { AddTrackErrorAction } from './add-track-error/add-track-error.action';
 import { AddTrackSuccessAction } from './add-track-success/add-track-success.action';
 import { AddTrackAction } from './add-track/add-track.action';
 import { PlaylistAddTrackBody } from '../../service/vo/playlist-add-track-body';
-import { PlaylistError } from '../../model/error/playlist-error';
+import { ErrorKey } from '../../model/error/error-key';
 import { PlaylistErrorResult } from '../../model/error/playlist-error-result';
 import { DeleteTrackSuccessAction } from "./delete-track-success/delete-track-success.action";
 import { DeleteTrackErrorAction } from "./delete-track-error/delete-track-error.action";
 import { DeleteTrackAction } from "./delete-track/delete-track.action";
 import { PlaylistTrack } from '../../model/playlist-track';
 import { DeleteTrackErrorResult } from './delete-track-error/delete-track-error-result';
+import { PlaylistCreateAddDescriptionCreateAction } from '../playlist-create/add-description-create/playlist-create-add-description-create.action';
+import { PlaylistCreateSuccessAction } from '../playlist-create/success/playlist-create-success.action';
+import { PlaylistCreateErrorAction } from '../playlist-create/error/playlist-create-error.action';
+import { PlaylistCreate } from '../../model/playlist-create';
+import { PlaylistCreateBody } from '../../service/vo/playlist-create-body';
+import { ErrorResult } from '../../model/error/error-result';
 
 @Injectable()
 export class PlaylistCollectionEffects {
@@ -70,7 +76,7 @@ export class PlaylistCollectionEffects {
             return new LoadPlaylistCollectionSuccessAction(playlists);
           })
           .catch((error: Response) => Observable.of(new LoadPlaylistCollectionErrorAction({
-              type: PlaylistError.PLAYLIST_COLLECTION_NOT_FOUND,
+              type: ErrorKey.PLAYLIST_COLLECTION_NOT_FOUND,
               playlistId: null,
               status: error.status,
               message: error.statusText,
@@ -190,6 +196,36 @@ export class PlaylistCollectionEffects {
       });
   }
 
+  @Effect()
+  createPlaylist(): Observable<PlaylistCreateSuccessAction | PlaylistCreateErrorAction> {
+    return this.actions$
+      .filter((action: Action) => action instanceof PlaylistCreateAddDescriptionCreateAction)
+      .switchMap(action => {
+        console.log('createPlaylist: switchMap:', action);
+        return this.store$.select((state: AppState) => state.playlistCreate)
+          .take(1)
+          .mergeMap((playlistCreate: PlaylistCreate) => {
+            const body: PlaylistCreateBody = {
+              name: playlistCreate.name,
+            };
+
+            if (playlistCreate.description) {
+              body.description = playlistCreate.description;
+            }
+
+            return this.http.post(Config.API_BASE_URL + this.API_ENDPOINT, JSON.stringify(body), this.networkService.requestOptions)
+              .map((res: Response) => PlaylistFactory.createFromApiResponse(res.json()));
+          })
+          .switchMap((newPlaylist: Playlist) => Observable.of(
+            // For the benefit of notifying PlaylistCreateComponent that we're successful
+            new PlaylistCreateSuccessAction(newPlaylist),
+            // Separate action to actually add new playlist to our collection.
+            new PlaylistLoadSuccessAction(newPlaylist)
+          ))
+          .catch(res => Observable.of(new PlaylistCreateErrorAction(this.getCreatePlaylistError(res))));
+      });
+  }
+
   private getAddTrackError(response: Response, playlist: Playlist): PlaylistErrorResult {
     const errorJson = response.json();
 
@@ -201,19 +237,19 @@ export class PlaylistCollectionEffects {
     };
 
     if (errorJson.hasOwnProperty('message') && ~errorJson.message.indexOf('getaddrinfo ENOTFOUND')) {
-      return Object.assign(error, {type: PlaylistError.PROVIDER_CONNECTION});
+      return Object.assign(error, {type: ErrorKey.PROVIDER_CONNECTION});
     }
     if (errorJson.hasOwnProperty('message') && errorJson.message === 'DUPLICATE_USER_UP_VOTE') {
-      return Object.assign(error, {type: PlaylistError.DUPLICATE_USER_UP_VOTE});
+      return Object.assign(error, {type: ErrorKey.DUPLICATE_USER_UP_VOTE});
     }
     if (response.status === 500) {
-      return Object.assign(error, {type: PlaylistError.SERVER});
+      return Object.assign(error, {type: ErrorKey.SERVER});
     }
-    return Object.assign(error, {type: PlaylistError.UNKNOWN});
+    return Object.assign(error, {type: ErrorKey.UNKNOWN});
   }
 
   private getDeleteTrackError(response: Response, playlist: Playlist, playlistTrack: PlaylistTrack): DeleteTrackErrorResult {
-    const errorJson = response.json();
+    // const errorJson = response.json();
 
     const error: DeleteTrackErrorResult = {
       type: null,
@@ -224,9 +260,24 @@ export class PlaylistCollectionEffects {
     };
 
     if (response.status === 500) {
-      return Object.assign(error, {type: PlaylistError.SERVER});
+      return Object.assign(error, {type: ErrorKey.SERVER});
     }
-    return Object.assign(error, {type: PlaylistError.UNKNOWN});
+    return Object.assign(error, {type: ErrorKey.UNKNOWN});
+  }
+
+  private getCreatePlaylistError(response: Response): ErrorResult {
+    // const errorJson = response.json();
+
+    const error: ErrorResult = {
+      type: null,
+      status: response.status,
+      message: response.statusText,
+    };
+
+    if (response.status === 500) {
+      return Object.assign(error, {type: ErrorKey.SERVER});
+    }
+    return Object.assign(error, {type: ErrorKey.UNKNOWN});
   }
 
 // @Effect()

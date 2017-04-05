@@ -1,5 +1,6 @@
 import { Playlist } from "./playlist";
 import { PlaylistCreateState } from "./state/playlist-create.state.ts";
+import { ErrorResult } from './error/error-result';
 
 export interface PlaylistCreate {
 
@@ -16,5 +17,5 @@ export interface PlaylistCreate {
    */
   playlistCreated: Playlist;
 
-  error?: Error;
+  error?: ErrorResult;
 }

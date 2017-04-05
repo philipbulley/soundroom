@@ -13,7 +13,7 @@ import {PlaylistService} from "../../shared/service/playlist.service.ts";
 import {Playlist} from "../../shared/model/playlist";
 import {ProviderEnum} from "../../shared/model/enum/provider.enum.ts";
 import {SpotifyService} from "../../shared/service/spotify.service.ts";
-import {PlaylistError} from "../../shared/model/error/playlist-error";
+import {ErrorKey} from "../../shared/model/error/error-key";
 import {AddTrackAction} from '../../shared/store/playlist-collection/add-track/add-track.action';
 import {AppState} from '../../shared/model/app-state';
 import {PlaylistCollection} from '../../shared/model/playlist-collection';
@@ -162,16 +162,16 @@ export class DropUrlComponent implements OnInit, OnDestroy {
 
   handleAddTrackError(recentAction: AddTrackErrorAction) {
     switch (recentAction.payload.type) {
-      case PlaylistError.PROVIDER_CONNECTION:
+      case ErrorKey.PROVIDER_CONNECTION:
         alertify.error(`Sorry! The Soundroom server can't reach Spotify — your track hasn't been added.`);
         break;
-      case PlaylistError.DUPLICATE_USER_UP_VOTE:
+      case ErrorKey.DUPLICATE_USER_UP_VOTE:
         alertify.error(`You've already up voted that track.`);
         break;
-      case PlaylistError.SERVER:
+      case ErrorKey.SERVER:
         alertify.error(`Sorry! The Soundroom server is having a bad day — your track hasn't been added.`);
         break;
-      case PlaylistError.UNKNOWN:
+      case ErrorKey.UNKNOWN:
         alertify.error(`Sorry! We haven't been able to add your track.`);
         break;
     }

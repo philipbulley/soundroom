@@ -1,7 +1,7 @@
 import { ErrorResult } from './error-result';
-import { PlaylistError } from './playlist-error';
+import { ErrorKey } from './error-key';
 
 export interface PlaylistErrorResult extends ErrorResult {
   playlistId: string;
-  type: PlaylistError,
+  type: ErrorKey,
 }
