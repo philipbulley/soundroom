@@ -1,7 +1,5 @@
 import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
 import { Playlist } from '../../shared/model/playlist';
-import { PlaylistService } from '../../shared/service/playlist.service';
 import { Observable } from 'rxjs/Observable';
 import { DeletePlaylistAction } from '../../shared/store/playlist-collection/delete-playlist/delete-playlist.action';
 import { Store, Action } from '@ngrx/store';
@@ -45,9 +43,7 @@ export class PlaylistMenuItemComponent implements OnDestroy {
   private deleteConfirmCancel: Subscription;
 
   constructor(private store$: Store<AppState>,
-              private playlistService: PlaylistService,
-              private cdr: ChangeDetectorRef,
-              private router: Router) {
+              private cdr: ChangeDetectorRef) {
     // console.log('PlaylistMenuItemComponent()', router);
   }
 

@@ -6,20 +6,19 @@ import {
   Input,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import {Store, Action} from '@ngrx/store';
-import {Observable, Subscription} from 'rxjs';
+import { Store, Action } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
 import 'rxjs/add/observable/merge';
-import {PlaylistService} from "../../shared/service/playlist.service.ts";
-import {Playlist} from "../../shared/model/playlist";
-import {ProviderEnum} from "../../shared/model/enum/provider.enum.ts";
-import {SpotifyService} from "../../shared/service/spotify.service.ts";
-import {ErrorKey} from "../../shared/model/error/error-key";
-import {AddTrackAction} from '../../shared/store/playlist-collection/add-track/add-track.action';
-import {AppState} from '../../shared/model/app-state';
-import {PlaylistCollection} from '../../shared/model/playlist-collection';
-import {PlaylistTrack} from '../../shared/model/playlist-track';
-import {AddTrackErrorAction} from '../../shared/store/playlist-collection/add-track-error/add-track-error.action';
-import {TrackAddedAction} from '../../shared/store/playlist-collection/track-upsert/track-added.action';
+import { Playlist } from "../../shared/model/playlist";
+import { ProviderEnum } from "../../shared/model/enum/provider.enum.ts";
+import { SpotifyService } from "../../shared/service/spotify.service.ts";
+import { ErrorKey } from "../../shared/model/error/error-key";
+import { AddTrackAction } from '../../shared/store/playlist-collection/add-track/add-track.action';
+import { AppState } from '../../shared/model/app-state';
+import { PlaylistCollection } from '../../shared/model/playlist-collection';
+import { PlaylistTrack } from '../../shared/model/playlist-track';
+import { AddTrackErrorAction } from '../../shared/store/playlist-collection/add-track-error/add-track-error.action';
+import { TrackAddedAction } from '../../shared/store/playlist-collection/track-upsert/track-added.action';
 const alertify = require('alertify.js');
 
 // Change to Component and transclude drop-url-overlay
@@ -49,7 +48,6 @@ export class DropUrlComponent implements OnInit, OnDestroy {
 
   constructor(private el: ElementRef,
               private store$: Store<AppState>,
-              private playlistService: PlaylistService,
               private spotifyService: SpotifyService) {
     // console.log('DropUrlComponent()');
   }

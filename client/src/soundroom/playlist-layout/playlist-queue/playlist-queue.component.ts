@@ -3,7 +3,6 @@ import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { Playlist } from '../../shared/model/playlist';
 import { PlaylistTrack } from '../../shared/model/playlist-track';
-import { PlaylistService } from '../../shared/service/playlist.service';
 import { UpVote } from '../../shared/model/up-vote';
 import { User } from '../../shared/model/user';
 import { AppState } from '../../shared/model/app-state';
@@ -32,7 +31,7 @@ export class PlaylistQueueComponent implements OnDestroy, OnChanges {
   private playlistTracks: PlaylistTrack[];
   private playlistTrackDeletedResult: Subscription;
 
-  constructor(private playlistService: PlaylistService, private store$: Store<AppState>) {
+  constructor(private store$: Store<AppState>) {
   }
 
   ngOnChanges() {

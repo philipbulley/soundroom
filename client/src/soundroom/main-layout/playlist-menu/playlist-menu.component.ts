@@ -1,6 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, Input } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
-import { PlaylistService } from '../../shared/service/playlist.service';
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { PlaylistCollection } from '../../shared/model/playlist-collection';
 import { PlaylistCollectionState } from '../../shared/model/state/playlist-collection.state';
 
@@ -12,7 +10,7 @@ const alertify = require('alertify.js');
   styles: [require('./playlist-menu.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PlaylistMenuComponent implements OnInit, OnDestroy {
+export class PlaylistMenuComponent {
 
   /* tslint:disable:no-unused-variable */
   @Input() private playlistCollection: PlaylistCollection;
@@ -20,32 +18,8 @@ export class PlaylistMenuComponent implements OnInit, OnDestroy {
   private PlaylistCollectionState = PlaylistCollectionState;
   /* tslint:enable:no-unused-variable */
 
-  private isSlowConnection: boolean = false;
-  private onSlowConnectionSubscription: Subscription;
 
-  constructor(private playlistService: PlaylistService) {
+  constructor() {
     //
-  }
-
-  ngOnInit(): any {
-    // TODO: Move slow connection to state tree
-    this.onSlowConnectionSubscription = this.playlistService.onSlowConnection.subscribe(
-      (isSlow: boolean) => this.handleSlowConnection(isSlow)
-    );
-  }
-
-  ngOnDestroy(): any {
-    this.onSlowConnectionSubscription.unsubscribe();
-  }
-
-  private handleSlowConnection(isSlow: boolean) {
-    // console.log("PlaylistMenuComponent.handleSlowConnection()", isSlow);
-
-    this.isSlowConnection = isSlow;
-
-    if (isSlow) {
-      console.log('// TODO: Show alertify dialog');
-      alertify.log("<i class=\"fa fa-wifi\"></i> There are problems with your connection, we'll keep trying.");
-    }
   }
 }

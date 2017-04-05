@@ -1,11 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 
-import { Observable } from 'rxjs/Observable';
-import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
 import { Store } from '@ngrx/store';
 
-import { Playlist } from '../../shared/model/playlist';
-import { PlaylistCreate } from "../../shared/model/playlist-create";
 import { SocketService } from "./socket.service";
 import { SocketEventTypeEnum } from "../../shared/model/socket/socket-event-type.enum.ts";
 import { PlaylistProgressSocketEvent } from "../../shared/model/socket/playlist-progress-socket-event";
@@ -25,25 +21,10 @@ import { AppState } from '../model/app-state';
 export class PlaylistService {
 
   /**
-   * An `Observable` that can be subscribed to for playlist data. Use this in components to the data of access one or
-   * more playlists.
-   * @deprecated
-   */
-  playlists: ConnectableObservable<Playlist[]>;
-
-  /**
    * TODO refactor into it's own connection service?
    * @type {EventEmitter}
    */
   onSlowConnection: EventEmitter<boolean> = new EventEmitter<boolean>();
-
-  /**
-   * Location of RESTful resource on server
-   * @type {string}
-   */
-  private API_ENDPOINT: string = '/playlists';
-
-  private playlistCreate$: Observable<PlaylistCreate>;
 
   constructor(public store$: Store<AppState>, private socketService: SocketService) {
     this.observeSocket();
