@@ -2,8 +2,6 @@ import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { PlaylistCollection } from '../../shared/model/playlist-collection';
 import { PlaylistCollectionState } from '../../shared/model/state/playlist-collection.state';
 
-const alertify = require('alertify.js');
-
 @Component({
   selector: 'sr-playlist-menu',
   template: require('./playlist-menu.html'),

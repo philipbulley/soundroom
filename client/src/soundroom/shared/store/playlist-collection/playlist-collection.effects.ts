@@ -183,7 +183,7 @@ export class PlaylistCollectionEffects {
           this.networkService.requestOptions)
           .map((res: Response) => new DeleteTrackSuccessAction(action.payload))
           .catch((res: Response) =>
-            Observable.of(new DeleteTrackErrorAction(getDeleteTrackError(res, action.payload.playlist, action.payload.playlistTrack))))
+            Observable.of(new DeleteTrackErrorAction(getDeleteTrackError(res, action.payload.playlist, action.payload.playlistTrack))));
       });
   }
 
