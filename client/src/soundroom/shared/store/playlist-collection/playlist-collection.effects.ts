@@ -29,18 +29,15 @@ import { AddTrackSuccessAction } from './add-track-success/add-track-success.act
 import { AddTrackAction } from './add-track/add-track.action';
 import { PlaylistAddTrackBody } from '../../service/vo/playlist-add-track-body';
 import { ErrorKey } from '../../model/error/error-key';
-import { PlaylistErrorResult } from '../../model/error/playlist-error-result';
 import { DeleteTrackSuccessAction } from "./delete-track-success/delete-track-success.action";
 import { DeleteTrackErrorAction } from "./delete-track-error/delete-track-error.action";
 import { DeleteTrackAction } from "./delete-track/delete-track.action";
-import { PlaylistTrack } from '../../model/playlist-track';
-import { DeleteTrackErrorResult } from './delete-track-error/delete-track-error-result';
 import { PlaylistCreateAddDescriptionCreateAction } from '../playlist-create/add-description-create/playlist-create-add-description-create.action';
 import { PlaylistCreateSuccessAction } from '../playlist-create/success/playlist-create-success.action';
 import { PlaylistCreateErrorAction } from '../playlist-create/error/playlist-create-error.action';
 import { PlaylistCreate } from '../../model/playlist-create';
 import { PlaylistCreateBody } from '../../service/vo/playlist-create-body';
-import { ErrorResult } from '../../model/error/error-result';
+import { getAddTrackError, getDeleteTrackError, getCreatePlaylistError } from './playlist-collection-api-error-helper';
 
 @Injectable()
 export class PlaylistCollectionEffects {
@@ -121,9 +118,7 @@ export class PlaylistCollectionEffects {
       );
   }
 
-  @Effect({
-    dispatch: false,
-  })
+  @Effect({dispatch: false})
   play() {
     return this.actions$
       .filter((action: Action) => action instanceof PlaylistPlayAction)
@@ -132,9 +127,7 @@ export class PlaylistCollectionEffects {
       .ignoreElements();
   }
 
-  @Effect({
-    dispatch: false,
-  })
+  @Effect({dispatch: false})
   pause() {
     return this.actions$
       .filter((action: Action) => action instanceof PlaylistPauseAction)
@@ -143,9 +136,7 @@ export class PlaylistCollectionEffects {
       .ignoreElements();
   }
 
-  @Effect({
-    dispatch: false,
-  })
+  @Effect({dispatch: false})
   trackUpVote() {
     return this.actions$
       .filter((action: Action) => action instanceof TrackUpVoteAction)
@@ -178,7 +169,7 @@ export class PlaylistCollectionEffects {
         // NOTE: Track is added to store via socket event handler, as all clients will receive that event.
           .map((res: Response) => new AddTrackSuccessAction(action.payload))
           .catch((res: Response) =>
-            Observable.of(new AddTrackErrorAction(this.getAddTrackError(res, action.payload.playlist))));
+            Observable.of(new AddTrackErrorAction(getAddTrackError(res, action.payload.playlist))));
       });
   }
 
@@ -192,7 +183,7 @@ export class PlaylistCollectionEffects {
           this.networkService.requestOptions)
           .map((res: Response) => new DeleteTrackSuccessAction(action.payload))
           .catch((res: Response) =>
-            Observable.of(new DeleteTrackErrorAction(this.getDeleteTrackError(res, action.payload.playlist, action.payload.playlistTrack))))
+            Observable.of(new DeleteTrackErrorAction(getDeleteTrackError(res, action.payload.playlist, action.payload.playlistTrack))))
       });
   }
 
@@ -201,7 +192,6 @@ export class PlaylistCollectionEffects {
     return this.actions$
       .filter((action: Action) => action instanceof PlaylistCreateAddDescriptionCreateAction)
       .switchMap(action => {
-        console.log('createPlaylist: switchMap:', action);
         return this.store$.select((state: AppState) => state.playlistCreate)
           .take(1)
           .mergeMap((playlistCreate: PlaylistCreate) => {
@@ -222,62 +212,8 @@ export class PlaylistCollectionEffects {
             // Separate action to actually add new playlist to our collection.
             new PlaylistLoadSuccessAction(newPlaylist)
           ))
-          .catch(res => Observable.of(new PlaylistCreateErrorAction(this.getCreatePlaylistError(res))));
+          .catch(res => Observable.of(new PlaylistCreateErrorAction(getCreatePlaylistError(res))));
       });
-  }
-
-  private getAddTrackError(response: Response, playlist: Playlist): PlaylistErrorResult {
-    const errorJson = response.json();
-
-    const error: PlaylistErrorResult = {
-      type: null,
-      playlistId: playlist._id,
-      status: response.status,
-      message: response.statusText,
-    };
-
-    if (errorJson.hasOwnProperty('message') && ~errorJson.message.indexOf('getaddrinfo ENOTFOUND')) {
-      return Object.assign(error, {type: ErrorKey.PROVIDER_CONNECTION});
-    }
-    if (errorJson.hasOwnProperty('message') && errorJson.message === 'DUPLICATE_USER_UP_VOTE') {
-      return Object.assign(error, {type: ErrorKey.DUPLICATE_USER_UP_VOTE});
-    }
-    if (response.status === 500) {
-      return Object.assign(error, {type: ErrorKey.SERVER});
-    }
-    return Object.assign(error, {type: ErrorKey.UNKNOWN});
-  }
-
-  private getDeleteTrackError(response: Response, playlist: Playlist, playlistTrack: PlaylistTrack): DeleteTrackErrorResult {
-    // const errorJson = response.json();
-
-    const error: DeleteTrackErrorResult = {
-      type: null,
-      playlist,
-      playlistTrack,
-      status: response.status,
-      message: response.statusText,
-    };
-
-    if (response.status === 500) {
-      return Object.assign(error, {type: ErrorKey.SERVER});
-    }
-    return Object.assign(error, {type: ErrorKey.UNKNOWN});
-  }
-
-  private getCreatePlaylistError(response: Response): ErrorResult {
-    // const errorJson = response.json();
-
-    const error: ErrorResult = {
-      type: null,
-      status: response.status,
-      message: response.statusText,
-    };
-
-    if (response.status === 500) {
-      return Object.assign(error, {type: ErrorKey.SERVER});
-    }
-    return Object.assign(error, {type: ErrorKey.UNKNOWN});
   }
 
 // @Effect()
