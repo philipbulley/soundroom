@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { StoreModule } from '@ngrx/store';
-import { SoundroomRoutingModule } from './soundroom-routing.module';
+import { AppRoutingModule } from './app-routing.module';
 import { CoreModule } from './core/core.module';
-import { SoundroomComponent } from './soundroom.component';
+import { AppComponent } from './app.component';
 import { STORE_REDUCERS } from './shared/store/store.reducers';
 import { STORE_EFFECTS } from './shared/store/store.effects';
 import { PlaylistLayoutModule } from './playlist-layout/playlist-layout.module';
@@ -12,21 +12,21 @@ import { SharedModule } from './shared/shared.module';
 
 /* Feature Modules */
 @NgModule({
-  bootstrap: [SoundroomComponent],
+  bootstrap: [AppComponent],
   imports: [
     CoreModule,
     SharedModule,
     StoreModule.provideStore(STORE_REDUCERS),
     STORE_EFFECTS,
-    SoundroomRoutingModule,
+    AppRoutingModule,
     // Non lazy-loaded modules
     MainLayoutModule,
     PlaylistLayoutModule,
     SignInLayoutModule,
   ],
   declarations: [
-    SoundroomComponent,
+    AppComponent,
   ],
 })
-export class SoundroomModule {
+export class AppModule {
 }

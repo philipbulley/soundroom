@@ -7,16 +7,16 @@ import { AppState } from './shared/model/app-state';
 import { AppInitAction } from './shared/store/app-init/app-init.action';
 
 @Component({
-  selector: 'sr-soundroom',
-  template: require('./soundroom.html'),
-  styles: [require('./soundroom.scss')],
+  selector: 'sr-app',
+  template: require('./app.component.html'),
+  styles: [require('./app.component.scss')],
 })
-export class SoundroomComponent implements OnInit {
+export class AppComponent implements OnInit {
 
   private auth$: Observable<Auth>;
 
   constructor(private store$: Store<AppState>, private socketService: SocketService) {
-    // console.log('SoundroomComponent()');
+    // console.log('AppComponent()');
 
     //console.log('%c♪ ♫ ♬  Soundroom  ♬ ♫ ♪', 'background-color:#3fa2db;color:#fff;padding:20px
     // 20px;font-size:30px;font-weight:bold;text-align:center;text-shadow:0 1px 0 #ccc,0 2px 0 #c9c9c9,0 3px 0 #bbb,0

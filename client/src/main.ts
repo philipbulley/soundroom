@@ -2,7 +2,7 @@
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 // The app module
-import { SoundroomModule } from './soundroom/soundroom.module';
+import { AppModule } from './soundroom/app.module';
 
 const platform = platformBrowserDynamic();
-platform.bootstrapModule(SoundroomModule);
+platform.bootstrapModule(AppModule);

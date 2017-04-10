@@ -14,5 +14,5 @@ const APP_ROUTES: Routes = [
   imports: [RouterModule.forRoot(APP_ROUTES, {useHash: false})],
   exports: [RouterModule],
 })
-export class SoundroomRoutingModule {
+export class AppRoutingModule {
 }
