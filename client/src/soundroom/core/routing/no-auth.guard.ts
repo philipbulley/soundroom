@@ -13,7 +13,7 @@ export class NoAuthGuard implements CanActivate {
   private auth$: Observable<Auth>;
 
   constructor(private store$: Store<AppState>, private router: Router) {
-    this.auth$ = this.store$.map((state: AppState) => state.auth);
+    this.auth$ = this.store$.select((state: AppState) => state.auth);
   }
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Observable<boolean> {

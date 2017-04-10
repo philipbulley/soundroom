@@ -21,7 +21,7 @@ export class MainLayoutComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.playlistCollection$ = this.store$.map((state: AppState) => state.playlistCollection);
+    this.playlistCollection$ = this.store$.select((state: AppState) => state.playlistCollection);
 
     this.store$.dispatch(new LoadPlaylistCollectionAction());
   }

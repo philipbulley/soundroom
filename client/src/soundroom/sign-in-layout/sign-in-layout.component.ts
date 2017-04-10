@@ -19,9 +19,7 @@ export class SignInLayoutComponent implements OnInit {
   private auth$: Observable<Auth>;
 
   constructor(private store$: Store<AppState>, private activatedRoute: ActivatedRoute) {
-
-    this.auth$ = this.store$.map((state: AppState) => state.auth);
-
+    this.auth$ = this.store$.select((state: AppState) => state.auth);
   }
 
   ngOnInit(): any {
