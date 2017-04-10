@@ -29,9 +29,6 @@ export class SoundroomComponent implements OnInit {
   ngOnInit(): any {
     this.store$.dispatch(new AppInitAction());
 
-    this.auth$ = this.store$.map((state: AppState) => state.auth);
-
-    // TODO: Move to effect
-    this.socketService.init();
+    this.auth$ = this.store$.select((state: AppState) => state.auth);
   }
 }

@@ -4,7 +4,7 @@ import { SocketService } from '../shared/service/socket.service';
 import { NetworkService } from '../shared/service/network.service';
 import { AppToolbarComponent } from './app-toolbar/app-toolbar-layout.component';
 import { SpotifyService } from '../shared/service/spotify.service';
-import { PlaylistService } from '../shared/service/playlist.service';
+import { PlaylistSocketEventService } from '../shared/service/playlist-socket-event.service';
 import { SharedModule } from '../shared/shared.module';
 import { NoAuthGuard } from './routing/no-auth.guard';
 import { AuthGuard } from './routing/auth.guard';
@@ -28,7 +28,7 @@ import { AuthGuard } from './routing/auth.guard';
   providers: [
     NetworkService,
     SocketService,
-    PlaylistService,
+    PlaylistSocketEventService,
     SpotifyService,
     AuthGuard,
     NoAuthGuard,

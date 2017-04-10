@@ -38,6 +38,7 @@ import { PlaylistCreateErrorAction } from '../playlist-create/error/playlist-cre
 import { PlaylistCreate } from '../../model/playlist-create';
 import { PlaylistCreateBody } from '../../service/vo/playlist-create-body';
 import { getAddTrackError, getDeleteTrackError, getCreatePlaylistError } from './playlist-collection-api-error-helper';
+import { PlaylistSocketEventService } from '../../service/playlist-socket-event.service';
 
 @Injectable()
 export class PlaylistCollectionEffects {
@@ -50,8 +51,8 @@ export class PlaylistCollectionEffects {
               private http: Http,
               private networkService: NetworkService,
               private socketService: SocketService,
-              private router: Router) {
-    //
+              private socketEventService: PlaylistSocketEventService) {
+    this.socketEventService.subscribe();
   }
 
   /**

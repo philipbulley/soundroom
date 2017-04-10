@@ -33,6 +33,7 @@ export class SocketService {
 
   constructor(private store$: Store<AppState>) {
     // console.log('SocketService()');
+    this.init();
   }
 
   init() {
