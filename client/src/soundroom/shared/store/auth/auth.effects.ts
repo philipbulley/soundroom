@@ -102,7 +102,6 @@ export class AuthEffects {
     return this.http.get(Config.API_BASE_URL + '/me', this.networkService.requestOptions)
     // .delay(2000)    // DEBUG: Delay for simulation purposes only
       .map((res: Response) => UserFactory.createFromApiResponse(res.json()))
-      .do(() => this.networkService.ok())
       .catch((res: Response) => {
         const error: LoadUserError = {
           params: params,
