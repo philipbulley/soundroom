@@ -11,8 +11,8 @@ import { PlaylistLoadAction } from '../shared/store/playlist-collection/playlist
 
 @Component({
   selector: 'sr-playlist-layout',
-  template: require('./playlist-layout.html'),
-  styles: [require('./playlist-layout.scss')],
+  template: require('./playlist-layout.component.html'),
+  styles: [require('./playlist-layout.component.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlaylistLayoutComponent implements OnInit {

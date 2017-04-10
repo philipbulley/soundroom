@@ -2,8 +2,8 @@ import { Component, ChangeDetectionStrategy, Input, OnChanges } from '@angular/c
 
 @Component({
   selector: 'sr-timeline',
-  template: require('./timeline.html'),
-  styles: [require('./timeline.scss')],
+  template: require('./timeline.component.html'),
+  styles: [require('./timeline.component.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimelineComponent implements OnChanges {

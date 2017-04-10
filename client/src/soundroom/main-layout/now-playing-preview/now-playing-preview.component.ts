@@ -6,8 +6,8 @@ import { PlaylistCollection } from '../../shared/model/playlist-collection';
 
 @Component({
   selector: 'sr-now-playing-preview',
-  template: require('./now-playing-preview.html'),
-  styles: [require('./now-playing-preview.scss')],
+  template: require('./now-playing-preview.component.html'),
+  styles: [require('./now-playing-preview.component.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NowPlayingPreviewComponent implements OnInit {

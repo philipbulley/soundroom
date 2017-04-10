@@ -24,8 +24,8 @@ const alertify = require('alertify.js');
 
 @Component({
   selector: 'sr-playlist-create',
-  template: require('./playlist-create.html'),
-  styles: [require('./playlist-create.scss')],
+  template: require('./playlist-create.component.html'),
+  styles: [require('./playlist-create.component.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlaylistCreateComponent implements OnInit, OnDestroy {

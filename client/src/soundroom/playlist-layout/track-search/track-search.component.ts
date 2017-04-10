@@ -3,8 +3,8 @@ import { Playlist } from '../../shared/model/playlist';
 
 @Component({
   selector: 'sr-track-search',
-  template: require('./track-search.html'),
-  styles: [require('./track-search.scss')],
+  template: require('./track-search.component.html'),
+  styles: [require('./track-search.component.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TrackSearchComponent {

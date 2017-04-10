@@ -10,8 +10,8 @@ import { LoadUserAction } from '../shared/store/auth/load-user/load-user.action'
 
 @Component({
   selector: 'sr-main-layout',
-  template: require('./sign-in-layout.html'),
-  styles: [require('./sign-in-layout.scss')],
+  template: require('./sign-in-layout.component.html'),
+  styles: [require('./sign-in-layout.component.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignInLayoutComponent implements OnInit {

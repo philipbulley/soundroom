@@ -8,8 +8,8 @@ import { PlaylistPauseAction } from '../../shared/store/playlist-collection/play
 
 @Component({
   selector: 'sr-now-playing',
-  template: require('./now-playing.html'),
-  styles: [require('./now-playing.scss')],
+  template: require('./now-playing.component.html'),
+  styles: [require('./now-playing.component.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NowPlayingComponent implements OnChanges {

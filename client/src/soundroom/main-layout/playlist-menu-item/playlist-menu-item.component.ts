@@ -13,8 +13,8 @@ const alertify = require('alertify.js');
 
 @Component({
   selector: 'sr-playlist-menu-item',
-  template: require('./playlist-menu-item.html'),
-  styles: [require('./playlist-menu-item.scss')],
+  template: require('./playlist-menu-item.component.html'),
+  styles: [require('./playlist-menu-item.component.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlaylistMenuItemComponent implements OnDestroy {

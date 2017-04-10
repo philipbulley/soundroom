@@ -24,8 +24,8 @@ const alertify = require('alertify.js');
 // Change to Component and transclude drop-url-overlay
 @Component({
   selector: 'sr-drop-url',
-  template: require('./drop-url.html'),
-  styles: [require('./drop-url.scss')],
+  template: require('./drop-url.component.html'),
+  styles: [require('./drop-url.component.scss')],
   host: {
     '(drop)': 'handleDrop($event)',
     '(dragover)': 'handleDragOver($event)',

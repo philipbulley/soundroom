@@ -16,8 +16,8 @@ const alertify = require('alertify.js');
 
 @Component({
   selector: 'sr-playlist-queue',
-  template: require('./playlist-queue.html'),
-  styles: [require('./playlist-queue.scss')],
+  template: require('./playlist-queue.component.html'),
+  styles: [require('./playlist-queue.component.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlaylistQueueComponent implements OnDestroy, OnChanges {

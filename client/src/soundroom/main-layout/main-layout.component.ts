@@ -8,8 +8,8 @@ import { LoadPlaylistCollectionAction } from '../shared/store/playlist-collectio
 
 @Component({
   selector: 'sr-main-layout',
-  template: require('./main-layout.html'),
-  styles: [require('./main-layout.scss')],
+  template: require('./main-layout.component.html'),
+  styles: [require('./main-layout.component.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainLayoutComponent implements OnInit {

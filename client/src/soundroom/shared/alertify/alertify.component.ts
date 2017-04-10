@@ -4,8 +4,8 @@ const alertify = require('alertify.js');
 
 @Component({
   selector: 'sr-alertify',
-  template: require('./alertify.html'),
-  styles: [require('./alertify.scss')],
+  template: require('./alertify.component.html'),
+  styles: [require('./alertify.component.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlertifyComponent implements OnInit {

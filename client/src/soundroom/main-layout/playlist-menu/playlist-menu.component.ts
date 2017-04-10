@@ -4,8 +4,8 @@ import { PlaylistCollectionState } from '../../shared/model/state/playlist-colle
 
 @Component({
   selector: 'sr-playlist-menu',
-  template: require('./playlist-menu.html'),
-  styles: [require('./playlist-menu.scss')],
+  template: require('./playlist-menu.component.html'),
+  styles: [require('./playlist-menu.component.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlaylistMenuComponent {

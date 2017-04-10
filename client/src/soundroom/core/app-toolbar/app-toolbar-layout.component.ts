@@ -3,8 +3,8 @@ import { Auth } from '../../shared/model/auth';
 
 @Component({
   selector: 'sr-app-toolbar',
-  template: require('./app-toolbar-layout.html'),
-  styles: [require('./app-toolbar-layout.scss')],
+  template: require('./app-toolbar-layout.component.html'),
+  styles: [require('./app-toolbar-layout.component.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppToolbarComponent {

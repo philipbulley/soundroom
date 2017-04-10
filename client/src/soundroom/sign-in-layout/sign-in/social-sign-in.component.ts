@@ -3,8 +3,8 @@ import { Config } from "../../shared/model/config";
 
 @Component({
   selector: 'sr-social-sign-in',
-  template: require('./social-sign-in.html'),
-  styles: [require('./social-sign-in.scss')],
+  template: require('./social-sign-in.component.html'),
+  styles: [require('./social-sign-in.component.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SocialSignInComponent {
