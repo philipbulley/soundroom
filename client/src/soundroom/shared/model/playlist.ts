@@ -27,14 +27,4 @@ export class Playlist {
    * TODO: Change to PlaylistTrack id
    */
   current: PlaylistTrack = null;
-
-  /**
-   * Read-only convenience property to determine whether this playlist is playing.
-   */
-  get isPlaying(): boolean {
-    return !this.current
-      ? false
-      : this.current.isPlaying;
-  }
-
 }

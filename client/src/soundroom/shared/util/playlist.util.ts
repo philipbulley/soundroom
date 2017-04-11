@@ -1,5 +1,6 @@
 import { PlaylistTrack } from '../model/playlist-track';
 import { User } from '../model/user';
+import { Playlist } from '../model/playlist';
 
 /**
  * Sorts the PlaylistTracks in a playlist based on an array of corresponding PlaylistTrack._id values.
@@ -20,9 +21,14 @@ export function sortPlaylistTracks(tracks: PlaylistTrack[], playlistTrackIds: st
  *
  * @param playlistTrack
  * @param user
- * @returns {boolean}
  */
-export function canUserDeleteTrack(playlistTrack: PlaylistTrack, user: User) {
+export function canUserDeleteTrack(playlistTrack: PlaylistTrack, user: User): boolean {
   // TODO: Allow admins (when implemented) to delete tracks  (also in back-end Playlist.canUserDeleteTrack())
   return playlistTrack.createdBy._id === user._id;
+}
+
+export function isPlaylistPlaying(playlist: Playlist): boolean {
+  return !playlist.current
+    ? false
+    : playlist.current.isPlaying;
 }

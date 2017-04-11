@@ -5,6 +5,7 @@ import { PlaylistTrack } from '../../shared/model/playlist-track';
 import { AppState } from '../../shared/model/app-state';
 import { PlaylistPlayAction } from '../../shared/store/playlist-collection/playlist-play/playlist-play.action';
 import { PlaylistPauseAction } from '../../shared/store/playlist-collection/playlist-pause/playlist-pause.action';
+import { isPlaylistPlaying } from '../../shared/util/playlist.util';
 
 @Component({
   selector: 'sr-now-playing',
@@ -43,7 +44,7 @@ export class NowPlayingComponent implements OnChanges {
   }
 
   togglePlay() {
-    if (this.playlist.isPlaying) {
+    if (isPlaylistPlaying(this.playlist)) {
       this.pause();
     } else {
       this.play();
