@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
-import { Router } from '@angular/router';
 import { Effect, Actions } from '@ngrx/effects';
 import { Store, Action } from '@ngrx/store';
 import 'rxjs/add/operator/filter';
