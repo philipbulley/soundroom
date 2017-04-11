@@ -1,6 +1,6 @@
 import { PlaylistCollection } from '../../../model/playlist-collection';
 import { Playlist } from '../../../model/playlist';
-import { upsertPlaylists } from '../../../util/playlist.util';
+import { upsertPlaylists } from '../../../util/playlist-collection.util';
 
 /**
  * Add a new Playlist to our PlaylistCollection
