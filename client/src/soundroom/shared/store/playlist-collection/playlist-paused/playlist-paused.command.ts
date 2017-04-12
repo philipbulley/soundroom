@@ -18,7 +18,7 @@ export const playlistPauseCommand = (state: PlaylistCollection, payload: Playlis
 };
 
 function updateIndividualPlaylist(state: Playlist) {
-  if (!state.current) {
+  if (!state.currentPlaylistTrackId) {
     return state;
   }
 
@@ -31,7 +31,7 @@ function updateIndividualPlaylist(state: Playlist) {
       newTrack.isPlaying = false;
 
       // Assign reference of newly created PlaylistTrack to Playlist
-      state.current = newTrack;
+      state.currentPlaylistTrackId = newTrack._id;
       return newTrack;
     }
     return track;

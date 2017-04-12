@@ -19,12 +19,11 @@ export class Playlist {
   loadState: PlaylistState = null;
 
   /**
-   * The track currently playing.
+   * The ID of the track currently playing.
    *
-   * This is only populated with the track if Playlist.tracks has been populated.
-   * If you only want to know which playlist is playing, look at `PlaylistCollection.active`.
+   * This is only populated with the track ID if Playlist.tracks has been populated.
    *
-   * TODO: Change to PlaylistTrack id
+   * Tip: If you only want to know which playlist is playing, look at `PlaylistCollection.active`.
    */
-  current: PlaylistTrack = null;
+  currentPlaylistTrackId: string = null;
 }

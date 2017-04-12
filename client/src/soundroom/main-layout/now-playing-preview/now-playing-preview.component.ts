@@ -1,8 +1,8 @@
-import { Component, ChangeDetectionStrategy, Input, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, ChangeDetectionStrategy, Input, OnChanges } from '@angular/core';
 import { Playlist } from '../../shared/model/playlist';
 import { PlaylistTrack } from '../../shared/model/playlist-track';
 import { PlaylistCollection } from '../../shared/model/playlist-collection';
+import { getCurrentPlaylistTrack } from '../../shared/util/playlist.util';
 
 @Component({
   selector: 'sr-now-playing-preview',
@@ -10,22 +10,28 @@ import { PlaylistCollection } from '../../shared/model/playlist-collection';
   styles: [require('./now-playing-preview.component.scss')],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NowPlayingPreviewComponent implements OnInit {
+export class NowPlayingPreviewComponent implements OnChanges {
 
   // tslint:disable-next-line:no-unused-variable
-  @Input() private playlistCollection: PlaylistCollection;
+  @Input()
+  private playlistCollection: PlaylistCollection;
 
   private playlist: Playlist;
   private playlistTrack: PlaylistTrack;
-  // private progress$:Observable<number>;
 
-  constructor(private cdr: ChangeDetectorRef, private router: Router) {
-
+  constructor() {
+    //
   }
 
-  ngOnInit(): any {
+  ngOnChanges(): any {
+    if (!this.playlistCollection.active) {
+      return;
+    }
+
+    this.playlist = this.playlistCollection.active;
+
     this.playlistTrack = this.playlist
-      ? this.playlist.current
+      ? getCurrentPlaylistTrack(this.playlist)
       : null;
   }
 }

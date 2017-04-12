@@ -31,14 +31,14 @@
     </button>
 
     <div class="play-pause">
-      <i class="artwork__play-icon fa fa-play fa-2x" *ngIf="!playlist.isPlaying"></i>
-      <i class="artwork__pause-icon fa fa-pause fa-2x" *ngIf="playlist.isPlaying"></i>
+      <i class="artwork__play-icon fa fa-play fa-2x" *ngIf="!isPlaying(playlist)"></i>
+      <i class="artwork__pause-icon fa fa-pause fa-2x" *ngIf="isPlaying(playlist)"></i>
     </div>
   </div>
 
   <div class="info">
     <div class="info__playlist-name">
-      {{playlist.isPlaying
+      {{isPlaying(playlist)
       ? 'Now playing in'
       : 'Ready to play in'}}
       {{playlist.name}}

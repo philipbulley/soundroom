@@ -2,9 +2,6 @@
 
   <h2>Join a room!</h2>
 
-  <!--<pre>Room Now Playing: {{(playlistCollection$ | async).active?.name}}</pre>-->
-  <!--<pre>Track Now Playing (only available if room previously joined): {{(playlistCollection$ | async).active?.current?.track?.name}}</pre>-->
-
   <sr-now-playing-preview [playlistCollection]="playlistCollection$ | async"></sr-now-playing-preview>
 
   <sr-playlist-menu [playlistCollection]="playlistCollection$ | async"></sr-playlist-menu>

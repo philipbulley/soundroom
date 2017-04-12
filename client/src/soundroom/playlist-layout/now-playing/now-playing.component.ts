@@ -5,7 +5,7 @@ import { PlaylistTrack } from '../../shared/model/playlist-track';
 import { AppState } from '../../shared/model/app-state';
 import { PlaylistPlayAction } from '../../shared/store/playlist-collection/playlist-play/playlist-play.action';
 import { PlaylistPauseAction } from '../../shared/store/playlist-collection/playlist-pause/playlist-pause.action';
-import { isPlaylistPlaying } from '../../shared/util/playlist.util';
+import { isPlaylistPlaying, getCurrentPlaylistTrack } from '../../shared/util/playlist.util';
 
 @Component({
   selector: 'sr-now-playing',
@@ -25,13 +25,13 @@ export class NowPlayingComponent implements OnChanges {
   }
 
   ngOnChanges() {
-    this.playlistTrack = this.playlist.current
+    this.playlistTrack = getCurrentPlaylistTrack(this.playlist)
       || (this.playlist.tracks && this.playlist.tracks.length
         ? this.playlist.tracks[0]
         : null);
 
-    this.progress = this.playlist.current
-      ? this.playlist.current.progress
+    this.progress = this.playlistTrack
+      ? this.playlistTrack.progress || 0
       : 0;
   }
 
@@ -50,4 +50,6 @@ export class NowPlayingComponent implements OnChanges {
       this.play();
     }
   }
+
+  isPlaying = (playlist: Playlist) => isPlaylistPlaying(playlist);
 }

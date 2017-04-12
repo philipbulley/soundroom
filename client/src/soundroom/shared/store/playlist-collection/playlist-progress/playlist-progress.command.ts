@@ -28,10 +28,10 @@ function updateIndividualPlaylist(playlist: Playlist, payload: PlaylistProgressS
   let newState: Playlist;
 
   // Is this playlist transitioning from playing -> not playing?
-  if (playlist.current && payload.playlistId !== playlist._id) {
+  if (playlist.currentPlaylistTrackId && payload.playlistId !== playlist._id) {
     // This playlist is no longer playing
     newState = Object.assign(new Playlist, playlist);
-    newState.current = null;
+    newState.currentPlaylistTrackId = null;
     newState.tracks = newState.tracks.map((playlistTrack: PlaylistTrack) => {
       if (playlistTrack.isPlaying) {
         // This is the track that WAS playing
@@ -47,7 +47,7 @@ function updateIndividualPlaylist(playlist: Playlist, payload: PlaylistProgressS
   }
 
   // Is this playlist currently playing
-  if (playlist.current || (!playlist.current && payload.playlistId === playlist._id)) {
+  if (playlist.currentPlaylistTrackId || (!playlist.currentPlaylistTrackId && payload.playlistId === playlist._id)) {
     // This playlist is playing
 
     if (!playlist.tracks) {
@@ -75,7 +75,7 @@ function updateIndividualPlaylist(playlist: Playlist, payload: PlaylistProgressS
         newTrack.progress = payload.progress;
 
         // Keep Playlist.nowPlaying up to date with latest instance of currently playing PlaylistTrack
-        newState.current = newTrack;
+        newState.currentPlaylistTrackId = newTrack._id;
         return newTrack;
       }
       return playlistTrack;

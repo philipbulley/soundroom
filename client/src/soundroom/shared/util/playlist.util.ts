@@ -28,7 +28,21 @@ export function canUserDeleteTrack(playlistTrack: PlaylistTrack, user: User): bo
 }
 
 export function isPlaylistPlaying(playlist: Playlist): boolean {
-  return !playlist.current
-    ? false
-    : playlist.current.isPlaying;
+  if (!playlist || !playlist.currentPlaylistTrackId) {
+    return false;
+  }
+
+  const currentPlaylistTrack = getCurrentPlaylistTrack(playlist);
+
+  return currentPlaylistTrack
+    ? currentPlaylistTrack.isPlaying
+    : false;
+}
+
+export function getCurrentPlaylistTrack(playlist: Playlist): PlaylistTrack {
+  if (!playlist.currentPlaylistTrackId) {
+    return null;
+  }
+
+  return playlist.tracks.find(playlistTrack => playlistTrack._id === playlist.currentPlaylistTrackId);
 }
