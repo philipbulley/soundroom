@@ -1,7 +1,7 @@
 import { PlaylistState } from "./state/playlist.state.ts";
 import { PlaylistTrack } from "./playlist-track";
 
-export class Playlist {
+export interface Playlist {
 
   /** _id is the MongoDB convention, not intending this to appear as "private" */
   _id: string;
@@ -14,9 +14,9 @@ export class Playlist {
 
   modified: string;
 
-  tracks: PlaylistTrack[] = [];
+  tracks: PlaylistTrack[];
 
-  loadState: PlaylistState = null;
+  loadState: PlaylistState;
 
   /**
    * The ID of the track currently playing.
@@ -25,5 +25,5 @@ export class Playlist {
    *
    * Tip: If you only want to know which playlist is playing, look at `PlaylistCollection.active`.
    */
-  currentPlaylistTrackId: string = null;
+  currentPlaylistTrackId: string;
 }

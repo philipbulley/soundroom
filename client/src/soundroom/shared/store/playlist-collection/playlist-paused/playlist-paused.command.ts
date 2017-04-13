@@ -22,7 +22,7 @@ function updateIndividualPlaylist(state: Playlist) {
     return state;
   }
 
-  state = Object.assign(new Playlist, state);
+  state = Object.assign({}, state);
 
   state.tracks = state.tracks.map((track: PlaylistTrack) => {
     // console.log('playlistReducer: PlaylistAction.PAUSE: track:', track.isPlaying, track);

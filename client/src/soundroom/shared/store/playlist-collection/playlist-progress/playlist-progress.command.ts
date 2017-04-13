@@ -30,7 +30,7 @@ function updateIndividualPlaylist(playlist: Playlist, payload: PlaylistProgressS
   // Is this playlist transitioning from playing -> not playing?
   if (playlist.currentPlaylistTrackId && payload.playlistId !== playlist._id) {
     // This playlist is no longer playing
-    newState = Object.assign(new Playlist, playlist);
+    newState = Object.assign({}, playlist);
     newState.currentPlaylistTrackId = null;
     newState.tracks = newState.tracks.map((playlistTrack: PlaylistTrack) => {
       if (playlistTrack.isPlaying) {
@@ -57,7 +57,7 @@ function updateIndividualPlaylist(playlist: Playlist, payload: PlaylistProgressS
 
     // Playlist's tracks are fully loaded (ie. we've not just loaded the list of playlists, but the details of
     // this playlist).
-    newState = Object.assign(new Playlist, playlist);
+    newState = Object.assign({}, playlist);
 
     // Update the correct playlist track with the progress details
     newState.tracks = newState.tracks.map((playlistTrack: PlaylistTrack) => {

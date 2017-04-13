@@ -7,7 +7,7 @@ export const playlistLoadCommand = (state: PlaylistCollection, playlistId: strin
 
   // Find the playlist
   const playlist: Playlist = Object.assign(
-    new Playlist,
+    {},
     state.playlists.find((playlist: Playlist) => playlistId === playlist._id)
   );
 

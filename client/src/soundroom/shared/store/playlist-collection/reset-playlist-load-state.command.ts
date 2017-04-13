@@ -14,7 +14,7 @@ export const resetPlaylistLoadStateCommand = (state: PlaylistCollection, payload
 
   // Find the playlist
   const playlist: Playlist = Object.assign(
-    new Playlist,
+    {},
     state.playlists.find((playlist: Playlist) => playlistId === playlist._id)
   );
 
