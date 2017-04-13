@@ -1,6 +1,6 @@
 import { ProviderEnum } from "./enum/provider.enum";
 
-export class Album {
+export interface Album {
 
   _id: string;
 
