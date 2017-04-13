@@ -1,6 +1,6 @@
 import { ProviderEnum } from "./enum/provider.enum";
 
-export class Artist {
+export interface Artist {
 
   _id: string;
 
