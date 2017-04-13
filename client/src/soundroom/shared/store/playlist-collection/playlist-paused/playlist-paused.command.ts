@@ -27,7 +27,7 @@ function updateIndividualPlaylist(state: Playlist) {
   state.tracks = state.tracks.map((track: PlaylistTrack) => {
     // console.log('playlistReducer: PlaylistAction.PAUSE: track:', track.isPlaying, track);
     if (track.isPlaying) {
-      let newTrack: PlaylistTrack = Object.assign(new PlaylistTrack, track);
+      let newTrack: PlaylistTrack = Object.assign({}, track);
       newTrack.isPlaying = false;
 
       // Assign reference of newly created PlaylistTrack to Playlist

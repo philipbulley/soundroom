@@ -4,26 +4,18 @@ import { PlaylistTrack } from "../playlist-track";
 import { UserFactory } from "./user.factory";
 
 export class PlaylistTrackFactory {
-
   static createFromApiResponse(apiData: any): PlaylistTrack {
-
-    const playlistTrack = new PlaylistTrack();
-
-    playlistTrack._id = apiData._id;
-
-    playlistTrack.track = TrackFactory.createFromApiResponse(apiData.track);
-
-    playlistTrack.upVotes = apiData.upVotes.map(upVote => UpVoteFactory.createFromApiResponse(upVote));
-
-    playlistTrack.createdBy = UserFactory.createFromApiResponse(apiData.createdBy);
-
-    playlistTrack.playCompleted = apiData.playCompleted ? new Date(apiData.playCompleted) : null;
-
-    playlistTrack.created = new Date(apiData.created);
-
-    playlistTrack.modified = new Date(apiData.modified);
-
-    return playlistTrack;
+    return {
+      _id: apiData._id,
+      track: TrackFactory.createFromApiResponse(apiData.track),
+      upVotes: apiData.upVotes.map(upVote => UpVoteFactory.createFromApiResponse(upVote)),
+      createdBy: UserFactory.createFromApiResponse(apiData.createdBy),
+      playCompleted: apiData.playCompleted ? new Date(apiData.playCompleted) : null,
+      created: new Date(apiData.created),
+      modified: new Date(apiData.modified),
+      isPlaying: false,
+      currentTime: 0,
+      progress: 0,
+    };
   }
-
 }

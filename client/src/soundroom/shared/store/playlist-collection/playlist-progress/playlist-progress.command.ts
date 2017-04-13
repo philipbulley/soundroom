@@ -35,7 +35,7 @@ function updateIndividualPlaylist(playlist: Playlist, payload: PlaylistProgressS
     newState.tracks = newState.tracks.map((playlistTrack: PlaylistTrack) => {
       if (playlistTrack.isPlaying) {
         // This is the track that WAS playing
-        let newTrack = Object.assign(new PlaylistTrack, playlistTrack);
+        let newTrack = Object.assign({}, playlistTrack);
         newTrack.isPlaying = false;
         return newTrack;
       }
@@ -63,12 +63,12 @@ function updateIndividualPlaylist(playlist: Playlist, payload: PlaylistProgressS
     newState.tracks = newState.tracks.map((playlistTrack: PlaylistTrack) => {
       if (playlistTrack.isPlaying && payload.playlistTrackId !== playlistTrack._id) {
         // This is no longer playing, another track in this playlist is now playing
-        let newTrack: PlaylistTrack = Object.assign(new PlaylistTrack, playlistTrack);
+        let newTrack: PlaylistTrack = Object.assign({}, playlistTrack);
         newTrack.isPlaying = false;
         return newTrack;
       } else if (playlistTrack._id === payload.playlistTrackId) {
         // This track is playing
-        let newTrack: PlaylistTrack = Object.assign(new PlaylistTrack, playlistTrack);
+        let newTrack: PlaylistTrack = Object.assign({}, playlistTrack);
         newTrack.isPlaying = true;
         // Ignoring presence of `payload.duration` as it already exists on `PlaylistTrack.track`
         newTrack.currentTime = payload.currentTime;

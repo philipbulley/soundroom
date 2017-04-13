@@ -5,7 +5,7 @@ import { User } from "./user";
 /**
  * Represents a Track in the context of a Playlist
  */
-export class PlaylistTrack {
+export interface PlaylistTrack {
 
   _id: string;
 
