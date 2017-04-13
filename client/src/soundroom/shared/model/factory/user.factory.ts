@@ -1,42 +1,20 @@
 import { User } from "../user";
 
 export class UserFactory {
-
   static createFromApiResponse(apiData: any): User {
+    const {_id, name, avatar} = apiData;
 
-    const user = new User();
-
-    user._id = apiData._id;
-
-    user.name = apiData.name;
-
-    user.avatar = apiData.avatar;
-
-    user.created = new Date(apiData.created);
-
-    user.modified = new Date(apiData.modified);
-
-    if (apiData.hasOwnProperty('googleId')) {
-      user.googleId = apiData.googleId;
-    }
-
-    if (apiData.hasOwnProperty('spotifyId')) {
-      user.spotifyId = apiData.spotifyId;
-    }
-
-    if (apiData.hasOwnProperty('facebookId')) {
-      user.facebookId = apiData.facebookId;
-    }
-
-    if (apiData.hasOwnProperty('twitterId')) {
-      user.twitterId = apiData.twitterId;
-    }
-
-    if (apiData.hasOwnProperty('userId')) {
-      user.userId = apiData.userId;
-    }
-
-    return user;
+    return {
+      _id,
+      name,
+      avatar,
+      created: new Date(apiData.created),
+      modified: new Date(apiData.modified),
+      googleId: apiData.hasOwnProperty('googleId') ? apiData.googleId : null,
+      spotifyId: apiData.hasOwnProperty('spotifyId') ? apiData.spotifyId : null,
+      facebookId: apiData.hasOwnProperty('facebookId') ? apiData.facebookId : null,
+      twitterId: apiData.hasOwnProperty('twitterId') ? apiData.twitterId : null,
+      userId: apiData.hasOwnProperty('userId') ? apiData.userId : null,
+    };
   }
-
 }
