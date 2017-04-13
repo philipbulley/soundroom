@@ -3,7 +3,7 @@ import { User } from "./user";
 /**
  * Represents an UpVote as created by a User
  */
-export class UpVote {
+export interface UpVote {
 
   _id: string;
 

@@ -2,20 +2,14 @@ import { UserFactory } from "./user.factory";
 import { UpVote } from "../up-vote";
 
 export class UpVoteFactory {
-
   static createFromApiResponse(apiData: any): UpVote {
+    const {_id} = apiData;
 
-    const upVote = new UpVote();
-
-    upVote._id = apiData._id;
-
-    upVote.modified = new Date(apiData.modified);
-
-    upVote.created = new Date(apiData.created);
-
-    upVote.createdBy = UserFactory.createFromApiResponse(apiData.createdBy);
-
-    return upVote;
+    return {
+      _id,
+      modified: new Date(apiData.modified),
+      created: new Date(apiData.created),
+      createdBy: UserFactory.createFromApiResponse(apiData.createdBy),
+    };
   }
-
 }
