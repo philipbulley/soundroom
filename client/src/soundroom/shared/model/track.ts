@@ -4,7 +4,7 @@ import { Artist } from "./artist";
 import { User } from "./user";
 import { Image } from "./image";
 
-export class Track {
+export interface Track {
 
   _id: string;
 
