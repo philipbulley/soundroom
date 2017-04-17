@@ -2,7 +2,7 @@ import { Response } from '@angular/http';
 import { Playlist } from '../../model/playlist';
 import { PlaylistErrorResult } from '../../model/error/playlist-error-result';
 import { PlaylistTrack } from '../../model/playlist-track';
-import { DeleteTrackErrorResult } from './delete-track-error/delete-track-error-result';
+import { PlaylistTrackErrorResult } from '../../model/error/playlist-track-error-result';
 import { ErrorResult } from '../../model/error/error-result';
 import { ErrorKey } from '../../model/error/error-key';
 
@@ -28,10 +28,10 @@ export function getAddTrackError(response: Response, playlist: Playlist): Playli
   return Object.assign(error, {type: ErrorKey.UNKNOWN});
 }
 
-export function getDeleteTrackError(response: Response, playlist: Playlist, playlistTrack: PlaylistTrack): DeleteTrackErrorResult {
+export function getDeleteTrackError(response: Response, playlist: Playlist, playlistTrack: PlaylistTrack): PlaylistTrackErrorResult {
   // const errorJson = response.json();
 
-  const error: DeleteTrackErrorResult = {
+  const error: PlaylistTrackErrorResult = {
     type: null,
     playlist,
     playlistTrack,

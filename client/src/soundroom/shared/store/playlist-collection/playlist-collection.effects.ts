@@ -73,10 +73,14 @@ export class PlaylistCollectionEffects {
             return new LoadPlaylistCollectionSuccessAction(playlists);
           })
           .catch((error: Response) => Observable.of(new LoadPlaylistCollectionErrorAction({
-              type: ErrorKey.PLAYLIST_COLLECTION_NOT_FOUND,
               playlistId: null,
               status: error.status,
               message: error.statusText,
+              type: error.status === 404
+                ? ErrorKey.PLAYLIST_COLLECTION_NOT_FOUND
+                : error.status === 500
+                  ? ErrorKey.SERVER
+                  : ErrorKey.UNKNOWN,
             }))
           );
       });
@@ -94,13 +98,22 @@ export class PlaylistCollectionEffects {
 
         return this.http.get(Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlistId, this.networkService.requestOptions)
         // .delay(2000)    // DEBUG: Delay for simulation purposes only
-          .retryWhen(errors => this.networkService.retry(errors))
+          .retryWhen(errors => this.networkService.retry(errors, 2))
           .map((res: Response) => PlaylistFactory.createFromApiResponse(res.json()))
           .map((playlist: Playlist) => {
             // this.onSlowConnection.emit(false);
             return new PlaylistLoadSuccessAction(playlist);
           })
-          .catch((error: Response) => Observable.of(new PlaylistLoadErrorAction(playlistId)));
+          .catch((error: Response) => Observable.of(new PlaylistLoadErrorAction({
+            playlistId,
+            status: error.status,
+            message: error.statusText,
+            type: error.status === 404
+              ? ErrorKey.PLAYLIST_NOT_FOUND
+              : error.status === 500
+                ? ErrorKey.SERVER
+                : ErrorKey.UNKNOWN,
+          })));
       });
   }
 
@@ -113,7 +126,16 @@ export class PlaylistCollectionEffects {
 
           return this.http.delete(Config.API_BASE_URL + this.API_ENDPOINT + '/' + playlist._id, this.networkService.requestOptions)
             .map((res: Response) => new DeletePlaylistSuccessAction(playlist))
-            .catch((error: Response) => Observable.of(new DeletePlaylistErrorAction(playlist)));
+            .catch((error: Response) => Observable.of(new DeletePlaylistErrorAction({
+              playlistId: playlist._id,
+              status: error.status,
+              message: error.statusText,
+              type: error.status === 404
+                ? ErrorKey.PLAYLIST_NOT_FOUND
+                : error.status === 500
+                  ? ErrorKey.SERVER
+                  : ErrorKey.UNKNOWN,
+            })));
         }
       );
   }

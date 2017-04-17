@@ -1,4 +1,6 @@
 export enum ErrorKey {
+  PLAYLIST_NOT_FOUND = 'PLAYLIST_NOT_FOUND' as any as ErrorKey,
+
   /** When we can't connect to the provider  */
   PROVIDER_CONNECTION = 'PROVIDER_CONNECTION' as any as ErrorKey,
 

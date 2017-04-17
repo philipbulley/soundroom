@@ -1,6 +1,7 @@
 import { Action } from '@ngrx/store';
 import { Playlist } from "./playlist";
 import { PlaylistCollectionState } from "./state/playlist-collection.state.ts";
+import { ErrorResult } from './error/error-result';
 
 export interface PlaylistCollection {
 
@@ -15,5 +16,7 @@ export interface PlaylistCollection {
   active: Playlist;
 
   recentAction: Action;
+
+  error: ErrorResult;
 
 }

@@ -20,7 +20,6 @@ import { playlistPauseCommand } from './playlist-paused/playlist-paused.command'
 import { PlaylistLoadAction } from './playlist-load/playlist-load.action';
 import { playlistLoadCommand } from './playlist-load/playlist-load.command';
 import { PlaylistLoadErrorAction } from './playlist-load-error/playlist-load-error.action';
-import { resetPlaylistLoadStateCommand } from './reset-playlist-load-state.command';
 import { AddTrackAction } from './add-track/add-track.action';
 import { addTrackCommand } from './add-track/add-track.command';
 import { AddTrackSuccessAction } from './add-track-success/add-track-success.action';
@@ -39,12 +38,16 @@ import { playlistLoadSuccessCommand } from './playlist-load-success/playlist-loa
 import { playlistCollectionCommand } from './playlist-collection.command';
 import { deleteTrackErrorCommand } from './delete-track-error/delete-track-error.command';
 import { deleteTrackSuccessCommand } from './delete-track-success/delete-track-success.command';
+import { playlistLoadErrorCommand } from './playlist-load-error/playlist-load-error.command';
+import { addTrackSuccessCommand } from './add-track-success/add-track-success.command';
+import { addTrackErrorCommand } from './add-track-error/add-track-error.command';
 
 const DEFAULT_STATE: PlaylistCollection = {
   loadState: null,
   playlists: [],
   active: null,
   recentAction: null,
+  error: null,
 };
 
 export const playlistCollectionReducer: ActionReducer<PlaylistCollection> = new CommandReducer<PlaylistCollection>(DEFAULT_STATE)
@@ -62,11 +65,11 @@ export const playlistCollectionReducer: ActionReducer<PlaylistCollection> = new 
 
   .add(PlaylistLoadAction, playlistLoadCommand)
   .add(PlaylistLoadSuccessAction, playlistLoadSuccessCommand)
-  .add(PlaylistLoadErrorAction, resetPlaylistLoadStateCommand)
+  .add(PlaylistLoadErrorAction, playlistLoadErrorCommand)
 
   .add(AddTrackAction, addTrackCommand)
-  .add(AddTrackSuccessAction, resetPlaylistLoadStateCommand)
-  .add(AddTrackErrorAction, resetPlaylistLoadStateCommand)
+  .add(AddTrackSuccessAction, addTrackSuccessCommand)
+  .add(AddTrackErrorAction, addTrackErrorCommand)
 
   .add(DeleteTrackAction, deleteTrackCommand)
   .add(DeleteTrackSuccessAction, deleteTrackSuccessCommand)

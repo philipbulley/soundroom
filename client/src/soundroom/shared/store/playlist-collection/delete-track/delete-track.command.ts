@@ -13,6 +13,7 @@ export const deleteTrackCommand = (state: PlaylistCollection, payload: DeleteTra
   );
 
   playlist.loadState = PlaylistState.DELETING_TRACK;
+  playlist.error = null;
 
   state.playlists = [
     ...state.playlists.filter((playlist: Playlist) => payload.playlist._id !== playlist._id),

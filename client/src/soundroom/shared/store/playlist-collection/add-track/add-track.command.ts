@@ -13,6 +13,7 @@ export const addTrackCommand = (state: PlaylistCollection, payload: AddTrackPayl
   );
 
   playlist.loadState = PlaylistState.ADDING_TRACK;
+  playlist.error = null;
 
   state.playlists = [
     ...state.playlists.filter((playlist: Playlist) => payload.playlist._id !== playlist._id),

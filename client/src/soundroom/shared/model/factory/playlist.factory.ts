@@ -17,10 +17,11 @@ export class PlaylistFactory {
         : null,
       loadState: null,
       currentPlaylistTrackId: null,
+      error: null,
     };
   }
 
-  static createEmptyAndLoading(_id: string): Playlist {
+  static createEmpty(_id: string): Playlist {
     return {
       _id,
       name: null,
@@ -28,8 +29,9 @@ export class PlaylistFactory {
       created: null,
       modified: null,
       tracks: [],
-      loadState: PlaylistState.LOADING,
+      loadState: null,
       currentPlaylistTrackId: null,
+      error: null,
     };
   }
 }

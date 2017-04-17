@@ -1,5 +1,6 @@
 import { PlaylistState } from "./state/playlist.state.ts";
 import { PlaylistTrack } from "./playlist-track";
+import { PlaylistErrorResult } from './error/playlist-error-result';
 
 export interface Playlist {
 
@@ -26,4 +27,6 @@ export interface Playlist {
    * Tip: If you only want to know which playlist is playing, look at `PlaylistCollection.active`.
    */
   currentPlaylistTrackId: string;
+
+  error: PlaylistErrorResult;
 }
