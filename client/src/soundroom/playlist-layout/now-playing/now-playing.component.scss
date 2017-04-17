@@ -29,12 +29,14 @@
     margin: 30px 0 0;
   }
 
-  &.is-empty &__title {
+  &.is-empty &__title,
+  &.is-loading &__title {
     font-size: 40px;
     color: $color-grey-grit;
   }
 
-  &.is-empty &__text {
+  &.is-empty &__text,
+  &.is-loading &__title {
     color: $color-grey-grit;
   }
 }

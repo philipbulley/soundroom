@@ -4,12 +4,24 @@
 
   </div>
 
-  <div class="info">
-    Loading...
+  <div class="info is-loading">
+    <h2 class="info__title">Loading...</h2>
   </div>
 </div>
 
-<div class="columns" *ngIf="!playlist.loadState && !playlist.tracks?.length">
+<div class="columns" *ngIf="!playlist.loadState && playlist.error">
+  <!-- EMPTY PLAYLIST -->
+  <div class="artwork is-empty">
+
+  </div>
+
+  <div class="info is-empty">
+    <h2 class="info__title">Room doesn't exist!</h2>
+    <p class="info__text">Like arriving at that "awesome" party, but nobody's there. Ouch.</p>
+  </div>
+</div>
+
+<div class="columns" *ngIf="!playlist.loadState && !playlist.error && !playlist.tracks?.length">
   <!-- EMPTY PLAYLIST -->
   <div class="artwork is-empty">
 
