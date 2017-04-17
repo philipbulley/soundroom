@@ -27,11 +27,16 @@ export class NetworkService {
    *     Observable.retryWhen(errors => this.retry(errors))
    *
    * @param errors
+   * @param maxRetries
    */
-  retry(errors: Observable<any>): Observable<any> {
+  retry(errors: Observable<any>, maxRetries: number = null): Observable<any> {
     return errors
       .mergeMap((err, count) => {
-        // Calc number of seconds we'll retry in using incremental backoff
+        if (maxRetries && count === maxRetries) {
+          return Observable.throw(err);
+        }
+
+        // Calc number of seconds we'll retry in using exponential backoff
         const retrySecs = Math.min(Math.round(Math.pow(++count, 2)), this.MAX_RETRY_INTERVAL);
         console.warn(`NetworkService.retry: Retry ${count} in ${retrySecs} seconds`);
 
