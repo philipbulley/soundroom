@@ -1,33 +1,27 @@
-<div class="columns" *ngIf="playlist.loadState === 'PlaylistState.LOADING'">
+<div class="columns columns--is-loading" *ngIf="playlist.loadState === 'PlaylistState.LOADING'">
   <!-- LOADING -->
-  <div class="artwork">
-
-  </div>
-
-  <div class="info is-loading">
-    <h2 class="info__title">Loading...</h2>
-  </div>
+  <h2 class="title"><i class="icon fa fa-circle-o-notch fa-spin"></i> Loading room...</h2>
 </div>
 
-<div class="columns" *ngIf="!playlist.loadState && playlist.error">
+<div class="columns columns--is-empty" *ngIf="!playlist.loadState && playlist.error">
   <!-- EMPTY PLAYLIST -->
-  <div class="artwork is-empty">
-
+  <div class="artwork">
+    <!-- TODO: Add sad face graphic -->
   </div>
 
-  <div class="info is-empty">
+  <div class="info">
     <h2 class="info__title">Room doesn't exist!</h2>
     <p class="info__text">Like arriving at that "awesome" party, but nobody's there. Ouch.</p>
   </div>
 </div>
 
-<div class="columns" *ngIf="!playlist.loadState && !playlist.error && !playlist.tracks?.length">
+<div class="columns columns--is-empty" *ngIf="!playlist.loadState && !playlist.error && !playlist.tracks?.length">
   <!-- EMPTY PLAYLIST -->
-  <div class="artwork is-empty">
+  <div class="artwork">
 
   </div>
 
-  <div class="info is-empty">
+  <div class="info">
     <h2 class="info__title">This room is empty!</h2>
     <p class="info__text">Drag and drop tracks from your Spotify desktop app to start jammin'!</p>
   </div>

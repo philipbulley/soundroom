@@ -1,5 +1,7 @@
 @import '../../../style/setup/all';
 
+$font-size--title: 40px;
+
 :host {
   display: block;
 
@@ -29,14 +31,14 @@
     margin: 30px 0 0;
   }
 
-  &.is-empty &__title,
-  &.is-loading &__title {
-    font-size: 40px;
+  .columns--is-empty & &__title,
+  .columns--is-loading & &__title {
+    font-size: $font-size--title;
     color: $color-grey-grit;
   }
 
-  &.is-empty &__text,
-  &.is-loading &__title {
+  .columns--is-empty & &__text,
+  .columns--is-loading & &__text {
     color: $color-grey-grit;
   }
 }
@@ -46,6 +48,10 @@
 
   position: relative;
   min-height: 240px;
+
+  .columns--is-empty & {
+    color: $color-grey-grit;
+  }
 
   &__image-wrap {
     position: absolute;
@@ -100,6 +106,18 @@
     align-items: center;
     width: 100%;
     height: 380px;
+
+    &--is-loading .title {
+      margin: 0 auto;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 500;
+      color: $color-grey-grit;
+
+      .icon {
+        padding: 0 10px;
+      }
+    }
   }
 
   .artwork {
@@ -109,10 +127,9 @@
 
   .info {
     flex: 1 1 70%;
-    vertical-align: middle;
 
     &__playlist-name {
-      margin: 0 0 30px;
+      //margin: 0 0 30px;
     }
   }
 }
