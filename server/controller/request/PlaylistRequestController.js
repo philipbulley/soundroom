@@ -31,11 +31,9 @@ class PlaylistRequestController {
     return playlistController.getById(req.params.playlist_id)
       .then((playlist) => res.json(playlist))
       .catch((err) => {
+        console.log('PlaylistRequestController.getByIdParam: error:', err.message);
         switch (err.message) {
           case PlaylistErrorEnum.INVALID_ID:
-            HttpUtil.sendJsonError(res, HttpUtil.status.BAD_REQUEST);
-            break;
-
           case PlaylistErrorEnum.NOT_FOUND:
             HttpUtil.sendJsonError(res, HttpUtil.status.NOT_FOUND);
             break;
@@ -93,9 +91,6 @@ class PlaylistRequestController {
       .catch((err) => {
         switch (err.message) {
           case PlaylistErrorEnum.INVALID_ID:
-            HttpUtil.sendJsonError(res, HttpUtil.status.BAD_REQUEST);
-            break;
-
           case PlaylistErrorEnum.NOT_FOUND:
             HttpUtil.sendJsonError(res, HttpUtil.status.NOT_FOUND);
             break;
@@ -117,9 +112,6 @@ class PlaylistRequestController {
       .catch((err) => {
         switch (err.message) {
           case PlaylistErrorEnum.INVALID_ID:
-            HttpUtil.sendJsonError(res, HttpUtil.status.BAD_REQUEST);
-            break;
-
           case PlaylistErrorEnum.NOT_FOUND:
             HttpUtil.sendJsonError(res, HttpUtil.status.NOT_FOUND);
             break;
@@ -139,9 +131,6 @@ class PlaylistRequestController {
       .catch((err) => {
         switch (err.message) {
           case PlaylistErrorEnum.INVALID_ID:
-            HttpUtil.sendJsonError(res, HttpUtil.status.BAD_REQUEST);
-            break;
-
           case PlaylistErrorEnum.NOT_FOUND:
             HttpUtil.sendJsonError(res, HttpUtil.status.NOT_FOUND);
             break;
@@ -153,7 +142,7 @@ class PlaylistRequestController {
       });
   }
 
-};
+}
 
 // getAll, create, getByIdParam, updateByIdParam, deleteByIdParam, addTrackByForeignId
 
