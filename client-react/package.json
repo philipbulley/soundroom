@@ -3,16 +3,23 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/history": "^4.5.1",
     "@types/jest": "^19.2.3",
     "@types/node": "^7.0.22",
     "@types/react": "^15.0.25",
     "@types/react-dom": "^15.5.0",
     "@types/react-redux": "^4.4.40",
+    "@types/react-router": "^4.0.9",
+    "@types/react-router-redux": "^5.0.1",
+    "history": "^4.6.1",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-redux": "^5.0.5",
+    "react-router-redux": "^5.0.0-alpha.6",
     "redux": "^3.6.0",
-    "redux-observable": "^0.14.1"
+    "redux-devtools-extension": "^2.13.2",
+    "redux-observable": "^0.14.1",
+    "rxjs": "^5.4.0"
   },
   "devDependencies": {
     "react-scripts-ts": "2.2.0"
