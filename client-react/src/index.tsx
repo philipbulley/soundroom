@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import App from './app/app-case-change-wip';
+import App from './app/app';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
 
