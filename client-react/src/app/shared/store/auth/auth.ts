@@ -1,6 +1,6 @@
 import { AuthStatus } from './auth-state';
-import { ErrorResult } from '../../model/error/error-result';
-import { User } from '../../model/user';
+import { ErrorResult } from '../../error/error-result';
+import { User } from '../../user/user';
 
 export interface Auth {
   status: AuthStatus;

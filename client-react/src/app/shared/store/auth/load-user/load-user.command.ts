@@ -1,8 +1,8 @@
 import { Auth } from '../auth';
 import { AuthStatus } from '../auth-state';
-import { LoadUser } from './load-user.action';
+import { LoadUserParams } from './load-user.action';
 
-export const loadUserCommand = (state: Auth, payload: LoadUser): Auth => {
+export const loadUserCommand = (state: Auth, payload: LoadUserParams): Auth => {
   state = {...state};
   state.status = AuthStatus.LOADING;
   delete state.error;

@@ -41,10 +41,10 @@ class SignIn extends React.Component<ConnectedProps, {}> {
           </div>
         )}
 
-        {AuthStatus.LOADING === auth.status && (
+        {AuthStatus.LOGGED_IN === auth.status && (
           <div>
             <Heading>{auth.user ? auth.user.name : `You're`} in da house!</Heading>
-            <a onClick={goToRooms}>Let's get started</a>
+            <button onClick={goToRooms}>Let's get started</button>
           </div>
         )}
       </div>
