@@ -1,32 +1,42 @@
 import * as React from 'react';
+import styled from 'styled-components';
+import SignInSocialButton from './sign-in-social-button';
+import { SocialProvider } from '../../shared/model/social-provider';
 
-export const SignInSocial = ({serverBaseUrl}) => (
+const providers: SocialProvider[] = [
+  SocialProvider.GOOGLE,
+  SocialProvider.SPOTIFY,
+  SocialProvider.TWITTER,
+  SocialProvider.FACEBOOK,
+];
+
+const SignInSocial = ({serverBaseUrl}) => (
   <div>
-    <p>
+    <Paragraph>
       If you've signed in before, please use the same social sign-in option as before.
-    </p>
-
-    <ul>
-      <li>
-        <a href={serverBaseUrl + '/auth/google'} className="social-link google">
-          <i className="fa fa-google fa-3x"/>
-        </a>
-      </li>
-      <li>
-        <a href={serverBaseUrl + '/auth/spotify'} className="social-link spotify">
-          <i className="fa fa-spotify fa-3x"/>
-        </a>
-      </li>
-      <li>
-        <a href={serverBaseUrl + '/auth/twitter'} className="social-link twitter">
-          <i className="fa fa-twitter fa-3x"/>
-        </a>
-      </li>
-      <li>
-        <a href={serverBaseUrl + '/auth/facebook'} className="social-link facebook">
-          <i className="fa fa-facebook fa-3x"/>
-        </a>
-      </li>
-    </ul>
+    </Paragraph>
+    <UnorderedList>
+      {providers.map(provider => (
+        <ListItem key={provider}>
+          <SignInSocialButton serverBaseUrl={serverBaseUrl} provider={provider}/>
+        </ListItem>
+      ))}
+    </UnorderedList>
   </div>
 );
+
+const ListItem = styled.li`
+  display: inline-block;
+`;
+
+const UnorderedList = styled.ul`
+  text-align: center;
+  list-style-type: none;
+  padding: 0;
+`;
+
+const Paragraph = styled.p`
+  text-align: center;
+`;
+
+export default SignInSocial;

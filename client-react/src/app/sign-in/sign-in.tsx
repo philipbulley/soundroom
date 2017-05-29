@@ -5,7 +5,7 @@ import { RouteComponentProps } from 'react-router';
 import { Auth } from '../shared/store/auth/auth';
 import { AuthStatus } from '../shared/store/auth/auth-state';
 import { push } from 'react-router-redux';
-import { SignInSocial } from './sign-in-social/sign-in-social';
+import SignInSocial from './sign-in-social/sign-in-social';
 import { Config } from '../shared/model/config';
 
 const SignIn = ({auth, goToRooms}: StateProps & DispatchProps & RouteComponentProps<{}>) => {
