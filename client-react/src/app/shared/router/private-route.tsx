@@ -2,24 +2,28 @@ import * as React from 'react';
 import { Redirect, Route } from 'react-router';
 import { connect } from 'react-redux';
 import { StoreState } from '../store/store-state';
+import { Auth } from '../store/auth/auth';
+import { AuthStatus } from '../store/auth/auth-state';
 
-const foo = false;
-
-const PrivateRoute = ({ component: Component, ...rest }) => (
+const PrivateRoute = ({component: Component, auth, ...rest}) => (
   <Route {...rest} render={props => (
-    foo ? (
+    auth.status === AuthStatus.LOGGED_IN ? (
       <Component {...props}/>
     ) : (
       <Redirect to={{
         pathname: '/sign-in',
-        state: { from: props.location }
+        state: {from: props.location}
       }}/>
     )
   )}/>
 );
 
+interface StateProps {
+  auth: Auth;
+}
+
 const mapStateToProps = ({auth}: StoreState) => ({
   auth,
 });
 
-export default connect<any, any, any>(mapStateToProps)(PrivateRoute);
+export default connect<StateProps, any, any>(mapStateToProps)(PrivateRoute);
