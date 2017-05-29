@@ -1,3 +1,15 @@
+# Soundroom React client
+
+This is the rewrite of the client using React + TypeScript.
+
+Once you have the [server](../server) running, you can `yarn start` to get going.
+
+Soundroom is currently under development and will be freely usable by everyone shortly after Spotify release their [upcoming embedded libraries](https://developer.spotify.com/technologies/libspotify/).
+
+![Soundroom screenshot, right?](../temp/8.jpg "Soundroom screenshot")
+
+## Create React App
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
