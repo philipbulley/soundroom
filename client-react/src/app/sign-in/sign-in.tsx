@@ -7,33 +7,31 @@ import { AuthStatus } from '../shared/store/auth/auth-state';
 import { push } from 'react-router-redux';
 import SignInSocial from './sign-in-social/sign-in-social';
 import { Config } from '../shared/model/config';
+import styled from 'styled-components';
 
 const SignIn = ({auth, goToRooms}: StateProps & DispatchProps & RouteComponentProps<{}>) => {
-  switch (auth.status) {
-    case AuthStatus.LOADING:
-      return (
-        <div>
-          <h2>Sign-in</h2>
-          <h3><i className="fa fa-circle-o-notch fa-spin"/> Logging in...</h3>
-        </div>
-      );
-    case AuthStatus.LOGGED_IN:
-      return (
-        <div>
-          <h2>{auth.user ? auth.user.name : `You're`} in da house!</h2>
-          <a onClick={goToRooms}>Let's get started</a>
-        </div>
-      );
-    default:
-      return (
-        <div>
-          <h2>Sign-in</h2>
-          <a onClick={goToRooms}>Let's get started</a>
-          <SignInSocial serverBaseUrl={Config.SERVER_BASE_URL}/>
-          <pre>AuthStatus: {auth.status}</pre>
-        </div>
-      );
-  }
+  const statusMarkup = {
+    [AuthStatus.LOADING]: (
+      <div>
+        <Heading>Sign-in</Heading>
+        <h3><i className="fa fa-circle-o-notch fa-spin"/> Logging in...</h3>
+      </div>
+    ),
+    [AuthStatus.LOGGED_IN]: (
+      <div>
+        <Heading>{auth.user ? auth.user.name : `You're`} in da house!</Heading>
+        <a onClick={goToRooms}>Let's get started</a>
+      </div>
+    ),
+    [AuthStatus.LOGGED_OUT]: (
+      <div>
+        <Heading>Sign-in</Heading>
+        <SignInSocial serverBaseUrl={Config.SERVER_BASE_URL}/>
+      </div>
+    )
+  };
+
+  return statusMarkup[auth.status];
 };
 
 interface StateProps {
@@ -43,6 +41,10 @@ interface StateProps {
 interface DispatchProps {
   goToRooms: () => {};
 }
+
+const Heading = styled.h2`
+  text-align: center;
+`;
 
 const mapStateToProps = ({auth}: StoreState) => ({
   auth,
