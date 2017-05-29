@@ -3,10 +3,13 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import createHistory from 'history/createBrowserHistory';
 import { routerReducer, routerMiddleware } from 'react-router-redux';
 import { StoreState } from './store-state';
+import { playlistCollectionReducer } from './playlist-collection/playlist-collection.reducer';
 
-const reducers = {};
+const reducers = {
+  playlistCollection: playlistCollectionReducer,
+};
 
-const rootReducer = combineReducers({
+const rootReducer = combineReducers<StoreState>({
   ...reducers,
   router: routerReducer,
 });
