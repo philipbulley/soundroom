@@ -4,7 +4,7 @@ import { StoreState } from '../shared/store/store-state';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 
-const Rooms = ({playlistCollection}: StateProps & RouteComponentProps<any>) => (
+const Rooms = ({playlistCollection}: StateProps & RouteComponentProps<{}>) => (
   <div>
     <h2>Join a room!</h2>
     There are {playlistCollection.playlists.length} rooms.
@@ -19,7 +19,7 @@ const mapStateToProps = ({playlistCollection}: StoreState) => ({
   playlistCollection,
 });
 
-export default connect<StateProps, void, RouteComponentProps<any>>(mapStateToProps)(Rooms);
+export default connect<StateProps, void, RouteComponentProps<{}>>(mapStateToProps)(Rooms);
 
 // Example of connected component:
 // https://github.com/supasate/connected-react-router/blob/master/examples/typescript/src/components/Counter.tsx
