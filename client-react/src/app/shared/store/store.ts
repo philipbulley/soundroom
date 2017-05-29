@@ -4,9 +4,11 @@ import createHistory from 'history/createBrowserHistory';
 import { routerReducer, routerMiddleware } from 'react-router-redux';
 import { StoreState } from './store-state';
 import { playlistCollectionReducer } from './playlist-collection/playlist-collection.reducer';
+import { authReducer } from './auth/auth.reducer';
 
 const reducers = {
   playlistCollection: playlistCollectionReducer,
+  auth: authReducer,
 };
 
 const rootReducer = combineReducers<StoreState>({
