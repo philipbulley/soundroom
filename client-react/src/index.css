@@ -3,3 +3,17 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+code, pre {
+  background: #ededed;
+  color: darkred;
+  padding: 5px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: Menlo, Consolas, monospace;
+  border: 1px solid #ccc;
+}
+
+code {
+  display: inline-block;
+}
