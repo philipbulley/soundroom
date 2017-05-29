@@ -2,7 +2,7 @@ import * as React from 'react';
 import { store, history } from './shared/store/store';
 import { Provider } from 'react-redux';
 import { ConnectedRouter as Router } from 'react-router-redux';
-import { Route } from 'react-router';
+import { Route, Switch } from 'react-router';
 import Rooms from './rooms/rooms';
 import Room from './room/room';
 import SignIn from './sign-in/sign-in';
@@ -16,11 +16,12 @@ import 'font-awesome/css/font-awesome.css';
 const App = () => (
   <Provider store={store}>
     <Router history={history}>
-      <div>
+      <Switch>
         <PrivateRoute exact={true} path="/" component={Rooms}/>
         <Route path="/sign-in" component={SignIn}/>
         <PrivateRoute path="/room/:id" component={Room}/>
-      </div>
+        <Route render={() => <h1>404 mate.</h1>}/>
+      </Switch>
     </Router>
   </Provider>
 );
