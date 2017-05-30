@@ -8,11 +8,12 @@ import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/observable/of';
+import 'rxjs/add/observable/throw';
 import { User } from '../../../user/user';
 import { Config } from '../../../model/config';
 import { StoreState } from '../../store-state';
 import { createUserFromApiResponse } from '../../../user/user.factory';
-import { AjaxCreationMethod } from 'rxjs/observable/dom/AjaxObservable';
+import { AjaxCreationMethod, AjaxError } from 'rxjs/observable/dom/AjaxObservable';
 import { createHeaders } from '../../../network-helper';
 import { AuthActions } from '../auth.reducer';
 import { Epic } from 'redux-observable';
@@ -37,12 +38,10 @@ export const loadUserEpic: Epic<AuthActions, StoreState> = (action$, store/*, {a
       .catch((loadUserError: LoadUserError) => Observable.of(loadUserErrorAction({
         type: null, // TODO: Define error types for this kind of error?
         skipSignInRedirect: !!(loadUserError.params && loadUserError.params.skipSignInRedirectOnError),
-        status: loadUserError.error instanceof Response
-          ? (loadUserError.error as Response).status
+        status: loadUserError.error instanceof AjaxError
+          ? loadUserError.error.status
           : 0,
-        message: loadUserError.error instanceof Response
-          ? (loadUserError.error as Response).statusText
-          : (loadUserError.error as Error).message,
+        message: loadUserError.error.message || 'unable to load user',
       })));
   });
 
@@ -51,7 +50,7 @@ function makeLoginRequest(
 
   if (!auth.jwt) {
     const error: LoadUserError = {
-      params: params,
+      params,
       error: new Error('No cached JWT'),
     };
     return Observable.throw(error);
@@ -59,17 +58,18 @@ function makeLoginRequest(
 
   return ajax.getJSON(Config.API_BASE_URL + '/me', createHeaders(auth))
     // .delay(2000)    // DEBUG: Delay for simulation purposes only
-    .map((res: Response) => createUserFromApiResponse(res))
-    .catch((res: Response) => {
-      const error: LoadUserError = {
-        params: params,
-        error: res,
+    .map((res: any) => createUserFromApiResponse(res))
+    .catch((error: AjaxError) => {
+      const loadUserError: LoadUserError = {
+        params,
+        error,
       };
-      return Observable.throw(error);
+
+      return Observable.throw(loadUserError);
     });
 }
 
 interface LoadUserError {
   params: LoadUserParams;
-  error: Response | Error;
+  error: AjaxError | Error;
 }
