@@ -10,6 +10,7 @@ import { Config } from '../shared/model/config';
 import styled from 'styled-components';
 import loadUserAction from '../shared/store/auth/load-user/load-user.action';
 import { AuthActions } from '../shared/store/auth/auth.reducer';
+import InlineError from '../shared/error/inline-error';
 
 type ConnectedProps = StateProps & DispatchProps & RouteComponentProps<{}>;
 
@@ -30,6 +31,12 @@ class SignIn extends React.Component<ConnectedProps, {}> {
         {AuthStatus.LOGGED_OUT === auth.status && (
           <div>
             <Heading>Sign-in</Heading>
+            {
+              auth.error &&
+              <InlineError message={auth.error.message}>
+                We haven't been able to sign you in.
+              </InlineError>
+            }
             <SignInSocial serverBaseUrl={Config.SERVER_BASE_URL}/>
           </div>
         )}
