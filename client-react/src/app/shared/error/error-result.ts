@@ -1,5 +1,5 @@
 export interface ErrorResult {
-  status: number,
-  message: string,
-  type: any,
+  status: number;
+  message: string;
+  type: any;
 }
