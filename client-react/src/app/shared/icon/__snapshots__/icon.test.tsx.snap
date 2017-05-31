@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Icon /> should pass a className prop through 1`] = `
+<i
+  className="fa fa-spotify foobar-123"
+/>
+`;
+
+exports[`<Icon /> should pass allow a size to be specified 1`] = `
+<i
+  className="fa fa-spotify fa-3x"
+/>
+`;
+
+exports[`<Icon /> should render an icon based on id 1`] = `
+<i
+  className="fa fa-spotify"
+/>
+`;
