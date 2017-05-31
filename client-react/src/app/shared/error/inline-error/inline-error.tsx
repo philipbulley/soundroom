@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import colors from '../colors/colors';
+import colors from '../../colors/colors';
 
 const InlineError = ({message, status, children}: Props) => {
   const statusStr = typeof status !== 'undefined' ? 'status:' + status : null;
@@ -16,10 +16,14 @@ const InlineError = ({message, status, children}: Props) => {
 };
 
 interface Props {
+  /** An error message potentially from the server */
   message?: string;
+
+  /* The network status code if available */
   status?: number;
-  // TODO: Find and add type for react children
-  children: any;
+
+  /** A custom user-friendly error message */
+  children?: any;
 }
 
 const InlineErrorStyled = styled.div`

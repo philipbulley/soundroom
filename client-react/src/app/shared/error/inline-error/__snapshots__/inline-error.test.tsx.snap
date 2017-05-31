@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<InlineError /> renders a basic 1`] = `
+<div
+  className="sc-bdVaJa fyJxkR"
+>
+   
+</div>
+`;
+
+exports[`<InlineError /> renders both message and status prop 1`] = `
+<div
+  className="sc-bdVaJa fyJxkR"
+>
+   
+  [status:1234 | I am a custom message]
+</div>
+`;
+
+exports[`<InlineError /> renders children 1`] = `
+<div
+  className="sc-bdVaJa fyJxkR"
+>
+  I am a child string
+   
+</div>
+`;
+
+exports[`<InlineError /> renders children, message and status prop 1`] = `
+<div
+  className="sc-bdVaJa fyJxkR"
+>
+  I am a child string
+   
+  [status:1234 | I am a custom message]
+</div>
+`;
+
+exports[`<InlineError /> renders message prop 1`] = `
+<div
+  className="sc-bdVaJa fyJxkR"
+>
+   
+  [I am a custom message]
+</div>
+`;
+
+exports[`<InlineError /> renders status prop 1`] = `
+<div
+  className="sc-bdVaJa fyJxkR"
+>
+   
+  [status:1234]
+</div>
+`;

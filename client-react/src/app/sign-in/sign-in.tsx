@@ -10,7 +10,7 @@ import { Config } from '../shared/model/config';
 import styled from 'styled-components';
 import loadUserAction from '../shared/store/auth/load-user/load-user.action';
 import { AuthActions } from '../shared/store/auth/auth.reducer';
-import InlineError from '../shared/error/inline-error';
+import InlineError from '../shared/error/inline-error/inline-error';
 
 type ConnectedProps = StateProps & DispatchProps & RouteComponentProps<{}>;
 
