@@ -24,26 +24,22 @@ describe('loadUserCommand', () => {
 
   it('should set status to loading', () => {
     authState = loadUserCommand(authState, {});
-
     expect(authState.status).toBe(AuthStatus.LOADING);
   });
 
   it('should accept payload without a JWT', () => {
     authState = loadUserCommand(authState, {});
-
     expect(authState.jwt).toBeFalsy();
   });
 
   it('should add JWT if present in payload', () => {
     authState = loadUserCommand(authState, {jwt: MOCK_JWT});
-
     expect(authState.jwt).toBe(MOCK_JWT);
   });
 
   it('should remove any previous error', () => {
     // Add an error to state
     authState = {...authState, error: ERROR_RESULT};
-
     authState = loadUserCommand(authState, {});
     expect(authState.error).toBeUndefined();
   });
