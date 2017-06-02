@@ -27,6 +27,7 @@
   "devDependencies": {
     "@types/enzyme": "^2.8.0",
     "@types/react-test-renderer": "^15.5.0",
+    "deep-freeze": "^0.0.1",
     "enzyme": "^2.8.2",
     "react-addons-test-utils": "^15.5.1",
     "react-scripts-ts": "2.2.0",

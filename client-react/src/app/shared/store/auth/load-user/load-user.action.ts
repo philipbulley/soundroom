@@ -7,13 +7,13 @@ export interface LoadUserAction {
 }
 
 export interface LoadUserParams {
-  jwt: string;
+  jwt?: string;
 
   // TODO(client-react): Implement or remove
   skipSignInRedirectOnError?: boolean;
 }
 
-const loadUserAction = (jwt): LoadUserAction => ({
+const loadUserAction = (jwt?: string): LoadUserAction => ({
   type: LOAD_USER,
   payload: {
     jwt,
