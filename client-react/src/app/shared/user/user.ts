@@ -2,8 +2,8 @@ export interface User {
   _id: string;
   name: string;
   avatar: string;
-  created: Date;
-  modified: Date;
+  created: string;
+  modified: string;
   googleId: string;
   spotifyId: string;
   facebookId: string;

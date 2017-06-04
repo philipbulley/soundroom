@@ -9,22 +9,20 @@ import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/throw';
+import 'rxjs/add/observable/fromPromise';
 import { User } from '../../../user/user';
 import { Config } from '../../../model/config';
 import { StoreState } from '../../store-state';
 import { createUserFromApiResponse } from '../../../user/user.factory';
-import { AjaxCreationMethod, AjaxError } from 'rxjs/observable/dom/AjaxObservable';
-import { createHeaders } from '../../../network-helper';
+import { createHeaders, fetchRx } from '../../../network-helper';
 import { AuthActions } from '../auth.reducer';
 import { Epic } from 'redux-observable';
 import { Auth } from '../auth';
 
-// TODO(redux-observable): Inject dependency when fixed: https://github.com/redux-observable/redux-observable/issues/231
-import { ajax } from 'rxjs/observable/dom/ajax';
-
+export const PATH: string = '/me';
 const JWT_STORAGE_KEY: string = 'soundroom.auth.jwt';
 
-export const loadUserEpic: Epic<AuthActions, StoreState> = (action$, store/*, {ajax}*/) => action$
+export const loadUserEpic: Epic<AuthActions, StoreState> = (action$, store) => action$
   .filter(action => action.type === LOAD_USER)
   .do((action: LoadUserAction) => {
     if (action.payload.jwt) {
@@ -33,21 +31,23 @@ export const loadUserEpic: Epic<AuthActions, StoreState> = (action$, store/*, {a
     }
   })
   .switchMap((action: LoadUserAction) => {
-    return makeLoginRequest(store.getState().auth, ajax, action.payload)
+    return makeLoginRequest(store.getState().auth, action.payload)
       .map((user: User) => loadUserSuccessAction(user))
-      .catch((loadUserError: LoadUserError) => Observable.of(loadUserErrorAction({
-        type: null, // TODO: Define error types for this kind of error?
-        skipSignInRedirect: !!(loadUserError.params && loadUserError.params.skipSignInRedirectOnError),
-        status: loadUserError.error instanceof AjaxError
-          ? loadUserError.error.status
-          : 0,
-        message: loadUserError.error.message || 'unable to load user',
-      })));
+      .catch((loadUserError: LoadUserError) => {
+        return Observable.of(loadUserErrorAction({
+          type: null, // TODO: Define error types for this kind of error?
+          skipSignInRedirect: !!(loadUserError.params && loadUserError.params.skipSignInRedirectOnError),
+          status: loadUserError.error instanceof Response
+            ? loadUserError.error.status
+            : 0,
+          message: (loadUserError.error instanceof Response
+            ? loadUserError.error.statusText
+            : loadUserError.error.message) || 'Unable to load user',
+        }));
+      });
   });
 
-function makeLoginRequest(
-  auth: Auth, ajax: AjaxCreationMethod, params: LoadUserParams): Observable<User> {
-
+function makeLoginRequest(auth: Auth, params: LoadUserParams): Observable<User> {
   if (!auth.jwt) {
     const error: LoadUserError = {
       params,
@@ -56,10 +56,11 @@ function makeLoginRequest(
     return Observable.throw(error);
   }
 
-  return ajax.getJSON(Config.API_BASE_URL + '/me', createHeaders(auth))
-    // .delay(2000)    // DEBUG: Delay for simulation purposes only
-    .map((res: any) => createUserFromApiResponse(res))
-    .catch((error: AjaxError) => {
+  return fetchRx(Config.API_BASE_URL + PATH, {headers: createHeaders(auth)})
+  // .delay(2000)    // DEBUG: Delay for simulation purposes only
+    .switchMap((res: Response) => Observable.fromPromise(res.json()))
+    .map((json: any) => createUserFromApiResponse(json))
+    .catch((error: Response) => {
       const loadUserError: LoadUserError = {
         params,
         error,
@@ -71,5 +72,5 @@ function makeLoginRequest(
 
 interface LoadUserError {
   params: LoadUserParams;
-  error: AjaxError | Error;
+  error: Response | Error;
 }
