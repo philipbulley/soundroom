@@ -96,7 +96,7 @@ const play = (id) => {
   spotify.player.play(getTrack(id));
 
   if (process.env.SKIP_TRACKS === 'true') {
-    setTimeout(() => seek(getDuration() - 20), 1000);
+    setTimeout(() => seek(getDuration() - 20), 20000);
   }
 
   // Start progress shortly after, so that any play/resume events have dispatched first
