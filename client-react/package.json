@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@storybook/addon-info": "^3.0.0",
+    "@storybook/addon-knobs": "^3.0.0",
     "@storybook/react": "^3.0.0",
     "@types/enzyme": "^2.8.0",
     "@types/fetch-mock": "^5.8.2",
