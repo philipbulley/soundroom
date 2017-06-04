@@ -27,6 +27,7 @@
     "src/setupTests.ts"
   ],
   "types": [
-    "typePatches"
+    "typePatches",
+    "custom-types/**"
   ]
 }

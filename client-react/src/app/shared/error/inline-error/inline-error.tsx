@@ -10,7 +10,7 @@ const InlineError = ({message, status, children}: Props) => {
 
   return (
     <InlineErrorStyled>
-      {children} {extra && `[${extra}]`}
+      {children} <ExtraInfo>{extra && `[${extra}]`}</ExtraInfo>
     </InlineErrorStyled>
   );
 };
@@ -30,6 +30,12 @@ const InlineErrorStyled = styled.div`
   padding: 10px;
   background-color: ${colors.red};
   color: ${colors.white};
+`;
+
+const ExtraInfo = styled.div`
+  display: inline;
+  color: ${colors.black};
+  font-size: .7em;
 `;
 
 export default InlineError;
