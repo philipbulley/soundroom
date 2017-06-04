@@ -7,11 +7,6 @@ const MOCK_MESSAGE = 'I am a custom message';
 const MOCK_STATUS = 1234;
 
 describe('<InlineError />', () => {
-  it('renders a basic', () => {
-    const inlineError = create(<InlineError/>).toJSON();
-    expect(inlineError).toMatchSnapshot();
-  });
-
   it('renders children', () => {
     const inlineError = create(<InlineError>{MOCK_CHILDREN}</InlineError>).toJSON();
     expect(inlineError).toMatchSnapshot();

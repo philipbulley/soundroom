@@ -7,7 +7,6 @@ import Rooms from './rooms/rooms';
 import Room from './room/room';
 import SignIn from './sign-in/sign-in';
 import PrivateRoute from './shared/router/private-route';
-import 'font-awesome/css/font-awesome.css';
 
 // const onClick = (path: string) => {
 //   store.dispatch(push(path));
