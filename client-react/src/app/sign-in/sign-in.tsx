@@ -11,6 +11,7 @@ import styled from 'styled-components';
 import loadUserAction from '../shared/store/auth/load-user/load-user.action';
 import { AuthActions } from '../shared/store/auth/auth.reducer';
 import InlineError from '../shared/error/inline-error/inline-error';
+import Icon from '../shared/icon/icon';
 
 type ConnectedProps = StateProps & DispatchProps & RouteComponentProps<{}>;
 
@@ -44,7 +45,7 @@ class SignIn extends React.Component<ConnectedProps, {}> {
         {AuthStatus.LOADING === auth.status && (
           <div>
             <Heading>Sign-in</Heading>
-            <h3><i className="fa fa-circle-o-notch fa-spin"/> Logging in...</h3>
+            <h3><Icon id="circle-o-notch" spin/> Logging in...</h3>
           </div>
         )}
 

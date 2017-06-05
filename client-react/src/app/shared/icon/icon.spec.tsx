@@ -17,4 +17,9 @@ describe('<Icon />', () => {
     const icon = create(<Icon id="spotify" size="3"/>).toJSON();
     expect(icon).toMatchSnapshot();
   });
+
+  it('should accept a spin prop', () => {
+    const icon = create(<Icon id="circle-o-notch" spin/>).toJSON();
+    expect(icon).toMatchSnapshot();
+  });
 });
