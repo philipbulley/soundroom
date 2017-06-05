@@ -26,6 +26,7 @@ interface ButtonStyledProps {
 const ButtonStyled = ButtonReset['extend']`
   padding: 14px 30px;
 
+  font-size: 16px;
   border-radius: 4px;
   color: ${(props: ButtonStyledProps) => getColor(props).color};
   background: ${(props: ButtonStyledProps) => getColor(props).backgroundColor};

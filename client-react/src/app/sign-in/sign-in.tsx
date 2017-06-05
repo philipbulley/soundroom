@@ -12,6 +12,7 @@ import loadUserAction from '../shared/store/auth/load-user/load-user.action';
 import { AuthActions } from '../shared/store/auth/auth.reducer';
 import InlineError from '../shared/error/inline-error/inline-error';
 import Icon from '../shared/icon/icon';
+import Button from '../shared/button/button';
 
 type ConnectedProps = StateProps & DispatchProps & RouteComponentProps<{}>;
 
@@ -28,10 +29,10 @@ class SignIn extends React.Component<ConnectedProps, {}> {
     const {auth, goToRooms} = this.props;
 
     return (
-      <div>
+      <SignInStyled>
         {AuthStatus.LOGGED_OUT === auth.status && (
           <div>
-            <Heading>Sign-in</Heading>
+            <h2>Sign-in</h2>
             {
               auth.error &&
               <InlineError message={auth.error.message}>
@@ -44,18 +45,19 @@ class SignIn extends React.Component<ConnectedProps, {}> {
 
         {AuthStatus.LOADING === auth.status && (
           <div>
-            <Heading>Sign-in</Heading>
+            <h2>Sign-in</h2>
             <h3><Icon id="circle-o-notch" spin/> Logging in...</h3>
           </div>
         )}
 
         {AuthStatus.LOGGED_IN === auth.status && (
           <div>
-            <Heading>{auth.user ? auth.user.name : `You're`} in da house!</Heading>
-            <button onClick={goToRooms}>Let's get started</button>
+            <h2>{auth.user ? auth.user.name : `You're`} in da house!</h2>
+
+            <Button onClick={goToRooms}>Let's get started</Button>
           </div>
         )}
-      </div>
+      </SignInStyled>
     );
   }
 }
@@ -69,7 +71,7 @@ interface DispatchProps {
   loadUser: (jwt: string) => {};
 }
 
-const Heading = styled.h2`
+const SignInStyled = styled.div`
   text-align: center;
 `;
 
