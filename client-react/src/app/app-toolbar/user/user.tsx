@@ -13,7 +13,7 @@ export interface Props {
   user: UserModel;
 }
 
-const UserStyled = styled.div`
+const UserStyled = styled.span`
   color: ${colors.greyGrit};
   font-size: 13px;
 `;
