@@ -44,7 +44,7 @@ export class PlaylistMenuItemComponent implements OnDestroy {
 
   constructor(private store$: Store<AppState>,
               private cdr: ChangeDetectorRef) {
-    // console.log('PlaylistMenuItemComponent()', router);
+    // console.log('PlaylistMenuItemComponent()', routes);
   }
 
   ngOnDestroy(): void {

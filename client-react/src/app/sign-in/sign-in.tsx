@@ -20,6 +20,7 @@ class SignIn extends React.Component<ConnectedProps, {}> {
   componentDidMount() {
     const params = new URLSearchParams(this.props.location.search);
     const jwt = params.get('jwt');
+
     if (jwt) {
       this.props.loadUser(jwt);
     }
