@@ -2,10 +2,11 @@ import * as React from 'react';
 import { User as UserModel } from '../../shared/user/user';
 import styled from 'styled-components';
 import colors from '../../shared/colors/colors';
+import Avatar from '../../shared/avatar/avatar';
 
 const User = ({user}: Props) => (
-  <UserStyled className="user">
-    <img className="o-avatar" src={user.avatar}/> {user.name}
+  <UserStyled>
+    <Avatar user={user}/> {user.name}
   </UserStyled>
 );
 
