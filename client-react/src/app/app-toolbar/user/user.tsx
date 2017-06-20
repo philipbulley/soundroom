@@ -6,7 +6,7 @@ import Avatar from '../../shared/avatar/avatar';
 
 const User = ({user}: Props) => (
   <UserStyled>
-    <Avatar user={user}/> {user.name}
+    <Avatar user={user} size="small"/> {user.name}
   </UserStyled>
 );
 
