@@ -1,4 +1,4 @@
-# Spotidrop Client
+# Soundroom Client
 
 Democratic playlist client for Spotify.
 

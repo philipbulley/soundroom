@@ -1,4 +1,4 @@
-# Spotidrop Server
+# Soundroom Server
 
 Democratic playlist server for Spotify.
 

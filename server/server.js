@@ -15,7 +15,7 @@ import {initSocket} from './controller/SocketController';
 
 log.level = log.LEVEL_DEBUG;
 log.info('__________________________________________________');
-log.info('Hello! Starting Spotidrop initialization. Please wait...');
+log.info('Hello! Starting Soundroom initialization. Please wait...');
 
 if (!process.env.MONGO_CONNECT)
   throw new Error('Please specify the MONGO_CONNECT env var. ie. MONGO_CONNECT=mongodb://username:password@hostname.foo.bar:27017/spotidrop-xxxx');
