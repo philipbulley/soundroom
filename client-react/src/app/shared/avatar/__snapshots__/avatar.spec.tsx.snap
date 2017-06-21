@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Avatar /> should render a medium sized avatar 1`] = `
+<img
+  alt="michael jackson"
+  className="sc-bdVaJa tXwBa"
+  size="medium"
+  src="https://s3.amazonaws.com/uifaces/faces/twitter/brad_frost/128.jpg"
+  title="michael jackson"
+/>
+`;
+
+exports[`<Avatar /> should render a small sized avatar 1`] = `
+<img
+  alt="michael jackson"
+  className="sc-bdVaJa fkdRbg"
+  size="small"
+  src="https://s3.amazonaws.com/uifaces/faces/twitter/brad_frost/128.jpg"
+  title="michael jackson"
+/>
+`;

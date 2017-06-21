@@ -3,7 +3,7 @@ import { User } from '../user/user';
 import styled from 'styled-components';
 
 const Avatar = ({user, ...rest}: Props) => (
-  <AvatarStyled {...rest} src={user.avatar} />
+  <AvatarStyled {...rest} src={user.avatar} alt={user.name} title={user.name} />
 );
 
 interface Props {
