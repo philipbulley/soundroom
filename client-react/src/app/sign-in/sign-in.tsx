@@ -7,7 +7,7 @@ import { AuthStatus } from '../shared/store/auth/auth-state';
 import { push } from 'react-router-redux';
 import SignInSocial from './sign-in-social/sign-in-social';
 import { Config } from '../shared/model/config';
-import styled from 'styled-components';
+import SignInStyled from './sign-in.styled';
 import loadUserAction from '../shared/store/auth/load-user/load-user.action';
 import { AuthActions } from '../shared/store/auth/auth.reducer';
 import InlineError from '../shared/error/inline-error/inline-error';
@@ -71,10 +71,6 @@ interface DispatchProps {
   goToRooms: () => {};
   loadUser: (jwt: string) => {};
 }
-
-const SignInStyled = styled.div`
-  text-align: center;
-`;
 
 const mapStateToProps = ({auth}: StoreState) => ({
   auth,

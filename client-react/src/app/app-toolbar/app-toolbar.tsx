@@ -5,9 +5,9 @@ import { connect, Dispatch } from 'react-redux';
 import { AuthActions } from '../shared/store/auth/auth.reducer';
 import { push } from 'react-router-redux';
 import { Auth } from '../shared/store/auth/auth';
-import styled from 'styled-components';
+import AppToolbarStyled from './app-toolbar.styled';
+import Logo from './logo.styled';
 import ContentContainer from '../shared/layout/content-container';
-import colors from '../shared/colors/colors';
 import User from './user/user';
 import { User as UserModel } from '../shared/user/user';
 import { RouteComponentProps } from 'react-router';
@@ -38,35 +38,6 @@ interface DispatchProps {
   goHome: () => void;
   goToSignIn: () => void;
 }
-
-const AppToolbarStyled = styled.nav`
-    position: sticky;
-    width: 100%;
-    height: 60px;
-    background-color: ${colors.white};
-    border-bottom: ${colors.greyDust} 1px solid;
-    
-    .content-container {
-      display: flex;
-      line-height: 60px;
-    }
-    
-    .main {
-      flex: 2 1 auto;
-    }
-    
-    .meta {
-      flex: 1 1 auto;
-      text-align: right;
-    }
-`;
-
-const Logo = styled.a`
-  margin: 0 40px 0 0;
-  color: ${colors.blackShade};
-  text-decoration: none;
-  font-weight: bold;
-`;
 
 const mapStateToProps = ({auth}: StoreState) => ({
   auth,
