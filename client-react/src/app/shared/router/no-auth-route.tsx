@@ -5,13 +5,13 @@ import { StoreState } from '../store/store-state';
 import { Auth } from '../store/auth/auth';
 import { AuthStatus } from '../store/auth/auth-state';
 
-const PrivateRoute = ({component: Component, auth, ...rest}) => (
+const NoAuthRoute = ({component: Component, auth, ...rest}) => (
   <Route {...rest} render={props => (
-    auth.status === AuthStatus.LOGGED_IN ? (
-      <Component {...props}/>
-    ) : (
+    auth.status !== AuthStatus.LOGGED_IN
+      ? <Component {...props}/>
+      : (
       <Redirect to={{
-        pathname: '/sign-in',
+        pathname: '/',
         state: {from: props.location}
       }}/>
     )
@@ -26,4 +26,4 @@ const mapStateToProps = ({auth}: StoreState) => ({
   auth,
 });
 
-export default connect<StateProps, any, any>(mapStateToProps)(PrivateRoute);
+export default connect<StateProps, any, any>(mapStateToProps)(NoAuthRoute);
