@@ -1,7 +1,7 @@
-import styled from 'styled-components';
+import { css } from 'styled-components';
 import media from './media';
 
-const ContentContainer = styled.div`
+export const contentContainer = css`
   margin: 0 10px;
   min-width: 300px;
   
@@ -13,5 +13,3 @@ const ContentContainer = styled.div`
     margin: 0 80px;
   `}
 `;
-
-export default ContentContainer;

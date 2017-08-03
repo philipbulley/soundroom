@@ -7,14 +7,13 @@ import { push } from 'react-router-redux';
 import { Auth } from '../shared/store/auth/auth';
 import AppToolbarStyled from './app-toolbar.styled';
 import Logo from './logo.styled';
-import ContentContainer from '../shared/layout/content-container';
 import User from './user/user';
 import { User as UserModel } from '../shared/user/user';
 import { RouteComponentProps } from 'react-router';
 
 const AppToolbar = ({auth, goHome, goToSignIn}: Props) => (
   <AppToolbarStyled>
-    <ContentContainer className="content-container">
+    <nav>
       <div className="main">
         <Logo onClick={goHome}>Soundroom</Logo>
         {AuthStatus.LOGGED_IN !== auth.status && <a onClick={goToSignIn}>Sign In</a>}
@@ -24,7 +23,7 @@ const AppToolbar = ({auth, goHome, goToSignIn}: Props) => (
       <div className="meta">
         {/*Right nav items can go here*/}
       </div>
-    </ContentContainer>
+    </nav>
   </AppToolbarStyled>
 );
 

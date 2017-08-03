@@ -1,16 +1,18 @@
 import styled from 'styled-components';
 import colors from '../shared/colors/colors';
+import { contentContainer } from '../shared/layout/content-container';
 
-export default styled.nav`
+export default styled.header`
     position: sticky;
-    width: 100%;
     height: 60px;
     background-color: ${colors.white};
     border-bottom: ${colors.greyDust} 1px solid;
     
-    .content-container {
+    line-height: 60px;
+    
+    nav {
       display: flex;
-      line-height: 60px;
+      ${contentContainer}
     }
     
     .main {
