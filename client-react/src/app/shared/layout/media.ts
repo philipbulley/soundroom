@@ -11,7 +11,7 @@ const breakpoints = {
 const media: Partial<Media> = Object.keys(breakpoints)
   .reduce((acc, label) => {
     acc[label] = (...args: any[]) => css`
-      @media (max-width: ${breakpoints[label] / 16}em) {
+      @media (min-width: ${breakpoints[label] / 16}em) {
         ${css.apply({}, args)}   // Need TypeScript 2.4! https://github.com/Microsoft/TypeScript/issues/5296
       }
     `;
