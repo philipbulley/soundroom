@@ -16,7 +16,8 @@ const AppToolbar = ({auth, goHome, goToSignIn}: Props) => (
     <nav>
       <div className="main">
         <Logo onClick={goHome}>Soundroom</Logo>
-        {AuthStatus.LOGGED_IN !== auth.status && <a onClick={goToSignIn}>Sign In</a>}
+        {/*Only enable sign-in link below if we eventually have NoAuth pages other than sign-in*/}
+        {/*{AuthStatus.LOGGED_IN !== auth.status && <a onClick={goToSignIn}>Sign In</a>}*/}
 
         {AuthStatus.LOGGED_IN === auth.status && <User user={auth.user as UserModel}/>}
       </div>
