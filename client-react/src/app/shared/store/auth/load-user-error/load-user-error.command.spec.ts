@@ -3,7 +3,7 @@ import { AuthStatus } from '../auth-state';
 import { loadUserErrorCommand } from './load-user-error.command';
 import { LoadUserErrorResult } from './load-user-error-result';
 import { ErrorKey } from '../../../error/error-key';
-const deepFreeze = require('deep-freeze');
+import deepFreeze = require('deep-freeze');
 
 describe('loadUserErrorCommand', () => {
   const ERROR_RESULT: LoadUserErrorResult = {

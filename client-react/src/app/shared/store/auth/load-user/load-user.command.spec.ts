@@ -3,7 +3,7 @@ import { AuthStatus } from '../auth-state';
 import { loadUserCommand } from './load-user.command';
 import { ErrorResult } from '../../../error/error-result';
 import { ErrorKey } from '../../../error/error-key';
-const deepFreeze = require('deep-freeze');
+import deepFreeze = require('deep-freeze');
 
 describe('loadUserCommand', () => {
   const MOCK_JWT = 'abcdefghijklmnop123';
