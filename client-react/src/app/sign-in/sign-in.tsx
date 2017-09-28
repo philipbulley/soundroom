@@ -9,11 +9,11 @@ import SignInSocial from './sign-in-social/sign-in-social';
 import { Config } from '../shared/model/config';
 import SignInStyled from './sign-in.styled';
 import loadUserAction from '../shared/store/auth/load-user/load-user.action';
-import { AuthActions } from '../shared/store/auth/auth.reducer';
 import InlineError from '../shared/error/inline-error/inline-error';
 import Icon from '../shared/icon/icon';
 import Button from '../shared/button/button';
 import { Helmet } from 'react-helmet';
+import { AuthActions } from '../shared/store/auth/auth-action-types';
 
 type ConnectedProps = StateProps & DispatchProps & RouteComponentProps<{}>;
 

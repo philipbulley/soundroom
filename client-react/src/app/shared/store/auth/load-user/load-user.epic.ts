@@ -1,4 +1,4 @@
-import { LOAD_USER, LoadUserAction, LoadUserParams } from './load-user.action';
+import { LoadUserAction, LoadUserParams } from './load-user.action';
 import loadUserSuccessAction from '../load-user-success/load-user-success.action';
 import loadUserErrorAction from '../load-user-error/load-user-error.action';
 import { Observable } from 'rxjs/Observable';
@@ -15,15 +15,15 @@ import { Config } from '../../../model/config';
 import { StoreState } from '../../store-state';
 import { createUserFromApiResponse } from '../../../user/user.factory';
 import { createHeaders, fetchRx } from '../../../network-helper';
-import { AuthActions } from '../auth.reducer';
 import { Epic } from 'redux-observable';
 import { Auth } from '../auth';
 import { setPersistedJwt } from '../../../auth/auth.service';
+import { AuthActions, AuthActionType } from '../auth-action-types';
 
 export const PATH: string = '/me';
 
 export const loadUserEpic: Epic<AuthActions, StoreState> = (action$, store) => action$
-  .filter(action => action.type === LOAD_USER)
+  .filter(action => action.type === AuthActionType.LOAD_USER)
   .do((action: LoadUserAction) => {
     if (action.payload.jwt) {
       // Persist the JWT

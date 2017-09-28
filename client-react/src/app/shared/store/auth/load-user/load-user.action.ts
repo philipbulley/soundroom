@@ -1,8 +1,14 @@
-export const LOAD_USER = 'LOAD_USER';
-export type LOAD_USER = typeof LOAD_USER;
+import { AuthActionType } from '../auth-action-types';
+
+const loadUserAction = (jwt?: string): LoadUserAction => ({
+  type: AuthActionType.LOAD_USER,
+  payload: {
+    jwt,
+  },
+});
 
 export interface LoadUserAction {
-  type: LOAD_USER;
+  type: AuthActionType.LOAD_USER;
   payload: LoadUserParams;
 }
 
@@ -12,12 +18,5 @@ export interface LoadUserParams {
   // TODO(client-react): Implement or remove
   skipSignInRedirectOnError?: boolean;
 }
-
-const loadUserAction = (jwt?: string): LoadUserAction => ({
-  type: LOAD_USER,
-  payload: {
-    jwt,
-  },
-});
 
 export default loadUserAction;

@@ -2,7 +2,6 @@ import * as React from 'react';
 import { AuthStatus } from '../shared/store/auth/auth-state';
 import { StoreState } from '../shared/store/store-state';
 import { connect, Dispatch } from 'react-redux';
-import { AuthActions } from '../shared/store/auth/auth.reducer';
 import { push } from 'react-router-redux';
 import { Auth } from '../shared/store/auth/auth';
 import AppToolbarStyled from './app-toolbar.styled';
@@ -10,6 +9,7 @@ import Logo from './logo.styled';
 import User from './user/user';
 import { User as UserModel } from '../shared/user/user';
 import { RouteComponentProps } from 'react-router';
+import { AuthActions } from '../shared/store/auth/auth-action-types';
 
 const AppToolbar = ({auth, goHome, goToSignIn}: Props) => (
   <AppToolbarStyled>
