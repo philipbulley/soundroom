@@ -18,16 +18,16 @@ import { createHeaders, fetchRx } from '../../../network-helper';
 import { AuthActions } from '../auth.reducer';
 import { Epic } from 'redux-observable';
 import { Auth } from '../auth';
+import { setPersistedJwt } from '../../../auth/auth.service';
 
 export const PATH: string = '/me';
-const JWT_STORAGE_KEY: string = 'soundroom.auth.jwt';
 
 export const loadUserEpic: Epic<AuthActions, StoreState> = (action$, store) => action$
   .filter(action => action.type === LOAD_USER)
   .do((action: LoadUserAction) => {
     if (action.payload.jwt) {
       // Persist the JWT
-      localStorage.setItem(JWT_STORAGE_KEY, action.payload.jwt);
+      setPersistedJwt(action.payload.jwt);
     }
   })
   .switchMap((action: LoadUserAction) => {

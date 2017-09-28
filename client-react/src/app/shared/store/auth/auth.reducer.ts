@@ -6,11 +6,12 @@ import { LOAD_USER_SUCCESS, LoadUserSuccessAction } from './load-user-success/lo
 import { loadUserSuccessCommand } from './load-user-success/load-user-success.command';
 import { LOAD_USER_ERROR, LoadUserErrorAction } from './load-user-error/load-user-error.action';
 import { loadUserErrorCommand } from './load-user-error/load-user-error.command';
+import { getPersistedJwt } from '../../auth/auth.service';
 
 const defaultState: Auth = {
   status: AuthStatus.LOGGED_OUT,
   user: null,
-  jwt: null,
+  jwt: getPersistedJwt(),
 };
 
 /** A union of action payloads that this reducer will accept */

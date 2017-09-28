@@ -19,7 +19,9 @@ type ConnectedProps = StateProps & DispatchProps & RouteComponentProps<{}>;
 class SignIn extends React.Component<ConnectedProps, {}> {
   componentDidMount() {
     const params = new URLSearchParams(this.props.location.search);
-    const jwt = params.get('jwt');
+
+    // Check for URL based JWT first, otherwise try to get from store state
+    const jwt = params.get('jwt') || this.props.auth.jwt;
 
     if (jwt) {
       this.props.loadUser(jwt);
@@ -78,7 +80,7 @@ const mapStateToProps = ({auth}: StoreState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<AuthActions>): DispatchProps => ({
   goToRooms: () => dispatch(push('/')),
-  loadUser: (jwt) => dispatch(loadUserAction(jwt)),
+  loadUser: (jwt: string) => dispatch(loadUserAction(jwt)),
 });
 
 export default connect<StateProps, DispatchProps, RouteComponentProps<{}>>(mapStateToProps, mapDispatchToProps)(SignIn);
