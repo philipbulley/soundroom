@@ -4,15 +4,17 @@ import { StoreState } from '../shared/store/store-state';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import Helmet from 'react-helmet';
+import RoomsStyled from './rooms.styled';
+import { RoomCount } from './room-count/room-count';
 
 const Rooms = ({playlistCollection}: StateProps & RouteComponentProps<{}>) => (
-  <div>
+  <RoomsStyled>
     <Helmet>
       <title>Soundroom: Join a room!</title>
     </Helmet>
     <h2>Join a room!</h2>
-    There are {playlistCollection.playlists.length} rooms.
-  </div>
+    <RoomCount playlistCollection={playlistCollection}/>
+  </RoomsStyled>
 );
 
 interface StateProps {
