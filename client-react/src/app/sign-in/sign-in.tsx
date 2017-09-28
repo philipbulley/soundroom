@@ -13,6 +13,7 @@ import { AuthActions } from '../shared/store/auth/auth.reducer';
 import InlineError from '../shared/error/inline-error/inline-error';
 import Icon from '../shared/icon/icon';
 import Button from '../shared/button/button';
+import { Helmet } from 'react-helmet';
 
 type ConnectedProps = StateProps & DispatchProps & RouteComponentProps<{}>;
 
@@ -32,35 +33,38 @@ class SignIn extends React.Component<ConnectedProps, {}> {
     const {auth, goToRooms} = this.props;
 
     return (
-      <SignInStyled>
-        {AuthStatus.LOGGED_OUT === auth.status && (
-          <div>
-            <h2>Sign-in</h2>
-            {
-              auth.error &&
-              <InlineError message={auth.error.message}>
-                We haven't been able to sign you in.
-              </InlineError>
-            }
-            <SignInSocial serverBaseUrl={Config.SERVER_BASE_URL}/>
-          </div>
-        )}
+        <SignInStyled>
+          <Helmet>
+            <title>Soundroom: Sign-in</title>
+          </Helmet>
+          {AuthStatus.LOGGED_OUT === auth.status && (
+            <div>
+              <h2>Sign-in</h2>
+              {
+                auth.error &&
+                <InlineError message={auth.error.message}>
+                  We haven't been able to sign you in.
+                </InlineError>
+              }
+              <SignInSocial serverBaseUrl={Config.SERVER_BASE_URL}/>
+            </div>
+          )}
 
-        {AuthStatus.LOADING === auth.status && (
-          <div>
-            <h2>Sign-in</h2>
-            <h3><Icon id="circle-o-notch" spin/> Logging in...</h3>
-          </div>
-        )}
+          {AuthStatus.LOADING === auth.status && (
+            <div>
+              <h2>Sign-in</h2>
+              <h3><Icon id="circle-o-notch" spin/> Logging in...</h3>
+            </div>
+          )}
 
-        {AuthStatus.LOGGED_IN === auth.status && (
-          <div>
-            <h2>{auth.user ? auth.user.name : `You're`} in da house!</h2>
+          {AuthStatus.LOGGED_IN === auth.status && (
+            <div>
+              <h2>{auth.user ? auth.user.name : `You're`} in da house!</h2>
 
-            <Button onClick={goToRooms}>Let's get started</Button>
-          </div>
-        )}
-      </SignInStyled>
+              <Button onClick={goToRooms}>Let's get started</Button>
+            </div>
+          )}
+        </SignInStyled>
     );
   }
 }

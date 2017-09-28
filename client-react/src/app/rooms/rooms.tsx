@@ -3,9 +3,13 @@ import { PlaylistCollection } from '../shared/store/playlist-collection/playlist
 import { StoreState } from '../shared/store/store-state';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
+import Helmet from 'react-helmet';
 
 const Rooms = ({playlistCollection}: StateProps & RouteComponentProps<{}>) => (
   <div>
+    <Helmet>
+      <title>Soundroom: Join a room!</title>
+    </Helmet>
     <h2>Join a room!</h2>
     There are {playlistCollection.playlists.length} rooms.
   </div>
