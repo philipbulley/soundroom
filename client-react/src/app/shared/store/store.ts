@@ -7,7 +7,8 @@ import { routerReducer, routerMiddleware as createRouterMiddleware } from 'react
 import { StoreState } from './store-state';
 import { playlistCollectionReducer } from './playlist-collection/playlist-collection.reducer';
 import { authReducer } from './auth/auth.reducer';
-import authEpics from './auth/auth-epics';
+import { authEpics } from './auth/auth-epics';
+import { playlistCollectionEpics } from './playlist-collection/playlist-collection-epics';
 
 const reducers = {
   playlistCollection: playlistCollectionReducer,
@@ -20,7 +21,8 @@ const rootReducer = combineReducers<StoreState>({
 });
 
 export const rootEpic = combineEpics(
-    ...authEpics,
+  ...authEpics,
+  ...playlistCollectionEpics,
 );
 // TODO(redux-observable): use dependencies when fixed https://github.com/redux-observable/redux-observable/issues/231
 const epicMiddleware = createEpicMiddleware(rootEpic/*, {

@@ -13,7 +13,6 @@ import 'rxjs/add/observable/fromPromise';
 import { User } from '../../../user/user';
 import { Config } from '../../../model/config';
 import { StoreState } from '../../store-state';
-import { createUserFromApiResponse } from '../../../user/user.factory';
 import { createHeaders, fetchRx } from '../../../network-helper';
 import { Epic } from 'redux-observable';
 import { Auth } from '../auth';
@@ -58,8 +57,7 @@ function makeLoginRequest(auth: Auth, params: LoadUserParams): Observable<User> 
 
   return fetchRx(Config.API_BASE_URL + PATH, {headers: createHeaders(auth)})
   // .delay(2000)    // DEBUG: Delay for simulation purposes only
-    .switchMap((res: Response) => Observable.fromPromise(res.json()))
-    .map((json: any) => createUserFromApiResponse(json))
+    .switchMap((res: Response): Observable<User> => Observable.fromPromise(res.json()))
     .catch((error: Response) => {
       const loadUserError: LoadUserError = {
         params,
