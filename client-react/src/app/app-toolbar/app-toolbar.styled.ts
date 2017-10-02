@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import colors from '../shared/colors/colors';
 import { contentContainer } from '../shared/layout/content-container';
 
-export default styled.header`
+export const AppToolbarStyled = styled.header`
     position: sticky;
     height: 60px;
     background-color: ${colors.white};

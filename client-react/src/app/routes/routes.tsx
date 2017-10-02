@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { ConnectedRouter } from 'react-router-redux';
 import { Route, Switch } from 'react-router';
-import Rooms from './../rooms/rooms';
-import Room from './../room/room';
+import Rooms from '../playlist-menu/playlist-menu';
+import Room from '../playlist-menu-item/playlist-menu-item';
 import SignIn from './../sign-in/sign-in';
 import AuthRoute from '../shared/router/auth-route';
 import NoAuthRoute from '../shared/router/no-auth-route';

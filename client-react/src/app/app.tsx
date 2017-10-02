@@ -2,16 +2,13 @@ import * as React from 'react';
 import { store } from './shared/store/store';
 import { Provider } from 'react-redux';
 import Routes from './routes/routes';
-
-// const onClick = (path: string) => {
-//   store.dispatch(push(path));
-// };
+import { AppStyled } from './app.styled';
 
 const App = () => (
   <Provider store={store}>
-    <div>
+    <AppStyled>
       <Routes/>
-    </div>
+    </AppStyled>
   </Provider>
 );
 

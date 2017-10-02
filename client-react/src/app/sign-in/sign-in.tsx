@@ -7,7 +7,7 @@ import { AuthStatus } from '../shared/store/auth/auth-state';
 import { push } from 'react-router-redux';
 import SignInSocial from './sign-in-social/sign-in-social';
 import { Config } from '../shared/model/config';
-import SignInStyled from './sign-in.styled';
+import { SignInStyled } from './sign-in.styled';
 import loadUserAction from '../shared/store/auth/load-user/load-user.action';
 import InlineError from '../shared/error/inline-error/inline-error';
 import Icon from '../shared/icon/icon';
@@ -33,38 +33,38 @@ class SignIn extends React.Component<ConnectedProps, {}> {
     const {auth, goToRooms} = this.props;
 
     return (
-        <SignInStyled>
-          <Helmet>
-            <title>Soundroom: Sign-in</title>
-          </Helmet>
-          {AuthStatus.LOGGED_OUT === auth.status && (
-            <div>
-              <h2>Sign-in</h2>
-              {
-                auth.error &&
-                <InlineError message={auth.error.message}>
-                  We haven't been able to sign you in.
-                </InlineError>
-              }
-              <SignInSocial serverBaseUrl={Config.SERVER_BASE_URL}/>
-            </div>
-          )}
+      <SignInStyled>
+        <Helmet>
+          <title>Soundroom: Sign-in</title>
+        </Helmet>
+        {AuthStatus.LOGGED_OUT === auth.status && (
+          <div>
+            <h2>Sign-in</h2>
+            {
+              auth.error &&
+              <InlineError message={auth.error.message}>
+                We haven't been able to sign you in.
+              </InlineError>
+            }
+            <SignInSocial serverBaseUrl={Config.SERVER_BASE_URL}/>
+          </div>
+        )}
 
-          {AuthStatus.LOADING === auth.status && (
-            <div>
-              <h2>Sign-in</h2>
-              <h3><Icon id="circle-o-notch" spin/> Logging in...</h3>
-            </div>
-          )}
+        {AuthStatus.LOADING === auth.status && (
+          <div>
+            <h2>Sign-in</h2>
+            <h3><Icon id="circle-o-notch" spin/> Logging in...</h3>
+          </div>
+        )}
 
-          {AuthStatus.LOGGED_IN === auth.status && (
-            <div>
-              <h2>{auth.user ? auth.user.name : `You're`} in da house!</h2>
+        {AuthStatus.LOGGED_IN === auth.status && (
+          <div>
+            <h2>{auth.user ? auth.user.name : `You're`} in da house!</h2>
 
-              <Button onClick={goToRooms}>Let's get started</Button>
-            </div>
-          )}
-        </SignInStyled>
+            <Button onClick={goToRooms}>Let's get started</Button>
+          </div>
+        )}
+      </SignInStyled>
     );
   }
 }
