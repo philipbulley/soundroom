@@ -14,18 +14,16 @@ export const PlaylistMenuStyled = styled.div`
   }
   
   ul {
+    display: flex;
+    flex-wrap: wrap;
     padding: 0;
     list-style-type: none;
-    vertical-align: top;
-    font-size: 0;
   }
   
   li {
-    display: inline-block;
     width: 100%;
     height: 420px;
     padding: 2px;
-    vertical-align: top;
     font-size: 16px;
   }
   

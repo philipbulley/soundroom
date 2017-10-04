@@ -1,47 +1,48 @@
 import * as React from 'react';
 import colors from '../colors/colors';
 import { darken } from 'polished';
-import ButtonReset from './button-reset';
+import buttonReset from './button-reset';
 import { SyntheticEvent } from 'react';
+import { css, default as styled } from 'styled-components';
 
-const Button = ({children, onClick, ...rest}: Props) => (
-  <ButtonStyled {...rest} onClick={onClick}>
+const Button: React.StatelessComponent<Props> = ({children, onClick, className, ...rest}: Props) => (
+  <button className={className} onClick={onClick}>
     {children}
-  </ButtonStyled>
+  </button>
 );
 
 interface Props {
   children: any;
+  className?: string;
   onClick?: (event: SyntheticEvent<HTMLButtonElement>) => void;
   green?: boolean;
+  noStyle?: boolean;
 }
 
-interface ButtonStyledProps {
-  green?: boolean;
-}
-
-// TODO(styled-components): Remove square brackets when issue fixed:
-// https://github.com/styled-components/styled-components/issues/870
-// tslint:disable-next-line
-const ButtonStyled = ButtonReset['extend']`
-  padding: 14px 30px;
-
-  font-size: 16px;
-  border-radius: 4px;
-  color: ${(props: ButtonStyledProps) => getColor(props).color};
-  background: ${(props: ButtonStyledProps) => getColor(props).backgroundColor};
-  font-weight: bold;
-  transition: background-color .4s linear, color .4s linear;
-  outline: 0;
-
-  &:hover {
-    background-color: ${(props: ButtonStyledProps) => darken(0.2, getColor(props).color)};
-    color: ${(props: ButtonStyledProps) => getColor(props).backgroundColor};
-    transition: background-color 0s, color 0s;
-  }
+const ButtonStyled = styled(Button)`
+  ${buttonReset}
+  
+  ${(props: Props) => !props.noStyle
+  ? css`
+    padding: 14px 30px;
+  
+    font-size: 16px;
+    border-radius: 4px;
+    color: ${getColor(props).color};
+    background: ${getColor(props).backgroundColor};
+    font-weight: bold;
+    transition: background-color .4s linear, color .4s linear;
+    outline: 0;
+  
+    &:hover {
+      background-color: ${darken(0.2, getColor(props).color)};
+      color: ${getColor(props).backgroundColor};
+      transition: background-color 0s, color 0s;
+    }
+  ` : ''}
 `;
 
-function getColor(props: ButtonStyledProps) {
+function getColor(props: Props) {
   if (props.green) {
     return {
       color: colors.green,
@@ -55,4 +56,4 @@ function getColor(props: ButtonStyledProps) {
   };
 }
 
-export default Button;
+export default ButtonStyled;

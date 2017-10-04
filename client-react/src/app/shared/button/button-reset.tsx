@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import { css } from 'styled-components';
 
-const ButtonReset = styled.button`
+const buttonReset = css`
   display: inline-block;
   cursor: pointer;
 
@@ -18,4 +18,4 @@ const ButtonReset = styled.button`
   -webkit-appearance: none;
 `;
 
-export default ButtonReset;
+export default buttonReset;

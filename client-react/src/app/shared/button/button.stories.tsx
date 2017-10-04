@@ -21,4 +21,11 @@ storiesOf('Button', module)
         <Button green onClick={action('clicked')}>Click me!</Button>
       </div>
     ),
+  )
+  .addWithInfo(
+    'noStyle',
+    `An inline-block button with user agent style removed`,
+    () => (
+      <Button noStyle onClick={action('clicked')}>Click me!</Button>
+    ),
   );
