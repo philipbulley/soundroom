@@ -4,16 +4,18 @@ import { StoreState } from '../shared/store/store-state';
 import { connect, Dispatch } from 'react-redux';
 import { push } from 'react-router-redux';
 import { Auth } from '../shared/store/auth/auth';
-import { AppToolbarStyled } from './app-toolbar.styled';
 import { Logo } from './logo';
 import User from './user/user';
 import { User as UserModel } from '../shared/user/user';
 import { RouteComponentProps } from 'react-router';
 import { AuthActions } from '../shared/store/auth/auth-action-types';
+import styled from 'styled-components';
+import colors from '../shared/colors/colors';
+import { AppToolbarNav } from './app-toolbar-nav';
 
-const AppToolbar = ({auth, goHome, goToSignIn}: Props) => (
-  <AppToolbarStyled>
-    <nav>
+const AppToolbar = ({auth, goHome, goToSignIn, className}: Props) => (
+  <header className={className}>
+    <AppToolbarNav>
       <div className="main">
         <Logo onClick={goHome}>Soundroom</Logo>
         {/*Only enable sign-in link below if we eventually have NoAuth pages other than sign-in*/}
@@ -24,11 +26,23 @@ const AppToolbar = ({auth, goHome, goToSignIn}: Props) => (
       <div className="meta">
         {/*Right nav items can go here*/}
       </div>
-    </nav>
-  </AppToolbarStyled>
+    </AppToolbarNav>
+  </header>
 );
 
-type Props = StateProps & DispatchProps;
+export const AppToolbarStyled = styled(AppToolbar)`
+    position: sticky;
+    height: 60px;
+    background-color: ${colors.white};
+    border-bottom: ${colors.greyDust} 1px solid;
+    line-height: 60px;
+`;
+
+type Props = StateProps & DispatchProps & RouteComponentProps<{}> & PassedProps;
+
+interface PassedProps {
+  className?: string; // TODO: Move to some kind of passed props interface?
+}
 
 interface StateProps {
   auth: Auth;
@@ -48,5 +62,6 @@ const mapDispatchToProps = (dispatch: Dispatch<AuthActions>): DispatchProps => (
   goToSignIn: () => dispatch(push('/sign-in')),
 });
 
-export default connect<StateProps, DispatchProps, RouteComponentProps<{}>>(mapStateToProps, mapDispatchToProps)(
-  AppToolbar);
+export default connect<StateProps,
+  DispatchProps,
+  RouteComponentProps<{}>>(mapStateToProps, mapDispatchToProps)(AppToolbarStyled);

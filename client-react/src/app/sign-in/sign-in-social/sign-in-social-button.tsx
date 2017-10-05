@@ -5,8 +5,8 @@ import Icon from '../../shared/icon/icon';
 import { getSocialProviderColor } from '../../shared/colors/colors-helper';
 import { SocialProvider } from '../../shared/model/social-provider';
 
-const SignInSocialButton = ({serverBaseUrl, provider}: Props) => (
-  <Anchor href={serverBaseUrl + '/auth/' + provider} provider={provider}>
+const SignInSocialButton = ({serverBaseUrl, provider, className}: Props) => (
+  <Anchor className={className} href={serverBaseUrl + '/auth/' + provider} provider={provider}>
     <IconStyled id={provider} size="3"/>
   </Anchor>
 );
@@ -14,6 +14,7 @@ const SignInSocialButton = ({serverBaseUrl, provider}: Props) => (
 interface Props {
   provider: SocialProvider;
   serverBaseUrl: string;
+  className?: string;
 }
 
 interface AnchorProps {

@@ -4,19 +4,18 @@ import styled from 'styled-components';
 import colors from '../../shared/colors/colors';
 import Avatar from '../../shared/avatar/avatar';
 
-const User = ({user}: Props) => (
-  <UserStyled>
+const User = ({user, className}: Props) => (
+  <span className={className}>
     <Avatar user={user} size="small"/> {user.name}
-  </UserStyled>
+  </span>
 );
 
 export interface Props {
+  className?: string;
   user: UserModel;
 }
 
-const UserStyled = styled.span`
+export default styled(User)`
   color: ${colors.greyGrit};
   font-size: 13px;
 `;
-
-export default User;

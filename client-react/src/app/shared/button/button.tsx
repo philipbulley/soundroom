@@ -19,7 +19,21 @@ interface Props {
   noStyle?: boolean;
 }
 
-const ButtonStyled = styled(Button)`
+function getColor(props: Props) {
+  if (props.green) {
+    return {
+      color: colors.green,
+      backgroundColor: colors.white,
+    };
+  }
+
+  return {
+    color: colors.greyGrime,
+    backgroundColor: colors.greyDust,
+  };
+}
+
+export default styled(Button)`
   ${buttonReset}
   
   ${(props: Props) => !props.noStyle
@@ -41,19 +55,3 @@ const ButtonStyled = styled(Button)`
     }
   ` : ''}
 `;
-
-function getColor(props: Props) {
-  if (props.green) {
-    return {
-      color: colors.green,
-      backgroundColor: colors.white,
-    };
-  }
-
-  return {
-    color: colors.greyGrime,
-    backgroundColor: colors.greyDust,
-  };
-}
-
-export default ButtonStyled;

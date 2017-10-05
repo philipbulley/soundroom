@@ -2,13 +2,19 @@ import * as React from 'react';
 import { User } from '../user/user';
 import styled from 'styled-components';
 
-const Avatar = ({user, ...rest}: Props) => (
-  <AvatarStyled {...rest} src={user.avatar} alt={user.name} title={user.name} />
+const Avatar: React.StatelessComponent<Props> = ({user, className, ...rest}: Props) => (
+  <img className={className}
+       {...rest}
+       src={user.avatar}
+       alt={user.name}
+       title={user.name}
+  />
 );
 
 interface Props {
   user: User;
   size: AvatarSize;
+  className?: string;
 }
 
 const sizesPx = {
@@ -19,17 +25,10 @@ const sizesPx = {
 type AvatarSize = 'small' | 'medium';
 const avatarSizeDefault: AvatarSize = 'medium';
 
-interface AvatarStyledProps {
-  // TODO(ts@2.3.3): why can't I type size as AvatarSize?
-  size: any;
-}
-
-const AvatarStyled = styled.img`
-  width: ${(props: AvatarStyledProps) => sizesPx[props.size || avatarSizeDefault]}px;
-  height: ${(props: AvatarStyledProps) => sizesPx[props.size || avatarSizeDefault]}px;
-  border-radius: ${(props: AvatarStyledProps) => sizesPx[props.size || avatarSizeDefault]}px;
+export default styled(Avatar)`
+  width: ${(props: Props) => sizesPx[props.size || avatarSizeDefault]}px;
+  height: ${(props: Props) => sizesPx[props.size || avatarSizeDefault]}px;
+  border-radius: ${(props: Props) => sizesPx[props.size || avatarSizeDefault]}px;
   vertical-align: middle;
   border: 1px solid #eee;
 `;
-
-export default Avatar;

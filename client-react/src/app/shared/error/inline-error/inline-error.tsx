@@ -2,16 +2,19 @@ import * as React from 'react';
 import styled from 'styled-components';
 import colors from '../../colors/colors';
 
-const InlineError = ({message, status, children}: Props) => {
-  const statusStr = typeof status !== 'undefined' ? 'status:' + status : null;
+const InlineError: React.StatelessComponent<Props> = ({message, status, children, className}: Props) => {
+  const statusStr = typeof status !== 'undefined'
+    ? 'status:' + status
+    : null;
+
   const extra = statusStr && message
     ? statusStr + ' | ' + message
     : statusStr || message;
 
   return (
-    <InlineErrorStyled>
+    <div className={className}>
       {children} <ExtraInfo>{extra && `[${extra}]`}</ExtraInfo>
-    </InlineErrorStyled>
+    </div>
   );
 };
 
@@ -24,13 +27,9 @@ interface Props {
 
   /** A custom user-friendly error message */
   children?: any;
-}
 
-const InlineErrorStyled = styled.div`
-  padding: 10px;
-  background-color: ${colors.red};
-  color: ${colors.white};
-`;
+  className?: string;
+}
 
 const ExtraInfo = styled.div`
   display: inline;
@@ -38,4 +37,8 @@ const ExtraInfo = styled.div`
   font-size: .7em;
 `;
 
-export default InlineError;
+export default styled(InlineError)`
+  padding: 10px;
+  background-color: ${colors.red};
+  color: ${colors.white};
+`;

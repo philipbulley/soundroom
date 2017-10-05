@@ -7,15 +7,16 @@ import { AuthStatus } from '../shared/store/auth/auth-state';
 import { push } from 'react-router-redux';
 import SignInSocial from './sign-in-social/sign-in-social';
 import { Config } from '../shared/model/config';
-import { SignInStyled } from './sign-in.styled';
 import loadUserAction from '../shared/store/auth/load-user/load-user.action';
 import InlineError from '../shared/error/inline-error/inline-error';
 import Icon from '../shared/icon/icon';
 import Button from '../shared/button/button';
 import { Helmet } from 'react-helmet';
 import { AuthActions } from '../shared/store/auth/auth-action-types';
+import { contentContainer } from '../shared/layout/content-container';
+import styled from 'styled-components';
 
-type ConnectedProps = StateProps & DispatchProps & RouteComponentProps<{}>;
+type ConnectedProps = StateProps & DispatchProps & RouteComponentProps<{}> & PassedProps;
 
 class SignIn extends React.Component<ConnectedProps, {}> {
   componentDidMount() {
@@ -30,10 +31,10 @@ class SignIn extends React.Component<ConnectedProps, {}> {
   }
 
   render() {
-    const {auth, goToRooms} = this.props;
+    const {auth, goToRooms, className} = this.props;
 
     return (
-      <SignInStyled>
+      <div className={className}>
         <Helmet>
           <title>Soundroom: Sign-in</title>
         </Helmet>
@@ -64,9 +65,18 @@ class SignIn extends React.Component<ConnectedProps, {}> {
             <Button onClick={goToRooms}>Let's get started</Button>
           </div>
         )}
-      </SignInStyled>
+      </div>
     );
   }
+}
+
+const SignInStyled = styled(SignIn)`
+  ${contentContainer}
+  text-align: center;
+`;
+
+interface PassedProps {
+  className?: string;
 }
 
 interface StateProps {
@@ -87,4 +97,6 @@ const mapDispatchToProps = (dispatch: Dispatch<AuthActions>): DispatchProps => (
   loadUser: (jwt: string) => dispatch(loadUserAction(jwt)),
 });
 
-export default connect<StateProps, DispatchProps, RouteComponentProps<{}>>(mapStateToProps, mapDispatchToProps)(SignIn);
+export default connect<StateProps,
+  DispatchProps,
+  RouteComponentProps<{}>>(mapStateToProps, mapDispatchToProps)(SignInStyled);
