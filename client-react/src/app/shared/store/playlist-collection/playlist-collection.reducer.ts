@@ -1,5 +1,5 @@
 import { PlaylistCollection } from './playlist-collection';
-import { PlaylistCollectionActions, PlaylistCollectionActionType } from './playlist-collection-action-types';
+import { PlaylistCollectionActions, PlaylistCollectionActionType } from './playlist-collection-action-type';
 import { playlistCollectionLoadCommand } from './load/playlist-collection-load.command';
 import { playlistCollectionLoadSuccessCommand } from './load-success/playlist-collection-load-success.command';
 import { playlistCollectionLoadErrorCommand } from './load-error/playlist-collection-load-error.command';

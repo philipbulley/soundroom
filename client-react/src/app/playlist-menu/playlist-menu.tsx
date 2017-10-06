@@ -5,13 +5,14 @@ import { connect, Dispatch } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import Helmet from 'react-helmet';
 import PlaylistCount from './playlist-count';
-import { PlaylistCollectionActions } from '../shared/store/playlist-collection/playlist-collection-action-types';
+import { PlaylistCollectionActions } from '../shared/store/playlist-collection/playlist-collection-action-type';
 import { playlistCollectionLoadAction } from '../shared/store/playlist-collection/load/playlist-collection-load.action';
 import Icon from '../shared/icon/icon';
-import PlaylistMenuItem from '../playlist-menu-item/playlist-menu-item';
+import PlaylistMenuItem from './playlist-menu-item/playlist-menu-item';
 import styled from 'styled-components';
 import { contentContainer } from '../shared/layout/content-container';
 import { PlaylistMenuLi, PlaylistMenuUl } from './playlist-menu-list';
+import PlaylistCreate from './playlist-create/playlist-create';
 
 type ConnectedProps = StateProps & DispatchProps & RouteComponentProps<{}> & PassedProps;
 
@@ -43,7 +44,11 @@ class PlaylistMenu extends React.Component<ConnectedProps> {
                 </PlaylistMenuLi>
               )
             )}
+            <PlaylistMenuLi key={'create'}>
+              <PlaylistCreate/>
+            </PlaylistMenuLi>
           </PlaylistMenuUl>
+
           <PlaylistCount playlistCollection={playlistCollection}/>
         </div>
         }

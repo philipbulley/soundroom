@@ -5,7 +5,7 @@ import buttonReset from './button-reset';
 import { SyntheticEvent } from 'react';
 import { css, default as styled } from 'styled-components';
 
-const Button: React.StatelessComponent<Props> = ({children, onClick, className, ...rest}: Props) => (
+const ButtonComponent: React.StatelessComponent<Props> = ({children, onClick, className, ...rest}: Props) => (
   <button className={className} onClick={onClick}>
     {children}
   </button>
@@ -33,7 +33,7 @@ function getColor(props: Props) {
   };
 }
 
-export default styled(Button)`
+const Button = styled(ButtonComponent)`
   ${buttonReset}
   
   ${(props: Props) => !props.noStyle
@@ -55,3 +55,5 @@ export default styled(Button)`
     }
   ` : ''}
 `;
+
+export default Button;

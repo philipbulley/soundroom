@@ -1,15 +1,15 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import Icon from '../shared/icon/icon';
-import colors from '../shared/colors/colors';
-import CloseButton from './close-button';
-import Button from '../shared/button/button';
+import Icon from '../../shared/icon/icon';
+import colors from '../../shared/colors/colors';
+import PlaylistMenuItemCloseButton from './playlist-menu-item-close-button';
+import Button from '../../shared/button/button';
 
 const PlaylistMenuItem: React.StatelessComponent<PlaylistMenuItemProps> = ({name, className}) => (
   <div className={className}>
-    <CloseButton noStyle>
+    <PlaylistMenuItemCloseButton noStyle>
       <Icon id="close"/>
-    </CloseButton>
+    </PlaylistMenuItemCloseButton>
 
     <h3>{name}</h3>
 

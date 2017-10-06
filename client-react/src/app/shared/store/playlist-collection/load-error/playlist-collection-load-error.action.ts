@@ -1,4 +1,4 @@
-import { PlaylistCollectionActionType } from '../playlist-collection-action-types';
+import { PlaylistCollectionActionType } from '../playlist-collection-action-type';
 import { ErrorResult } from '../../../error/error-result';
 
 export const playlistCollectionLoadErrorAction = (payload: ErrorResult): PlaylistCollectionLoadErrorAction => ({

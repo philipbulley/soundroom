@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/gsap": "^1.19.1",
     "font-awesome": "^4.7.0",
+    "gsap": "^1.20.3",
     "history": "^4.6.1",
     "lodash": "^4.17.4",
     "polished": "^1.7.0",

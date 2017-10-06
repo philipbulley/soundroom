@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import colors from '../shared/colors/colors';
-import Button from '../shared/button/button';
+import colors from '../../shared/colors/colors';
+import Button from '../../shared/button/button';
 
-const CloseButton = styled(Button)`
+const PlaylistMenuItemCloseButton = styled(Button)`
   position: absolute;
   right: 30px;
   display: inline-block;
@@ -20,4 +20,4 @@ const CloseButton = styled(Button)`
   // TODO: Add is-delete-confirm functionality
 `;
 
-export default CloseButton;
+export default PlaylistMenuItemCloseButton;

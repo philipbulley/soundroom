@@ -10,7 +10,7 @@ import { Config } from '../../../model/config';
 import { StoreState } from '../../store-state';
 import { createHeaders, fetchRx } from '../../../network-helper';
 import { Epic } from 'redux-observable';
-import { PlaylistCollectionActions, PlaylistCollectionActionType } from '../playlist-collection-action-types';
+import { PlaylistCollectionActions, PlaylistCollectionActionType } from '../playlist-collection-action-type';
 import { PlaylistCollectionLoadAction } from './playlist-collection-load.action';
 import { PlaylistCollectionItem } from '../playlist-collection';
 import { playlistCollectionLoadSuccessAction } from '../load-success/playlist-collection-load-success.action';

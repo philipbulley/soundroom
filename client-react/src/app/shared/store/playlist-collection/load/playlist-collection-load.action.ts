@@ -1,4 +1,4 @@
-import { PlaylistCollectionActionType } from '../playlist-collection-action-types';
+import { PlaylistCollectionActionType } from '../playlist-collection-action-type';
 
 export const playlistCollectionLoadAction = (): PlaylistCollectionLoadAction => ({
   type: PlaylistCollectionActionType.LOAD,
