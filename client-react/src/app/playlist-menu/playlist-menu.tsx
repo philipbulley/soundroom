@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { PlaylistCollection, PlaylistCollectionItem } from '../shared/store/playlist-collection/playlist-collection';
+import { Playlists, PlaylistsItem } from '../shared/store/playlists/playlists';
 import { StoreState } from '../shared/store/store-state';
 import { connect, Dispatch } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import Helmet from 'react-helmet';
 import PlaylistCount from './playlist-count';
-import { PlaylistCollectionActions } from '../shared/store/playlist-collection/playlist-collection-action-type';
-import { playlistCollectionLoadAction } from '../shared/store/playlist-collection/load/playlist-collection-load.action';
+import { PlaylistsActions } from '../shared/store/playlists/playlists-action-type';
+import { playlistsLoadAction } from '../shared/store/playlists/load/playlists-load.action';
 import Icon from '../shared/icon/icon';
 import PlaylistMenuItem from './playlist-menu-item/playlist-menu-item';
 import styled from 'styled-components';
@@ -18,11 +18,11 @@ type ConnectedProps = StateProps & DispatchProps & RouteComponentProps<{}> & Pas
 
 class PlaylistMenu extends React.Component<ConnectedProps> {
   componentDidMount() {
-    this.props.loadPlaylistCollection();
+    this.props.loadPlaylists();
   }
 
   render() {
-    const {playlistCollection, className} = this.props;
+    const {playlists, className} = this.props;
 
     return (
       <div className={className}>
@@ -30,15 +30,15 @@ class PlaylistMenu extends React.Component<ConnectedProps> {
           <title>Soundroom: Join a room!</title>
         </Helmet>
         <h2>Join a room!</h2>
-        {playlistCollection.loading &&
+        {playlists.loading &&
         <h3 className="loading">
           <Icon id="circle-o-notch" spin/> Loading rooms...
         </h3>
         }
 
-        {!playlistCollection.loading && <div>
+        {!playlists.loading && <div>
           <PlaylistMenuUl>
-            {playlistCollection.items.map((item: PlaylistCollectionItem, i) => (
+            {playlists.items.map((item: PlaylistsItem, i) => (
                 <PlaylistMenuLi key={i}>
                   <PlaylistMenuItem name={item.name}/>
                 </PlaylistMenuLi>
@@ -49,7 +49,7 @@ class PlaylistMenu extends React.Component<ConnectedProps> {
             </PlaylistMenuLi>
           </PlaylistMenuUl>
 
-          <PlaylistCount playlistCollection={playlistCollection}/>
+          <PlaylistCount playlists={playlists}/>
         </div>
         }
       </div>
@@ -69,12 +69,12 @@ const PlaylistMenuStyled = styled(PlaylistMenu)`
   }
 `;
 
-const mapStateToProps = ({playlistCollection}: StoreState) => ({
-  playlistCollection,
+const mapStateToProps = ({playlists}: StoreState) => ({
+  playlists,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<PlaylistCollectionActions>): DispatchProps => ({
-  loadPlaylistCollection: () => dispatch(playlistCollectionLoadAction()),
+const mapDispatchToProps = (dispatch: Dispatch<PlaylistsActions>): DispatchProps => ({
+  loadPlaylists: () => dispatch(playlistsLoadAction()),
 });
 
 interface PassedProps {
@@ -82,11 +82,11 @@ interface PassedProps {
 }
 
 interface StateProps {
-  playlistCollection: PlaylistCollection;
+  playlists: Playlists;
 }
 
 interface DispatchProps {
-  loadPlaylistCollection: () => {};
+  loadPlaylists: () => {};
 }
 
 export default connect<StateProps,

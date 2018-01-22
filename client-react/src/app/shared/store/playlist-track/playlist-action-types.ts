@@ -1,4 +1,4 @@
-import { PlaylistCreateAction } from './create/playlist-create.action';
+import { PlaylistCreateAction } from '../playlists/playlist-create/playlist-create.action';
 
 export enum PlaylistActionType {
   CREATE = 'CREATE',

@@ -1,20 +1,20 @@
 import * as React from 'react';
-import { PlaylistCollection } from '../shared/store/playlist-collection/playlist-collection';
+import { Playlists } from '../shared/store/playlists/playlists';
 import styled from 'styled-components';
 import colors from '../shared/colors/colors';
 
-const PlaylistCount = ({playlistCollection, className}: Props) => (
+const PlaylistCount = ({playlists, className}: Props) => (
   <div className={className}>
-    {!!playlistCollection.items.length
-    && <span>You have {playlistCollection.items.length} rooms to choose from, or create your own!</span>}
+    {!!playlists.items.length
+    && <span>You have {playlists.items.length} rooms to choose from, or create your own!</span>}
 
-    {!!playlistCollection.items.length
+    {!!playlists.items.length
     || <span>There are no rooms available. Why not start by creating your own!</span>}
   </div>
 );
 
 interface Props {
-  playlistCollection: PlaylistCollection;
+  playlists: Playlists;
   className?: string;
 }
 

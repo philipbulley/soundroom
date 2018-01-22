@@ -1,7 +1,7 @@
-import { PlaylistCollection } from './playlist-collection/playlist-collection';
+import { Playlists } from './playlists/playlists';
 import { Auth } from './auth/auth';
 
 export interface StoreState {
-  playlistCollection: PlaylistCollection;
+  playlists: Playlists;
   auth: Auth;
 }

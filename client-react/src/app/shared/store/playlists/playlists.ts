@@ -1,12 +1,12 @@
 import { ErrorResult } from '../../error/error-result';
 
-export interface PlaylistCollection {
-  items: PlaylistCollectionItem[];
+export interface Playlists {
+  items: PlaylistsItem[];
   loading: boolean;
   error?: ErrorResult;
 }
 
-export interface PlaylistCollectionItem {
+export interface PlaylistsItem {
   _id: string;
   created: string;
   modified: string;
