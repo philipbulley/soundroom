@@ -1,7 +1,7 @@
 import { Auth } from '../auth';
 import { AuthStatus } from '../auth-state';
 import { loadUserSuccessCommand } from './load-user-success.command';
-import { MOCK_USER } from '../../../user/user.mock';
+import { MOCK_USER } from '../../../model/user/user.mock';
 import deepFreeze = require('deep-freeze');
 
 describe('loadUserSuccessCommand', () => {

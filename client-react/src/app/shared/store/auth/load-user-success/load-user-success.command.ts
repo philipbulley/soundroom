@@ -1,6 +1,6 @@
 import { Auth } from '../auth';
 import { AuthStatus } from '../auth-state';
-import { User } from '../../../user/user';
+import { User } from '../../../model/user/user';
 
 export const loadUserSuccessCommand = (state: Auth, payload: User): Auth => {
   state = {...state};

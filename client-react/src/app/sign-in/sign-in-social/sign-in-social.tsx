@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import SignInSocialButton from './sign-in-social-button';
-import { SocialProvider } from '../../shared/model/social-provider';
+import { SocialProvider } from '../../shared/model/enum/social-provider';
 
 const providers: SocialProvider[] = [
   SocialProvider.GOOGLE,

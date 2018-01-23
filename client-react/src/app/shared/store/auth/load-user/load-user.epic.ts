@@ -10,7 +10,7 @@ import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/observable/fromPromise';
-import { User } from '../../../user/user';
+import { User } from '../../../model/user/user';
 import { Config } from '../../../model/config';
 import { StoreState } from '../../store-state';
 import { createHeaders, fetchRx } from '../../../network-helper';

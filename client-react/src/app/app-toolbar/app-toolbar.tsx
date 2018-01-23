@@ -6,7 +6,7 @@ import { push } from 'react-router-redux';
 import { Auth } from '../shared/store/auth/auth';
 import { Logo } from './logo';
 import User from './user/user';
-import { User as UserModel } from '../shared/user/user';
+import { User as UserModel } from '../shared/model/user/user';
 import { RouteComponentProps } from 'react-router';
 import { AuthActions } from '../shared/store/auth/auth-action-types';
 import styled from 'styled-components';

@@ -1,15 +1,8 @@
 import { ErrorResult } from '../../error/error-result';
+import { Playlist } from '../../model/playlist';
 
 export interface Playlists {
-  items: PlaylistsItem[];
+  items: Playlist[];
   loading: boolean;
   error?: ErrorResult;
-}
-
-export interface PlaylistsItem {
-  _id: string;
-  created: string;
-  modified: string;
-  description: string;
-  name: string;
 }

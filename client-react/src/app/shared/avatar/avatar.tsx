@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { User } from '../user/user';
+import { User } from '../model/user/user';
 import styled from 'styled-components';
 
 const Avatar: React.StatelessComponent<Props> = ({user, className, ...rest}: Props) => (

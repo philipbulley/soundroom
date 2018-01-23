@@ -2,7 +2,7 @@ import * as React from 'react';
 import './../../../index.css';
 import { storiesOf } from '@storybook/react';
 import Avatar from './avatar';
-import { MOCK_USER } from '../user/user.mock';
+import { MOCK_USER } from '../model/user/user.mock';
 
 const DESC_INTRO = `Passing a user object to an Avatar component will display the user's image`;
 

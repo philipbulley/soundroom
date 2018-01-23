@@ -2,16 +2,16 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { connect, Dispatch } from 'react-redux';
 import { StoreState } from '../../shared/store/store-state';
-import { PlaylistActions } from '../../shared/store/playlist-track/playlist-action-types';
 import {
   playlistCreateAction,
   PlaylistCreateParams
-} from '../../shared/store/playlists/playlist-create/playlist-create.action';
+} from '../../shared/store/playlists/create/playlist-create.action';
 import colors from '../../shared/colors/colors';
 import Button from '../../shared/button/button';
 import Input from '../../shared/input/input';
 import { TweenMax, Expo } from 'gsap';
 import Icon from '../../shared/icon/icon';
+import { PlaylistsActions } from '../../shared/store/playlists/playlists-action-type';
 
 type Props = StateProps & DispatchProps & PassedProps;
 
@@ -197,7 +197,7 @@ const ButtonContainer = styled.div`
 
 const mapStateToProps = (state: StoreState) => ({});
 
-const mapDispatchToProps = (dispatch: Dispatch<PlaylistActions>): DispatchProps => ({
+const mapDispatchToProps = (dispatch: Dispatch<PlaylistsActions>): DispatchProps => ({
   create: (createParams: PlaylistCreateParams) => dispatch(playlistCreateAction(createParams)),
 });
 

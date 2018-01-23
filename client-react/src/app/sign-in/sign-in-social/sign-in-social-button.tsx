@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import colors from '../../shared/colors/colors';
 import Icon from '../../shared/icon/icon';
 import { getSocialProviderColor } from '../../shared/colors/colors-helper';
-import { SocialProvider } from '../../shared/model/social-provider';
+import { SocialProvider } from '../../shared/model/enum/social-provider';
 
 const SignInSocialButton = ({serverBaseUrl, provider, className}: Props) => (
   <Anchor className={className} href={serverBaseUrl + '/auth/' + provider} provider={provider}>

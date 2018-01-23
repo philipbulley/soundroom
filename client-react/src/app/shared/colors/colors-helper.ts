@@ -1,5 +1,5 @@
 import colors from './colors';
-import { SocialProvider } from '../model/social-provider';
+import { SocialProvider } from '../model/enum/social-provider';
 
 const socialProviderColorMap = {
   google: colors.red,

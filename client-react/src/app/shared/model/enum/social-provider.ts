@@ -1,3 +1,4 @@
+// TODO: Convert to string enum
 export enum SocialProvider {
   GOOGLE = 'google' as any as SocialProvider,
   TWITTER = 'twitter' as any as SocialProvider,

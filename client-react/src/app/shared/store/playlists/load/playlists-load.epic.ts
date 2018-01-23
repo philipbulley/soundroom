@@ -12,15 +12,15 @@ import { createHeaders, fetchRx } from '../../../network-helper';
 import { Epic } from 'redux-observable';
 import { PlaylistsActions, PlaylistsActionType } from '../playlists-action-type';
 import { PlaylistsLoadAction } from './playlists-load.action';
-import { PlaylistsItem } from '../playlists';
 import { playlistsLoadSuccessAction } from '../load-success/playlists-load-success.action';
 import { playlistsLoadErrorAction } from '../load-error/playlists-load-error.action';
 import { ErrorKey } from '../../../error/error-key';
+import { Playlist } from '../../../model/playlist';
 
 export const PATH: string = '/playlists';
 
 /**
- * Loads and dispatches a bunch of `PlaylistsItem` objects
+ * Loads and dispatches a bunch of `Playlist` objects
  * @param {ActionsObservable<PlaylistsActions>} action$
  * @param {MiddlewareAPI<StoreState>} store
  */
@@ -28,8 +28,8 @@ export const playlistsLoadEpic: Epic<PlaylistsActions, StoreState> = (action$, s
   .filter(action => action.type === PlaylistsActionType.LOAD)
   .switchMap((action: PlaylistsLoadAction) => {
     return fetchRx(Config.API_BASE_URL + PATH, {headers: createHeaders(store.getState().auth)})
-      .switchMap((res: Response): Observable<PlaylistsItem[]> => Observable.fromPromise(res.json()))
-      .map((items: PlaylistsItem[]) => playlistsLoadSuccessAction(items))
+      .switchMap((res: Response): Observable<Playlist[]> => Observable.fromPromise(res.json()))
+      .map((items: Playlist[]) => playlistsLoadSuccessAction(items))
       .catch((error: Response) => Observable.of(playlistsLoadErrorAction({
           status: error.status || 0,
           message: error.statusText,

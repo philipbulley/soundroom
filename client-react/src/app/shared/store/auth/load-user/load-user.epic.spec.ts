@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import { createEpicMiddleware } from 'redux-observable';
 import { loadUserEpic, PATH } from './load-user.epic';
 import { Config } from '../../../model/config';
-import { MOCK_USER } from '../../../user/user.mock';
+import { MOCK_USER } from '../../../model/user/user.mock';
 import loadUserAction from './load-user.action';
 import loadUserSuccessAction from '../load-user-success/load-user-success.action';
 import { StoreState } from '../../store-state';

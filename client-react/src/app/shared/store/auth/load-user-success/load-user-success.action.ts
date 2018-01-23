@@ -1,4 +1,4 @@
-import { User } from '../../../user/user';
+import { User } from '../../../model/user/user';
 import { AuthActionType } from '../auth-action-types';
 
 const loadUserSuccessAction = (payload: User): LoadUserSuccessAction => ({

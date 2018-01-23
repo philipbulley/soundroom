@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Playlists, PlaylistsItem } from '../shared/store/playlists/playlists';
+import { Playlists } from '../shared/store/playlists/playlists';
 import { StoreState } from '../shared/store/store-state';
 import { connect, Dispatch } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
@@ -13,6 +13,7 @@ import styled from 'styled-components';
 import { contentContainer } from '../shared/layout/content-container';
 import { PlaylistMenuLi, PlaylistMenuUl } from './playlist-menu-list';
 import PlaylistCreate from './playlist-create/playlist-create';
+import { Playlist } from '../shared/model/playlist';
 
 type ConnectedProps = StateProps & DispatchProps & RouteComponentProps<{}> & PassedProps;
 
@@ -38,7 +39,7 @@ class PlaylistMenu extends React.Component<ConnectedProps> {
 
         {!playlists.loading && <div>
           <PlaylistMenuUl>
-            {playlists.items.map((item: PlaylistsItem, i) => (
+            {playlists.items.map((item: Playlist, i) => (
                 <PlaylistMenuLi key={i}>
                   <PlaylistMenuItem name={item.name}/>
                 </PlaylistMenuLi>

@@ -1,12 +1,12 @@
-import { PlaylistActionType } from '../../playlist-track/playlist-action-types';
+import { PlaylistsActionType } from '../playlists-action-type';
 
 export const playlistCreateAction = (payload: PlaylistCreateParams): PlaylistCreateAction => ({
-  type: PlaylistActionType.CREATE,
+  type: PlaylistsActionType.CREATE,
   payload,
 });
 
 export interface PlaylistCreateAction {
-  type: PlaylistActionType.CREATE;
+  type: PlaylistsActionType.CREATE;
   payload: PlaylistCreateParams;
 }
 

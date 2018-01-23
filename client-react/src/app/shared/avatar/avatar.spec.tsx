@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { create } from 'react-test-renderer';
-import { MOCK_USER } from '../user/user.mock';
+import { MOCK_USER } from '../model/user/user.mock';
 import Avatar from './avatar';
 
 describe('<Avatar />', () => {
