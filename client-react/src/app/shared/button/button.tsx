@@ -17,6 +17,7 @@ interface Props {
   onClick?: (event: SyntheticEvent<HTMLButtonElement>) => void;
   green?: boolean;
   noStyle?: boolean;
+  disabled?: boolean;
 }
 
 function getColor(props: Props) {
@@ -53,6 +54,12 @@ const Button = styled(ButtonComponent)`
       color: ${getColor(props).backgroundColor};
       transition: background-color 0s, color 0s;
     }
+  ` : ''}
+  
+  ${(props: Props) => props.disabled
+  ? css`
+    pointer-events: none;
+    opacity: .5;
   ` : ''}
 `;
 

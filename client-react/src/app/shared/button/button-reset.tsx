@@ -1,6 +1,7 @@
 import { css } from 'styled-components';
 
 const buttonReset = css`
+  color: inherit;
   display: inline-block;
   cursor: pointer;
 

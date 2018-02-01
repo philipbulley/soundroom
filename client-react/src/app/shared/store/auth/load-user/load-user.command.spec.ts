@@ -2,7 +2,7 @@ import { Auth } from '../auth';
 import { AuthStatus } from '../auth-state';
 import { loadUserCommand } from './load-user.command';
 import { ErrorResult } from '../../../error/error-result';
-import { ErrorKey } from '../../../error/error-key';
+import { ErrorType } from '../../../error/error-type';
 import deepFreeze = require('deep-freeze');
 
 describe('loadUserCommand', () => {
@@ -10,7 +10,7 @@ describe('loadUserCommand', () => {
   const ERROR_RESULT: ErrorResult = {
     status: 404,
     message: 'Not found',
-    type: ErrorKey.UNKNOWN,
+    type: ErrorType.UNKNOWN,
   };
   let authState: Auth;
 

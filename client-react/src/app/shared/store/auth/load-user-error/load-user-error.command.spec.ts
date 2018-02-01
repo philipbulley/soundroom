@@ -2,14 +2,14 @@ import { Auth } from '../auth';
 import { AuthStatus } from '../auth-state';
 import { loadUserErrorCommand } from './load-user-error.command';
 import { LoadUserErrorResult } from './load-user-error-result';
-import { ErrorKey } from '../../../error/error-key';
+import { ErrorType } from '../../../error/error-type';
 import deepFreeze = require('deep-freeze');
 
 describe('loadUserErrorCommand', () => {
   const ERROR_RESULT: LoadUserErrorResult = {
     status: 404,
     message: 'Not found',
-    type: ErrorKey.UNKNOWN,
+    type: ErrorType.UNKNOWN,
     skipSignInRedirect: false,
   };
   let authState: Auth;

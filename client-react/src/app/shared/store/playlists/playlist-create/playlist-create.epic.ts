@@ -6,16 +6,17 @@ import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/observable/fromPromise';
+import 'rxjs/add/operator/delay';
 import { Config } from '../../../model/config';
 import { StoreState } from '../../store-state';
 import { createHeaders, fetchRx } from '../../../network-helper';
 import { Epic } from 'redux-observable';
 import { PlaylistsActions, PlaylistsActionType } from '../playlists-action-type';
-import { PlaylistsLoadAction } from './playlists-load.action';
-import { playlistsLoadSuccessAction } from '../load-success/playlists-load-success.action';
-import { playlistsLoadErrorAction } from '../load-error/playlists-load-error.action';
 import { ErrorType } from '../../../error/error-type';
 import { Playlist } from '../../../model/playlist';
+import { PlaylistCreateAction } from './playlist-create.action';
+import { playlistCreateSuccessAction } from '../playlist-create-success/playlist-create-success.action';
+import { playlistCreateErrorAction } from '../playlist-create-error/playlists-create-error.action';
 import { errorTypeFactory } from '../../../error/error-type.factory';
 
 export const PATH: string = '/playlists';
@@ -25,13 +26,15 @@ export const PATH: string = '/playlists';
  * @param {ActionsObservable<PlaylistsActions>} action$
  * @param {MiddlewareAPI<StoreState>} store
  */
-export const playlistsLoadEpic: Epic<PlaylistsActions, StoreState> = (action$, store) => action$
-  .filter(action => action.type === PlaylistsActionType.LOAD)
-  .switchMap((action: PlaylistsLoadAction) => {
-    return fetchRx(Config.API_BASE_URL + PATH, {headers: createHeaders(store.getState().auth)})
-      .switchMap((res: Response): Observable<Playlist[]> => Observable.fromPromise(res.json()))
-      .map((items: Playlist[]) => playlistsLoadSuccessAction(items))
-      .catch((error: Response) => Observable.of(playlistsLoadErrorAction({
+export const playlistCreateEpic: Epic<PlaylistsActions, StoreState> = (action$, store) => action$
+  .filter(action => action.type === PlaylistsActionType.PLAYLIST_CREATE)
+  .switchMap((action: PlaylistCreateAction) => {
+    return fetchRx(Config.API_BASE_URL + PATH,
+      {method: 'POST', headers: createHeaders(store.getState().auth), body: JSON.stringify(action.payload)})
+      .switchMap((res: Response): Observable<Playlist> => Observable.fromPromise(res.json()))
+      .delay(3000) // debug
+      .map((playlist: Playlist) => playlistCreateSuccessAction(playlist))
+      .catch((error: Response) => Observable.of(playlistCreateErrorAction({
           status: error.status || 0,
           message: error.statusText,
           type: errorTypeFactory(error.status, {404: ErrorType.PLAYLISTS_NOT_FOUND})

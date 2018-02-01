@@ -9,6 +9,7 @@ import loadUserSuccessAction from '../load-user-success/load-user-success.action
 import { StoreState } from '../../store-state';
 import { AuthStatus } from '../auth-state';
 import loadUserErrorAction from '../load-user-error/load-user-error.action';
+import { ErrorType } from '../../../error/error-type';
 
 const epicMiddleware = createEpicMiddleware(loadUserEpic);
 const mockStore = configureMockStore([epicMiddleware]);
@@ -60,7 +61,7 @@ describe('loadUserEpic', () => {
     expect(store.getActions()).toEqual([
       loadUserAction(),
       loadUserErrorAction({
-        type: null,
+        type: ErrorType.UNKNOWN,
         skipSignInRedirect: false,
         status: 0,
         message: 'No cached JWT'
@@ -79,7 +80,7 @@ describe('loadUserEpic', () => {
       expect(store.getActions()).toEqual([
         loadUserAction(),
         loadUserErrorAction({
-          type: null,
+          type: ErrorType.UNKNOWN,
           skipSignInRedirect: false,
           status: 0,
           message: 'Unable to load user',

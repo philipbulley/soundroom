@@ -49,7 +49,8 @@ class PlaylistController {
     playlist.description = description;
     playlist.createdBy = user;
 
-    return playlist.saveQ();
+    return playlist.saveQ()
+      .then(playlist => _.omit(playlist.toObject(), 'tracks'));
   }
 
   /**

@@ -18,6 +18,7 @@ import { Epic } from 'redux-observable';
 import { Auth } from '../auth';
 import { setPersistedJwt } from '../../../auth/auth.service';
 import { AuthActions, AuthActionType } from '../auth-action-types';
+import { errorTypeFactory } from '../../../error/error-type.factory';
 
 export const PATH: string = '/me';
 
@@ -34,7 +35,9 @@ export const loadUserEpic: Epic<AuthActions, StoreState> = (action$, store) => a
       .map((user: User) => loadUserSuccessAction(user))
       .catch((loadUserError: LoadUserError) => {
         return Observable.of(loadUserErrorAction({
-          type: null, // TODO: Define error types for this kind of error?
+          type: errorTypeFactory(loadUserError.error instanceof Response
+            ? loadUserError.error.status
+            : 0),
           skipSignInRedirect: !!(loadUserError.params && loadUserError.params.skipSignInRedirectOnError),
           status: loadUserError.error instanceof Response
             ? loadUserError.error.status

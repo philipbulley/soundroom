@@ -3,24 +3,26 @@ import styled from 'styled-components';
 import Icon from '../../shared/icon/icon';
 import colors from '../../shared/colors/colors';
 import PlaylistMenuItemCloseButton from './playlist-menu-item-close-button';
+import { Link } from 'react-router-dom';
+import { Playlist } from '../../shared/model/playlist';
 import Button from '../../shared/button/button';
 
-const PlaylistMenuItem: React.StatelessComponent<PlaylistMenuItemProps> = ({name, className}) => (
+const PlaylistMenuItem: React.StatelessComponent<PlaylistMenuItemProps> = ({playlist, className}) => (
   <div className={className}>
     <PlaylistMenuItemCloseButton noStyle>
       <Icon id="close"/>
     </PlaylistMenuItemCloseButton>
 
-    <h3>{name}</h3>
+    <h3>{playlist.name}</h3>
 
-    <Button>
-      Join Room
-    </Button>
+    <Link to={'/room/' + playlist._id}>
+      <Button>Join Room</Button>
+    </Link>
   </div>
 );
 
 interface PlaylistMenuItemProps {
-  name: string;
+  playlist: Playlist;
   className?: string;
 }
 

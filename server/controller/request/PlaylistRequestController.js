@@ -20,7 +20,9 @@ class PlaylistRequestController {
         res.json(playlists);
       })
       .catch((err) => {
-        HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
+        err.name === 'ValidationError'
+          ? HttpUtil.sendJsonError(res, HttpUtil.status.BAD_REQUEST)
+          : HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
         log.formatError(err, 'PlaylistRequestController.get');
       });
   }
@@ -39,7 +41,9 @@ class PlaylistRequestController {
             break;
 
           default:
-            HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
+            err.name === 'ValidationError'
+              ? HttpUtil.sendJsonError(res, HttpUtil.status.BAD_REQUEST)
+              : HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
             log.formatError(err, 'PlaylistRequestController.getByIdParam');
         }
       });
@@ -53,18 +57,23 @@ class PlaylistRequestController {
         res.json(playlist);
       })
       .catch((err) => {
-        HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
+        err.name === 'ValidationError'
+          ? HttpUtil.sendJsonError(res, HttpUtil.status.BAD_REQUEST)
+          : HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
         log.formatError(err, 'PlaylistRequestController.create: save');
       });
   }
 
   addTrackByForeignId(req, res) {
-    return playlistController.addTrackByForeignId(req.user, req.params.playlist_id, req.body.provider, req.body.foreignId)
+    return playlistController.addTrackByForeignId(req.user, req.params.playlist_id, req.body.provider,
+                                                  req.body.foreignId)
       .then((playlist) => {
         res.json(playlist);
       })
       .catch((err) => {
-        HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR, {message: err.message});
+        err.name === 'ValidationError'
+          ? HttpUtil.sendJsonError(res, HttpUtil.status.BAD_REQUEST)
+          : HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
         log.formatError(err, 'PlaylistRequestController.addTrackByForeignId');
       });
   }
@@ -96,7 +105,9 @@ class PlaylistRequestController {
             break;
 
           default:
-            HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
+            err.name === 'ValidationError'
+              ? HttpUtil.sendJsonError(res, HttpUtil.status.BAD_REQUEST)
+              : HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
             log.formatError(err, 'PlaylistRequestController.updateByIdParam');
         }
       });
@@ -117,7 +128,9 @@ class PlaylistRequestController {
             break;
 
           default:
-            HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
+            err.name === 'ValidationError'
+              ? HttpUtil.sendJsonError(res, HttpUtil.status.BAD_REQUEST)
+              : HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
             log.formatError(err, 'PlaylistRequestController.deleteByIdParam');
         }
       });
@@ -136,7 +149,9 @@ class PlaylistRequestController {
             break;
 
           default:
-            HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
+            err.name === 'ValidationError'
+              ? HttpUtil.sendJsonError(res, HttpUtil.status.BAD_REQUEST)
+              : HttpUtil.sendJsonError(res, HttpUtil.status.INTERNAL_SERVER_ERROR);
             log.formatError(err, 'PlaylistRequestController.deleteTrackFromPlaylist');
         }
       });
