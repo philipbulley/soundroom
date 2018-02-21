@@ -7,6 +7,7 @@ export const PlaylistMenuUl = styled.ul`
   padding: 0;
   list-style-type: none;
 `;
+PlaylistMenuUl.displayName = 'PlaylistMenuUl';
 
 export const PlaylistMenuLi = styled.li`
   width: 100%;
@@ -22,3 +23,4 @@ export const PlaylistMenuLi = styled.li`
     width: 33.333%;
   `}
 `;
+PlaylistMenuLi.displayName = 'PlaylistMenuLi';

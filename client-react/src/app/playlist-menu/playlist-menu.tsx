@@ -14,6 +14,7 @@ import { PlaylistMenuLi, PlaylistMenuUl } from './playlist-menu-list';
 import PlaylistCreate from './playlist-create/playlist-create';
 import { Playlist } from '../shared/model/playlist';
 import { Playlists } from '../shared/store/playlists/playlists';
+import { TransitionGroup } from 'react-transition-group';
 
 type ConnectedProps = StateProps & DispatchProps & RouteComponentProps<{}> & PassedProps;
 
@@ -38,17 +39,19 @@ class PlaylistMenu extends React.Component<ConnectedProps> {
         }
 
         {!playlists.loading && <div>
-          <PlaylistMenuUl>
+          <TransitionGroup component={PlaylistMenuUl}>
             {playlists.items.map((playlist: Playlist, i) => (
-                <PlaylistMenuLi key={i}>
-                  <PlaylistMenuItem playlist={playlist}/>
-                </PlaylistMenuLi>
+                <PlaylistMenuItem
+                  key={playlist._id}
+                  playlist={playlist}
+                  index={i}
+                  component={PlaylistMenuLi}/>
               )
             )}
             <PlaylistMenuLi key={'create'}>
               <PlaylistCreate/>
             </PlaylistMenuLi>
-          </PlaylistMenuUl>
+          </TransitionGroup>
 
           <PlaylistCount playlists={playlists}/>
         </div>
