@@ -1,12 +1,10 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import { connect, Dispatch } from 'react-redux';
 import { StoreState } from '../../shared/store/store-state';
 import {
   playlistCreateAction,
   PlaylistCreateParams
 } from '../../shared/store/playlists/playlist-create/playlist-create.action';
-import colors from '../../shared/colors/colors';
 import Button from '../../shared/button/button';
 import Input from '../../shared/input/input';
 import { TweenMax, Expo } from 'gsap';
@@ -14,11 +12,13 @@ import Icon from '../../shared/icon/icon';
 import { PlaylistsActions } from '../../shared/store/playlists/playlists-action-type';
 import { Playlists } from '../../shared/store/playlists/playlists';
 import { Link } from 'react-router-dom';
+import PlaylistCreateStyled, {
+  Steps, Step, ButtonContainer, Confirmation, PaddedButton
+} from './playlist-create.styled';
 
 type Props = StateProps & DispatchProps & PassedProps;
 
 class PlaylistCreate extends React.Component<Props, State> {
-
   nameInput: HTMLInputElement;
   descriptionInput: HTMLInputElement;
 
@@ -109,7 +109,7 @@ class PlaylistCreate extends React.Component<Props, State> {
       (!playlists.playlistCreate.successfullyCreatedId && !playlists.playlistCreate.error);
 
     return (
-      <div className={className}>
+      <PlaylistCreateStyled className={className}>
         <Steps stepsTotal={stepsTotal} innerRef={el => this.state.steps = el}>
           <Step num={0}>
             <Button green onClick={this.goToNextStep}>Create a room +</Button>
@@ -176,7 +176,7 @@ class PlaylistCreate extends React.Component<Props, State> {
             </Confirmation>}
           </Step>
         </Steps>
-      </div>
+      </PlaylistCreateStyled>
     );
   }
 }
@@ -203,66 +203,6 @@ interface DispatchProps {
   create: (createParams: PlaylistCreateParams) => {};
 }
 
-const PlaylistCreateStyled = styled(PlaylistCreate)`
-  position: relative;
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  text-align: center;
-  background-color: ${colors.green};
-`;
-
-const Steps = styled.div`
-  display: flex;
-  width: ${({stepsTotal}: StepsProps) => stepsTotal * 100}%;
-  height: 100%;
-`;
-
-interface StepsProps {
-  stepsTotal: number;
-}
-
-interface StepProps {
-  num: number;
-}
-
-const Step = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  justify-content: center;
-  width: 100%;
-  padding: 30px;
-  color: ${colors.white};
-  
-  // justify-content: ${({num}: StepProps) => num === 0 ? 'center' : 'flex-start'}
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  
-  > * {
-    flex: 1 1 auto;
-  }
-`;
-
-const Confirmation = styled.div`
-  .icon {
-    display: block;
-    margin-bottom: 30px;
-  }
-  
-  .button {
-    display: block;
-    margin: 30px auto 0 auto;
-  }
-`;
-
-const PaddedButton = Button.extend`
-  padding: 14px;
-`;
-
 const mapStateToProps = (state: StoreState) => ({
   playlists: state.playlists
 });
@@ -273,4 +213,4 @@ const mapDispatchToProps = (dispatch: Dispatch<PlaylistsActions>): DispatchProps
 
 export default connect<StateProps,
   DispatchProps,
-  PassedProps>(mapStateToProps, mapDispatchToProps)(PlaylistCreateStyled);
+  PassedProps>(mapStateToProps, mapDispatchToProps)(PlaylistCreate);
