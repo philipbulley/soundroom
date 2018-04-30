@@ -6,12 +6,15 @@ import { playlistsLoadErrorCommand } from './load-error/playlists-load-error.com
 import { playlistCreateCommand } from './playlist-create/playlist-create-command';
 import { playlistCreateSuccessCommand } from './playlist-create-success/playlist-create-success.command';
 import { playlistCreateErrorCommand } from './playlist-create-error/playlists-create-error.command';
+import { playlistCreateResetCommand } from './playlist-create-reset/playlist-create-reset-command';
+import { generate } from 'shortid';
 
 const defaultState: Playlists = {
   items: [],
   loading: false,
   playlistCreate: {
-    loading: false
+    loading: false,
+    iterationId: generate()
   }
 };
 
@@ -30,6 +33,8 @@ export function playlistsReducer(
       return playlistCreateSuccessCommand(state, action.payload);
     case PlaylistsActionType.PLAYLIST_CREATE_ERROR:
       return playlistCreateErrorCommand(state, action.payload);
+    case PlaylistsActionType.PLAYLIST_CREATE_RESET:
+      return playlistCreateResetCommand(state);
     default:
       return state;
   }

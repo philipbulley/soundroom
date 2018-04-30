@@ -4,6 +4,7 @@ import { PlaylistsLoadErrorAction } from './load-error/playlists-load-error.acti
 import { PlaylistCreateAction } from './playlist-create/playlist-create.action';
 import { PlaylistCreateSuccessAction } from './playlist-create-success/playlist-create-success.action';
 import { PlaylistCreateErrorAction } from './playlist-create-error/playlists-create-error.action';
+import { PlaylistCreateResetAction } from './playlist-create-reset/playlist-create-reset.action';
 
 export enum PlaylistsActionType {
   LOAD = 'LOAD',
@@ -12,6 +13,7 @@ export enum PlaylistsActionType {
   PLAYLIST_CREATE = 'PLAYLIST_CREATE',
   PLAYLIST_CREATE_SUCCESS = 'PLAYLIST_CREATE_SUCCESS',
   PLAYLIST_CREATE_ERROR = 'PLAYLIST_CREATE_ERROR',
+  PLAYLIST_CREATE_RESET = 'PLAYLIST_CREATE_RESET',
 }
 
 export type PlaylistsActions = PlaylistsLoadAction
@@ -19,4 +21,5 @@ export type PlaylistsActions = PlaylistsLoadAction
   | PlaylistsLoadErrorAction
   | PlaylistCreateAction
   | PlaylistCreateSuccessAction
-  | PlaylistCreateErrorAction;
+  | PlaylistCreateErrorAction
+  | PlaylistCreateResetAction;

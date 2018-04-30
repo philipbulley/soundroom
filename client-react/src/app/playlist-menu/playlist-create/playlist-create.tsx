@@ -7,27 +7,34 @@ import {
 } from '../../shared/store/playlists/playlist-create/playlist-create.action';
 import Button from '../../shared/button/button';
 import Input from '../../shared/input/input';
-import { TweenMax, Expo } from 'gsap';
+import { TimelineMax, TweenMax, Expo } from 'gsap';
 import Icon from '../../shared/icon/icon';
 import { PlaylistsActions } from '../../shared/store/playlists/playlists-action-type';
 import { Playlists } from '../../shared/store/playlists/playlists';
-import { Link } from 'react-router-dom';
 import PlaylistCreateStyled, {
-  Steps, Step, ButtonContainer, Confirmation, PaddedButton
+  Steps, Step, ButtonContainer, PaddedButton, OverflowHidden
 } from './playlist-create.styled';
+import { Confirmation } from './confirmation';
+import colors from '../../shared/colors/colors';
+import { playlistCreateResetAction } from '../../shared/store/playlists/playlist-create-reset/playlist-create-reset.action';
+import { Transition } from 'react-transition-group';
+import { ComponentClass } from 'react';
 
 type Props = StateProps & DispatchProps & PassedProps;
 
 class PlaylistCreate extends React.Component<Props, State> {
   nameInput: HTMLInputElement;
   descriptionInput: HTMLInputElement;
+  playlistCreateStyled: HTMLDivElement;
 
-  state: State = {
+  defaultState: State = {
     step: 0,
     stepsTotal: 4,
     name: '',
     description: '',
   };
+
+  state: State = this.defaultState;
 
   goToNextStep = () => {
     // TODO: Validate data in current step before moving to next...
@@ -40,15 +47,13 @@ class PlaylistCreate extends React.Component<Props, State> {
     this.goToStep(this.state.step - 1);
   };
 
-  goToStep = (step: number) => {
-    this.setState({step}, this.tweenToStep);
-  };
-
-  tweenToStep = () => {
-    TweenMax.to(this.state.steps!, .5, {
-      x: `${(-100 / this.state.stepsTotal) * this.state.step}%`,
-      ease: Expo.easeOut,
-      onComplete: this.handleStepTweenComplete
+  goToStep = (step: number, tweenDuration?: number) => {
+    this.setState({step}, () => {
+      TweenMax.to(this.state.steps, typeof tweenDuration === 'undefined' ? .5 : tweenDuration, {
+        x: `${(-100 / this.state.stepsTotal) * this.state.step}%`,
+        ease: Expo.easeOut,
+        onComplete: this.handleStepTweenComplete
+      });
     });
   };
 
@@ -102,81 +107,97 @@ class PlaylistCreate extends React.Component<Props, State> {
     }
   }
 
+  reset = () => {
+    TweenMax.to(this.playlistCreateStyled, .3, {
+      backgroundColor: colors.white,
+      onComplete: () => this.props.reset()
+    });
+  };
+
+  doTransition = (node, done) => {
+    const {in: inProp} = this.props;
+
+    const tl = new TimelineMax();
+
+    if (inProp) {
+      tl.add([TweenMax.fromTo(this.playlistCreateStyled, .8, {x: '-100%'},
+        {x: '0%', delay: .5, ease: Expo.easeOut}),
+        TweenMax.fromTo(this.state.steps, .5, {x: `${(-100 / this.state.stepsTotal) * -1}%`},
+          {x: '0%', delay: .5, ease: Expo.easeOut, onComplete: () => done()})], null, null, .3);
+    } else {
+      done();
+    }
+  };
+
   render() {
-    const {className, playlists} = this.props;
+    const {className, playlists, in: inProp, component} = this.props;
     const {stepsTotal, name, description} = this.state;
-    const awaitingCreation = playlists.playlistCreate.loading ||
-      (!playlists.playlistCreate.successfullyCreatedId && !playlists.playlistCreate.error);
+
+    const WrapperComponent = component || 'div';
 
     return (
-      <PlaylistCreateStyled className={className}>
-        <Steps stepsTotal={stepsTotal} innerRef={el => this.state.steps = el}>
-          <Step num={0}>
-            <Button green onClick={this.goToNextStep}>Create a room +</Button>
-          </Step>
-          <Step num={1}>
-            <h3>Name your room</h3>
-            <Input type="text"
-                   innerRef={el => this.nameInput = el}
-                   value={name}
-                   name="name"
-                   onChange={this.handleInputChange}
-                   onKeyDown={this.handleKeyPress}
-            />
-            <ButtonContainer>
-              <div>
-                <PaddedButton noStyle onClick={this.goToNextStep} disabled={!this.isStepValid(1)}>
-                  <Icon id="arrow-right" size={2}/>
-                </PaddedButton>
-              </div>
-            </ButtonContainer>
-          </Step>
-          <Step num={2}>
-            <h3>What's it all about?</h3>
-            <Input type="text"
-                   innerRef={el => this.descriptionInput = el}
-                   value={description}
-                   name="description"
-                   onChange={this.handleInputChange}
-                   onKeyDown={this.handleKeyPress}
-            />
-            <ButtonContainer>
-              <div>
-                <PaddedButton noStyle onClick={this.goToPreviousStep}>
-                  <Icon id="arrow-left" size={2}/>
-                </PaddedButton>
-              </div>
-              <div>
-                <PaddedButton noStyle onClick={this.goToNextStep} disabled={!this.isStepValid(2)}>
-                  <Icon id="arrow-right" size={2}/>
-                </PaddedButton>
-              </div>
-            </ButtonContainer>
-          </Step>
-          <Step num={3}>
-            {awaitingCreation &&
-            <Confirmation>
-              <Icon id="circle-o-notch" size={3} className="icon" spin/>
-              Creating room...
-            </Confirmation>}
-
-            {!awaitingCreation && !playlists.error &&
-            <Confirmation>
-              <Icon id="check" size={3} className="icon"/>
-              <Link to={'/room/' + playlists.playlistCreate.successfullyCreatedId} title={'Join ' + name}>
-                <Button green>Join Room</Button>
-              </Link>
-            </Confirmation>}
-
-            {!awaitingCreation && playlists.error &&
-            <Confirmation>
-              <Icon id="close" size={3} className="icon"/>
-              There were problems with creating your playlist.
-              <Button green onClick={() => this.goToStep(1)}>Back</Button>
-            </Confirmation>}
-          </Step>
-        </Steps>
-      </PlaylistCreateStyled>
+      <Transition
+        in={inProp}
+        addEndListener={this.doTransition}
+        onEntered={() => console.log('PlaylistCreate onEntered')}
+        onExited={() => console.log('PlaylistCreate onExited')}
+        unmountOnExit={true}
+      >
+        <WrapperComponent>
+          <OverflowHidden>
+            <PlaylistCreateStyled className={className} innerRef={ref => this.playlistCreateStyled = ref}>
+              <Steps stepsTotal={stepsTotal} innerRef={el => this.state.steps = el}>
+                <Step num={0}>
+                  <Button green onClick={this.goToNextStep}>Create a room +</Button>
+                </Step>
+                <Step num={1}>
+                  <h3>Name your room</h3>
+                  <Input type="text"
+                         innerRef={el => this.nameInput = el}
+                         value={name}
+                         name="name"
+                         onChange={this.handleInputChange}
+                         onKeyDown={this.handleKeyPress}
+                  />
+                  <ButtonContainer>
+                    <div>
+                      <PaddedButton noStyle onClick={this.goToNextStep} disabled={!this.isStepValid(1)}>
+                        <Icon id="arrow-right" size={2}/>
+                      </PaddedButton>
+                    </div>
+                  </ButtonContainer>
+                </Step>
+                <Step num={2}>
+                  <h3>What's it all about?</h3>
+                  <Input type="text"
+                         innerRef={el => this.descriptionInput = el}
+                         value={description}
+                         name="description"
+                         onChange={this.handleInputChange}
+                         onKeyDown={this.handleKeyPress}
+                  />
+                  <ButtonContainer>
+                    <div>
+                      <PaddedButton noStyle onClick={this.goToPreviousStep}>
+                        <Icon id="arrow-left" size={2}/>
+                      </PaddedButton>
+                    </div>
+                    <div>
+                      <PaddedButton noStyle onClick={this.goToNextStep} disabled={!this.isStepValid(2)}>
+                        <Icon id="arrow-right" size={2}/>
+                      </PaddedButton>
+                    </div>
+                  </ButtonContainer>
+                </Step>
+                <Step num={3}>
+                  <Confirmation playlistCreate={playlists.playlistCreate} onGoBack={() => this.goToStep(
+                    1)} onSuccessComplete={this.reset}/>
+                </Step>
+              </Steps>
+            </PlaylistCreateStyled>
+          </OverflowHidden>
+        </WrapperComponent>
+      </Transition>
     );
   }
 }
@@ -193,6 +214,8 @@ interface State {
 
 interface PassedProps {
   className?: string;
+  component: string | ComponentClass;
+  in?: boolean;
 }
 
 interface StateProps {
@@ -201,6 +224,7 @@ interface StateProps {
 
 interface DispatchProps {
   create: (createParams: PlaylistCreateParams) => {};
+  reset: () => {};
 }
 
 const mapStateToProps = (state: StoreState) => ({
@@ -209,6 +233,7 @@ const mapStateToProps = (state: StoreState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<PlaylistsActions>): DispatchProps => ({
   create: (createParams: PlaylistCreateParams) => dispatch(playlistCreateAction(createParams)),
+  reset: () => dispatch(playlistCreateResetAction()),
 });
 
 export default connect<StateProps,

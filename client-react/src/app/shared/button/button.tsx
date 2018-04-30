@@ -5,10 +5,10 @@ import buttonReset from './button-reset';
 import { SyntheticEvent } from 'react';
 import { css, default as styled } from 'styled-components';
 
-const ButtonComponent: React.StatelessComponent<Props> = ({children, onClick, className, ...rest}: Props) => (
-  <button className={className} onClick={onClick}>
+const Button: React.StatelessComponent<Props> = ({children, onClick, className, innerRef, ...rest}: Props) => (
+  <ButtonStyled {...rest} className={className} onClick={onClick} innerRef={innerRef}>
     {children}
-  </button>
+  </ButtonStyled>
 );
 
 interface Props {
@@ -18,6 +18,7 @@ interface Props {
   green?: boolean;
   noStyle?: boolean;
   disabled?: boolean;
+  innerRef?: (ref: HTMLElement | any) => void;
 }
 
 function getColor(props: Props) {
@@ -34,7 +35,7 @@ function getColor(props: Props) {
   };
 }
 
-const Button = styled(ButtonComponent)`
+const ButtonStyled = styled.button`
   ${buttonReset}
   
   ${(props: Props) => !props.noStyle

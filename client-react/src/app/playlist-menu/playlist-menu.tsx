@@ -40,17 +40,17 @@ class PlaylistMenu extends React.Component<ConnectedProps> {
 
         {!playlists.loading && <div>
           <TransitionGroup component={PlaylistMenuUl}>
-            {playlists.items.map((playlist: Playlist, i) => (
-                <PlaylistMenuItem
-                  key={playlist._id}
-                  playlist={playlist}
-                  index={i}
-                  component={PlaylistMenuLi}/>
-              )
-            )}
-            <PlaylistMenuLi key={'create'}>
-              <PlaylistCreate/>
-            </PlaylistMenuLi>
+            {playlists.items.filter(
+              (playlist: Playlist) => playlist._id !== playlists.playlistCreate.successfullyCreatedId)
+              .map((playlist: Playlist, i) => (
+                  <PlaylistMenuItem
+                    key={playlist._id}
+                    playlist={playlist}
+                    index={i}
+                    component={PlaylistMenuLi}/>
+                )
+              )}
+            <PlaylistCreate key={'create-' + playlists.playlistCreate.iterationId} component={PlaylistMenuLi}/>
           </TransitionGroup>
 
           <PlaylistCount playlists={playlists}/>

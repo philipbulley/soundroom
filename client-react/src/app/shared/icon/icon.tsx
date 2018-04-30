@@ -1,6 +1,9 @@
 import * as React from 'react';
+import { ClassAttributes } from 'react';
 
-const Icon = ({id, size, className, spin}: Props) => {
+const Icon = ({
+                id, size, className, spin, innerRef = () => null, ...rest
+              }: Props & ClassAttributes<HTMLElement>) => {
   const classes = [
     'fa',
     'fa-' + id,
@@ -18,14 +21,15 @@ const Icon = ({id, size, className, spin}: Props) => {
     classes.push('fa-spin');
   }
 
-  return <i className={classes.join(' ')}/>;
-};
+  return <i {...rest} className={classes.join(' ')} style={{lineHeight: 0}} ref={innerRef}/>;
+  };
 
 interface Props {
   id: any;
   size?: any;
   className?: string;
   spin?: boolean;
+  innerRef?: (ref: HTMLElement) => void;
 }
 
 export default Icon;

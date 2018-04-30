@@ -16,6 +16,12 @@ export default styled.div`
   background-color: ${colors.green};
 `;
 
+export const OverflowHidden = styled.div`
+  width:100%;
+  height: 100%;
+  overflow: hidden;
+`;
+
 interface StepsProps {
   stepsTotal: number;
 }
@@ -28,6 +34,7 @@ export const Steps = styled.div`
 
 export const Step = styled.div`
   display: flex;
+  height: 100%;
   flex-direction: column;
   flex: 1 1 auto;
   justify-content: center;
@@ -46,18 +53,6 @@ export const ButtonContainer = styled.div`
   }
 `;
 
-export const Confirmation = styled.div`
-  .icon {
-    display: block;
-    margin-bottom: 30px;
-  }
-  
-  .button {
-    display: block;
-    margin: 30px auto 0 auto;
-  }
-`;
-
-export const PaddedButton = Button.extend`
+export const PaddedButton = styled(Button)`
   padding: 14px;
 `;

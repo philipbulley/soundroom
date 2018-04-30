@@ -15,5 +15,7 @@ export interface PlaylistCreate {
   loading: boolean;
   /** If a playlist has just been created by this client, this will be the id of said Playlist */
   successfullyCreatedId?: string;
+  /** This ID is changes each time PlaylistCreate is reset */
+  iterationId: string;
   error?: ErrorResult;
 }
