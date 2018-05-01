@@ -4,39 +4,43 @@ import SignInSocialButton from './sign-in-social-button';
 import { SocialProvider } from '../../shared/model/enum/social-provider';
 
 const providers: SocialProvider[] = [
-  SocialProvider.GOOGLE,
-  SocialProvider.SPOTIFY,
-  SocialProvider.TWITTER,
-  SocialProvider.FACEBOOK,
+	SocialProvider.GOOGLE,
+	SocialProvider.SPOTIFY,
+	SocialProvider.TWITTER,
+	SocialProvider.FACEBOOK
 ];
 
-const SignInSocial = ({serverBaseUrl}) => (
-  <div>
-    <Paragraph>
-      If you've signed in before, please use the same social sign-in option as before.
-    </Paragraph>
-    <UnorderedList>
-      {providers.map(provider => (
-        <ListItem key={provider}>
-          <SignInSocialButton serverBaseUrl={serverBaseUrl} provider={provider}/>
-        </ListItem>
-      ))}
-    </UnorderedList>
-  </div>
+const SignInSocial = ({ serverBaseUrl }) => (
+	<div>
+		<Paragraph>
+			If you've signed in before, please use the same social sign-in option as
+			before.
+		</Paragraph>
+		<UnorderedList>
+			{providers.map(provider => (
+				<ListItem key={provider}>
+					<SignInSocialButton
+						serverBaseUrl={serverBaseUrl}
+						provider={provider}
+					/>
+				</ListItem>
+			))}
+		</UnorderedList>
+	</div>
 );
 
 const ListItem = styled.li`
-  display: inline-block;
+	display: inline-block;
 `;
 
 const UnorderedList = styled.ul`
-  text-align: center;
-  list-style-type: none;
-  padding: 0;
+	text-align: center;
+	list-style-type: none;
+	padding: 0;
 `;
 
 const Paragraph = styled.p`
-  text-align: center;
+	text-align: center;
 `;
 
 export default SignInSocial;

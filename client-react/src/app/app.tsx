@@ -6,16 +6,16 @@ import styled from 'styled-components';
 import colors from './shared/colors/colors';
 
 const App = () => (
-  <Provider store={store}>
-    <AppStyled>
-      <Routes/>
-    </AppStyled>
-  </Provider>
+	<Provider store={store}>
+		<AppStyled>
+			<Routes />
+		</AppStyled>
+	</Provider>
 );
 
 export const AppStyled = styled.div`
-  background-color: ${colors.whiteDusty};
-  min-height: 100vh;
+	background-color: ${colors.whiteDusty};
+	min-height: 100vh;
 `;
 
 export default App;

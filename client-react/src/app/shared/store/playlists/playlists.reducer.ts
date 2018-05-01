@@ -10,32 +10,34 @@ import { playlistCreateResetCommand } from './playlist-create-reset/playlist-cre
 import { generate } from 'shortid';
 
 const defaultState: Playlists = {
-  items: [],
-  loading: false,
-  playlistCreate: {
-    loading: false,
-    iterationId: generate()
-  }
+	items: [],
+	loading: false,
+	playlistCreate: {
+		loading: false,
+		iterationId: generate()
+	}
 };
 
 export function playlistsReducer(
-  state: Playlists = defaultState, action: PlaylistsActions): Playlists {
-  switch (action.type) {
-    case PlaylistsActionType.LOAD:
-      return playlistsLoadCommand(state);
-    case PlaylistsActionType.LOAD_SUCCESS:
-      return playlistsLoadSuccessCommand(state, action.payload);
-    case PlaylistsActionType.LOAD_ERROR:
-      return playlistsLoadErrorCommand(state, action.payload);
-    case PlaylistsActionType.PLAYLIST_CREATE:
-      return playlistCreateCommand(state, action.payload);
-    case PlaylistsActionType.PLAYLIST_CREATE_SUCCESS:
-      return playlistCreateSuccessCommand(state, action.payload);
-    case PlaylistsActionType.PLAYLIST_CREATE_ERROR:
-      return playlistCreateErrorCommand(state, action.payload);
-    case PlaylistsActionType.PLAYLIST_CREATE_RESET:
-      return playlistCreateResetCommand(state);
-    default:
-      return state;
-  }
+	state: Playlists = defaultState,
+	action: PlaylistsActions
+): Playlists {
+	switch (action.type) {
+		case PlaylistsActionType.LOAD:
+			return playlistsLoadCommand(state);
+		case PlaylistsActionType.LOAD_SUCCESS:
+			return playlistsLoadSuccessCommand(state, action.payload);
+		case PlaylistsActionType.LOAD_ERROR:
+			return playlistsLoadErrorCommand(state, action.payload);
+		case PlaylistsActionType.PLAYLIST_CREATE:
+			return playlistCreateCommand(state, action.payload);
+		case PlaylistsActionType.PLAYLIST_CREATE_SUCCESS:
+			return playlistCreateSuccessCommand(state, action.payload);
+		case PlaylistsActionType.PLAYLIST_CREATE_ERROR:
+			return playlistCreateErrorCommand(state, action.payload);
+		case PlaylistsActionType.PLAYLIST_CREATE_RESET:
+			return playlistCreateResetCommand(state);
+		default:
+			return state;
+	}
 }

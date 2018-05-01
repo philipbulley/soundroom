@@ -16,83 +16,95 @@ import { Playlist } from '../shared/model/playlist';
 import { Playlists } from '../shared/store/playlists/playlists';
 import { TransitionGroup } from 'react-transition-group';
 
-type ConnectedProps = StateProps & DispatchProps & RouteComponentProps<{}> & PassedProps;
+type ConnectedProps = StateProps &
+	DispatchProps &
+	RouteComponentProps<{}> &
+	PassedProps;
 
 class PlaylistMenu extends React.Component<ConnectedProps> {
-  componentDidMount() {
-    this.props.loadPlaylists();
-  }
+	componentDidMount() {
+		this.props.loadPlaylists();
+	}
 
-  render() {
-    const {playlists, className} = this.props;
+	render() {
+		const { playlists, className } = this.props;
 
-    return (
-      <div className={className}>
-        <Helmet>
-          <title>Soundroom: Join a room!</title>
-        </Helmet>
-        <h2>Join a room!</h2>
-        {playlists.loading &&
-        <h3 className="loading">
-          <Icon id="circle-o-notch" spin/> Loading rooms...
-        </h3>
-        }
+		return (
+			<div className={className}>
+				<Helmet>
+					<title>Soundroom: Join a room!</title>
+				</Helmet>
+				<h2>Join a room!</h2>
+				{playlists.loading && (
+					<h3 className="loading">
+						<Icon id="circle-o-notch" spin /> Loading rooms...
+					</h3>
+				)}
 
-        {!playlists.loading && <div>
-          <TransitionGroup component={PlaylistMenuUl}>
-            {playlists.items.filter(
-              (playlist: Playlist) => playlist._id !== playlists.playlistCreate.successfullyCreatedId)
-              .map((playlist: Playlist, i) => (
-                  <PlaylistMenuItem
-                    key={playlist._id}
-                    playlist={playlist}
-                    index={i}
-                    component={PlaylistMenuLi}/>
-                )
-              )}
-            <PlaylistCreate key={'create-' + playlists.playlistCreate.iterationId} component={PlaylistMenuLi}/>
-          </TransitionGroup>
+				{!playlists.loading && (
+					<div>
+						<TransitionGroup component={PlaylistMenuUl}>
+							{playlists.items
+								.filter(
+									(playlist: Playlist) =>
+										playlist._id !==
+										playlists.playlistCreate.successfullyCreatedId
+								)
+								.map((playlist: Playlist, i) => (
+									<PlaylistMenuItem
+										key={playlist._id}
+										playlist={playlist}
+										index={i}
+										component={PlaylistMenuLi}
+									/>
+								))}
+							<PlaylistCreate
+								key={'create-' + playlists.playlistCreate.iterationId}
+								component={PlaylistMenuLi}
+							/>
+						</TransitionGroup>
 
-          <PlaylistCount playlists={playlists}/>
-        </div>
-        }
-      </div>
-    );
-  }
+						<PlaylistCount playlists={playlists} />
+					</div>
+				)}
+			</div>
+		);
+	}
 }
 
 const PlaylistMenuStyled = styled(PlaylistMenu)`
-  ${contentContainer}
-  
-  h2 {
-    text-align: center;
-  }
-  
-  .loading {
-    text-align: center;
-  }
+	${contentContainer} h2 {
+		text-align: center;
+	}
+
+	.loading {
+		text-align: center;
+	}
 `;
 
-const mapStateToProps = ({playlists}: StoreState) => ({
-  playlists,
+const mapStateToProps = ({ playlists }: StoreState) => ({
+	playlists
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<PlaylistsActions>): DispatchProps => ({
-  loadPlaylists: () => dispatch(playlistsLoadAction()),
+const mapDispatchToProps = (
+	dispatch: Dispatch<PlaylistsActions>
+): DispatchProps => ({
+	loadPlaylists: () => dispatch(playlistsLoadAction())
 });
 
 interface PassedProps {
-  className?: string;
+	className?: string;
 }
 
 interface StateProps {
-  playlists: Playlists;
+	playlists: Playlists;
 }
 
 interface DispatchProps {
-  loadPlaylists: () => {};
+	loadPlaylists: () => {};
 }
 
-export default connect<StateProps,
-  DispatchProps,
-  RouteComponentProps<{}>>(mapStateToProps, mapDispatchToProps)(PlaylistMenuStyled);
+export default connect<StateProps, DispatchProps, RouteComponentProps<{}>>(
+	mapStateToProps,
+	mapDispatchToProps
+)(PlaylistMenuStyled);

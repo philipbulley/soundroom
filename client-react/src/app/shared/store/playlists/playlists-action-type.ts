@@ -7,19 +7,20 @@ import { PlaylistCreateErrorAction } from './playlist-create-error/playlists-cre
 import { PlaylistCreateResetAction } from './playlist-create-reset/playlist-create-reset.action';
 
 export enum PlaylistsActionType {
-  LOAD = 'LOAD',
-  LOAD_ERROR = 'LOAD_ERROR',
-  LOAD_SUCCESS= 'LOAD_SUCCESS',
-  PLAYLIST_CREATE = 'PLAYLIST_CREATE',
-  PLAYLIST_CREATE_SUCCESS = 'PLAYLIST_CREATE_SUCCESS',
-  PLAYLIST_CREATE_ERROR = 'PLAYLIST_CREATE_ERROR',
-  PLAYLIST_CREATE_RESET = 'PLAYLIST_CREATE_RESET',
+	LOAD = 'LOAD',
+	LOAD_ERROR = 'LOAD_ERROR',
+	LOAD_SUCCESS = 'LOAD_SUCCESS',
+	PLAYLIST_CREATE = 'PLAYLIST_CREATE',
+	PLAYLIST_CREATE_SUCCESS = 'PLAYLIST_CREATE_SUCCESS',
+	PLAYLIST_CREATE_ERROR = 'PLAYLIST_CREATE_ERROR',
+	PLAYLIST_CREATE_RESET = 'PLAYLIST_CREATE_RESET'
 }
 
-export type PlaylistsActions = PlaylistsLoadAction
-  | PlaylistsLoadSuccessAction
-  | PlaylistsLoadErrorAction
-  | PlaylistCreateAction
-  | PlaylistCreateSuccessAction
-  | PlaylistCreateErrorAction
-  | PlaylistCreateResetAction;
+export type PlaylistsActions =
+	| PlaylistsLoadAction
+	| PlaylistsLoadSuccessAction
+	| PlaylistsLoadErrorAction
+	| PlaylistCreateAction
+	| PlaylistCreateSuccessAction
+	| PlaylistCreateErrorAction
+	| PlaylistCreateResetAction;

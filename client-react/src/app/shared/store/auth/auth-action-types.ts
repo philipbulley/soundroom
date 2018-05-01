@@ -3,9 +3,12 @@ import { LoadUserSuccessAction } from './load-user-success/load-user-success.act
 import { LoadUserErrorAction } from './load-user-error/load-user-error.action';
 
 export enum AuthActionType {
-  LOAD_USER = 'LOAD_USER',
-  LOAD_USER_ERROR = 'LOAD_USER_ERROR',
-  LOAD_USER_SUCCESS= 'LOAD_USER_SUCCESS',
+	LOAD_USER = 'LOAD_USER',
+	LOAD_USER_ERROR = 'LOAD_USER_ERROR',
+	LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS'
 }
 
-export type AuthActions = LoadUserAction | LoadUserSuccessAction | LoadUserErrorAction;
+export type AuthActions =
+	| LoadUserAction
+	| LoadUserSuccessAction
+	| LoadUserErrorAction;

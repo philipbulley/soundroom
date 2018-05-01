@@ -10,7 +10,10 @@ import { Config } from '../../../model/config';
 import { StoreState } from '../../store-state';
 import { createHeaders, fetchRx } from '../../../network-helper';
 import { Epic } from 'redux-observable';
-import { PlaylistsActions, PlaylistsActionType } from '../playlists-action-type';
+import {
+	PlaylistsActions,
+	PlaylistsActionType
+} from '../playlists-action-type';
 import { PlaylistsLoadAction } from './playlists-load.action';
 import { playlistsLoadSuccessAction } from '../load-success/playlists-load-success.action';
 import { playlistsLoadErrorAction } from '../load-error/playlists-load-error.action';
@@ -25,16 +28,29 @@ export const PATH: string = '/playlists';
  * @param {ActionsObservable<PlaylistsActions>} action$
  * @param {MiddlewareAPI<StoreState>} store
  */
-export const playlistsLoadEpic: Epic<PlaylistsActions, StoreState> = (action$, store) => action$
-  .filter(action => action.type === PlaylistsActionType.LOAD)
-  .switchMap((action: PlaylistsLoadAction) => {
-    return fetchRx(Config.API_BASE_URL + PATH, {headers: createHeaders(store.getState().auth)})
-      .switchMap((res: Response): Observable<Playlist[]> => Observable.fromPromise(res.json()))
-      .map((items: Playlist[]) => playlistsLoadSuccessAction(items))
-      .catch((error: Response) => Observable.of(playlistsLoadErrorAction({
-          status: error.status || 0,
-          message: error.statusText,
-          type: errorTypeFactory(error.status, {404: ErrorType.PLAYLISTS_NOT_FOUND})
-        }))
-      );
-  });
+export const playlistsLoadEpic: Epic<PlaylistsActions, StoreState> = (
+	action$,
+	store
+) =>
+	action$
+		.filter(action => action.type === PlaylistsActionType.LOAD)
+		.switchMap((action: PlaylistsLoadAction) => {
+			return fetchRx(Config.API_BASE_URL + PATH, {
+				headers: createHeaders(store.getState().auth)
+			})
+				.switchMap((res: Response): Observable<Playlist[]> =>
+					Observable.fromPromise(res.json())
+				)
+				.map((items: Playlist[]) => playlistsLoadSuccessAction(items))
+				.catch((error: Response) =>
+					Observable.of(
+						playlistsLoadErrorAction({
+							status: error.status || 0,
+							message: error.statusText,
+							type: errorTypeFactory(error.status, {
+								404: ErrorType.PLAYLISTS_NOT_FOUND
+							})
+						})
+					)
+				);
+		});

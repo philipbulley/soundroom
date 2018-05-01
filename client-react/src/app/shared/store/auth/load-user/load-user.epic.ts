@@ -22,56 +22,73 @@ import { errorTypeFactory } from '../../../error/error-type.factory';
 
 export const PATH: string = '/me';
 
-export const loadUserEpic: Epic<AuthActions, StoreState> = (action$, store) => action$
-  .filter(action => action.type === AuthActionType.LOAD_USER)
-  .do((action: LoadUserAction) => {
-    if (action.payload.jwt) {
-      // Persist the JWT
-      setPersistedJwt(action.payload.jwt);
-    }
-  })
-  .switchMap((action: LoadUserAction) => {
-    return makeLoginRequest(store.getState().auth, action.payload)
-      .map((user: User) => loadUserSuccessAction(user))
-      .catch((loadUserError: LoadUserError) => {
-        return Observable.of(loadUserErrorAction({
-          type: errorTypeFactory(loadUserError.error instanceof Response
-            ? loadUserError.error.status
-            : 0),
-          skipSignInRedirect: !!(loadUserError.params && loadUserError.params.skipSignInRedirectOnError),
-          status: loadUserError.error instanceof Response
-            ? loadUserError.error.status
-            : 0,
-          message: (loadUserError.error instanceof Response
-            ? loadUserError.error.statusText
-            : loadUserError.error.message) || 'Unable to load user',
-        }));
-      });
-  });
+export const loadUserEpic: Epic<AuthActions, StoreState> = (action$, store) =>
+	action$
+		.filter(action => action.type === AuthActionType.LOAD_USER)
+		.do((action: LoadUserAction) => {
+			if (action.payload.jwt) {
+				// Persist the JWT
+				setPersistedJwt(action.payload.jwt);
+			}
+		})
+		.switchMap((action: LoadUserAction) => {
+			return makeLoginRequest(store.getState().auth, action.payload)
+				.map((user: User) => loadUserSuccessAction(user))
+				.catch((loadUserError: LoadUserError) => {
+					return Observable.of(
+						loadUserErrorAction({
+							type: errorTypeFactory(
+								loadUserError.error instanceof Response
+									? loadUserError.error.status
+									: 0
+							),
+							skipSignInRedirect: !!(
+								loadUserError.params &&
+								loadUserError.params.skipSignInRedirectOnError
+							),
+							status:
+								loadUserError.error instanceof Response
+									? loadUserError.error.status
+									: 0,
+							message:
+								(loadUserError.error instanceof Response
+									? loadUserError.error.statusText
+									: loadUserError.error.message) || 'Unable to load user'
+						})
+					);
+				});
+		});
 
-function makeLoginRequest(auth: Auth, params: LoadUserParams): Observable<User> {
-  if (!auth.jwt) {
-    const error: LoadUserError = {
-      params,
-      error: new Error('No cached JWT'),
-    };
-    return Observable.throw(error);
-  }
+function makeLoginRequest(
+	auth: Auth,
+	params: LoadUserParams
+): Observable<User> {
+	if (!auth.jwt) {
+		const error: LoadUserError = {
+			params,
+			error: new Error('No cached JWT')
+		};
+		return Observable.throw(error);
+	}
 
-  return fetchRx(Config.API_BASE_URL + PATH, {headers: createHeaders(auth)})
-  // .delay(2000)    // DEBUG: Delay for simulation purposes only
-    .switchMap((res: Response): Observable<User> => Observable.fromPromise(res.json()))
-    .catch((error: Response) => {
-      const loadUserError: LoadUserError = {
-        params,
-        error,
-      };
+	return (
+		fetchRx(Config.API_BASE_URL + PATH, { headers: createHeaders(auth) })
+			// .delay(2000)    // DEBUG: Delay for simulation purposes only
+			.switchMap((res: Response): Observable<User> =>
+				Observable.fromPromise(res.json())
+			)
+			.catch((error: Response) => {
+				const loadUserError: LoadUserError = {
+					params,
+					error
+				};
 
-      return Observable.throw(loadUserError);
-    });
+				return Observable.throw(loadUserError);
+			})
+	);
 }
 
 interface LoadUserError {
-  params: LoadUserParams;
-  error: Response | Error;
+	params: LoadUserParams;
+	error: Response | Error;
 }

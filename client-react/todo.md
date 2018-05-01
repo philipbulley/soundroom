@@ -1,10 +1,15 @@
 # TODO
 
+## General
+
+1. [ ] Upgrade React
+1. [ ] Try Popmotion Pose
+
 ## Playlists
 
 1. [x] Dispatch `playlistsLoad` from `PlaylistMenu` component
-1. [ ] Implement create `playlist` from `PlaylistMenu`
-  1. [ ] Track loading in Playlist reducer? if there's a playlist reducer? :)
+1. [x] Implement create `playlist` from `PlaylistMenu`
+  1. [x] Track loading in Playlist reducer? if there's a playlist reducer? :)
   
 1. Rename `Playlists` -> `Playlists`, containing array of `Playlist`
 1. Add concept of `PlaylistTrack` which joins a `Playlist` by `_id`

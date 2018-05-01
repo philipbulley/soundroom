@@ -2,8 +2,8 @@ import styled from 'styled-components';
 import colors from '../shared/colors/colors';
 
 export const Logo = styled.a`
-  margin: 0 40px 0 0;
-  color: ${colors.blackShade};
-  text-decoration: none;
-  font-weight: bold;
+	margin: 0 40px 0 0;
+	color: ${colors.blackShade};
+	text-decoration: none;
+	font-weight: bold;
 `;
