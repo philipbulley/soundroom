@@ -29,8 +29,6 @@ storiesOf('Icon', module)
 			</div>
 		)
 	)
-	.addWithInfo(
-		'spin',
-		`${DESC_INTRO} Use the 'spin' prop to make the icon rotate.`,
-		() => <Icon id="circle-o-notch" spin />
-	);
+	.addWithInfo('spin', `${DESC_INTRO} Use the 'spin' prop to make the icon rotate.`, () => (
+		<Icon id="circle-o-notch" spin />
+	));

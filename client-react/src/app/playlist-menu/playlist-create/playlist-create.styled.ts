@@ -42,8 +42,7 @@ export const Step = styled.div`
   padding: 30px;
   color: ${colors.white};
   
-  // justify-content: ${({ num }: StepProps) =>
-		num === 0 ? 'center' : 'flex-start'}
+  // justify-content: ${({ num }: StepProps) => (num === 0 ? 'center' : 'flex-start')}
 `;
 
 export const ButtonContainer = styled.div`

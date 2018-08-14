@@ -1,10 +1,7 @@
 import { Playlists } from '../playlists';
 import { PlaylistCreateParams } from './playlist-create.action';
 
-export function playlistCreateCommand(
-	state: Playlists,
-	params: PlaylistCreateParams
-) {
+export function playlistCreateCommand(state: Playlists, params: PlaylistCreateParams) {
 	state = { ...state };
 	state.playlistCreate = { ...state.playlistCreate };
 

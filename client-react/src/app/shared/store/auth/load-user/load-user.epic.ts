@@ -37,19 +37,9 @@ export const loadUserEpic: Epic<AuthActions, StoreState> = (action$, store) =>
 				.catch((loadUserError: LoadUserError) => {
 					return Observable.of(
 						loadUserErrorAction({
-							type: errorTypeFactory(
-								loadUserError.error instanceof Response
-									? loadUserError.error.status
-									: 0
-							),
-							skipSignInRedirect: !!(
-								loadUserError.params &&
-								loadUserError.params.skipSignInRedirectOnError
-							),
-							status:
-								loadUserError.error instanceof Response
-									? loadUserError.error.status
-									: 0,
+							type: errorTypeFactory(loadUserError.error instanceof Response ? loadUserError.error.status : 0),
+							skipSignInRedirect: !!(loadUserError.params && loadUserError.params.skipSignInRedirectOnError),
+							status: loadUserError.error instanceof Response ? loadUserError.error.status : 0,
 							message:
 								(loadUserError.error instanceof Response
 									? loadUserError.error.statusText
@@ -59,10 +49,7 @@ export const loadUserEpic: Epic<AuthActions, StoreState> = (action$, store) =>
 				});
 		});
 
-function makeLoginRequest(
-	auth: Auth,
-	params: LoadUserParams
-): Observable<User> {
+function makeLoginRequest(auth: Auth, params: LoadUserParams): Observable<User> {
 	if (!auth.jwt) {
 		const error: LoadUserError = {
 			params,
@@ -74,9 +61,7 @@ function makeLoginRequest(
 	return (
 		fetchRx(Config.API_BASE_URL + PATH, { headers: createHeaders(auth) })
 			// .delay(2000)    // DEBUG: Delay for simulation purposes only
-			.switchMap((res: Response): Observable<User> =>
-				Observable.fromPromise(res.json())
-			)
+			.switchMap((res: Response): Observable<User> => Observable.fromPromise(res.json()))
 			.catch((error: Response) => {
 				const loadUserError: LoadUserError = {
 					params,

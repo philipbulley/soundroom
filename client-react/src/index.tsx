@@ -5,11 +5,11 @@ import registerServiceWorker from './registerServiceWorker';
 import './index.css';
 
 // Patch TweenConfig interface due to https://github.com/greensock/GreenSock-JS/issues/231#issuecomment-338376104
-declare module 'gsap' {
-	export interface TweenConfig {
-		[p: string]: any;
-	}
-}
+// declare module 'gsap' {
+// 	export interface TweenConfig {
+// 		[p: string]: any;
+// 	}
+// }
 
 ReactDOM.render(<App />, document.getElementById('root') as HTMLElement);
 registerServiceWorker();

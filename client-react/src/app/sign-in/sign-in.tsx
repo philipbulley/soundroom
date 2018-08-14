@@ -16,10 +16,7 @@ import { AuthActions } from '../shared/store/auth/auth-action-types';
 import { contentContainer } from '../shared/layout/content-container';
 import styled from 'styled-components';
 
-type ConnectedProps = StateProps &
-	DispatchProps &
-	RouteComponentProps<{}> &
-	PassedProps;
+type ConnectedProps = StateProps & DispatchProps & RouteComponentProps<{}> & PassedProps;
 
 class SignIn extends React.Component<ConnectedProps, {}> {
 	componentDidMount() {
@@ -44,11 +41,7 @@ class SignIn extends React.Component<ConnectedProps, {}> {
 				{AuthStatus.LOGGED_OUT === auth.status && (
 					<div>
 						<h2>Sign-in</h2>
-						{auth.error && (
-							<InlineError message={auth.error.message}>
-								We haven't been able to sign you in.
-							</InlineError>
-						)}
+						{auth.error && <InlineError message={auth.error.message}>We haven't been able to sign you in.</InlineError>}
 						<SignInSocial serverBaseUrl={Config.SERVER_BASE_URL} />
 					</div>
 				)}
@@ -95,14 +88,11 @@ const mapStateToProps = ({ auth }: StoreState) => ({
 	auth
 });
 
-const mapDispatchToProps = (
-	dispatch: Dispatch<AuthActions>
-): DispatchProps => ({
+const mapDispatchToProps = (dispatch: Dispatch<AuthActions>): DispatchProps => ({
 	goToRooms: () => dispatch(push('/')),
 	loadUser: (jwt: string) => dispatch(loadUserAction(jwt))
 });
 
-export default connect<StateProps, DispatchProps, RouteComponentProps<{}>>(
-	mapStateToProps,
-	mapDispatchToProps
-)(SignInStyled);
+export default connect<StateProps, DispatchProps, RouteComponentProps<{}>>(mapStateToProps, mapDispatchToProps)(
+	SignInStyled
+);

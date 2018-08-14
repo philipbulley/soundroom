@@ -18,10 +18,7 @@ const defaultState: Playlists = {
 	}
 };
 
-export function playlistsReducer(
-	state: Playlists = defaultState,
-	action: PlaylistsActions
-): Playlists {
+export function playlistsReducer(state: Playlists = defaultState, action: PlaylistsActions): Playlists {
 	switch (action.type) {
 		case PlaylistsActionType.LOAD:
 			return playlistsLoadCommand(state);

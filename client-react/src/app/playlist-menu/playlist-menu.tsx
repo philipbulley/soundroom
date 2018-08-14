@@ -16,10 +16,7 @@ import { Playlist } from '../shared/model/playlist';
 import { Playlists } from '../shared/store/playlists/playlists';
 import { TransitionGroup } from 'react-transition-group';
 
-type ConnectedProps = StateProps &
-	DispatchProps &
-	RouteComponentProps<{}> &
-	PassedProps;
+type ConnectedProps = StateProps & DispatchProps & RouteComponentProps<{}> & PassedProps;
 
 class PlaylistMenu extends React.Component<ConnectedProps> {
 	componentDidMount() {
@@ -45,23 +42,11 @@ class PlaylistMenu extends React.Component<ConnectedProps> {
 					<div>
 						<TransitionGroup component={PlaylistMenuUl}>
 							{playlists.items
-								.filter(
-									(playlist: Playlist) =>
-										playlist._id !==
-										playlists.playlistCreate.successfullyCreatedId
-								)
+								.filter((playlist: Playlist) => playlist._id !== playlists.playlistCreate.successfullyCreatedId)
 								.map((playlist: Playlist, i) => (
-									<PlaylistMenuItem
-										key={playlist._id}
-										playlist={playlist}
-										index={i}
-										component={PlaylistMenuLi}
-									/>
+									<PlaylistMenuItem key={playlist._id} playlist={playlist} index={i} component={PlaylistMenuLi} />
 								))}
-							<PlaylistCreate
-								key={'create-' + playlists.playlistCreate.iterationId}
-								component={PlaylistMenuLi}
-							/>
+							<PlaylistCreate key={'create-' + playlists.playlistCreate.iterationId} component={PlaylistMenuLi} />
 						</TransitionGroup>
 
 						<PlaylistCount playlists={playlists} />
@@ -86,9 +71,7 @@ const mapStateToProps = ({ playlists }: StoreState) => ({
 	playlists
 });
 
-const mapDispatchToProps = (
-	dispatch: Dispatch<PlaylistsActions>
-): DispatchProps => ({
+const mapDispatchToProps = (dispatch: Dispatch<PlaylistsActions>): DispatchProps => ({
 	loadPlaylists: () => dispatch(playlistsLoadAction())
 });
 
@@ -104,7 +87,6 @@ interface DispatchProps {
 	loadPlaylists: () => {};
 }
 
-export default connect<StateProps, DispatchProps, RouteComponentProps<{}>>(
-	mapStateToProps,
-	mapDispatchToProps
-)(PlaylistMenuStyled);
+export default connect<StateProps, DispatchProps, RouteComponentProps<{}>>(mapStateToProps, mapDispatchToProps)(
+	PlaylistMenuStyled
+);

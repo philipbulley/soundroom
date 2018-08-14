@@ -8,9 +8,7 @@ const MOCK_STATUS = 1234;
 
 describe('<InlineError />', () => {
 	it('renders children', () => {
-		const inlineError = create(
-			<InlineError>{MOCK_CHILDREN}</InlineError>
-		).toJSON();
+		const inlineError = create(<InlineError>{MOCK_CHILDREN}</InlineError>).toJSON();
 		expect(inlineError).toMatchSnapshot();
 	});
 
@@ -25,9 +23,7 @@ describe('<InlineError />', () => {
 	});
 
 	it('renders both message and status prop', () => {
-		const inlineError = create(
-			<InlineError message={MOCK_MESSAGE} status={MOCK_STATUS} />
-		);
+		const inlineError = create(<InlineError message={MOCK_MESSAGE} status={MOCK_STATUS} />);
 		expect(inlineError).toMatchSnapshot();
 	});
 

@@ -7,9 +7,5 @@ import { MOCK_USER } from '../model/user/user.mock';
 const DESC_INTRO = `Passing a user object to an Avatar component will display the user's image`;
 
 storiesOf('Avatar', module)
-	.addWithInfo('medium size', DESC_INTRO, () => (
-		<Avatar size="medium" user={MOCK_USER} />
-	))
-	.addWithInfo('small size', DESC_INTRO, () => (
-		<Avatar size="small" user={MOCK_USER} />
-	));
+	.addWithInfo('medium size', DESC_INTRO, () => <Avatar size="medium" user={MOCK_USER} />)
+	.addWithInfo('small size', DESC_INTRO, () => <Avatar size="small" user={MOCK_USER} />);

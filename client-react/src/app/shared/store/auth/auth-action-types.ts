@@ -8,7 +8,4 @@ export enum AuthActionType {
 	LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS'
 }
 
-export type AuthActions =
-	| LoadUserAction
-	| LoadUserSuccessAction
-	| LoadUserErrorAction;
+export type AuthActions = LoadUserAction | LoadUserSuccessAction | LoadUserErrorAction;

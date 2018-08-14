@@ -6,13 +6,8 @@ const DEFAULT_MAPPINGS: { [status: number]: ErrorType } = {
 	500: ErrorType.SERVER
 };
 
-export function errorTypeFactory(
-	status: number,
-	customMappings?: { [status: number]: ErrorType }
-): ErrorType {
-	const types = customMappings
-		? { ...DEFAULT_MAPPINGS, ...customMappings }
-		: DEFAULT_MAPPINGS;
+export function errorTypeFactory(status: number, customMappings?: { [status: number]: ErrorType }): ErrorType {
+	const types = customMappings ? { ...DEFAULT_MAPPINGS, ...customMappings } : DEFAULT_MAPPINGS;
 
 	return types[status] ? types[status] : ErrorType.UNKNOWN;
 }

@@ -5,19 +5,8 @@ import buttonReset from './button-reset';
 import { SyntheticEvent } from 'react';
 import { css, default as styled } from 'styled-components';
 
-const Button: React.StatelessComponent<Props> = ({
-	children,
-	onClick,
-	className,
-	innerRef,
-	...rest
-}: Props) => (
-	<ButtonStyled
-		{...rest}
-		className={className}
-		onClick={onClick}
-		innerRef={innerRef}
-	>
+const Button: React.StatelessComponent<Props> = ({ children, onClick, className, innerRef, ...rest }: Props) => (
+	<ButtonStyled {...rest} className={className} onClick={onClick} innerRef={innerRef}>
 		{children}
 	</ButtonStyled>
 );

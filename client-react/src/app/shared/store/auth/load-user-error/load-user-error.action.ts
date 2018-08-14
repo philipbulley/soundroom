@@ -1,9 +1,7 @@
 import { LoadUserErrorResult } from './load-user-error-result';
 import { AuthActionType } from '../auth-action-types';
 
-const loadUserErrorAction = (
-	payload: LoadUserErrorResult
-): LoadUserErrorAction => ({
+const loadUserErrorAction = (payload: LoadUserErrorResult): LoadUserErrorAction => ({
 	type: AuthActionType.LOAD_USER_ERROR,
 	payload
 });

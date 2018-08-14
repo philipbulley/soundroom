@@ -15,18 +15,13 @@ export function createHeaders(auth: Auth) {
 	return headers;
 }
 
-export function fetchRx(
-	input: RequestInfo,
-	init?: RequestInit
-): Observable<Response> {
-	return Observable.fromPromise(fetch(input, init)).map(
-		(response: Response) => {
-			// Fetch doesn't throw erroneous responses, but prefer if all errors can be dealt with via catch
-			if (response.ok) {
-				return response;
-			} else {
-				throw response;
-			}
+export function fetchRx(input: RequestInfo, init?: RequestInit): Observable<Response> {
+	return Observable.fromPromise(fetch(input, init)).map((response: Response) => {
+		// Fetch doesn't throw erroneous responses, but prefer if all errors can be dealt with via catch
+		if (response.ok) {
+			return response;
+		} else {
+			throw response;
 		}
-	);
+	});
 }

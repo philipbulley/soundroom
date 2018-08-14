@@ -6,9 +6,7 @@ import Button from './button';
 import colors from '../colors/colors';
 
 storiesOf('Button', module)
-	.addWithInfo('default', `A default button.`, () => (
-		<Button onClick={action('clicked')}>Click me!</Button>
-	))
+	.addWithInfo('default', `A default button.`, () => <Button onClick={action('clicked')}>Click me!</Button>)
 	.addWithInfo(
 		'green',
 		`A green button.\n\nNOTE: Placed on darker background for Storybook illustrative purposes only.`,
@@ -26,12 +24,8 @@ storiesOf('Button', module)
 			</div>
 		)
 	)
-	.addWithInfo(
-		'noStyle',
-		`An inline-block button with user agent style removed`,
-		() => (
-			<Button noStyle onClick={action('clicked')}>
-				Click me!
-			</Button>
-		)
-	);
+	.addWithInfo('noStyle', `An inline-block button with user agent style removed`, () => (
+		<Button noStyle onClick={action('clicked')}>
+			Click me!
+		</Button>
+	));

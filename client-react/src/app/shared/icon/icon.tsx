@@ -1,14 +1,7 @@
 import * as React from 'react';
 import { ClassAttributes } from 'react';
 
-const Icon = ({
-	id,
-	size,
-	className,
-	spin,
-	innerRef = () => null,
-	...rest
-}: Props & ClassAttributes<HTMLElement>) => {
+const Icon = ({ id, size, className, spin, innerRef = () => null, ...rest }: Props & ClassAttributes<HTMLElement>) => {
 	const classes = ['fa', 'fa-' + id];
 
 	if (size) {
@@ -23,14 +16,7 @@ const Icon = ({
 		classes.push('fa-spin');
 	}
 
-	return (
-		<i
-			{...rest}
-			className={classes.join(' ')}
-			style={{ lineHeight: 0 }}
-			ref={innerRef}
-		/>
-	);
+	return <i {...rest} className={classes.join(' ')} style={{ lineHeight: 0 }} ref={innerRef} />;
 };
 
 interface Props {

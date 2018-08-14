@@ -1,10 +1,7 @@
 import { Playlists } from '../playlists';
 import { ErrorResult } from '../../../error/error-result';
 
-export const playlistCreateErrorCommand = (
-	state: Playlists,
-	payload: ErrorResult
-): Playlists => {
+export const playlistCreateErrorCommand = (state: Playlists, payload: ErrorResult): Playlists => {
 	state = { ...state };
 	state.playlistCreate = { ...state.playlistCreate };
 

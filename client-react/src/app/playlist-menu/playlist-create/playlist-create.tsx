@@ -18,7 +18,7 @@ import PlaylistCreateStyled, {
 	PaddedButton,
 	OverflowHidden
 } from './playlist-create.styled';
-import { Confirmation } from './confirmation';
+import { Confirmation } from './confirmation/confirmation';
 import colors from '../../shared/colors/colors';
 import { playlistCreateResetAction } from '../../shared/store/playlists/playlist-create-reset/playlist-create-reset.action';
 import { Transition } from 'react-transition-group';
@@ -54,15 +54,11 @@ class PlaylistCreate extends React.Component<Props, State> {
 
 	goToStep = (step: number, tweenDuration?: number) => {
 		this.setState({ step }, () => {
-			TweenMax.to(
-				this.steps,
-				typeof tweenDuration === 'undefined' ? 0.5 : tweenDuration,
-				{
-					x: `${-100 / this.state.stepsTotal * this.state.step}%`,
-					ease: Expo.easeOut,
-					onComplete: this.handleStepTweenComplete
-				}
-			);
+			TweenMax.to(this.steps, typeof tweenDuration === 'undefined' ? 0.5 : tweenDuration, {
+				x: `${-100 / this.state.stepsTotal * this.state.step}%`,
+				ease: Expo.easeOut,
+				onComplete: this.handleStepTweenComplete
+			});
 		});
 	};
 
@@ -135,12 +131,7 @@ class PlaylistCreate extends React.Component<Props, State> {
 		if (inProp) {
 			tl.add(
 				[
-					TweenMax.fromTo(
-						this.playlistCreateStyled,
-						0.8,
-						{ x: '-100%' },
-						{ x: '0%', delay: 0.5, ease: Expo.easeOut }
-					),
+					TweenMax.fromTo(this.playlistCreateStyled, 0.8, { x: '-100%' }, { x: '0%', delay: 0.5, ease: Expo.easeOut }),
 					TweenMax.fromTo(
 						this.steps,
 						0.5,
@@ -174,17 +165,10 @@ class PlaylistCreate extends React.Component<Props, State> {
 		const WrapperComponent = component || 'div';
 
 		return (
-			<Transition
-				in={inProp}
-				addEndListener={this.doTransition}
-				unmountOnExit={true}
-			>
+			<Transition in={inProp} addEndListener={this.doTransition} unmountOnExit={true}>
 				<WrapperComponent>
 					<OverflowHidden>
-						<PlaylistCreateStyled
-							className={className}
-							innerRef={this.setPlaylistCreateStyledRef}
-						>
+						<PlaylistCreateStyled className={className} innerRef={this.setPlaylistCreateStyledRef}>
 							<Steps stepsTotal={stepsTotal} innerRef={this.setStepsRef}>
 								<Step num={0}>
 									<Button green onClick={this.goToNextStep}>
@@ -203,11 +187,7 @@ class PlaylistCreate extends React.Component<Props, State> {
 									/>
 									<ButtonContainer>
 										<div>
-											<PaddedButton
-												noStyle
-												onClick={this.goToNextStep}
-												disabled={!this.isStepValid(1)}
-											>
+											<PaddedButton noStyle onClick={this.goToNextStep} disabled={!this.isStepValid(1)}>
 												<Icon id="arrow-right" size={2} />
 											</PaddedButton>
 										</div>
@@ -230,11 +210,7 @@ class PlaylistCreate extends React.Component<Props, State> {
 											</PaddedButton>
 										</div>
 										<div>
-											<PaddedButton
-												noStyle
-												onClick={this.goToNextStep}
-												disabled={!this.isStepValid(2)}
-											>
+											<PaddedButton noStyle onClick={this.goToNextStep} disabled={!this.isStepValid(2)}>
 												<Icon id="arrow-right" size={2} />
 											</PaddedButton>
 										</div>
@@ -284,15 +260,9 @@ const mapStateToProps = (state: StoreState) => ({
 	playlists: state.playlists
 });
 
-const mapDispatchToProps = (
-	dispatch: Dispatch<PlaylistsActions>
-): DispatchProps => ({
-	create: (createParams: PlaylistCreateParams) =>
-		dispatch(playlistCreateAction(createParams)),
+const mapDispatchToProps = (dispatch: Dispatch<PlaylistsActions>): DispatchProps => ({
+	create: (createParams: PlaylistCreateParams) => dispatch(playlistCreateAction(createParams)),
 	reset: () => dispatch(playlistCreateResetAction())
 });
 
-export default connect<StateProps, DispatchProps, PassedProps>(
-	mapStateToProps,
-	mapDispatchToProps
-)(PlaylistCreate);
+export default connect<StateProps, DispatchProps, PassedProps>(mapStateToProps, mapDispatchToProps)(PlaylistCreate);

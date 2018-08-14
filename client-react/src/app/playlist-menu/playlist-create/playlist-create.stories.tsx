@@ -2,7 +2,7 @@ import * as React from 'react';
 import './../../../index.css';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, select } from '@storybook/addon-knobs/react';
-import { Confirmation } from './confirmation';
+import { Confirmation } from './confirmation/confirmation';
 import { PlaylistCreate } from '../../shared/store/playlists/playlists';
 import { action } from '@storybook/addon-actions';
 import PlaylistCreateStyled, { Step } from './playlist-create.styled';
@@ -62,10 +62,5 @@ storiesOf('Playlist Create', module)
 	.addWithInfo(
 		'Confirmation',
 		'Confirmation panel of Playlist Create including knobs to demonstrate its transitions',
-		() => (
-			<Confirmation
-				playlistCreate={getPlaylistCreate()}
-				onGoBack={action('onGoBack')}
-			/>
-		)
+		() => <Confirmation playlistCreate={getPlaylistCreate()} onGoBack={action('onGoBack')} />
 	);

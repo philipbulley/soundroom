@@ -8,11 +8,9 @@ const MOCK_MESSAGE = `Can't reach Spotify provider`;
 const MOCK_STATUS = 500;
 
 storiesOf('InlineError', module)
-	.addWithInfo(
-		'with a friendly message',
-		`A simple way to communicate an error to the end user.`,
-		() => <InlineError>{MOCK_CHILDREN}</InlineError>
-	)
+	.addWithInfo('with a friendly message', `A simple way to communicate an error to the end user.`, () => (
+		<InlineError>{MOCK_CHILDREN}</InlineError>
+	))
 	.addWithInfo(
 		'with debug info',
 		`A simple way to communicate an error to the end user with added context that may be useful when reporting the 

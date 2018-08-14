@@ -21,9 +21,7 @@ const AppToolbar = ({ auth, goHome, goToSignIn, className }: Props) => (
 				{/*Only enable sign-in link below if we eventually have NoAuth pages other than sign-in*/}
 				{/*{AuthStatus.LOGGED_IN !== auth.status && <a onClick={goToSignIn}>Sign In</a>}*/}
 
-				{AuthStatus.LOGGED_IN === auth.status && (
-					<User user={auth.user as UserModel} />
-				)}
+				{AuthStatus.LOGGED_IN === auth.status && <User user={auth.user as UserModel} />}
 			</div>
 			<div className="meta">{/*Right nav items can go here*/}</div>
 		</AppToolbarNav>
@@ -57,14 +55,11 @@ const mapStateToProps = ({ auth }: StoreState) => ({
 	auth
 });
 
-const mapDispatchToProps = (
-	dispatch: Dispatch<AuthActions>
-): DispatchProps => ({
+const mapDispatchToProps = (dispatch: Dispatch<AuthActions>): DispatchProps => ({
 	goHome: () => dispatch(push('/')),
 	goToSignIn: () => dispatch(push('/sign-in'))
 });
 
-export default connect<StateProps, DispatchProps, RouteComponentProps<{}>>(
-	mapStateToProps,
-	mapDispatchToProps
-)(AppToolbarStyled);
+export default connect<StateProps, DispatchProps, RouteComponentProps<{}>>(mapStateToProps, mapDispatchToProps)(
+	AppToolbarStyled
+);

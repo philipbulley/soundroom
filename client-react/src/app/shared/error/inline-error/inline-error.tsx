@@ -2,16 +2,10 @@ import * as React from 'react';
 import styled from 'styled-components';
 import colors from '../../colors/colors';
 
-const InlineError: React.StatelessComponent<Props> = ({
-	message,
-	status,
-	children,
-	className
-}: Props) => {
+const InlineError: React.StatelessComponent<Props> = ({ message, status, children, className }: Props) => {
 	const statusStr = typeof status !== 'undefined' ? 'status:' + status : null;
 
-	const extra =
-		statusStr && message ? statusStr + ' | ' + message : statusStr || message;
+	const extra = statusStr && message ? statusStr + ' | ' + message : statusStr || message;
 
 	return (
 		<div className={className}>

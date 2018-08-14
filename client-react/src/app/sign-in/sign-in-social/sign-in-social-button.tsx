@@ -6,11 +6,7 @@ import { getSocialProviderColor } from '../../shared/colors/colors-helper';
 import { SocialProvider } from '../../shared/model/enum/social-provider';
 
 const SignInSocialButton = ({ serverBaseUrl, provider, className }: Props) => (
-	<Anchor
-		className={className}
-		href={serverBaseUrl + '/auth/' + provider}
-		provider={provider}
-	>
+	<Anchor className={className} href={serverBaseUrl + '/auth/' + provider} provider={provider}>
 		<IconStyled id={provider} size="3" />
 	</Anchor>
 );
@@ -49,8 +45,7 @@ const Anchor = styled.a`
 
 	&:hover {
 		color: ${colors.white};
-		background: ${(props: AnchorProps) =>
-			getSocialProviderColor(props.provider)};
+		background: ${(props: AnchorProps) => getSocialProviderColor(props.provider)};
 		transition: background 0.1s linear, color 0.1s linear;
 	}
 `;

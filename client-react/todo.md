@@ -2,7 +2,7 @@
 
 ## General
 
-1. [ ] Upgrade React
+1. [x] Upgrade React
 1. [ ] Try Popmotion Pose
 
 ## Playlists

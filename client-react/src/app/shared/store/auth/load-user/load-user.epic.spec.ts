@@ -49,10 +49,7 @@ describe('loadUserEpic', () => {
 		expect.assertions(1);
 
 		setTimeout(() => {
-			expect(store.getActions()).toEqual([
-				loadUserAction(),
-				loadUserSuccessAction(MOCK_USER)
-			]);
+			expect(store.getActions()).toEqual([loadUserAction(), loadUserSuccessAction(MOCK_USER)]);
 			done();
 		}, 0);
 	});

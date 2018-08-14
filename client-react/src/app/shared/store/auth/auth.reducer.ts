@@ -12,10 +12,7 @@ const defaultState: Auth = {
 	jwt: getPersistedJwt()
 };
 
-export function authReducer(
-	state: Auth = defaultState,
-	action: AuthActions
-): Auth {
+export function authReducer(state: Auth = defaultState, action: AuthActions): Auth {
 	switch (action.type) {
 		case AuthActionType.LOAD_USER:
 			return loadUserCommand(state, action.payload);

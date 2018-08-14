@@ -18,11 +18,7 @@ class PlaylistMenuItem extends React.Component<PlaylistMenuItemProps> {
 	doTransition = (node, done) => {
 		const { in: inProp, playlist } = this.props;
 
-		console.log(
-			'PlaylistMenuItem.doTransition():',
-			playlist.name,
-			inProp ? 'IN' : 'OUT'
-		);
+		console.log('PlaylistMenuItem.doTransition():', playlist.name, inProp ? 'IN' : 'OUT');
 
 		if (this.tl) {
 			this.tl.kill();
@@ -86,11 +82,7 @@ class PlaylistMenuItem extends React.Component<PlaylistMenuItemProps> {
 		const WrapperComponent = component || 'div';
 
 		return (
-			<Transition
-				in={inProp}
-				addEndListener={this.doTransition}
-				unmountOnExit={true}
-			>
+			<Transition in={inProp} addEndListener={this.doTransition} unmountOnExit={true}>
 				<WrapperComponent>
 					<Host className={className}>
 						<PlaylistMenuItemCloseButton noStyle>

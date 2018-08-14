@@ -12,17 +12,11 @@ const providers: SocialProvider[] = [
 
 const SignInSocial = ({ serverBaseUrl }) => (
 	<div>
-		<Paragraph>
-			If you've signed in before, please use the same social sign-in option as
-			before.
-		</Paragraph>
+		<Paragraph>If you've signed in before, please use the same social sign-in option as before.</Paragraph>
 		<UnorderedList>
 			{providers.map(provider => (
 				<ListItem key={provider}>
-					<SignInSocialButton
-						serverBaseUrl={serverBaseUrl}
-						provider={provider}
-					/>
+					<SignInSocialButton serverBaseUrl={serverBaseUrl} provider={provider} />
 				</ListItem>
 			))}
 		</UnorderedList>
