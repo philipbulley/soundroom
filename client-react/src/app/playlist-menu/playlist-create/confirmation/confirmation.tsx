@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Icon from '../../../shared/icon/icon';
-// import Button from '../../shared/button/button';
 import styled from 'styled-components';
 import { PlaylistCreate } from '../../../shared/store/playlists/playlists';
 import {
@@ -168,9 +167,10 @@ export class Confirmation extends React.Component<Props, State> {
 	 */
 	onSuccessComplete = () => {
 		const { onSuccessComplete } = this.props;
+		const { viewState } = this.state;
 
-		if (onSuccessComplete) {
-			// onSuccessComplete();
+		if (ConfirmationViewState.SUCCESSFUL === viewState && onSuccessComplete) {
+			onSuccessComplete();
 		}
 	};
 
@@ -179,7 +179,7 @@ export class Confirmation extends React.Component<Props, State> {
 		const { viewState } = this.state;
 
 		return (
-			<ConfirmationStyled className="debug--confirmation-styled">
+			<ConfirmationStyled>
 				<Layer>
 					<Spinner pose={viewState}>
 						<Icon id="circle-o-notch" size={3} spin />

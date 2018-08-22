@@ -1,7 +1,7 @@
-import timeline from 'popmotion/animations/timeline';
-import { Instruction, AnimationDefinition, Tracks } from 'popmotion/animations/timeline/types';
-import { ValueMap } from 'popmotion/reactions/value';
-import { Easing } from 'popmotion/easing';
+import timeline from 'popmotion/lib/animations/timeline';
+import { Instruction, AnimationDefinition, Tracks } from 'popmotion/lib/animations/timeline/types';
+import { ValueMap } from 'popmotion/lib/reactions/value';
+import { Easing } from 'popmotion/lib/easing';
 
 function isTracklessAnimationDefinition(
 	instruction: TracklessInstruction

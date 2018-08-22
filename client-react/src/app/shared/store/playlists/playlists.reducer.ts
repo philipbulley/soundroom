@@ -8,6 +8,7 @@ import { playlistCreateSuccessCommand } from './playlist-create-success/playlist
 import { playlistCreateErrorCommand } from './playlist-create-error/playlists-create-error.command';
 import { playlistCreateResetCommand } from './playlist-create-reset/playlist-create-reset-command';
 import { generate } from 'shortid';
+import { playlistCreateTryAgainCommand } from './playlist-create-try-again/playlist-create-try-again-command';
 
 const defaultState: Playlists = {
 	items: [],
@@ -34,6 +35,8 @@ export function playlistsReducer(state: Playlists = defaultState, action: Playli
 			return playlistCreateErrorCommand(state, action.payload);
 		case PlaylistsActionType.PLAYLIST_CREATE_RESET:
 			return playlistCreateResetCommand(state);
+		case PlaylistsActionType.PLAYLIST_CREATE_TRY_AGAIN:
+			return playlistCreateTryAgainCommand(state);
 		default:
 			return state;
 	}

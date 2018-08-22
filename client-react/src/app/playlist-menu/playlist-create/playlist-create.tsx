@@ -21,6 +21,7 @@ import PlaylistCreateStyled, {
 import { Confirmation } from './confirmation/confirmation';
 import colors from '../../shared/colors/colors';
 import { playlistCreateResetAction } from '../../shared/store/playlists/playlist-create-reset/playlist-create-reset.action';
+import { playlistCreateTryAgainAction } from '../../shared/store/playlists/playlist-create-try-again/playlist-create-try-again.action';
 import { Transition } from 'react-transition-group';
 import { ComponentClass } from 'react';
 
@@ -100,7 +101,7 @@ class PlaylistCreate extends React.Component<Props, State> {
 	submit() {
 		const { name, description } = this.state;
 
-		this.props.create({ name, description });
+		this.props.onCreate({ name, description });
 	}
 
 	isStepValid(step: number) {
@@ -119,8 +120,14 @@ class PlaylistCreate extends React.Component<Props, State> {
 	reset = () => {
 		TweenMax.to(this.playlistCreateStyled, 0.3, {
 			backgroundColor: colors.white,
-			onComplete: () => this.props.reset()
+			onComplete: () => this.props.onReset()
 		});
+	};
+
+	tryAgain = () => {
+		this.goToStepOne();
+
+		this.props.onTryAgain();
 	};
 
 	doTransition = (node, done) => {
@@ -219,7 +226,7 @@ class PlaylistCreate extends React.Component<Props, State> {
 								<Step num={3}>
 									<Confirmation
 										playlistCreate={playlists.playlistCreate}
-										onGoBack={this.goToStepOne}
+										onGoBack={this.tryAgain}
 										onSuccessComplete={this.reset}
 									/>
 								</Step>
@@ -252,8 +259,9 @@ interface StateProps {
 }
 
 interface DispatchProps {
-	create: (createParams: PlaylistCreateParams) => {};
-	reset: () => {};
+	onCreate: (createParams: PlaylistCreateParams) => {};
+	onReset: () => {};
+	onTryAgain: () => {};
 }
 
 const mapStateToProps = (state: StoreState) => ({
@@ -261,8 +269,9 @@ const mapStateToProps = (state: StoreState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<PlaylistsActions>): DispatchProps => ({
-	create: (createParams: PlaylistCreateParams) => dispatch(playlistCreateAction(createParams)),
-	reset: () => dispatch(playlistCreateResetAction())
+	onCreate: (createParams: PlaylistCreateParams) => dispatch(playlistCreateAction(createParams)),
+	onReset: () => dispatch(playlistCreateResetAction()),
+	onTryAgain: () => dispatch(playlistCreateTryAgainAction())
 });
 
 export default connect<StateProps, DispatchProps, PassedProps>(mapStateToProps, mapDispatchToProps)(PlaylistCreate);

@@ -6,7 +6,7 @@ export function playlistCreateResetCommand(state: Playlists) {
 	state.playlistCreate = { ...state.playlistCreate };
 
 	state.playlistCreate.loading = false;
-	state.playlistCreate.iterationId = generate.generate();
+	state.playlistCreate.iterationId = generate();
 	delete state.playlistCreate.successfullyCreatedId;
 	delete state.playlistCreate.error;
 
