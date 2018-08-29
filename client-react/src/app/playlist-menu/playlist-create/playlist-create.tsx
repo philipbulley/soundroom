@@ -54,13 +54,18 @@ class PlaylistCreate extends React.Component<Props, State> {
 	};
 
 	goToStep = (step: number, tweenDuration?: number) => {
-		this.setState({ step }, () => {
+		// TODO: Remove the need to GSAP!
+		this.setState(
+			{
+				step
+			} /*, () => {
 			TweenMax.to(this.steps, typeof tweenDuration === 'undefined' ? 0.5 : tweenDuration, {
 				x: `${-100 / this.state.stepsTotal * this.state.step}%`,
 				ease: Expo.easeOut,
 				onComplete: this.handleStepTweenComplete
 			});
-		});
+		}*/
+		);
 	};
 
 	goToStepOne = () => {
@@ -68,6 +73,7 @@ class PlaylistCreate extends React.Component<Props, State> {
 	};
 
 	handleStepTweenComplete = () => {
+		// TODO: How to trigger this callback via Pose on <Steps>
 		switch (this.state.step) {
 			case 1:
 				this.nameInput!.focus();
@@ -100,7 +106,6 @@ class PlaylistCreate extends React.Component<Props, State> {
 
 	submit() {
 		const { name, description } = this.state;
-
 		this.props.onCreate({ name, description });
 	}
 
@@ -167,16 +172,22 @@ class PlaylistCreate extends React.Component<Props, State> {
 
 	render() {
 		const { className, playlists, in: inProp, component } = this.props;
-		const { stepsTotal, name, description } = this.state;
+		const { step, stepsTotal, name, description } = this.state;
 
 		const WrapperComponent = component || 'div';
 
 		return (
 			<Transition in={inProp} addEndListener={this.doTransition} unmountOnExit={true}>
 				<WrapperComponent>
+					step: {step}
 					<OverflowHidden>
 						<PlaylistCreateStyled className={className} innerRef={this.setPlaylistCreateStyledRef}>
-							<Steps stepsTotal={stepsTotal} innerRef={this.setStepsRef}>
+							<Steps
+								step={step}
+								stepsTotal={stepsTotal}
+								pose={`step${step % 2}`}
+								onPoseComplete={this.handleStepTweenComplete}
+							>
 								<Step num={0}>
 									<Button green onClick={this.goToNextStep}>
 										Create a room +

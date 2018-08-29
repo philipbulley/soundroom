@@ -10,7 +10,7 @@ import Icon from '../shared/icon/icon';
 import PlaylistMenuItem from './playlist-menu-item/playlist-menu-item';
 import styled from 'styled-components';
 import { contentContainer } from '../shared/layout/content-container';
-import { PlaylistMenuLi, PlaylistMenuUl } from './playlist-menu-list';
+import { PlaylistMenuLi, PlaylistMenuUl } from './playlist-menu-list.styled';
 import PlaylistCreate from './playlist-create/playlist-create';
 import { Playlist } from '../shared/model/playlist';
 import { Playlists } from '../shared/store/playlists/playlists';

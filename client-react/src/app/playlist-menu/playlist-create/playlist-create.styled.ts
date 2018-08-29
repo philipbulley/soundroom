@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 import Button from '../../shared/button/button';
 import colors from '../../shared/colors/colors';
+import posed from 'react-pose';
+// import { expoEaseOut } from '../../shared/pose/easing';
+// import { easing } from 'popmotion';
 
 interface StepProps {
 	num: number;
@@ -23,10 +26,25 @@ export const OverflowHidden = styled.div`
 `;
 
 interface StepsProps {
+	step: number;
 	stepsTotal: number;
+	pose: string;
+	onPoseComplete: Function;
 }
 
-export const Steps = styled.div`
+const stepPoseConfig = {
+	x: ({ step, stepsTotal }) => `${-100 / stepsTotal * step}%`,
+	transition: {
+		duration: 1200,
+		ease: 'backInOut'
+	}
+};
+export const StepsPosed = posed.div({
+	step0: stepPoseConfig,
+	step1: stepPoseConfig
+});
+
+export const Steps = styled(StepsPosed)`
 	display: flex;
 	width: ${({ stepsTotal }: StepsProps) => stepsTotal * 100}%;
 	height: 100%;

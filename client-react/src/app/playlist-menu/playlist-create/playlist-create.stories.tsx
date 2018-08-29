@@ -6,7 +6,7 @@ import { Confirmation } from './confirmation/confirmation';
 import { PlaylistCreate } from '../../shared/store/playlists/playlists';
 import { action } from '@storybook/addon-actions';
 import PlaylistCreateStyled, { Step } from './playlist-create.styled';
-import { PlaylistMenuLi, PlaylistMenuUl } from '../playlist-menu-list';
+import { PlaylistMenuLi, PlaylistMenuUl } from '../playlist-menu-list.styled';
 import { ErrorType } from '../../shared/error/error-type';
 
 const PLAYLIST_CREATE_LOADING: PlaylistCreate = {
