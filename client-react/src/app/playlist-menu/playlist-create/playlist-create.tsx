@@ -7,7 +7,7 @@ import {
 } from '../../shared/store/playlists/playlist-create/playlist-create.action';
 import Button from '../../shared/button/button';
 import Input from '../../shared/input/input';
-import { TimelineMax, TweenMax, Expo } from 'gsap';
+import { TweenMax } from 'gsap';
 import Icon from '../../shared/icon/icon';
 import { PlaylistsActions } from '../../shared/store/playlists/playlists-action-type';
 import { Playlists } from '../../shared/store/playlists/playlists';
@@ -22,8 +22,6 @@ import { Confirmation } from './confirmation/confirmation';
 import colors from '../../shared/colors/colors';
 import { playlistCreateResetAction } from '../../shared/store/playlists/playlist-create-reset/playlist-create-reset.action';
 import { playlistCreateTryAgainAction } from '../../shared/store/playlists/playlist-create-try-again/playlist-create-try-again.action';
-import { Transition } from 'react-transition-group';
-import { ComponentClass } from 'react';
 
 type Props = StateProps & DispatchProps & PassedProps;
 
@@ -73,7 +71,7 @@ class PlaylistCreate extends React.Component<Props, State> {
 	};
 
 	handleStepTweenComplete = () => {
-		// TODO: How to trigger this callback via Pose on <Steps>
+		console.log('PlaylistCreate.handleStepTweenComplete()');
 		switch (this.state.step) {
 			case 1:
 				this.nameInput!.focus();
@@ -135,35 +133,35 @@ class PlaylistCreate extends React.Component<Props, State> {
 		this.props.onTryAgain();
 	};
 
-	doTransition = (node, done) => {
-		const { in: inProp } = this.props;
-
-		const tl = new TimelineMax();
-
-		if (inProp) {
-			tl.add(
-				[
-					TweenMax.fromTo(this.playlistCreateStyled, 0.8, { x: '-100%' }, { x: '0%', delay: 0.5, ease: Expo.easeOut }),
-					TweenMax.fromTo(
-						this.steps,
-						0.5,
-						{ x: `${-100 / this.state.stepsTotal * -1}%` },
-						{
-							x: '0%',
-							delay: 0.5,
-							ease: Expo.easeOut,
-							onComplete: () => done()
-						}
-					)
-				],
-				null,
-				null,
-				0.3
-			);
-		} else {
-			done();
-		}
-	};
+	// doTransition = (node, done) => {
+	// 	const { in: inProp } = this.props;
+	//
+	// 	const tl = new TimelineMax();
+	//
+	// 	if (inProp) {
+	// 		tl.add(
+	// 			[
+	// 				TweenMax.fromTo(this.playlistCreateStyled, 0.8, { x: '-100%' }, { x: '0%', delay: 0.5, ease: Expo.easeOut }),
+	// 				TweenMax.fromTo(
+	// 					this.steps,
+	// 					0.5,
+	// 					{ x: `${-100 / this.state.stepsTotal * -1}%` },
+	// 					{
+	// 						x: '0%',
+	// 						delay: 0.5,
+	// 						ease: Expo.easeOut,
+	// 						onComplete: () => done()
+	// 					}
+	// 				)
+	// 			],
+	// 			null,
+	// 			null,
+	// 			0.3
+	// 		);
+	// 	} else {
+	// 		done();
+	// 	}
+	// };
 
 	setPlaylistCreateStyledRef = ref => (this.playlistCreateStyled = ref);
 	setStepsRef = ref => (this.steps = ref);
@@ -171,81 +169,77 @@ class PlaylistCreate extends React.Component<Props, State> {
 	setDescriptionInputRef = ref => (this.descriptionInput = ref);
 
 	render() {
-		const { className, playlists, in: inProp, component } = this.props;
+		const { className, playlists } = this.props;
 		const { step, stepsTotal, name, description } = this.state;
 
-		const WrapperComponent = component || 'div';
-
 		return (
-			<Transition in={inProp} addEndListener={this.doTransition} unmountOnExit={true}>
-				<WrapperComponent>
-					step: {step}
-					<OverflowHidden>
-						<PlaylistCreateStyled className={className} innerRef={this.setPlaylistCreateStyledRef}>
-							<Steps
-								step={step}
-								stepsTotal={stepsTotal}
-								pose={`step${step % 2}`}
-								onPoseComplete={this.handleStepTweenComplete}
-							>
-								<Step num={0}>
-									<Button green onClick={this.goToNextStep}>
-										Create a room +
-									</Button>
-								</Step>
-								<Step num={1}>
-									<h3>Name your room</h3>
-									<Input
-										type="text"
-										innerRef={this.setNameInputRef}
-										value={name}
-										name="name"
-										onChange={this.handleInputChange}
-										onKeyDown={this.handleKeyPress}
-									/>
-									<ButtonContainer>
-										<div>
-											<PaddedButton noStyle onClick={this.goToNextStep} disabled={!this.isStepValid(1)}>
-												<Icon id="arrow-right" size={2} />
-											</PaddedButton>
-										</div>
-									</ButtonContainer>
-								</Step>
-								<Step num={2}>
-									<h3>What's it all about?</h3>
-									<Input
-										type="text"
-										innerRef={this.setDescriptionInputRef}
-										value={description}
-										name="description"
-										onChange={this.handleInputChange}
-										onKeyDown={this.handleKeyPress}
-									/>
-									<ButtonContainer>
-										<div>
-											<PaddedButton noStyle onClick={this.goToPreviousStep}>
-												<Icon id="arrow-left" size={2} />
-											</PaddedButton>
-										</div>
-										<div>
-											<PaddedButton noStyle onClick={this.goToNextStep} disabled={!this.isStepValid(2)}>
-												<Icon id="arrow-right" size={2} />
-											</PaddedButton>
-										</div>
-									</ButtonContainer>
-								</Step>
-								<Step num={3}>
-									<Confirmation
-										playlistCreate={playlists.playlistCreate}
-										onGoBack={this.tryAgain}
-										onSuccessComplete={this.reset}
-									/>
-								</Step>
-							</Steps>
-						</PlaylistCreateStyled>
-					</OverflowHidden>
-				</WrapperComponent>
-			</Transition>
+			<div data-debug="PlaylistCreate">
+				step: {step}
+				<OverflowHidden>
+					<PlaylistCreateStyled className={className} innerRef={this.setPlaylistCreateStyledRef}>
+						<Steps
+							step={step}
+							stepsTotal={stepsTotal}
+							pose={`step${step}`}
+							onPoseComplete={this.handleStepTweenComplete}
+						>
+							<Step num={0}>
+								<Button green onClick={this.goToNextStep}>
+									Create a room +
+								</Button>
+							</Step>
+							<Step num={1}>
+								<h3>Name your room</h3>
+								<Input
+									type="text"
+									innerRef={this.setNameInputRef}
+									value={name}
+									name="name"
+									onChange={this.handleInputChange}
+									onKeyDown={this.handleKeyPress}
+								/>
+								<ButtonContainer>
+									<div>
+										<PaddedButton noStyle onClick={this.goToNextStep} disabled={!this.isStepValid(1)}>
+											<Icon id="arrow-right" size={2} />
+										</PaddedButton>
+									</div>
+								</ButtonContainer>
+							</Step>
+							<Step num={2}>
+								<h3>What's it all about?</h3>
+								<Input
+									type="text"
+									innerRef={this.setDescriptionInputRef}
+									value={description}
+									name="description"
+									onChange={this.handleInputChange}
+									onKeyDown={this.handleKeyPress}
+								/>
+								<ButtonContainer>
+									<div>
+										<PaddedButton noStyle onClick={this.goToPreviousStep}>
+											<Icon id="arrow-left" size={2} />
+										</PaddedButton>
+									</div>
+									<div>
+										<PaddedButton noStyle onClick={this.goToNextStep} disabled={!this.isStepValid(2)}>
+											<Icon id="arrow-right" size={2} />
+										</PaddedButton>
+									</div>
+								</ButtonContainer>
+							</Step>
+							<Step num={3}>
+								<Confirmation
+									playlistCreate={playlists.playlistCreate}
+									onGoBack={this.tryAgain}
+									onSuccessComplete={this.reset}
+								/>
+							</Step>
+						</Steps>
+					</PlaylistCreateStyled>
+				</OverflowHidden>
+			</div>
 		);
 	}
 }
@@ -261,8 +255,6 @@ interface State {
 
 interface PassedProps {
 	className?: string;
-	component: string | ComponentClass;
-	in?: boolean;
 }
 
 interface StateProps {

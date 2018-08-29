@@ -10,11 +10,10 @@ import Icon from '../shared/icon/icon';
 import PlaylistMenuItem from './playlist-menu-item/playlist-menu-item';
 import styled from 'styled-components';
 import { contentContainer } from '../shared/layout/content-container';
-import { PlaylistMenuLi, PlaylistMenuUl } from './playlist-menu-list.styled';
+import { PlaylistMenuUl } from './playlist-menu-list.styled';
 import PlaylistCreate from './playlist-create/playlist-create';
 import { Playlist } from '../shared/model/playlist';
 import { Playlists } from '../shared/store/playlists/playlists';
-import { TransitionGroup } from 'react-transition-group';
 
 type ConnectedProps = StateProps & DispatchProps & RouteComponentProps<{}> & PassedProps;
 
@@ -40,14 +39,12 @@ class PlaylistMenu extends React.Component<ConnectedProps> {
 
 				{!playlists.loading && (
 					<div>
-						<TransitionGroup component={PlaylistMenuUl}>
+						<PlaylistMenuUl>
 							{playlists.items
 								.filter((playlist: Playlist) => playlist._id !== playlists.playlistCreate.successfullyCreatedId)
-								.map((playlist: Playlist, i) => (
-									<PlaylistMenuItem key={playlist._id} playlist={playlist} index={i} component={PlaylistMenuLi} />
-								))}
-							<PlaylistCreate key={'create-' + playlists.playlistCreate.iterationId} component={PlaylistMenuLi} />
-						</TransitionGroup>
+								.map((playlist: Playlist, i) => <PlaylistMenuItem key={playlist._id} playlist={playlist} index={i} />)}
+							<PlaylistCreate key={'create-' + playlists.playlistCreate.iterationId} />
+						</PlaylistMenuUl>
 
 						<PlaylistCount playlists={playlists} />
 					</div>

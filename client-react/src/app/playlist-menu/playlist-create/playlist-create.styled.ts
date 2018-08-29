@@ -2,8 +2,7 @@ import styled from 'styled-components';
 import Button from '../../shared/button/button';
 import colors from '../../shared/colors/colors';
 import posed from 'react-pose';
-// import { expoEaseOut } from '../../shared/pose/easing';
-// import { easing } from 'popmotion';
+import { expoEaseInOut } from '../../shared/pose/easing';
 
 interface StepProps {
 	num: number;
@@ -31,19 +30,28 @@ interface StepsProps {
 	pose: string;
 	onPoseComplete: Function;
 }
-
-const stepPoseConfig = {
-	x: ({ step, stepsTotal }) => `${-100 / stepsTotal * step}%`,
-	transition: {
-		duration: 1200,
-		ease: 'backInOut'
-	}
+const transition = {
+	duration: 1200,
+	ease: expoEaseInOut
 };
+// const stepPoseConfig = {
+// 	x: ({ step, stepsTotal }) => `${-100 / stepsTotal * step}%`
+// 	// transition: {
+// 	// 	duration: 1200,
+// 	// 	ease: 'backInOut'
+// 	// }
+// };
+
 export const StepsPosed = posed.div({
-	step0: stepPoseConfig,
-	step1: stepPoseConfig
+	// step0: stepPoseConfig,
+	// step1: stepPoseConfig
+	step0: { x: 0, transition },
+	step1: { x: '-25%', transition },
+	step2: { x: '-50%', transition },
+	step3: { x: '-75%', transition }
 });
 
+// export const Steps = styled.div`
 export const Steps = styled(StepsPosed)`
 	display: flex;
 	width: ${({ stepsTotal }: StepsProps) => stepsTotal * 100}%;
@@ -59,7 +67,7 @@ export const Step = styled.div`
   width: 100%;
   padding: 30px;
   color: ${colors.white};
-  
+
   // justify-content: ${({ num }: StepProps) => (num === 0 ? 'center' : 'flex-start')}
 `;
 
