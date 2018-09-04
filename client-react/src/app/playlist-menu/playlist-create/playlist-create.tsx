@@ -174,13 +174,12 @@ class PlaylistCreate extends React.Component<Props, State> {
 
 		return (
 			<div data-debug="PlaylistCreate">
-				step: {step}
 				<OverflowHidden>
 					<PlaylistCreateStyled className={className} innerRef={this.setPlaylistCreateStyledRef}>
 						<Steps
 							step={step}
 							stepsTotal={stepsTotal}
-							pose={`step${step}`}
+							pose={`step${step % 2}`}
 							onPoseComplete={this.handleStepTweenComplete}
 						>
 							<Step num={0}>

@@ -30,25 +30,17 @@ interface StepsProps {
 	pose: string;
 	onPoseComplete: Function;
 }
-const transition = {
-	duration: 1200,
-	ease: expoEaseInOut
+const stepPoseConfig = {
+	x: ({ step, stepsTotal }) => `${-100 / stepsTotal * step}%`,
+	transition: {
+		duration: 600,
+		ease: expoEaseInOut
+	}
 };
-// const stepPoseConfig = {
-// 	x: ({ step, stepsTotal }) => `${-100 / stepsTotal * step}%`
-// 	// transition: {
-// 	// 	duration: 1200,
-// 	// 	ease: 'backInOut'
-// 	// }
-// };
 
 export const StepsPosed = posed.div({
-	// step0: stepPoseConfig,
-	// step1: stepPoseConfig
-	step0: { x: 0, transition },
-	step1: { x: '-25%', transition },
-	step2: { x: '-50%', transition },
-	step3: { x: '-75%', transition }
+	step0: stepPoseConfig,
+	step1: stepPoseConfig
 });
 
 // export const Steps = styled.div`
