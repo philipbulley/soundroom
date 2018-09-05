@@ -8,7 +8,7 @@ interface StepProps {
 	num: number;
 }
 
-export default styled.div`
+const PlaylistCreateStyled = styled.div`
 	position: relative;
 	display: block;
 	width: 100%;
@@ -17,6 +17,7 @@ export default styled.div`
 	text-align: center;
 	background-color: ${colors.green};
 `;
+export default PlaylistCreateStyled;
 
 export const OverflowHidden = styled.div`
 	width: 100%;

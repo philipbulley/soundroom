@@ -6,7 +6,6 @@ import PlaylistMenuItemCloseButton from './playlist-menu-item-close-button';
 import { Link } from 'react-router-dom';
 import { Playlist } from '../../shared/model/playlist';
 import Button from '../../shared/button/button';
-import { PlaylistMenuLi } from '../playlist-menu-list.styled';
 
 class PlaylistMenuItem extends React.Component<PlaylistMenuItemProps> {
 	name: HTMLHeadingElement;
@@ -77,21 +76,19 @@ class PlaylistMenuItem extends React.Component<PlaylistMenuItemProps> {
 		const { playlist, className } = this.props;
 
 		return (
-			<PlaylistMenuLi>
-				<Host className={className}>
-					<PlaylistMenuItemCloseButton noStyle>
-						<Icon id="close" />
-					</PlaylistMenuItemCloseButton>
+			<PlaylistMenuItemStyled className={className}>
+				<PlaylistMenuItemCloseButton noStyle>
+					<Icon id="close" />
+				</PlaylistMenuItemCloseButton>
 
-					<h3 className="name" ref={this.setNameRef}>
-						{playlist.name}
-					</h3>
+				<h3 className="name" ref={this.setNameRef}>
+					{playlist.name}
+				</h3>
 
-					<Link className="button" to={'/room/' + playlist._id}>
-						<Button innerRef={this.setJoinButtonRef}>Join Room</Button>
-					</Link>
-				</Host>
-			</PlaylistMenuLi>
+				<Link className="button" to={'/room/' + playlist._id}>
+					<Button innerRef={this.setJoinButtonRef}>Join Room</Button>
+				</Link>
+			</PlaylistMenuItemStyled>
 		);
 	}
 }
@@ -102,7 +99,7 @@ interface PlaylistMenuItemProps {
 	index: number;
 }
 
-const Host = styled.div`
+const PlaylistMenuItemStyled = styled.div`
 	position: relative;
 	width: 100%;
 	height: 100%;
@@ -110,6 +107,6 @@ const Host = styled.div`
 	text-align: center;
 	background-color: ${colors.white};
 `;
-Host.displayName = 'Host';
+PlaylistMenuItemStyled.displayName = 'Host';
 
 export default PlaylistMenuItem;

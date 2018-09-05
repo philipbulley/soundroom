@@ -173,72 +173,70 @@ class PlaylistCreate extends React.Component<Props, State> {
 		const { step, stepsTotal, name, description } = this.state;
 
 		return (
-			<div data-debug="PlaylistCreate">
-				<OverflowHidden>
-					<PlaylistCreateStyled className={className} innerRef={this.setPlaylistCreateStyledRef}>
-						<Steps
-							step={step}
-							stepsTotal={stepsTotal}
-							pose={`step${step % 2}`}
-							onPoseComplete={this.handleStepTweenComplete}
-						>
-							<Step num={0}>
-								<Button green onClick={this.goToNextStep}>
-									Create a room +
-								</Button>
-							</Step>
-							<Step num={1}>
-								<h3>Name your room</h3>
-								<Input
-									type="text"
-									innerRef={this.setNameInputRef}
-									value={name}
-									name="name"
-									onChange={this.handleInputChange}
-									onKeyDown={this.handleKeyPress}
-								/>
-								<ButtonContainer>
-									<div>
-										<PaddedButton noStyle onClick={this.goToNextStep} disabled={!this.isStepValid(1)}>
-											<Icon id="arrow-right" size={2} />
-										</PaddedButton>
-									</div>
-								</ButtonContainer>
-							</Step>
-							<Step num={2}>
-								<h3>What's it all about?</h3>
-								<Input
-									type="text"
-									innerRef={this.setDescriptionInputRef}
-									value={description}
-									name="description"
-									onChange={this.handleInputChange}
-									onKeyDown={this.handleKeyPress}
-								/>
-								<ButtonContainer>
-									<div>
-										<PaddedButton noStyle onClick={this.goToPreviousStep}>
-											<Icon id="arrow-left" size={2} />
-										</PaddedButton>
-									</div>
-									<div>
-										<PaddedButton noStyle onClick={this.goToNextStep} disabled={!this.isStepValid(2)}>
-											<Icon id="arrow-right" size={2} />
-										</PaddedButton>
-									</div>
-								</ButtonContainer>
-							</Step>
-							<Step num={3}>
-								<Confirmation
-									playlistCreate={playlists.playlistCreate}
-									onGoBack={this.tryAgain}
-									onSuccessComplete={this.reset}
-								/>
-							</Step>
-						</Steps>
-					</PlaylistCreateStyled>
-				</OverflowHidden>
-			</div>
+			<OverflowHidden>
+				<PlaylistCreateStyled className={className} innerRef={this.setPlaylistCreateStyledRef}>
+					<Steps
+						step={step}
+						stepsTotal={stepsTotal}
+						pose={`step${step % 2}`}
+						onPoseComplete={this.handleStepTweenComplete}
+					>
+						<Step num={0}>
+							<Button green onClick={this.goToNextStep}>
+								Create a room +
+							</Button>
+						</Step>
+						<Step num={1}>
+							<h3>Name your room</h3>
+							<Input
+								type="text"
+								innerRef={this.setNameInputRef}
+								value={name}
+								name="name"
+								onChange={this.handleInputChange}
+								onKeyDown={this.handleKeyPress}
+							/>
+							<ButtonContainer>
+								<div>
+									<PaddedButton noStyle onClick={this.goToNextStep} disabled={!this.isStepValid(1)}>
+										<Icon id="arrow-right" size={2} />
+									</PaddedButton>
+								</div>
+							</ButtonContainer>
+						</Step>
+						<Step num={2}>
+							<h3>What's it all about?</h3>
+							<Input
+								type="text"
+								innerRef={this.setDescriptionInputRef}
+								value={description}
+								name="description"
+								onChange={this.handleInputChange}
+								onKeyDown={this.handleKeyPress}
+							/>
+							<ButtonContainer>
+								<div>
+									<PaddedButton noStyle onClick={this.goToPreviousStep}>
+										<Icon id="arrow-left" size={2} />
+									</PaddedButton>
+								</div>
+								<div>
+									<PaddedButton noStyle onClick={this.goToNextStep} disabled={!this.isStepValid(2)}>
+										<Icon id="arrow-right" size={2} />
+									</PaddedButton>
+								</div>
+							</ButtonContainer>
+						</Step>
+						<Step num={3}>
+							<Confirmation
+								playlistCreate={playlists.playlistCreate}
+								onGoBack={this.tryAgain}
+								onSuccessComplete={this.reset}
+							/>
+						</Step>
+					</Steps>
+				</PlaylistCreateStyled>
+			</OverflowHidden>
 		);
 	}
 }

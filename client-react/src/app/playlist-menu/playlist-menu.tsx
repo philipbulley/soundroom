@@ -10,7 +10,7 @@ import Icon from '../shared/icon/icon';
 import PlaylistMenuItem from './playlist-menu-item/playlist-menu-item';
 import styled from 'styled-components';
 import { contentContainer } from '../shared/layout/content-container';
-import { PlaylistMenuUl } from './playlist-menu-list.styled';
+import { PlaylistMenuLi, PlaylistMenuUl } from './playlist-menu-list.styled';
 import PlaylistCreate from './playlist-create/playlist-create';
 import { Playlist } from '../shared/model/playlist';
 import { Playlists } from '../shared/store/playlists/playlists';
@@ -42,8 +42,14 @@ class PlaylistMenu extends React.Component<ConnectedProps> {
 						<PlaylistMenuUl>
 							{playlists.items
 								.filter((playlist: Playlist) => playlist._id !== playlists.playlistCreate.successfullyCreatedId)
-								.map((playlist: Playlist, i) => <PlaylistMenuItem key={playlist._id} playlist={playlist} index={i} />)}
-							<PlaylistCreate key={'create-' + playlists.playlistCreate.iterationId} />
+								.map((playlist: Playlist, i) => (
+									<PlaylistMenuLi>
+										<PlaylistMenuItem key={playlist._id} playlist={playlist} index={i} />
+									</PlaylistMenuLi>
+								))}
+							<PlaylistMenuLi>
+								<PlaylistCreate key={'create-' + playlists.playlistCreate.iterationId} />
+							</PlaylistMenuLi>
 						</PlaylistMenuUl>
 
 						<PlaylistCount playlists={playlists} />
