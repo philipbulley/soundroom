@@ -50,8 +50,8 @@ export class Confirmation extends React.Component<Props, State> {
 	 * component can then proceed.
 	 */
 	onSuccessComplete = () => {
-		if (ConfirmationViewState.SUCCESSFUL === this.state.viewState && this.props.onSuccessComplete) {
-			this.props.onSuccessComplete();
+		if (ConfirmationViewState.SUCCESSFUL === this.state.viewState && this.props.onSuccess) {
+			this.props.onSuccess();
 		}
 	};
 
@@ -94,7 +94,7 @@ export class Confirmation extends React.Component<Props, State> {
 interface Props {
 	playlistCreate: PlaylistCreate;
 	onGoBack: () => void;
-	onSuccessComplete?: () => void;
+	onSuccess?: () => void;
 }
 
 interface State {

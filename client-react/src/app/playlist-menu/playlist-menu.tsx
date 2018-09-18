@@ -43,12 +43,12 @@ class PlaylistMenu extends React.Component<ConnectedProps> {
 							{playlists.items
 								.filter((playlist: Playlist) => playlist._id !== playlists.playlistCreate.successfullyCreatedId)
 								.map((playlist: Playlist, i) => (
-									<PlaylistMenuLi>
-										<PlaylistMenuItem key={playlist._id} playlist={playlist} index={i} />
+									<PlaylistMenuLi key={playlist._id}>
+										<PlaylistMenuItem playlist={playlist} index={i} />
 									</PlaylistMenuLi>
 								))}
-							<PlaylistMenuLi>
-								<PlaylistCreate key={'create-' + playlists.playlistCreate.iterationId} />
+							<PlaylistMenuLi key={'create-' + playlists.playlistCreate.iterationId}>
+								<PlaylistCreate />
 							</PlaylistMenuLi>
 						</PlaylistMenuUl>
 

@@ -2,24 +2,36 @@ import styled from 'styled-components';
 import Button from '../../shared/button/button';
 import colors from '../../shared/colors/colors';
 import posed from 'react-pose';
-import { expoEaseInOut } from '../../shared/pose/easing';
+import { expoEaseInOut, expoEaseOut } from '../../shared/pose/easing';
 
-interface StepProps {
-	num: number;
-}
-
-const PlaylistCreateStyled = styled.div`
+export const PlaylistCreatePosed = posed.div({
+	init: {
+		x: '-100%'
+	},
+	visible: {
+		x: '0%',
+		transition: {
+			duration: 300,
+			ease: expoEaseOut
+		}
+	},
+	reset: {
+		backgroundColor: colors.white
+	}
+});
+const PlaylistCreateStyled = styled<{ pose?: string; initialPose?: string; onPoseComplete?: Function }>(
+	PlaylistCreatePosed
+)`
 	position: relative;
 	display: block;
 	width: 100%;
 	height: 100%;
-	overflow: hidden;
 	text-align: center;
 	background-color: ${colors.green};
 `;
 export default PlaylistCreateStyled;
 
-export const OverflowHidden = styled.div`
+export const PlaylistCreateContainer = styled.div`
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
@@ -34,7 +46,7 @@ interface StepsProps {
 const stepPoseConfig = {
 	x: ({ step, stepsTotal }) => `${-100 / stepsTotal * step}%`,
 	transition: {
-		duration: 600,
+		duration: 300,
 		ease: expoEaseInOut
 	}
 };
@@ -44,24 +56,21 @@ export const StepsPosed = posed.div({
 	step1: stepPoseConfig
 });
 
-// export const Steps = styled.div`
 export const Steps = styled(StepsPosed)`
 	display: flex;
 	width: ${({ stepsTotal }: StepsProps) => stepsTotal * 100}%;
 	height: 100%;
 `;
 
-export const Step = styled.div`
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  flex: 1 1 auto;
-  justify-content: center;
-  width: 100%;
-  padding: 30px;
-  color: ${colors.white};
-
-  // justify-content: ${({ num }: StepProps) => (num === 0 ? 'center' : 'flex-start')}
+export const Step = styled<{ num: number }, 'div'>('div')`
+	display: flex;
+	height: 100%;
+	flex-direction: column;
+	flex: 1 1 auto;
+	justify-content: center;
+	width: 100%;
+	padding: 30px;
+	color: ${colors.white};
 `;
 
 export const ButtonContainer = styled.div`
